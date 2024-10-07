@@ -6,7 +6,7 @@
 \alias{crane-package}
 \title{crane: Supplements functions in the 'gtsummary' package}
 \description{
-We often need to make slight modefications to functions found in the 'gtsummary' package to fit the purposes of trial reporting. This package houses those functions.
+We often need to make slight modifications to functions found in the 'gtsummary' package to fit the purposes of trial reporting. This package houses those functions.
 }
 \seealso{
 Useful links:

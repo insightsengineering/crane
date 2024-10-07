@@ -8,7 +8,7 @@
 <!-- badges: end -->
 
 The {crane} package provides supplementary functions to the {gtsummary}
-specifically for trial reporting in the pharmecuetical industry.
+specifically for trial reporting in the pharmaceutical industry.
 
 ## Installation
 
