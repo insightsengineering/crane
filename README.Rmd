@@ -1,0 +1,50 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# crane
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The {crane} package provides supplementary functions to the {gtsummary} specifically for trial reporting in the pharmecuetical industry.
+
+## Installation
+
+You can install the development version of crane from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("pak")
+pak::pak("insightsengineering/crane")
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+```{r example}
+library(crane)
+theme_gtsummary_roche()
+
+tbl <- tbl_demographics(trial, by = trt, include = c(age, grade))
+
+tbl
+```
+
+Each gtsummary table also contains the Analysis Results Dataset (ARD)
+
+```{r cars}
+# extract ARD from table
+gather_ard(tbl)
+```
