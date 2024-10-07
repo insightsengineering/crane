@@ -38,8 +38,15 @@ library(crane)
 theme_gtsummary_roche()
 
 tbl <- tbl_demographics(trial, by = trt, include = c(age, grade))
+```
 
-tbl
+```{r tbl_print_simple, include = FALSE}
+# Had to manually save images in temp file, not sure if better way.
+gt::gtsave(as_gt(tbl), file = "man/figures/README-tbl_print_simple-1.png")
+```
+
+```{r out.width = "35%", echo = FALSE}
+knitr::include_graphics("man/figures/README-tbl_print_simple-1.png")
 ```
 
 Each gtsummary table also contains the Analysis Results Dataset (ARD)
