@@ -34,7 +34,7 @@ tbl <- tbl_demographics(trial, by = trt, include = c(age, grade))
 #> Setting theme "Roche"
 ```
 
-<img src="man/figures/README-tbl_print_simple-1.png" width="35%" />
+<img src="man/figures/README-tbl_print_simple-1.png" width="55%" />
 
 Each gtsummary table also contains the Analysis Results Dataset (ARD)
 
