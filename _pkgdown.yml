@@ -1,4 +1,12 @@
 url: https://insightsengineering.github.io/crane/
 template:
-  bootstrap: 5
+  package: nesttemplate
+
+navbar:
+  structure:
+    left: [intro, reference, articles, news]
+    right: [search, github]
+    github:
+      icon: fa-github
+      href: https://github.com/insightsengineering/crane
 
