@@ -84,7 +84,7 @@ usethis::use_standalone("insightsengineering/standalone", file = "checks")
 
 ## Scope
 
-The {crane} package exports basic functions for styling ARDs and tables to the Roche theme.
+The {crane} package exports basic functions for styling ARDs and tables using the Roche theme.
 
 ## Code of Conduct
 
