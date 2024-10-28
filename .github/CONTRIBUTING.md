@@ -1,6 +1,6 @@
-# Contributing to cards
+# Contributing to crane
 
-This outlines how to propose a change to {cards}.
+This outlines how to propose a change to {crane}.
 
 ## Fixing typos
 
@@ -43,8 +43,8 @@ See guide on [how to create a great issue](https://code-review.tidyverse.org/iss
 
 *  All helper/non-exported functions are documented with roxygen2 as indicated above. 
    Include `#' @keywords internal` to mark the function as internal.
-   Any helper functions that appear in examples, will need to use the `cards:::` 
-   prefix, e.g. `#' @example cards:::.helper_function()`
+   Any helper functions that appear in examples, will need to use the `crane:::` 
+   prefix, e.g. `#' @example crane:::.helper_function()`
 
 ### Error Handling
 
@@ -69,26 +69,25 @@ The `"checks"` script is a series of functions to check the argument values supp
 Do not make changes to these files directly: rather, update these files in their source location.
 
 - `import-standalone-purrr.R`: https://github.com/r-lib/rlang/blob/main/R/standalone-purrr.R
-- `import-standalone-forcats.R` https://github.com/ddsjoberg/standalone/blob/main/R/standalone-forcats.R
-- `import-standalone-stringr.R` https://github.com/ddsjoberg/standalone/blob/main/R/standalone-stringr.R
-- `import-standalone-checks.R` https://github.com/ddsjoberg/standalone/blob/main/R/standalone-checks.R
+- `import-standalone-forcats.R` https://github.com/insightsengineering/standalone/blob/main/R/standalone-forcats.R
+- `import-standalone-stringr.R` https://github.com/insightsengineering/standalone/blob/main/R/standalone-stringr.R
+- `import-standalone-checks.R` https://github.com/insightsengineering/standalone/blob/main/R/standalone-checks.R
 
 After the update has been made, you can copy the file into the repo with 
 
 ```r
 usethis::use_standalone("r-lib/rlang", file = "purrr")
-usethis::use_standalone("ddsjoberg/standalone", file = "forcats")
-usethis::use_standalone("ddsjoberg/standalone", file = "stringr")
-usethis::use_standalone("ddsjoberg/standalone", file = "checks")
+usethis::use_standalone("insightsengineering/standalone", file = "forcats")
+usethis::use_standalone("insightsengineering/standalone", file = "stringr")
+usethis::use_standalone("insightsengineering/standalone", file = "checks")
 ```
 
 ## Scope
 
-The {cards} package exports basic functions for creating ARDs (such as, univariate continuous summaries, tabulations, etc.), and utilities for creating/working with ARDs.
-All new functions to create ARDs will live in the [{cardx}](https://github.com/insightsengineering/cardx) package.
+The {crane} package exports basic functions for styling ARDs and tables using the Roche theme.
 
 ## Code of Conduct
 
-Please note that the cards project is released with a
+Please note that crane is released with a
 [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By contributing to this
 project you agree to abide by its terms.
