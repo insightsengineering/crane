@@ -19,7 +19,6 @@
 #'                       c("table 2", "table b"))
 #' )
 tbl_nested_stack <- function(tbls, group_header, quiet = TRUE) {
-  browser()
   # TODO: check inputs
 
   # first non-hidden column
