@@ -33,11 +33,13 @@ pak::pak("insightsengineering/crane")
 
 This is a basic example which shows you how to solve a common problem:
 
-```{r example}
+```{r example, message=FALSE}
 library(crane)
 theme_gtsummary_roche()
 
-tbl <- tbl_demographics(trial, by = trt, include = c(age, grade))
+tbl <- trial |> 
+  tbl_demographics(by = trt, include = c(age, grade)) |> 
+  add_blank_row()
 ```
 
 ```{r tbl_print_simple, include = FALSE}

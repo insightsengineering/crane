@@ -26,12 +26,11 @@ This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(crane)
-#> Loading required package: gtsummary
 theme_gtsummary_roche()
-#> Setting theme "Roche"
 
-tbl <- tbl_demographics(trial, by = trt, include = c(age, grade))
-#> Setting theme "Roche"
+tbl <- trial |> 
+  tbl_demographics(by = trt, include = c(age, grade)) |> 
+  add_blank_row()
 ```
 
 <img src="man/figures/README-tbl_print_simple-1.png" width="55%" />
@@ -54,18 +53,7 @@ gather_ard(tbl)
 #> 8     trt       Drug A    grade             II         N          N    98
 #> 9     trt       Drug A    grade             II         p          % 0.327
 #> 10    trt       Drug B    grade             II         n          n    36
-#>    gts_column
-#> 1      stat_1
-#> 2      stat_1
-#> 3      stat_1
-#> 4      stat_2
-#> 5      stat_2
-#> 6      stat_2
-#> 7      stat_1
-#> 8      stat_1
-#> 9      stat_1
-#> 10     stat_2
 #> ℹ 56 more rows
 #> ℹ Use `print(n = ...)` to see more rows
-#> ℹ 4 more variables: context, fmt_fn, warning, error
+#> ℹ 5 more variables: context, fmt_fn, warning, error, gts_column
 ```

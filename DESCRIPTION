@@ -14,6 +14,7 @@ BugReports: https://github.com/insightsengineering/crane/issues
 Depends:
     gtsummary (>= 2.0.3)
 Imports: 
+    cli,
     dplyr,
     gt,
     rlang
