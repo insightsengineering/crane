@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="index.html">crane</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9003</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,12 +68,11 @@
 <p>This is a basic example which shows you how to solve a common problem:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/insightsengineering/crane" class="external-link">crane</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; Loading required package: gtsummary</span></span>
 <span><span class="fu"><a href="reference/theme_gtsummary_roche.html">theme_gtsummary_roche</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Setting theme "Roche"</span></span>
 <span></span>
-<span><span class="va">tbl</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/tbl_demographics.html">tbl_demographics</a></span><span class="op">(</span><span class="va">trial</span>, by <span class="op">=</span> <span class="va">trt</span>, include <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">grade</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Setting theme "Roche"</span></span></code></pre></div>
+<span><span class="va">tbl</span> <span class="op">&lt;-</span> <span class="va">trial</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="reference/tbl_demographics.html">tbl_demographics</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">trt</span>, include <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">age</span>, <span class="va">grade</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="reference/add_blank_row.html">add_blank_row</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-tbl_print_simple-1.png" width="55%"></p>
 <p>Each gtsummary table also contains the Analysis Results Dataset (ARD)</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
@@ -92,20 +91,9 @@
 <span><span class="co">#&gt; 8     trt       Drug A    grade             II         N          N    98</span></span>
 <span><span class="co">#&gt; 9     trt       Drug A    grade             II         p          % 0.327</span></span>
 <span><span class="co">#&gt; 10    trt       Drug B    grade             II         n          n    36</span></span>
-<span><span class="co">#&gt;    gts_column</span></span>
-<span><span class="co">#&gt; 1      stat_1</span></span>
-<span><span class="co">#&gt; 2      stat_1</span></span>
-<span><span class="co">#&gt; 3      stat_1</span></span>
-<span><span class="co">#&gt; 4      stat_2</span></span>
-<span><span class="co">#&gt; 5      stat_2</span></span>
-<span><span class="co">#&gt; 6      stat_2</span></span>
-<span><span class="co">#&gt; 7      stat_1</span></span>
-<span><span class="co">#&gt; 8      stat_1</span></span>
-<span><span class="co">#&gt; 9      stat_1</span></span>
-<span><span class="co">#&gt; 10     stat_2</span></span>
 <span><span class="co">#&gt; ℹ 56 more rows</span></span>
 <span><span class="co">#&gt; ℹ Use `print(n = ...)` to see more rows</span></span>
-<span><span class="co">#&gt; ℹ 4 more variables: context, fmt_fn, warning, error</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ 5 more variables: context, fmt_fn, warning, error, gts_column</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
