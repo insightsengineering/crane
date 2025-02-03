@@ -26,7 +26,9 @@ This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(crane)
+#> Loading required package: gtsummary
 theme_gtsummary_roche()
+#> Setting theme "Roche"
 
 tbl <- trial |> 
   tbl_demographics(by = trt, include = c(age, grade)) |> 
