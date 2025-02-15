@@ -58,7 +58,9 @@ crane_conflict_message <- function(x) {
 
 #' @export
 print.crane_conflicts <- function(x, ..., startup = FALSE) {
-  if (rlang::is_empty(x)) return(invisible(x))
+  if (rlang::is_empty(x)) {
+    return(invisible(x))
+  }
   cli::cat_line(crane_conflict_message(x))
   invisible(x)
 }
@@ -82,14 +84,16 @@ confirm_conflict <- function(packages, name) {
     map(~ get(name, pos = .)) |>
     keep(is.function)
 
-  if (length(objs) <= 1)
+  if (length(objs) <= 1) {
     return()
+  }
 
   # Remove identical functions
   objs <- objs[!duplicated(objs)]
   packages <- packages[!duplicated(packages)]
-  if (length(objs) == 1)
+  if (length(objs) == 1) {
     return()
+  }
 
   packages
 }
@@ -105,7 +109,7 @@ ls_env <- function(env) {
   if (env == "package:lubridate") {
     x <- setdiff(x, c(
       "as.difftime", # lubridate makes into an S4 generic
-      "date"         # matches base behaviour
+      "date" # matches base behaviour
     ))
   }
 

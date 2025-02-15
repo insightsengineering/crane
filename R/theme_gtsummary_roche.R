@@ -32,8 +32,10 @@ theme_gtsummary_roche <- function(set_theme = TRUE, font_size = NULL) {
 
   # add a monospace font for gt ------------------------------------------------
   lst_theme$`as_gt-lst:addl_cmds` <-
-    c(lst_theme$`as_gt-lst:addl_cmds`,
-      list(tab_spanner = rlang::expr(gt::opt_table_font(stack = "monospace-code"))))
+    c(
+      lst_theme$`as_gt-lst:addl_cmds`,
+      list(tab_spanner = rlang::expr(gt::opt_table_font(stack = "monospace-code")))
+    )
 
   # finishing up ---------------------------------------------------------------
   if (set_theme == TRUE) gtsummary::set_gtsummary_theme(lst_theme)

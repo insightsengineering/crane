@@ -33,8 +33,10 @@ tbl_demographics <- function(data,
                              by = NULL,
                              label = NULL,
                              statistic =
-                               list(all_continuous() ~ c("{mean} ({sd})", "{median} ({p25}, {p75})", "{min}, {max}"),
-                                    all_categorical() ~ "{n} ({p}%)"),
+                               list(
+                                 all_continuous() ~ c("{mean} ({sd})", "{median} ({p25}, {p75})", "{min}, {max}"),
+                                 all_categorical() ~ "{n} ({p}%)"
+                               ),
                              digits = NULL,
                              type = NULL,
                              value = NULL,
@@ -64,17 +66,21 @@ tbl_demographics <- function(data,
           include = {{ include }}
         ),
       msg_ignored_elements =
-        paste("Theme element(s) {.val {elements}} utilized internally",
-              "by {.code tbl_demographics()} and cannot be modified.\n",
-              "Use {.code gtsummary::tbl_summary()} if you",
-              "wish to modify these theme elements.")
+        paste(
+          "Theme element(s) {.val {elements}} utilized internally",
+          "by {.code tbl_demographics()} and cannot be modified.\n",
+          "Use {.code gtsummary::tbl_summary()} if you",
+          "wish to modify these theme elements."
+        )
     ) |>
     gtsummary::modify_table_body(
-      function(.x) .x |>
-        dplyr::mutate(
-          .by = "variable",
-          dplyr::across(dplyr::everything(), ~.[order(row_type != "label", row_type != "missing")])
-        )
+      function(.x) {
+        .x |>
+          dplyr::mutate(
+            .by = "variable",
+            dplyr::across(dplyr::everything(), ~ .[order(row_type != "label", row_type != "missing")])
+          )
+      }
     ) |>
     gtsummary::add_stat_label() |>
     structure(class = c("tbl_demographics", "tbl_summary", "gtsummary"))
