@@ -30,6 +30,7 @@ add_blank_row <- function(x) {
       call = get_cli_abort_call()
     )
   }
+  updated_call_list <- append(x$call_list, list(add_blank_row = match.call()))
 
   # add blank row --------------------------------------------------------------
   # get row indices where to add blank row
@@ -54,5 +55,6 @@ add_blank_row <- function(x) {
   }
 
   # return table ---------------------------------------------------------------
+  x$call_list <- updated_call_list
   x
 }

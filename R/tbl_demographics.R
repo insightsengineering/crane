@@ -44,30 +44,31 @@ tbl_demographics <- function(data,
   percent <- match.arg(percent)
 
   # execute `tbl_summary()` code with theme/defaults ---------------------------
-  gtsummary::with_gtsummary_theme(
-    x = tbl_demographics_theme,
-    expr =
-      gtsummary::tbl_summary(
-        data = data,
-        by = {{ by }},
-        label = label,
-        statistic = statistic,
-        digits = digits,
-        type = type,
-        value = value,
-        missing = "always",
-        missing_text = "n",
-        missing_stat = "{N_nonmiss}",
-        sort = sort,
-        percent = percent,
-        include = {{ include }}
-      ),
-    msg_ignored_elements =
-      paste("Theme element(s) {.val {elements}} utilized internally",
-            "by {.code tbl_demographics()} and cannot be modified.\n",
-            "Use {.code gtsummary::tbl_summary()} if you",
-            "wish to modify these theme elements.")
-  ) |>
+  x <-
+    gtsummary::with_gtsummary_theme(
+      x = tbl_demographics_theme,
+      expr =
+        gtsummary::tbl_summary(
+          data = data,
+          by = {{ by }},
+          label = label,
+          statistic = statistic,
+          digits = digits,
+          type = type,
+          value = value,
+          missing = "always",
+          missing_text = "n",
+          missing_stat = "{N_nonmiss}",
+          sort = sort,
+          percent = percent,
+          include = {{ include }}
+        ),
+      msg_ignored_elements =
+        paste("Theme element(s) {.val {elements}} utilized internally",
+              "by {.code tbl_demographics()} and cannot be modified.\n",
+              "Use {.code gtsummary::tbl_summary()} if you",
+              "wish to modify these theme elements.")
+    ) |>
     gtsummary::modify_table_body(
       function(.x) .x |>
         dplyr::mutate(
@@ -77,6 +78,10 @@ tbl_demographics <- function(data,
     ) |>
     gtsummary::add_stat_label() |>
     structure(class = c("tbl_demographics", "tbl_summary", "gtsummary"))
+
+  # return table ---------------------------------------------------------------
+  x$call_list <- list(tbl_demographics = match.call())
+  x
 }
 
 # creating theme for gtreg summaries -------------------------------------------
