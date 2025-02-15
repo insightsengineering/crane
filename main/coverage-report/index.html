@@ -107,8 +107,8 @@ table.table-condensed {
       </ul>
       <div class="tab-content" data-tabsetid="covr">
         <div class="tab-pane active" title="Files" data-value="Files" id="tab-covr-1">
-          <div class="datatables html-widget html-fill-item" id="htmlwidget-af76010c476e6d8aa6e9" style="width:100%;height:500px;"></div>
-          <script type="application/json" data-for="htmlwidget-af76010c476e6d8aa6e9">{"x":{"filter":"none","vertical":false,"fillContainer":false,"data":[["<a href=\"#\">R/tbl_demographics.R<\/a>","<a href=\"#\">R/add_blank_row.R<\/a>","<a href=\"#\">R/theme_gtsummary_roche.R<\/a>"],[87,58,41],[30,21,11],[0,0,0],[30,21,11],["0","0","0"],["0.00%","0.00%","0.00%"]],"container":"<table class=\"row-border\">\n  <thead>\n    <tr>\n      <th>File<\/th>\n      <th>Lines<\/th>\n      <th>Relevant<\/th>\n      <th>Covered<\/th>\n      <th>Missed<\/th>\n      <th>Hits / Line<\/th>\n      <th>Coverage<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"searching":false,"dom":"t","paging":false,"columnDefs":[{"targets":6,"createdCell":"function(td, cellData, rowData, row, col) {\n  var percent = cellData.replace(\"%\", \"\");\n  if (percent > 90) {\n    var grad = \"linear-gradient(90deg, #edfde7 \" + cellData + \", white \" + cellData + \")\";\n  } else if (percent > 75) {\n    var grad = \"linear-gradient(90deg, #f9ffe5 \" + cellData + \", white \" + cellData + \")\";\n  } else {\n    var grad = \"linear-gradient(90deg, #fcece9 \" + cellData + \", white \" + cellData + \")\";\n  }\n  $(td).css(\"background\", grad);\n}\n"},{"className":"dt-right","targets":[1,2,3,4]},{"name":"File","targets":0},{"name":"Lines","targets":1},{"name":"Relevant","targets":2},{"name":"Covered","targets":3},{"name":"Missed","targets":4},{"name":"Hits / Line","targets":5},{"name":"Coverage","targets":6}],"order":[],"autoWidth":false,"orderClasses":false},"callback":"function(table) {\ntable.on('click.dt', 'a', function() {\n  files = $('div#files div');\n  files.not('div.hidden').addClass('hidden');\n  id = $(this).text();\n  files.filter('div[id=\\'' + id + '\\']').removeClass('hidden');\n  $('ul.nav a[data-value=Source]').text(id).tab('show');\n});\n}"},"evals":["options.columnDefs.0.createdCell","callback"],"jsHooks":[]}</script>
+          <div class="datatables html-widget html-fill-item" id="htmlwidget-01b51560840afb3293af" style="width:100%;height:500px;"></div>
+          <script type="application/json" data-for="htmlwidget-01b51560840afb3293af">{"x":{"filter":"none","vertical":false,"fillContainer":false,"data":[["<a href=\"#\">R/tbl_demographics.R<\/a>","<a href=\"#\">R/add_blank_row.R<\/a>","<a href=\"#\">R/theme_gtsummary_roche.R<\/a>"],[92,60,41],[33,23,11],[0,0,0],[33,23,11],["0","0","0"],["0.00%","0.00%","0.00%"]],"container":"<table class=\"row-border\">\n  <thead>\n    <tr>\n      <th>File<\/th>\n      <th>Lines<\/th>\n      <th>Relevant<\/th>\n      <th>Covered<\/th>\n      <th>Missed<\/th>\n      <th>Hits / Line<\/th>\n      <th>Coverage<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"searching":false,"dom":"t","paging":false,"columnDefs":[{"targets":6,"createdCell":"function(td, cellData, rowData, row, col) {\n  var percent = cellData.replace(\"%\", \"\");\n  if (percent > 90) {\n    var grad = \"linear-gradient(90deg, #edfde7 \" + cellData + \", white \" + cellData + \")\";\n  } else if (percent > 75) {\n    var grad = \"linear-gradient(90deg, #f9ffe5 \" + cellData + \", white \" + cellData + \")\";\n  } else {\n    var grad = \"linear-gradient(90deg, #fcece9 \" + cellData + \", white \" + cellData + \")\";\n  }\n  $(td).css(\"background\", grad);\n}\n"},{"className":"dt-right","targets":[1,2,3,4]},{"name":"File","targets":0},{"name":"Lines","targets":1},{"name":"Relevant","targets":2},{"name":"Covered","targets":3},{"name":"Missed","targets":4},{"name":"Hits / Line","targets":5},{"name":"Coverage","targets":6}],"order":[],"autoWidth":false,"orderClasses":false},"callback":"function(table) {\ntable.on('click.dt', 'a', function() {\n  files = $('div#files div');\n  files.not('div.hidden').addClass('hidden');\n  id = $(this).text();\n  files.filter('div[id=\\'' + id + '\\']').removeClass('hidden');\n  $('ul.nav a[data-value=Source]').text(id).tab('show');\n});\n}"},"evals":["options.columnDefs.0.createdCell","callback"],"jsHooks":[]}</script>
         </div>
         <div class="tab-pane" title="Source" data-value="Source" id="tab-covr-2">
           <div id="files">
@@ -632,183 +632,197 @@ table.table-condensed {
                       <pre class="language-r">  }</pre>
                     </td>
                   </tr>
-                  <tr class="never">
+                  <tr class="missed">
                     <td class="num">33</td>
-                    <td class="coverage"></td>
+                    <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r"></pre>
+                      <pre class="language-r">  updated_call_list &lt;- append(x$call_list, list(add_blank_row = match.call()))</pre>
                     </td>
                   </tr>
                   <tr class="never">
                     <td class="num">34</td>
                     <td class="coverage"></td>
                     <td class="col-sm-12">
-                      <pre class="language-r">  # add blank row --------------------------------------------------------------</pre>
+                      <pre class="language-r"></pre>
                     </td>
                   </tr>
                   <tr class="never">
                     <td class="num">35</td>
                     <td class="coverage"></td>
                     <td class="col-sm-12">
-                      <pre class="language-r">  # get row indices where to add blank row</pre>
+                      <pre class="language-r">  # add blank row --------------------------------------------------------------</pre>
                     </td>
                   </tr>
-                  <tr class="missed">
+                  <tr class="never">
                     <td class="num">36</td>
-                    <td class="coverage">!</td>
+                    <td class="coverage"></td>
                     <td class="col-sm-12">
-                      <pre class="language-r">  row_indices &lt;-</pre>
+                      <pre class="language-r">  # get row indices where to add blank row</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">37</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">    x$table_body["variable"] |&gt;</pre>
+                      <pre class="language-r">  row_indices &lt;-</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">38</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">    dplyr::mutate(row_number = dplyr::row_number()) |&gt;</pre>
+                      <pre class="language-r">    x$table_body["variable"] |&gt;</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">39</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">    dplyr::filter(.by = "variable", dplyr::row_number() == dplyr::n()) |&gt;</pre>
+                      <pre class="language-r">    dplyr::mutate(row_number = dplyr::row_number()) |&gt;</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">40</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">    deframe() |&gt;</pre>
+                      <pre class="language-r">    dplyr::filter(.by = "variable", dplyr::row_number() == dplyr::n()) |&gt;</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">41</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">    rev() %&gt;%</pre>
+                      <pre class="language-r">    deframe() |&gt;</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">42</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">    `[`(-1) # don't add a blank row to the bottom of the table</pre>
+                      <pre class="language-r">    rev() %&gt;%</pre>
                     </td>
                   </tr>
-                  <tr class="never">
+                  <tr class="missed">
                     <td class="num">43</td>
-                    <td class="coverage"></td>
+                    <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r"></pre>
+                      <pre class="language-r">    `[`(-1) # don't add a blank row to the bottom of the table</pre>
                     </td>
                   </tr>
                   <tr class="never">
                     <td class="num">44</td>
                     <td class="coverage"></td>
                     <td class="col-sm-12">
-                      <pre class="language-r">  # cycle through the row indices and add a blank row after each</pre>
+                      <pre class="language-r"></pre>
                     </td>
                   </tr>
-                  <tr class="missed">
+                  <tr class="never">
                     <td class="num">45</td>
-                    <td class="coverage">!</td>
+                    <td class="coverage"></td>
                     <td class="col-sm-12">
-                      <pre class="language-r">  for (i in seq_along(row_indices)) {</pre>
+                      <pre class="language-r">  # cycle through the row indices and add a blank row after each</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">46</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">    x &lt;- x |&gt;</pre>
+                      <pre class="language-r">  for (i in seq_along(row_indices)) {</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">47</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">      gtsummary::modify_table_body(</pre>
+                      <pre class="language-r">    x &lt;- x |&gt;</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">48</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">        ~ .x |&gt;</pre>
+                      <pre class="language-r">      gtsummary::modify_table_body(</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">49</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">          dplyr::add_row(</pre>
+                      <pre class="language-r">        ~ .x |&gt;</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">50</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">            dplyr::tibble(variable = names(row_indices)[i]),</pre>
+                      <pre class="language-r">          dplyr::add_row(</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">51</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">            .after = row_indices[i]</pre>
+                      <pre class="language-r">            dplyr::tibble(variable = names(row_indices)[i]),</pre>
                     </td>
                   </tr>
-                  <tr class="never">
+                  <tr class="missed">
                     <td class="num">52</td>
-                    <td class="coverage"></td>
+                    <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">          )</pre>
+                      <pre class="language-r">            .after = row_indices[i]</pre>
                     </td>
                   </tr>
                   <tr class="never">
                     <td class="num">53</td>
                     <td class="coverage"></td>
                     <td class="col-sm-12">
-                      <pre class="language-r">      )</pre>
+                      <pre class="language-r">          )</pre>
                     </td>
                   </tr>
                   <tr class="never">
                     <td class="num">54</td>
                     <td class="coverage"></td>
                     <td class="col-sm-12">
-                      <pre class="language-r">  }</pre>
+                      <pre class="language-r">      )</pre>
                     </td>
                   </tr>
                   <tr class="never">
                     <td class="num">55</td>
                     <td class="coverage"></td>
                     <td class="col-sm-12">
-                      <pre class="language-r"></pre>
+                      <pre class="language-r">  }</pre>
                     </td>
                   </tr>
                   <tr class="never">
                     <td class="num">56</td>
                     <td class="coverage"></td>
                     <td class="col-sm-12">
+                      <pre class="language-r"></pre>
+                    </td>
+                  </tr>
+                  <tr class="never">
+                    <td class="num">57</td>
+                    <td class="coverage"></td>
+                    <td class="col-sm-12">
                       <pre class="language-r">  # return table ---------------------------------------------------------------</pre>
                     </td>
                   </tr>
                   <tr class="missed">
-                    <td class="num">57</td>
+                    <td class="num">58</td>
+                    <td class="coverage">!</td>
+                    <td class="col-sm-12">
+                      <pre class="language-r">  x$call_list &lt;- updated_call_list</pre>
+                    </td>
+                  </tr>
+                  <tr class="missed">
+                    <td class="num">59</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
                       <pre class="language-r">  x</pre>
                     </td>
                   </tr>
                   <tr class="never">
-                    <td class="num">58</td>
+                    <td class="num">60</td>
                     <td class="coverage"></td>
                     <td class="col-sm-12">
                       <pre class="language-r">}</pre>
@@ -1146,238 +1160,238 @@ table.table-condensed {
                     <td class="num">47</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">  gtsummary::with_gtsummary_theme(</pre>
+                      <pre class="language-r">  x &lt;-</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">48</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">    x = tbl_demographics_theme,</pre>
+                      <pre class="language-r">    gtsummary::with_gtsummary_theme(</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">49</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">    expr =</pre>
+                      <pre class="language-r">      x = tbl_demographics_theme,</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">50</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">      gtsummary::tbl_summary(</pre>
+                      <pre class="language-r">      expr =</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">51</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">        data = data,</pre>
+                      <pre class="language-r">        gtsummary::tbl_summary(</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">52</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">        by = {{ by }},</pre>
+                      <pre class="language-r">          data = data,</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">53</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">        label = label,</pre>
+                      <pre class="language-r">          by = {{ by }},</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">54</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">        statistic = statistic,</pre>
+                      <pre class="language-r">          label = label,</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">55</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">        digits = digits,</pre>
+                      <pre class="language-r">          statistic = statistic,</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">56</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">        type = type,</pre>
+                      <pre class="language-r">          digits = digits,</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">57</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">        value = value,</pre>
+                      <pre class="language-r">          type = type,</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">58</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">        missing = "always",</pre>
+                      <pre class="language-r">          value = value,</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">59</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">        missing_text = "n",</pre>
+                      <pre class="language-r">          missing = "always",</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">60</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">        missing_stat = "{N_nonmiss}",</pre>
+                      <pre class="language-r">          missing_text = "n",</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">61</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">        sort = sort,</pre>
+                      <pre class="language-r">          missing_stat = "{N_nonmiss}",</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">62</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">        percent = percent,</pre>
+                      <pre class="language-r">          sort = sort,</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">63</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">        include = {{ include }}</pre>
-                    </td>
-                  </tr>
-                  <tr class="never">
-                    <td class="num">64</td>
-                    <td class="coverage"></td>
-                    <td class="col-sm-12">
-                      <pre class="language-r">      ),</pre>
+                      <pre class="language-r">          percent = percent,</pre>
                     </td>
                   </tr>
                   <tr class="missed">
-                    <td class="num">65</td>
+                    <td class="num">64</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">    msg_ignored_elements =</pre>
+                      <pre class="language-r">          include = {{ include }}</pre>
+                    </td>
+                  </tr>
+                  <tr class="never">
+                    <td class="num">65</td>
+                    <td class="coverage"></td>
+                    <td class="col-sm-12">
+                      <pre class="language-r">        ),</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">66</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">      paste("Theme element(s) {.val {elements}} utilized internally",</pre>
+                      <pre class="language-r">      msg_ignored_elements =</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">67</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">            "by {.code tbl_demographics()} and cannot be modified.\n",</pre>
+                      <pre class="language-r">        paste("Theme element(s) {.val {elements}} utilized internally",</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">68</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">            "Use {.code gtsummary::tbl_summary()} if you",</pre>
+                      <pre class="language-r">              "by {.code tbl_demographics()} and cannot be modified.\n",</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">69</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">            "wish to modify these theme elements.")</pre>
+                      <pre class="language-r">              "Use {.code gtsummary::tbl_summary()} if you",</pre>
                     </td>
                   </tr>
-                  <tr class="never">
+                  <tr class="missed">
                     <td class="num">70</td>
-                    <td class="coverage"></td>
+                    <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">  ) |&gt;</pre>
+                      <pre class="language-r">              "wish to modify these theme elements.")</pre>
                     </td>
                   </tr>
-                  <tr class="missed">
+                  <tr class="never">
                     <td class="num">71</td>
-                    <td class="coverage">!</td>
-                    <td class="col-sm-12">
-                      <pre class="language-r">    gtsummary::modify_table_body(</pre>
-                    </td>
-                  </tr>
-                  <tr class="missed">
-                    <td class="num">72</td>
-                    <td class="coverage">!</td>
-                    <td class="col-sm-12">
-                      <pre class="language-r">      function(.x) .x |&gt;</pre>
-                    </td>
-                  </tr>
-                  <tr class="missed">
-                    <td class="num">73</td>
-                    <td class="coverage">!</td>
-                    <td class="col-sm-12">
-                      <pre class="language-r">        dplyr::mutate(</pre>
-                    </td>
-                  </tr>
-                  <tr class="missed">
-                    <td class="num">74</td>
-                    <td class="coverage">!</td>
-                    <td class="col-sm-12">
-                      <pre class="language-r">          .by = "variable",</pre>
-                    </td>
-                  </tr>
-                  <tr class="missed">
-                    <td class="num">75</td>
-                    <td class="coverage">!</td>
-                    <td class="col-sm-12">
-                      <pre class="language-r">          dplyr::across(dplyr::everything(), ~.[order(row_type != "label", row_type != "missing")])</pre>
-                    </td>
-                  </tr>
-                  <tr class="never">
-                    <td class="num">76</td>
-                    <td class="coverage"></td>
-                    <td class="col-sm-12">
-                      <pre class="language-r">        )</pre>
-                    </td>
-                  </tr>
-                  <tr class="never">
-                    <td class="num">77</td>
                     <td class="coverage"></td>
                     <td class="col-sm-12">
                       <pre class="language-r">    ) |&gt;</pre>
                     </td>
                   </tr>
                   <tr class="missed">
-                    <td class="num">78</td>
+                    <td class="num">72</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">    gtsummary::add_stat_label() |&gt;</pre>
+                      <pre class="language-r">    gtsummary::modify_table_body(</pre>
+                    </td>
+                  </tr>
+                  <tr class="missed">
+                    <td class="num">73</td>
+                    <td class="coverage">!</td>
+                    <td class="col-sm-12">
+                      <pre class="language-r">      function(.x) .x |&gt;</pre>
+                    </td>
+                  </tr>
+                  <tr class="missed">
+                    <td class="num">74</td>
+                    <td class="coverage">!</td>
+                    <td class="col-sm-12">
+                      <pre class="language-r">        dplyr::mutate(</pre>
+                    </td>
+                  </tr>
+                  <tr class="missed">
+                    <td class="num">75</td>
+                    <td class="coverage">!</td>
+                    <td class="col-sm-12">
+                      <pre class="language-r">          .by = "variable",</pre>
+                    </td>
+                  </tr>
+                  <tr class="missed">
+                    <td class="num">76</td>
+                    <td class="coverage">!</td>
+                    <td class="col-sm-12">
+                      <pre class="language-r">          dplyr::across(dplyr::everything(), ~.[order(row_type != "label", row_type != "missing")])</pre>
+                    </td>
+                  </tr>
+                  <tr class="never">
+                    <td class="num">77</td>
+                    <td class="coverage"></td>
+                    <td class="col-sm-12">
+                      <pre class="language-r">        )</pre>
+                    </td>
+                  </tr>
+                  <tr class="never">
+                    <td class="num">78</td>
+                    <td class="coverage"></td>
+                    <td class="col-sm-12">
+                      <pre class="language-r">    ) |&gt;</pre>
                     </td>
                   </tr>
                   <tr class="missed">
                     <td class="num">79</td>
                     <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">    structure(class = c("tbl_demographics", "tbl_summary", "gtsummary"))</pre>
+                      <pre class="language-r">    gtsummary::add_stat_label() |&gt;</pre>
                     </td>
                   </tr>
-                  <tr class="never">
+                  <tr class="missed">
                     <td class="num">80</td>
-                    <td class="coverage"></td>
+                    <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">}</pre>
+                      <pre class="language-r">    structure(class = c("tbl_demographics", "tbl_summary", "gtsummary"))</pre>
                     </td>
                   </tr>
                   <tr class="never">
@@ -1391,39 +1405,74 @@ table.table-condensed {
                     <td class="num">82</td>
                     <td class="coverage"></td>
                     <td class="col-sm-12">
-                      <pre class="language-r"># creating theme for gtreg summaries -------------------------------------------</pre>
+                      <pre class="language-r">  # return table ---------------------------------------------------------------</pre>
                     </td>
                   </tr>
-                  <tr class="never">
+                  <tr class="missed">
                     <td class="num">83</td>
-                    <td class="coverage"></td>
+                    <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">tbl_demographics_theme &lt;-</pre>
+                      <pre class="language-r">  x$call_list &lt;- list(tbl_demographics = match.call())</pre>
                     </td>
                   </tr>
-                  <tr class="never">
+                  <tr class="missed">
                     <td class="num">84</td>
-                    <td class="coverage"></td>
+                    <td class="coverage">!</td>
                     <td class="col-sm-12">
-                      <pre class="language-r">  list(</pre>
+                      <pre class="language-r">  x</pre>
                     </td>
                   </tr>
                   <tr class="never">
                     <td class="num">85</td>
                     <td class="coverage"></td>
                     <td class="col-sm-12">
-                      <pre class="language-r">    "tbl_summary-str:default_con_type" = "continuous2",</pre>
+                      <pre class="language-r">}</pre>
                     </td>
                   </tr>
                   <tr class="never">
                     <td class="num">86</td>
                     <td class="coverage"></td>
                     <td class="col-sm-12">
-                      <pre class="language-r">    "tbl_summary-fn:percent_fun" = gtsummary::label_style_number(digits = 1, scale = 100)</pre>
+                      <pre class="language-r"></pre>
                     </td>
                   </tr>
                   <tr class="never">
                     <td class="num">87</td>
+                    <td class="coverage"></td>
+                    <td class="col-sm-12">
+                      <pre class="language-r"># creating theme for gtreg summaries -------------------------------------------</pre>
+                    </td>
+                  </tr>
+                  <tr class="never">
+                    <td class="num">88</td>
+                    <td class="coverage"></td>
+                    <td class="col-sm-12">
+                      <pre class="language-r">tbl_demographics_theme &lt;-</pre>
+                    </td>
+                  </tr>
+                  <tr class="never">
+                    <td class="num">89</td>
+                    <td class="coverage"></td>
+                    <td class="col-sm-12">
+                      <pre class="language-r">  list(</pre>
+                    </td>
+                  </tr>
+                  <tr class="never">
+                    <td class="num">90</td>
+                    <td class="coverage"></td>
+                    <td class="col-sm-12">
+                      <pre class="language-r">    "tbl_summary-str:default_con_type" = "continuous2",</pre>
+                    </td>
+                  </tr>
+                  <tr class="never">
+                    <td class="num">91</td>
+                    <td class="coverage"></td>
+                    <td class="col-sm-12">
+                      <pre class="language-r">    "tbl_summary-fn:percent_fun" = gtsummary::label_style_number(digits = 1, scale = 100)</pre>
+                    </td>
+                  </tr>
+                  <tr class="never">
+                    <td class="num">92</td>
                     <td class="coverage"></td>
                     <td class="col-sm-12">
                       <pre class="language-r">  )</pre>
