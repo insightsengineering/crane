@@ -33,7 +33,7 @@ crane_conflict_message <- function(x) {
     ~ paste0(cli::col_blue(.x), "::", .y, "()", collapse = ", ")
   )
 
-  winner <- pkgs %>% map_chr(1)
+  winner <- pkgs %>% map_chr(\(x) x[1])
   funs <- format(paste0(
     cli::col_blue(winner), "::", cli::col_green(paste0(names(x), "()"))
   ))
