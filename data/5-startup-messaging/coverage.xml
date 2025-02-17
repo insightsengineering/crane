@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0.915094339622642" branch-rate="0" lines-covered="194" lines-valid="212" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2025-02-17 05:41:22.971539">
+<coverage line-rate="0.91588785046729" branch-rate="0" lines-covered="196" lines-valid="214" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2025-02-17 16:02:45.513666">
   <sources>
     <source>/__w/crane/crane/crane</source>
   </sources>
   <packages>
-    <package name="crane" line-rate="0.915094339622642" branch-rate="0" complexity="0">
+    <package name="crane" line-rate="0.91588785046729" branch-rate="0" complexity="0">
       <classes>
         <class name="add_blank_row.R" filename="R/add_blank_row.R" line-rate="1" branch-rate="0" complexity="0">
           <methods>
@@ -69,7 +69,7 @@
             <line number="59" hits="1" branch="false"/>
           </lines>
         </class>
-        <class name="attach.R" filename="R/attach.R" line-rate="0.893617021276596" branch-rate="0" complexity="0">
+        <class name="attach.R" filename="R/attach.R" line-rate="0.897959183673469" branch-rate="0" complexity="0">
           <methods>
             <method name="core_unloaded" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
@@ -152,6 +152,8 @@
                 <line number="92" hits="4" branch="false"/>
                 <line number="93" hits="4" branch="false"/>
                 <line number="94" hits="4" branch="false"/>
+                <line number="95" hits="4" branch="false"/>
+                <line number="96" hits="4" branch="false"/>
               </lines>
             </method>
           </methods>
@@ -203,6 +205,8 @@
             <line number="92" hits="4" branch="false"/>
             <line number="93" hits="4" branch="false"/>
             <line number="94" hits="4" branch="false"/>
+            <line number="95" hits="4" branch="false"/>
+            <line number="96" hits="4" branch="false"/>
           </lines>
         </class>
         <class name="conflicts.R" filename="R/conflicts.R" line-rate="0.833333333333333" branch-rate="0" complexity="0">
