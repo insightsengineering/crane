@@ -89,7 +89,9 @@ invert <- function(x) {
 
 # run the Roche theme function
 crane_theme_message <- function() {
-  header <- cli::rule(left = paste(cli::style_bold("Initializing Roche ", cli::col_blue("gtsummary"), " theme")))
-  theme_info <- cli::format_inline("See {.help crane::theme_gtsummary_roche} for details.")
-  paste0(header, "\n", theme_info)
+  paste0(
+    "\n",
+    cli::col_green(cli::symbol$play),
+    cli::format_inline(" Setting {.strong Roche} {.pkg gtsummary} theme. See {.help [?theme_gtsummary_roche()](crane::theme_gtsummary_roche)}.")
+  )
 }
