@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="tbl_demographics" timestamp="2025-02-17T04:55:54Z" hostname="234316145c3c" tests="1" skipped="0" failures="0" errors="0" time="1.391">
-    <testcase time="1.391" classname="character(0)" name="tbl_demographics_works"/>
+  <testsuite name="tbl_demographics" timestamp="2025-02-17T05:04:24Z" hostname="3bcfa1f627a3" tests="1" skipped="0" failures="0" errors="0" time="1.484">
+    <testcase time="1.484" classname="character(0)" name="tbl_demographics_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-02-17T04:55:54Z" hostname="234316145c3c" tests="1" skipped="0" failures="0" errors="0" time="0.102">
-    <testcase time="0.102" classname="character(0)" name="add_blank_row_works"/>
-  </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-02-17T04:55:54Z" hostname="234316145c3c" tests="1" skipped="1" failures="0" errors="0" time="0.013">
-    <testcase time="0.0129999999999999" classname="character(0)" name="add_blank_row_messaging">
-      <skipped message="Reason: On CRAN ('test-add_blank_row.R:15:3')"/>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-02-17T05:04:24Z" hostname="3bcfa1f627a3" tests="1" skipped="1" failures="0" errors="0" time="0.12">
+    <testcase time="0.12" classname="character(0)" name="theme_gtsummary_roche_works">
+      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:3:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-02-17T04:55:54Z" hostname="234316145c3c" tests="1" skipped="1" failures="0" errors="0" time="0.025">
-    <testcase time="0.0249999999999999" classname="character(0)" name="theme_gtsummary_roche_works">
-      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:3:3')"/>
+  <testsuite name="add_blank_row" timestamp="2025-02-17T05:04:24Z" hostname="3bcfa1f627a3" tests="1" skipped="0" failures="0" errors="0" time="0.036">
+    <testcase time="0.036" classname="character(0)" name="add_blank_row_works"/>
+  </testsuite>
+  <testsuite name="add_blank_row" timestamp="2025-02-17T05:04:24Z" hostname="3bcfa1f627a3" tests="1" skipped="1" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999978" classname="character(0)" name="add_blank_row_messaging">
+      <skipped message="Reason: On CRAN ('test-add_blank_row.R:15:3')"/>
     </testcase>
   </testsuite>
 </testsuites>
