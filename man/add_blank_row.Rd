@@ -9,7 +9,7 @@ add_blank_row(x)
 \arguments{
 \item{x}{(\code{gtsummary})\cr
 a 'gtsummary' table. The table must include a column named \code{'variable'}
-in \verb{x$table_ body}.}
+in \code{x$table_body}.}
 }
 \value{
 updated 'gtsummary' table

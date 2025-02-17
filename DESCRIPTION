@@ -1,6 +1,6 @@
 Package: crane
 Title: Supplements functions in the 'gtsummary' package
-Version: 0.0.0.9008
+Version: 0.0.0.9009
 Authors@R: 
     person("Daniel D.", "Sjoberg", , "danield.sjoberg@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-0862-2018"))
@@ -12,11 +12,15 @@ URL: https://github.com/insightsengineering/crane,
     https://insightsengineering.github.io/crane/
 BugReports: https://github.com/insightsengineering/crane/issues
 Imports: 
-    cli,
-    dplyr,
-    gt,
-    gtsummary (>= 2.0.3),
-    rlang
+    cli (>= 3.6.4),
+    dplyr (>= 1.1.4),
+    gt (>= 0.11.1),
+    gtsummary (2.0.4.9010),
+    rlang (>= 1.1.5)
+Suggests: 
+    testthat (>= 3.0.0)
+Remotes: 
+    ddsjoberg/gtsummary
 Config/Needs/check: hms
 Config/Needs/website: rmarkdown, yaml, insightsengineering/nesttemplate
 Config/testthat/edition: 3
