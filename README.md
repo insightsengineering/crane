@@ -34,8 +34,8 @@ library(crane)
 theme_gtsummary_roche()
 #> Setting theme "Roche"
 
-tbl <- trial |> 
-  tbl_demographics(by = trt, include = c(age, grade)) |> 
+tbl <- trial |>
+  tbl_demographics(by = trt, include = c(age, grade)) |>
   add_blank_row()
 ```
 

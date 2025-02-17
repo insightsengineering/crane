@@ -39,8 +39,8 @@ This is a basic example which shows you how to solve a common problem:
 library(crane)
 theme_gtsummary_roche()
 
-tbl <- trial |> 
-  tbl_demographics(by = trt, include = c(age, grade)) |> 
+tbl <- trial |>
+  tbl_demographics(by = trt, include = c(age, grade)) |>
   add_blank_row()
 ```
 
