@@ -32,8 +32,8 @@ library(crane)
 theme_gtsummary_roche()
 #> Setting theme "Roche"
 
-tbl <- trial |> 
-  tbl_demographics(by = trt, include = c(age, grade)) |> 
+tbl <- trial |>
+  tbl_demographics(by = trt, include = c(age, grade)) |>
   add_blank_row()
 ```
 
@@ -50,13 +50,13 @@ gather_ard(tbl)
 #> 1     trt       Drug A    grade              I         n          n    35
 #> 2     trt       Drug A    grade              I         N          N    98
 #> 3     trt       Drug A    grade              I         p          % 0.357
-#> 4     trt       Drug B    grade              I         n          n    33
-#> 5     trt       Drug B    grade              I         N          N   102
-#> 6     trt       Drug B    grade              I         p          % 0.324
-#> 7     trt       Drug A    grade             II         n          n    32
-#> 8     trt       Drug A    grade             II         N          N    98
-#> 9     trt       Drug A    grade             II         p          % 0.327
-#> 10    trt       Drug B    grade             II         n          n    36
+#> 4     trt       Drug A    grade             II         n          n    32
+#> 5     trt       Drug A    grade             II         N          N    98
+#> 6     trt       Drug A    grade             II         p          % 0.327
+#> 7     trt       Drug A    grade            III         n          n    31
+#> 8     trt       Drug A    grade            III         N          N    98
+#> 9     trt       Drug A    grade            III         p          % 0.316
+#> 10    trt       Drug B    grade              I         n          n    33
 #> ℹ 56 more rows
 #> ℹ Use `print(n = ...)` to see more rows
 #> ℹ 5 more variables: context, fmt_fn, warning, error, gts_column
