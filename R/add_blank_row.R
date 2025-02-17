@@ -5,7 +5,7 @@
 #'
 #' @param x (`gtsummary`)\cr
 #'   a 'gtsummary' table. The table must include a column named `'variable'`
-#'   in `x$table_ body`.
+#'   in `x$table_body`.
 #'
 #' @returns updated 'gtsummary' table
 #' @export
@@ -26,7 +26,7 @@ add_blank_row <- function(x) {
   check_class(x, "gtsummary")
   if (!"variable" %in% names(x$table_body)) {
     cli::cli_abort(
-      "The {.cls gtsummary} table passed in argument {.arg x} must have a {.varname variable} column.",
+      "The {.cls gtsummary} table passed in argument {.arg x} must have a {.val variable} column.",
       call = get_cli_abort_call()
     )
   }

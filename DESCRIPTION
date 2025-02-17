@@ -12,12 +12,14 @@ URL: https://github.com/insightsengineering/crane,
     https://insightsengineering.github.io/crane/
 BugReports: https://github.com/insightsengineering/crane/issues
 Depends:
-    gtsummary (>= 2.0.3)
+    gtsummary (>= 2.0.4)
 Imports: 
-    cli,
-    dplyr,
-    gt,
-    rlang
+    cli (>= 3.6.4),
+    dplyr (>= 1.1.4),
+    gt (>= 0.11.1),
+    rlang (>= 1.1.5)
+Suggests: 
+    testthat (>= 3.0.0)
 Config/Needs/check: hms
 Config/Needs/website: rmarkdown, yaml, insightsengineering/nesttemplate
 Config/testthat/edition: 3
