@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="tbl_demographics" timestamp="2025-02-17T05:07:57Z" hostname="d22232f08801" tests="1" skipped="0" failures="0" errors="0" time="1.328">
+    <testcase time="1.328" classname="character(0)" name="tbl_demographics_works"/>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-02-17T05:07:57Z" hostname="d22232f08801" tests="1" skipped="1" failures="0" errors="0" time="0.114">
+    <testcase time="0.114" classname="character(0)" name="theme_gtsummary_roche_works">
+      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:3:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="add_blank_row" timestamp="2025-02-17T05:07:58Z" hostname="d22232f08801" tests="1" skipped="0" failures="0" errors="0" time="0.036">
+    <testcase time="0.036" classname="character(0)" name="add_blank_row_works"/>
+  </testsuite>
+  <testsuite name="add_blank_row" timestamp="2025-02-17T05:07:58Z" hostname="d22232f08801" tests="1" skipped="1" failures="0" errors="0" time="0.002">
+    <testcase time="0.00200000000000022" classname="character(0)" name="add_blank_row_messaging">
+      <skipped message="Reason: On CRAN ('test-add_blank_row.R:15:3')"/>
+    </testcase>
+  </testsuite>
+</testsuites>
