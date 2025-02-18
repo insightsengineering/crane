@@ -28,7 +28,10 @@ This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(crane)
-#> Loading required package: gtsummary
+#> ── Attaching packages ──────────────────────────────────────────────────────────
+#> ✔ crane     0.0.0.9006     ✔ gtsummary 2.0.4.9013
+#> ── Initializing Roche gtsummary theme ──────────────────────────────────────────
+#> See `?crane::theme_gtsummary_roche()` for details.
 theme_gtsummary_roche()
 #> Setting theme "Roche"
 

@@ -1,5 +1,5 @@
 #' @keywords internal
-#' @import gtsummary
+#' @import rlang
 "_PACKAGE"
 
 ## usethis namespace: start

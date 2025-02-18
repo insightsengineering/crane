@@ -2,7 +2,7 @@
 #'
 #' @description
 #' A gtsummary theme for Roche tables
-#' - Calls the `gtsummary::theme_gtsummary_compact` theme.
+#' - Calls the [`gtsummary::theme_gtsummary_compact()`] theme.
 #' - Uses `gtsummary::label_style_pvalue(digits = 2)` as the default formatting function for all p-values.
 #' - Defaults to a mono-spaced font for gt tables.
 #'
@@ -19,14 +19,14 @@
 #' reset_gtsummary_theme()
 theme_gtsummary_roche <- function(set_theme = TRUE, font_size = NULL) {
   # start with the compact theme -----------------------------------------------
-  lst_theme <- theme_gtsummary_compact(set_theme = FALSE, font_size = font_size)
+  lst_theme <- gtsummary::theme_gtsummary_compact(set_theme = FALSE, font_size = font_size)
   lst_theme$`pkgwide-str:theme_name` <- "Roche"
 
   # updating with some pharma-specific bits ------------------------------------
   lst_theme <- lst_theme |>
     append(
       list(
-        "pkgwide-fn:pvalue_fun" = label_style_pvalue(digits = 2)
+        "pkgwide-fn:pvalue_fun" = gtsummary::label_style_pvalue(digits = 2)
       )
     )
 
@@ -38,6 +38,6 @@ theme_gtsummary_roche <- function(set_theme = TRUE, font_size = NULL) {
     )
 
   # finishing up ---------------------------------------------------------------
-  if (set_theme == TRUE) set_gtsummary_theme(lst_theme)
+  if (set_theme == TRUE) gtsummary::set_gtsummary_theme(lst_theme)
   return(invisible(lst_theme))
 }
