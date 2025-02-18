@@ -1,34 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="attach_messaging" timestamp="2025-02-18T18:07:46Z" hostname="e17c622ca2f1" tests="1" skipped="1" failures="0" errors="0" time="0.781">
-    <testcase time="0.781" classname="character(0)" name="if_no_packages_shows_nothing">
-      <skipped message="Reason: On CRAN ('test-attach_messaging.R:2:3')"/>
-    </testcase>
+  <testsuite name="attach_messaging" timestamp="2025-02-18T18:07:48Z" hostname="f5473673a99c" tests="1" skipped="0" failures="0" errors="0" time="0.817">
+    <testcase time="0.817" classname="character(0)" name="if_no_packages_shows_nothing"/>
   </testsuite>
-  <testsuite name="attach_messaging" timestamp="2025-02-18T18:07:46Z" hostname="e17c622ca2f1" tests="1" skipped="1" failures="0" errors="0" time="0.034">
-    <testcase time="0.034" classname="character(0)" name="message_lists_all_attached_packages">
-      <skipped message="Reason: On CRAN ('test-attach_messaging.R:7:3')"/>
-    </testcase>
+  <testsuite name="attach_messaging" timestamp="2025-02-18T18:07:48Z" hostname="f5473673a99c" tests="1" skipped="0" failures="0" errors="0" time="0.019">
+    <testcase time="0.0189999999999999" classname="character(0)" name="message_lists_all_attached_packages"/>
   </testsuite>
-  <testsuite name="attach_messaging" timestamp="2025-02-18T18:07:46Z" hostname="e17c622ca2f1" tests="1" skipped="1" failures="0" errors="0" time="0.034">
-    <testcase time="0.034" classname="character(0)" name="highlights_dev_versions_in_red">
-      <skipped message="Reason: On CRAN ('test-attach_messaging.R:13:3')"/>
-    </testcase>
+  <testsuite name="attach_messaging" timestamp="2025-02-18T18:07:48Z" hostname="f5473673a99c" tests="1" skipped="0" failures="0" errors="0" time="0.012">
+    <testcase time="0.012" classname="character(0)" name="highlights_dev_versions_in_red"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-02-18T18:07:47Z" hostname="e17c622ca2f1" tests="1" skipped="0" failures="0" errors="0" time="0.861">
-    <testcase time="0.861" classname="character(0)" name="add_blank_row_works"/>
+  <testsuite name="add_blank_row" timestamp="2025-02-18T18:07:49Z" hostname="f5473673a99c" tests="1" skipped="0" failures="0" errors="0" time="0.832">
+    <testcase time="0.832" classname="character(0)" name="add_blank_row_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-02-18T18:07:47Z" hostname="e17c622ca2f1" tests="1" skipped="1" failures="0" errors="0" time="0.001">
-    <testcase time="0.00099999999999989" classname="character(0)" name="add_blank_row_messaging">
-      <skipped message="Reason: On CRAN ('test-add_blank_row.R:15:3')"/>
-    </testcase>
+  <testsuite name="add_blank_row" timestamp="2025-02-18T18:07:49Z" hostname="f5473673a99c" tests="1" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00299999999999967" classname="character(0)" name="add_blank_row_messaging"/>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-02-18T18:07:47Z" hostname="e17c622ca2f1" tests="1" skipped="0" failures="0" errors="0" time="0.055">
-    <testcase time="0.0550000000000002" classname="character(0)" name="tbl_demographics_works"/>
+  <testsuite name="tbl_demographics" timestamp="2025-02-18T18:07:49Z" hostname="f5473673a99c" tests="1" skipped="0" failures="0" errors="0" time="0.048">
+    <testcase time="0.048" classname="character(0)" name="tbl_demographics_works"/>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-02-18T18:07:47Z" hostname="e17c622ca2f1" tests="1" skipped="1" failures="0" errors="0" time="0.008">
-    <testcase time="0.00800000000000001" classname="character(0)" name="theme_gtsummary_roche_works">
-      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:3:3')"/>
-    </testcase>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-02-18T18:07:49Z" hostname="f5473673a99c" tests="1" skipped="0" failures="0" errors="0" time="0.026">
+    <testcase time="0.0260000000000002" classname="character(0)" name="theme_gtsummary_roche_works"/>
   </testsuite>
 </testsuites>
