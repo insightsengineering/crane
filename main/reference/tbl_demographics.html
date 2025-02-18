@@ -21,7 +21,7 @@ The gtsummary::add_stat_label() is run automatically after the function's execut
 
     <a class="navbar-brand me-2" href="../index.html">crane</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9008</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.0.9009</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -61,12 +61,12 @@ The function is meant for <code>'continuous2'</code> and <code>'categorical'</co
 <span>  <span class="va">data</span>,</span>
 <span>  by <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  label <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  statistic <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html" class="external-link">all_continuous</a></span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"{mean} ({sd})"</span>, <span class="st">"{median} ({p25}, {p75})"</span>,</span>
-<span>    <span class="st">"{min}, {max}"</span><span class="op">)</span>, <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html" class="external-link">all_categorical</a></span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{n} ({p}%)"</span><span class="op">)</span>,</span>
+<span>  statistic <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu">all_continuous</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"{mean} ({sd})"</span>, <span class="st">"{median} ({p25}, {p75})"</span>,</span>
+<span>    <span class="st">"{min}, {max}"</span><span class="op">)</span>, <span class="fu">all_categorical</span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"{n} ({p}%)"</span><span class="op">)</span>,</span>
 <span>  digits <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  type <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  value <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  sort <span class="op">=</span> <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html" class="external-link">all_categorical</a></span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">~</span> <span class="st">"alphanumeric"</span>,</span>
+<span>  sort <span class="op">=</span> <span class="fu">all_categorical</span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">~</span> <span class="st">"alphanumeric"</span>,</span>
 <span>  percent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"column"</span>, <span class="st">"row"</span>, <span class="st">"cell"</span><span class="op">)</span>,</span>
 <span>  include <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html" class="external-link">everything</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -104,7 +104,7 @@ See below for details.</p></dd>
 <dd><p>(<code><a href="https://www.danieldsjoberg.com/gtsummary/reference/syntax.html" class="external-link">formula-list-selector</a></code>)<br>
 Specifies how summary statistics are rounded. Values may be either integer(s)
 or function(s). If not specified, default formatting is assigned
-via <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/assign_summary_digits.html" class="external-link">assign_summary_digits()</a></code>. See below for details.</p></dd>
+via <code>assign_summary_digits()</code>. See below for details.</p></dd>
 
 
 <dt id="arg-type">type<a class="anchor" aria-label="anchor" href="#arg-type"></a></dt>
@@ -112,13 +112,13 @@ via <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/assign_sum
 Specifies the summary type. Accepted value are
 <code>c("continuous", "continuous2", "categorical", "dichotomous")</code>.
 If not specified, default type is assigned via
-<code><a href="https://www.danieldsjoberg.com/gtsummary/reference/assign_summary_type.html" class="external-link">assign_summary_type()</a></code>. See below for details.</p></dd>
+<code>assign_summary_type()</code>. See below for details.</p></dd>
 
 
 <dt id="arg-value">value<a class="anchor" aria-label="anchor" href="#arg-value"></a></dt>
 <dd><p>(<code><a href="https://www.danieldsjoberg.com/gtsummary/reference/syntax.html" class="external-link">formula-list-selector</a></code>)<br>
 Specifies the level of a variable to display on a single row.
-The gtsummary type selectors, e.g. <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/select_helpers.html" class="external-link">all_dichotomous()</a></code>, cannot be used
+The gtsummary type selectors, e.g. <code>all_dichotomous()</code>, cannot be used
 with this argument. Default is <code>NULL</code>. See below for details.</p></dd>
 
 
@@ -186,7 +186,7 @@ N = 102</span></th>
 <td headers="stat_1" class="gt_row gt_center" style="border-style: none; padding-top: 1px; padding-bottom: 1px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; text-align: center;" valign="middle" align="center">31 (31.6%)</td>
 <td headers="stat_2" class="gt_row gt_center" style="border-style: none; padding-top: 1px; padding-bottom: 1px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; text-align: center;" valign="middle" align="center">33 (32.4%)</td></tr></tbody></table></div></div><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># extract ARD from table</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/gather_ard.html" class="external-link">gather_ard</a></span><span class="op">(</span><span class="va">tbl</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">gather_ard</span><span class="op">(</span><span class="va">tbl</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $tbl_summary</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">{cards} data frame: 66 x 12</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    group1 group1_level variable variable_level stat_name stat_label  stat</span>
@@ -205,7 +205,7 @@ N = 102</span></th>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> <span style="color: #555555;">5 more variables: context, fmt_fn, warning, error, gts_column</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/set_gtsummary_theme.html" class="external-link">reset_gtsummary_theme</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">reset_gtsummary_theme</span><span class="op">(</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
