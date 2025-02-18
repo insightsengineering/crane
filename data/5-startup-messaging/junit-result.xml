@@ -1,39 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="attach_messaging" timestamp="2025-02-18T17:17:24Z" hostname="85b9f98779f5" tests="1" skipped="1" failures="0" errors="0" time="0.749">
-    <testcase time="0.749" classname="character(0)" name="if_no_packages_shows_nothing">
+  <testsuite name="attach_messaging" timestamp="2025-02-18T18:07:46Z" hostname="e17c622ca2f1" tests="1" skipped="1" failures="0" errors="0" time="0.781">
+    <testcase time="0.781" classname="character(0)" name="if_no_packages_shows_nothing">
       <skipped message="Reason: On CRAN ('test-attach_messaging.R:2:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="attach_messaging" timestamp="2025-02-18T17:17:25Z" hostname="85b9f98779f5" tests="1" skipped="1" failures="0" errors="0" time="0.038">
-    <testcase time="0.038" classname="character(0)" name="message_lists_all_attached_packages">
+  <testsuite name="attach_messaging" timestamp="2025-02-18T18:07:46Z" hostname="e17c622ca2f1" tests="1" skipped="1" failures="0" errors="0" time="0.034">
+    <testcase time="0.034" classname="character(0)" name="message_lists_all_attached_packages">
       <skipped message="Reason: On CRAN ('test-attach_messaging.R:7:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="attach_messaging" timestamp="2025-02-18T17:17:25Z" hostname="85b9f98779f5" tests="1" skipped="1" failures="0" errors="0" time="0.029">
-    <testcase time="0.0290000000000001" classname="character(0)" name="highlights_dev_versions_in_red">
+  <testsuite name="attach_messaging" timestamp="2025-02-18T18:07:46Z" hostname="e17c622ca2f1" tests="1" skipped="1" failures="0" errors="0" time="0.034">
+    <testcase time="0.034" classname="character(0)" name="highlights_dev_versions_in_red">
       <skipped message="Reason: On CRAN ('test-attach_messaging.R:13:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="attach_messaging" timestamp="2025-02-18T17:17:25Z" hostname="85b9f98779f5" tests="1" skipped="1" failures="0" errors="0" time="0.01">
-    <testcase time="0.01" classname="character(0)" name="useful_conflicts_message">
-      <skipped message="Reason: On CRAN ('test-attach_messaging.R:19:3')"/>
-    </testcase>
+  <testsuite name="add_blank_row" timestamp="2025-02-18T18:07:47Z" hostname="e17c622ca2f1" tests="1" skipped="0" failures="0" errors="0" time="0.861">
+    <testcase time="0.861" classname="character(0)" name="add_blank_row_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-02-18T17:17:25Z" hostname="85b9f98779f5" tests="1" skipped="0" failures="0" errors="0" time="0.733">
-    <testcase time="0.733" classname="character(0)" name="add_blank_row_works"/>
-  </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-02-18T17:17:25Z" hostname="85b9f98779f5" tests="1" skipped="1" failures="0" errors="0" time="0.001">
+  <testsuite name="add_blank_row" timestamp="2025-02-18T18:07:47Z" hostname="e17c622ca2f1" tests="1" skipped="1" failures="0" errors="0" time="0.001">
     <testcase time="0.00099999999999989" classname="character(0)" name="add_blank_row_messaging">
       <skipped message="Reason: On CRAN ('test-add_blank_row.R:15:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-02-18T17:17:25Z" hostname="85b9f98779f5" tests="1" skipped="1" failures="0" errors="0" time="0.056">
-    <testcase time="0.056" classname="character(0)" name="theme_gtsummary_roche_works">
+  <testsuite name="tbl_demographics" timestamp="2025-02-18T18:07:47Z" hostname="e17c622ca2f1" tests="1" skipped="0" failures="0" errors="0" time="0.055">
+    <testcase time="0.0550000000000002" classname="character(0)" name="tbl_demographics_works"/>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-02-18T18:07:47Z" hostname="e17c622ca2f1" tests="1" skipped="1" failures="0" errors="0" time="0.008">
+    <testcase time="0.00800000000000001" classname="character(0)" name="theme_gtsummary_roche_works">
       <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:3:3')"/>
     </testcase>
-  </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-02-18T17:17:25Z" hostname="85b9f98779f5" tests="1" skipped="0" failures="0" errors="0" time="0.034">
-    <testcase time="0.0339999999999998" classname="character(0)" name="tbl_demographics_works"/>
   </testsuite>
 </testsuites>
