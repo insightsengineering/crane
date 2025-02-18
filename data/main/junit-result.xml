@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="tbl_demographics" timestamp="2025-02-17T05:08:12Z" hostname="f2da0962ca72" tests="1" skipped="0" failures="0" errors="0" time="1.42">
-    <testcase time="1.42" classname="character(0)" name="tbl_demographics_works"/>
+  <testsuite name="attach_messaging" timestamp="2025-02-18T18:29:10Z" hostname="1cc3b5246ebd" tests="1" skipped="0" failures="0" errors="0" time="0.813">
+    <testcase time="0.813" classname="character(0)" name="if_no_packages_shows_nothing"/>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-02-17T05:08:12Z" hostname="f2da0962ca72" tests="1" skipped="0" failures="0" errors="0" time="0.142">
-    <testcase time="0.142" classname="character(0)" name="theme_gtsummary_roche_works"/>
+  <testsuite name="attach_messaging" timestamp="2025-02-18T18:29:10Z" hostname="1cc3b5246ebd" tests="1" skipped="0" failures="0" errors="0" time="0.028">
+    <testcase time="0.028" classname="character(0)" name="message_lists_all_attached_packages"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-02-17T05:08:12Z" hostname="f2da0962ca72" tests="1" skipped="0" failures="0" errors="0" time="0.021">
-    <testcase time="0.0209999999999999" classname="character(0)" name="add_blank_row_works"/>
+  <testsuite name="attach_messaging" timestamp="2025-02-18T18:29:10Z" hostname="1cc3b5246ebd" tests="1" skipped="0" failures="0" errors="0" time="0.02">
+    <testcase time="0.02" classname="character(0)" name="highlights_dev_versions_in_red"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-02-17T05:08:12Z" hostname="f2da0962ca72" tests="1" skipped="0" failures="0" errors="0" time="0.001">
-    <testcase time="0.00099999999999989" classname="character(0)" name="add_blank_row_messaging"/>
+  <testsuite name="add_blank_row" timestamp="2025-02-18T18:29:11Z" hostname="1cc3b5246ebd" tests="1" skipped="0" failures="0" errors="0" time="0.74">
+    <testcase time="0.74" classname="character(0)" name="add_blank_row_works"/>
+  </testsuite>
+  <testsuite name="add_blank_row" timestamp="2025-02-18T18:29:11Z" hostname="1cc3b5246ebd" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999978" classname="character(0)" name="add_blank_row_messaging"/>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-02-18T18:29:11Z" hostname="1cc3b5246ebd" tests="1" skipped="0" failures="0" errors="0" time="0.071">
+    <testcase time="0.0710000000000002" classname="character(0)" name="theme_gtsummary_roche_works"/>
+  </testsuite>
+  <testsuite name="tbl_demographics" timestamp="2025-02-18T18:29:11Z" hostname="1cc3b5246ebd" tests="1" skipped="0" failures="0" errors="0" time="0.032">
+    <testcase time="0.032" classname="character(0)" name="tbl_demographics_works"/>
   </testsuite>
 </testsuites>
