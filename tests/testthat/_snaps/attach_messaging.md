@@ -28,9 +28,9 @@
       crane_conflicts(c("testthat", "gtsummary"))
     Output
       -- Conflicts -------------------------------------------------------------------
-      x crane::is_false() masks testthat::is_false()
-      x crane::is_null()  masks testthat::is_null()
-      x crane::is_true()  masks testthat::is_true()
-      x crane::matches()  masks gtsummary::matches(), testthat::matches()
+      x crane::is_false()    masks testthat::is_false()
+      x crane::is_null()     masks testthat::is_null()
+      x crane::is_true()     masks testthat::is_true()
+      x gtsummary::matches() masks crane::matches(), testthat::matches()
       i Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 
