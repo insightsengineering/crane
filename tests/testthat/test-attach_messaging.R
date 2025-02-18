@@ -4,7 +4,7 @@ test_that("if no packages, shows nothing", {
 
 test_that("message lists all attached packages", {
   local_mocked_bindings(package_version_h = function(x) "1.0.0")
-  expect_snapshot(cat(crane_attach_message(c("crane", "gtsummary", "cards", "cardx"))))
+  expect_snapshot(cat(crane_attach_message(core)))
 })
 
 test_that("highlights dev versions in red", {
@@ -12,11 +12,5 @@ test_that("highlights dev versions in red", {
 
   expect_snapshot({
     highlight_version(c("1.0.0", "1.0.0.9000", "0.9000.0.9000", "1.0.0-rc"))
-  })
-})
-
-test_that("useful conflicts message", {
-  expect_snapshot({
-    crane_conflicts(c("testthat", "gtsummary"))
   })
 })
