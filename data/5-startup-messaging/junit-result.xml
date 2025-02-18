@@ -1,39 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="attach_messaging" timestamp="2025-02-18T16:51:57Z" hostname="c58d0a307af0" tests="1" skipped="1" failures="0" errors="0" time="0.728">
-    <testcase time="0.728" classname="character(0)" name="if_no_packages_shows_nothing">
-      <skipped message="Reason: On CRAN ('test-attach_messaging.R:2:3')"/>
+  <testsuite name="attach_messaging" timestamp="2025-02-18T16:52:05Z" hostname="f2945b17321a" tests="1" skipped="0" failures="0" errors="0" time="1.053">
+    <testcase time="1.053" classname="character(0)" name="if_no_packages_shows_nothing"/>
+  </testsuite>
+  <testsuite name="attach_messaging" timestamp="2025-02-18T16:52:05Z" hostname="f2945b17321a" tests="1" skipped="0" failures="1" errors="0" time="0.024">
+    <testcase time="0.024" classname="character(0)" name="message_lists_all_attached_packages">
+      <failure type="failure" message="Snapshot of code has changed: ('test-attach_messaging.R:7:3')">Snapshot of code has changed:
+old vs new
+  Code
+-   cat(crane_attach_message(c("crane", "gtsummary")))
++   cat(crane_attach_message(c("crane", "gtsummary", "cards", "cardx")))
+  Output
+    -- Attaching packages ----------------------------------------------------------
+-   v crane     1.0.0     v gtsummary 1.0.0
++   v cards     1.0.0     v crane     1.0.0
++   v cardx     1.0.0     v gtsummary 1.0.0
+
+* Run `testthat::snapshot_accept('attach_messaging')` to accept the change.
+* Run `testthat::snapshot_review('attach_messaging')` to interactively review the change.</failure>
     </testcase>
   </testsuite>
-  <testsuite name="attach_messaging" timestamp="2025-02-18T16:51:57Z" hostname="c58d0a307af0" tests="1" skipped="1" failures="0" errors="0" time="0.038">
-    <testcase time="0.038" classname="character(0)" name="message_lists_all_attached_packages">
-      <skipped message="Reason: On CRAN ('test-attach_messaging.R:7:3')"/>
+  <testsuite name="attach_messaging" timestamp="2025-02-18T16:52:05Z" hostname="f2945b17321a" tests="1" skipped="0" failures="0" errors="0" time="0.028">
+    <testcase time="0.0279999999999998" classname="character(0)" name="highlights_dev_versions_in_red"/>
+  </testsuite>
+  <testsuite name="attach_messaging" timestamp="2025-02-18T16:52:05Z" hostname="f2945b17321a" tests="1" skipped="0" failures="1" errors="0" time="0.001">
+    <testcase time="0.00100000000000011" classname="character(0)" name="useful_conflicts_message">
+      <failure type="failure" message="Snapshot of code has changed: ('test-attach_messaging.R:19:3')">Snapshot of code has changed:
+old vs new
+  Code
+    crane_conflicts(c("base", "stats"))
+- Output
+-   -- Conflicts -------------------------------------------------------------------
+-   x crane::library.dynam()        masks base::library.dynam()
+-   x crane::library.dynam.unload() masks base::library.dynam.unload()
+-   x crane::system.file()          masks base::system.file()
+-   i Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors
+
+* Run `testthat::snapshot_accept('attach_messaging')` to accept the change.
+* Run `testthat::snapshot_review('attach_messaging')` to interactively review the change.</failure>
     </testcase>
   </testsuite>
-  <testsuite name="attach_messaging" timestamp="2025-02-18T16:51:57Z" hostname="c58d0a307af0" tests="1" skipped="1" failures="0" errors="0" time="0.028">
-    <testcase time="0.028" classname="character(0)" name="highlights_dev_versions_in_red">
-      <skipped message="Reason: On CRAN ('test-attach_messaging.R:13:3')"/>
-    </testcase>
+  <testsuite name="add_blank_row" timestamp="2025-02-18T16:52:05Z" hostname="f2945b17321a" tests="1" skipped="0" failures="0" errors="0" time="0.595">
+    <testcase time="0.595" classname="character(0)" name="add_blank_row_works"/>
   </testsuite>
-  <testsuite name="attach_messaging" timestamp="2025-02-18T16:51:57Z" hostname="c58d0a307af0" tests="1" skipped="1" failures="0" errors="0" time="0.01">
-    <testcase time="0.01" classname="character(0)" name="useful_conflicts_message">
-      <skipped message="Reason: On CRAN ('test-attach_messaging.R:19:3')"/>
-    </testcase>
+  <testsuite name="add_blank_row" timestamp="2025-02-18T16:52:05Z" hostname="f2945b17321a" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.00099999999999989" classname="character(0)" name="add_blank_row_messaging"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-02-18T16:51:58Z" hostname="c58d0a307af0" tests="1" skipped="0" failures="0" errors="0" time="0.727">
-    <testcase time="0.727" classname="character(0)" name="add_blank_row_works"/>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-02-18T16:52:05Z" hostname="f2945b17321a" tests="1" skipped="0" failures="0" errors="0" time="0.075">
+    <testcase time="0.0749999999999997" classname="character(0)" name="theme_gtsummary_roche_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-02-18T16:51:58Z" hostname="c58d0a307af0" tests="1" skipped="1" failures="0" errors="0" time="0.002">
-    <testcase time="0.00199999999999978" classname="character(0)" name="add_blank_row_messaging">
-      <skipped message="Reason: On CRAN ('test-add_blank_row.R:15:3')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-02-18T16:51:58Z" hostname="c58d0a307af0" tests="1" skipped="1" failures="0" errors="0" time="0.055">
-    <testcase time="0.0550000000000002" classname="character(0)" name="theme_gtsummary_roche_works">
-      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:3:3')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-02-18T16:51:58Z" hostname="c58d0a307af0" tests="1" skipped="0" failures="0" errors="0" time="0.036">
-    <testcase time="0.036" classname="character(0)" name="tbl_demographics_works"/>
+  <testsuite name="tbl_demographics" timestamp="2025-02-18T16:52:05Z" hostname="f2945b17321a" tests="1" skipped="0" failures="0" errors="0" time="0.214">
+    <testcase time="0.214" classname="character(0)" name="tbl_demographics_works"/>
   </testsuite>
 </testsuites>
