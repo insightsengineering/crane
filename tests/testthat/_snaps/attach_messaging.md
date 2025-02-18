@@ -6,10 +6,11 @@
 # message lists all attached packages
 
     Code
-      cat(crane_attach_message(c("crane", "gtsummary")))
+      cat(crane_attach_message(c("crane", "gtsummary", "cards", "cardx")))
     Output
       -- Attaching packages ----------------------------------------------------------
-      v crane     1.0.0     v gtsummary 1.0.0
+      v cards     1.0.0     v crane     1.0.0
+      v cardx     1.0.0     v gtsummary 1.0.0
 
 # highlights dev versions in red
 
@@ -24,11 +25,12 @@
 # useful conflicts message
 
     Code
-      crane_conflicts(c("base", "stats"))
+      crane_conflicts(c("testthat", "gtsummary"))
     Output
       -- Conflicts -------------------------------------------------------------------
-      x crane::library.dynam()        masks base::library.dynam()
-      x crane::library.dynam.unload() masks base::library.dynam.unload()
-      x crane::system.file()          masks base::system.file()
+      x crane::is_false() masks testthat::is_false()
+      x crane::is_null()  masks testthat::is_null()
+      x crane::is_true()  masks testthat::is_true()
+      x crane::matches()  masks gtsummary::matches(), testthat::matches()
       i Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
 

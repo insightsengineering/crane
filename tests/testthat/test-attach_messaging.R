@@ -17,6 +17,6 @@ test_that("highlights dev versions in red", {
 
 test_that("useful conflicts message", {
   expect_snapshot({
-    crane_conflicts(c("base", "stats"))
+    crane_conflicts(c("testthat", "gtsummary"))
   })
 })
