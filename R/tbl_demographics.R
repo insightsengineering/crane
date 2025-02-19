@@ -1,49 +1,50 @@
 #' Demographics Table
 #'
 #' @description
-#' This is a thin wrapper of `gtsummary::tbl_summary()`.
-#' The function is meant for `'continuous2'` and `'categorical'` summary types only.
-#'
-#' - Continuous variables default to type `'continuous2'`.
-#' - The number of non-missing is placed on the first row for all summaries.
-#' - The default formatting function for percentages is `gtsummary::label_style_number(digits = 1, scale = 100)`.
-#' - The `gtsummary::add_stat_label()` is run automatically after the function's execution.
+#' This is a thin wrapper of [`gtsummary::tbl_summary()`] with the following differences:
+#' - Default summary type for continuous variables is `'continuous2'`.
+#' - Number of non-missing observations is added for each variable by default and placed on the row under the header.
+#' - The `tbl_summary(missing*)` arguments have been renamed to `tbl_demographics(nonmissing*)` with updated default values.
+#' - The `gtsummary::add_stat_label()` is run after the function's execution.
 #'
 #' @inheritParams gtsummary::tbl_summary
+#' @param nonmissing,nonmissing_text,nonmissing_stat
+#'   Arguments dictating how and if missing values are presented:
+#'   - `nonmissing`: must be one of `c("always", "ifany", "no")`
+#'   - `nonmissing_text`: string indicating text shown on non-missing row. Default is `"n"`
+#'   - `nonmissing_stat`: statistic to show on non-missing row. Default is `"{N_nonmiss}"`.
+#'     Possible values are `N_nonmiss`, `N_miss`, `N_obs`,, `p_nonmiss` `p_miss`.
 #'
 #' @return a 'gtsummary' table
 #' @export
 #'
 #' @examples
-#' theme_gtsummary_roche()
-#' tbl <-
-#'   trial |>
+#' # Example 1 ----------------------------------
+#' trial |>
 #'   tbl_demographics(
 #'     by = trt,
 #'     include = c(age, grade)
 #'   )
-#'
-#' tbl
-#'
-#' # extract ARD from table
-#' gather_ard(tbl)
-#'
-#' reset_gtsummary_theme()
 tbl_demographics <- function(data,
                              by = NULL,
                              label = NULL,
                              statistic =
                                list(
-                                 all_continuous() ~ c("{mean} ({sd})", "{median} ({p25}, {p75})", "{min}, {max}"),
+                                 all_continuous() ~ c("{mean} ({sd})", "{median}", "{min} - {max}"),
                                  all_categorical() ~ "{n} ({p}%)"
                                ),
                              digits = NULL,
                              type = NULL,
                              value = NULL,
+                             nonmissing = c("always", "ifany", "no"),
+                             nonmissing_text = "n",
+                             nonmissing_stat = "{N_nonmiss}",
                              sort = all_categorical(FALSE) ~ "alphanumeric",
                              percent = c("column", "row", "cell"),
                              include = everything()) {
-  percent <- match.arg(percent)
+  set_cli_abort_call()
+  percent <- arg_match(percent, error_call = get_cli_abort_call())
+  nonmissing <- arg_match(nonmissing, error_call = get_cli_abort_call())
 
   # execute `tbl_summary()` code with theme/defaults ---------------------------
   x <-
@@ -58,9 +59,9 @@ tbl_demographics <- function(data,
           digits = digits,
           type = type,
           value = value,
-          missing = "always",
-          missing_text = "n",
-          missing_stat = "{N_nonmiss}",
+          missing = nonmissing,
+          missing_text = nonmissing_text,
+          missing_stat = nonmissing_stat,
           sort = sort,
           percent = percent,
           include = {{ include }}
@@ -90,9 +91,8 @@ tbl_demographics <- function(data,
   x
 }
 
-# creating theme for gtreg summaries -------------------------------------------
+# creating theme for tbl_demographic summaries ---------------------------------
 tbl_demographics_theme <-
   list(
-    "tbl_summary-str:default_con_type" = "continuous2",
-    "tbl_summary-fn:percent_fun" = gtsummary::label_style_number(digits = 1, scale = 100)
+    "tbl_summary-str:default_con_type" = "continuous2"
   )

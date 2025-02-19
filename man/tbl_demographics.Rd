@@ -8,11 +8,14 @@ tbl_demographics(
   data,
   by = NULL,
   label = NULL,
-  statistic = list(all_continuous() ~ c("{mean} ({sd})", "{median} ({p25}, {p75})",
-    "{min}, {max}"), all_categorical() ~ "{n} ({p}\%)"),
+  statistic = list(all_continuous() ~ c("{mean} ({sd})", "{median}", "{min} - {max}"),
+    all_categorical() ~ "{n} ({p}\%)"),
   digits = NULL,
   type = NULL,
   value = NULL,
+  nonmissing = c("always", "ifany", "no"),
+  nonmissing_text = "n",
+  nonmissing_stat = "{N_nonmiss}",
   sort = all_categorical(FALSE) ~ "alphanumeric",
   percent = c("column", "row", "cell"),
   include = everything()
@@ -51,6 +54,14 @@ Specifies the level of a variable to display on a single row.
 The gtsummary type selectors, e.g. \code{all_dichotomous()}, cannot be used
 with this argument. Default is \code{NULL}. See below for details.}
 
+\item{nonmissing, nonmissing_text, nonmissing_stat}{Arguments dictating how and if missing values are presented:
+\itemize{
+\item \code{nonmissing}: must be one of \code{c("always", "ifany", "no")}
+\item \code{nonmissing_text}: string indicating text shown on non-missing row. Default is \code{"n"}
+\item \code{nonmissing_stat}: statistic to show on non-missing row. Default is \code{"{N_nonmiss}"}.
+Possible values are \code{N_nonmiss}, \code{N_miss}, \code{N_obs},, \code{p_nonmiss} \code{p_miss}.
+}}
+
 \item{sort}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
 Specifies sorting to perform for categorical variables.
 Values must be one of \code{c("alphanumeric", "frequency")}.
@@ -67,28 +78,19 @@ Variables to include in the summary table. Default is \code{everything()}.}
 a 'gtsummary' table
 }
 \description{
-This is a thin wrapper of \code{gtsummary::tbl_summary()}.
-The function is meant for \code{'continuous2'} and \code{'categorical'} summary types only.
+This is a thin wrapper of \code{\link[gtsummary:tbl_summary]{gtsummary::tbl_summary()}} with the following differences:
 \itemize{
-\item Continuous variables default to type \code{'continuous2'}.
-\item The number of non-missing is placed on the first row for all summaries.
-\item The default formatting function for percentages is \code{gtsummary::label_style_number(digits = 1, scale = 100)}.
-\item The \code{gtsummary::add_stat_label()} is run automatically after the function's execution.
+\item Default summary type for continuous variables is \code{'continuous2'}.
+\item Number of non-missing observations is added for each variable by default and placed on the row under the header.
+\item The \verb{tbl_summary(missing*)} arguments have been renamed to \verb{tbl_demographics(nonmissing*)} with updated default values.
+\item The \code{gtsummary::add_stat_label()} is run after the function's execution.
 }
 }
 \examples{
-theme_gtsummary_roche()
-tbl <-
-  trial |>
+# Example 1 ----------------------------------
+trial |>
   tbl_demographics(
     by = trt,
     include = c(age, grade)
   )
-
-tbl
-
-# extract ARD from table
-gather_ard(tbl)
-
-reset_gtsummary_theme()
 }

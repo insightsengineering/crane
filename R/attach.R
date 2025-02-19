@@ -89,6 +89,7 @@ invert <- function(x) {
 
 # run the Roche theme function
 crane_theme_message <- function() {
+  suppressMessages(theme_gtsummary_roche())
   paste0(
     "\n",
     cli::col_green(cli::symbol$play),

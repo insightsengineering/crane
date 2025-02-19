@@ -20,5 +20,12 @@ Useful links:
 \author{
 \strong{Maintainer}: Daniel D. Sjoberg \email{danield.sjoberg@gmail.com} (\href{https://orcid.org/0000-0003-0862-2018}{ORCID})
 
+Authors:
+\itemize{
+  \item Emily de la Rua \email{emily.de_la_rua@contractors.roche.com}
+  \item Davide Garolini \email{davide.garolini@roche.com}
+  \item Abinaya Yogasekaram \email{abinaya.yogasekaram@contractors.roche.com}
+}
+
 }
 \keyword{internal}

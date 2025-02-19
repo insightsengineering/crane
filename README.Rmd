@@ -36,7 +36,6 @@ This is a basic example which shows you how to solve a common problem:
 
 ```{r example}
 library(crane)
-theme_gtsummary_roche()
 
 tbl <- trial |>
   tbl_demographics(by = trt, include = c(age, grade)) |>
@@ -48,13 +47,7 @@ tbl <- trial |>
 gt::gtsave(as_gt(tbl), file = "man/figures/README-tbl_print_simple-1.png")
 ```
 
-```{r out.width = "55%", echo = FALSE}
+```{r out.width = "40%", echo = FALSE}
 knitr::include_graphics("man/figures/README-tbl_print_simple-1.png")
 ```
 
-Each gtsummary table also contains the Analysis Results Dataset (ARD)
-
-```{r cars}
-# extract ARD from table
-gather_ard(tbl)
-```

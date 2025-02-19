@@ -22,7 +22,7 @@ theme list
 A gtsummary theme for Roche tables
 \itemize{
 \item Calls the \code{\link[gtsummary:theme_gtsummary]{gtsummary::theme_gtsummary_compact()}} theme.
-\item Uses \code{gtsummary::label_style_pvalue(digits = 2)} as the default formatting function for all p-values.
+\item Uses \code{label_roche_pvalue()} as the default formatting function for all p-values.
 \item Defaults to a mono-spaced font for gt tables.
 }
 }

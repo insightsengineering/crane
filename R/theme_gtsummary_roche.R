@@ -3,7 +3,7 @@
 #' @description
 #' A gtsummary theme for Roche tables
 #' - Calls the [`gtsummary::theme_gtsummary_compact()`] theme.
-#' - Uses `gtsummary::label_style_pvalue(digits = 2)` as the default formatting function for all p-values.
+#' - Uses `label_roche_pvalue()` as the default formatting function for all p-values.
 #' - Defaults to a mono-spaced font for gt tables.
 #'
 #' @inheritParams gtsummary::theme_gtsummary_compact
@@ -26,7 +26,8 @@ theme_gtsummary_roche <- function(set_theme = TRUE, font_size = NULL) {
   lst_theme <- lst_theme |>
     append(
       list(
-        "pkgwide-fn:pvalue_fun" = gtsummary::label_style_pvalue(digits = 2)
+        "tbl_summary-fn:percent_fun" = gtsummary::label_style_number(digits = 1, scale = 100),
+        "pkgwide-fn:pvalue_fun" = label_roche_pvalue()
       )
     )
 
