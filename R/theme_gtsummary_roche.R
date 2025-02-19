@@ -27,9 +27,18 @@ theme_gtsummary_roche <- function(set_theme = TRUE, font_size = NULL) {
     append(
       list(
         "tbl_summary-fn:percent_fun" = gtsummary::label_style_number(digits = 1, scale = 100),
-        "pkgwide-fn:pvalue_fun" = label_roche_pvalue()
+        "pkgwide-fn:pvalue_fun" = label_roche_pvalue(),
+        "pkgwide-str:print_engine" = "flextable"
       )
     )
+
+  # use arial font for flextables ----------------------------------------------
+  lst_theme$`as_flex_table-lst:addl_cmds` <-
+    c(
+      lst_theme$`as_flex_table-lst:addl_cmds`,
+      list(valign = rlang::expr(flextable::font(fontname = "Arial", part = "all")))
+    )
+
 
   # add a monospace font for gt ------------------------------------------------
   lst_theme$`as_gt-lst:addl_cmds` <-
@@ -37,6 +46,7 @@ theme_gtsummary_roche <- function(set_theme = TRUE, font_size = NULL) {
       lst_theme$`as_gt-lst:addl_cmds`,
       list(tab_spanner = rlang::expr(gt::opt_table_font(stack = "monospace-code")))
     )
+
 
   # finishing up ---------------------------------------------------------------
   if (set_theme == TRUE) gtsummary::set_gtsummary_theme(lst_theme)

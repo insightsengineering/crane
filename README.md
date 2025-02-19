@@ -29,7 +29,7 @@ This is a basic example which shows you how to solve a common problem:
 ``` r
 library(crane)
 #> ── Attaching packages ──────────────────────────────────────────────────────────
-#> ✔ crane     0.0.0.9010     ✔ gtsummary 2.0.4.9013
+#> ✔ crane     0.0.0.9010     ✔ gtsummary 2.1.0     
 #> 
 #> ▶ Setting Roche gtsummary theme. See ?theme_gtsummary_roche() (`?crane::theme_gtsummary_roche()`).
 
