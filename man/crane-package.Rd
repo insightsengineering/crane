@@ -4,9 +4,9 @@
 \name{crane-package}
 \alias{crane}
 \alias{crane-package}
-\title{crane: Supplements functions in the 'gtsummary' package}
+\title{crane: Supplements 'gtsummary' for Pharmaceutical Reporting}
 \description{
-We often need to make slight modifications to functions found in the 'gtsummary' package to fit the purposes of trial reporting. This package houses those functions.
+We often need to make modifications to functions found in the 'gtsummary' package to fit the purposes of reporting in the pharmaceutical industry. This package adds functionality by exporting new to build tables and functions to modify tables created directly by 'gtsummary'.
 }
 \seealso{
 Useful links:

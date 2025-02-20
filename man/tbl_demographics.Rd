@@ -81,9 +81,11 @@ a 'gtsummary' table
 This is a thin wrapper of \code{\link[gtsummary:tbl_summary]{gtsummary::tbl_summary()}} with the following differences:
 \itemize{
 \item Default summary type for continuous variables is \code{'continuous2'}.
-\item Number of non-missing observations is added for each variable by default and placed on the row under the header.
-\item The \verb{tbl_summary(missing*)} arguments have been renamed to \verb{tbl_demographics(nonmissing*)} with updated default values.
-\item The \code{gtsummary::add_stat_label()} is run after the function's execution.
+\item Number of non-missing observations is added for each variable by default
+and placed on the row under the header.
+\item The \verb{tbl_summary(missing*)} arguments have been renamed to
+\verb{tbl_demographics(nonmissing*)} with updated default values.
+\item Default footnotes from \code{tbl_summary()} are removed.
 }
 }
 \examples{

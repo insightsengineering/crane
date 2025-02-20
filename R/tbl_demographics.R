@@ -3,9 +3,11 @@
 #' @description
 #' This is a thin wrapper of [`gtsummary::tbl_summary()`] with the following differences:
 #' - Default summary type for continuous variables is `'continuous2'`.
-#' - Number of non-missing observations is added for each variable by default and placed on the row under the header.
-#' - The `tbl_summary(missing*)` arguments have been renamed to `tbl_demographics(nonmissing*)` with updated default values.
-#' - The `gtsummary::add_stat_label()` is run after the function's execution.
+#' - Number of non-missing observations is added for each variable by default
+#'   and placed on the row under the header.
+#' - The `tbl_summary(missing*)` arguments have been renamed to
+#'   `tbl_demographics(nonmissing*)` with updated default values.
+#' - The default footnotes from `tbl_summary()` are removed.
 #'
 #' @inheritParams gtsummary::tbl_summary
 #' @param nonmissing,nonmissing_text,nonmissing_stat
@@ -74,6 +76,9 @@ tbl_demographics <- function(data,
           "wish to modify these theme elements."
         )
     ) |>
+    # remove default footnote
+    gtsummary::remove_footnote_header(columns = everything()) |>
+    # sort the missing row to just below the header row
     gtsummary::modify_table_body(
       function(.x) {
         .x |>
@@ -83,7 +88,7 @@ tbl_demographics <- function(data,
           )
       }
     ) |>
-    gtsummary::add_stat_label() |>
+    # assign class
     structure(class = c("tbl_demographics", "tbl_summary", "gtsummary"))
 
   # return table ---------------------------------------------------------------
@@ -92,7 +97,4 @@ tbl_demographics <- function(data,
 }
 
 # creating theme for tbl_demographic summaries ---------------------------------
-tbl_demographics_theme <-
-  list(
-    "tbl_summary-str:default_con_type" = "continuous2"
-  )
+tbl_demographics_theme <- list("tbl_summary-str:default_con_type" = "continuous2")
