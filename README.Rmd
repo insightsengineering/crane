@@ -23,12 +23,13 @@ The {crane} package provides supplementary functions to the {gtsummary} specific
 
 ## Installation
 
-You can install the development version of crane from [GitHub](https://github.com/) with:
+You can install {crane} with the following code.  
 
 ``` r
-# install.packages("pak")
-pak::pak("insightsengineering/crane")
+install.packages("crane")
 ```
+
+Install the development version with `pak::pak("insightsengineering/crane")`
 
 ## Example
 
@@ -36,15 +37,16 @@ This is a basic example which shows you how to solve a common problem:
 
 ```{r example}
 library(crane)
+theme_gtsummary_roche()
 
-tbl <- trial |>
+tbl <- gtsummary::trial |>
   tbl_demographics(by = trt, include = c(age, grade)) |>
   add_blank_row()
 ```
 
 ```{r tbl_print_simple, include = FALSE}
 # Had to manually save images in temp file, not sure if better way.
-gt::gtsave(as_gt(tbl), file = "man/figures/README-tbl_print_simple-1.png")
+gt::gtsave(gtsummary::as_gt(tbl), file = "man/figures/README-tbl_print_simple-1.png")
 ```
 
 ```{r out.width = "40%", echo = FALSE}

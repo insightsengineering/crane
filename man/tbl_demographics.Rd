@@ -90,7 +90,7 @@ and placed on the row under the header.
 }
 \examples{
 # Example 1 ----------------------------------
-trial |>
+gtsummary::trial |>
   tbl_demographics(
     by = trt,
     include = c(age, grade)

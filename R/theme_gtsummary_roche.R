@@ -14,9 +14,9 @@
 #' @examples
 #' theme_gtsummary_roche()
 #'
-#' tbl_demographics(trial, by = trt, include = c(age, grade))
+#' tbl_demographics(gtsummary::trial, by = trt, include = c(age, grade))
 #'
-#' reset_gtsummary_theme()
+#' gtsummary::reset_gtsummary_theme()
 theme_gtsummary_roche <- function(set_theme = TRUE, font_size = NULL) {
   # start with the compact theme -----------------------------------------------
   lst_theme <- gtsummary::theme_gtsummary_compact(set_theme = FALSE, font_size = font_size)

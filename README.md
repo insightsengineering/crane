@@ -14,13 +14,14 @@ specifically for trial reporting in the pharmaceutical industry.
 
 ## Installation
 
-You can install the development version of crane from
-[GitHub](https://github.com/) with:
+You can install {crane} with the following code.
 
 ``` r
-# install.packages("pak")
-pak::pak("insightsengineering/crane")
+install.packages("crane")
 ```
+
+Install the development version with
+`pak::pak("insightsengineering/crane")`
 
 ## Example
 
@@ -28,12 +29,10 @@ This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(crane)
-#> ── Attaching packages ──────────────────────────────────────────────────────────
-#> ✔ crane     0.0.0.9010     ✔ gtsummary 2.1.0     
-#> 
-#> ▶ Setting Roche gtsummary theme. See ?theme_gtsummary_roche() (`?crane::theme_gtsummary_roche()`).
+theme_gtsummary_roche()
+#> Setting theme "Roche"
 
-tbl <- trial |>
+tbl <- gtsummary::trial |>
   tbl_demographics(by = trt, include = c(age, grade)) |>
   add_blank_row()
 ```

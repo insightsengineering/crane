@@ -4,9 +4,9 @@
 \name{crane-package}
 \alias{crane}
 \alias{crane-package}
-\title{crane: Supplements 'gtsummary' for Pharmaceutical Reporting}
+\title{crane: Supplements the 'gtsummary' Package for Pharmaceutical Reporting}
 \description{
-We often need to make modifications to functions found in the 'gtsummary' package to fit the purposes of reporting in the pharmaceutical industry. This package adds functionality by exporting new functions to build tables and functions to modify tables created directly by 'gtsummary'.
+Tables summarizing clinical trial results are often complex and require detailed tailoring prior to submission to a health authority. The 'crane' package supplements the functionality of the 'gtsummary' package for creating these often highly bespoke tables in the pharmaceutical industry.
 }
 \seealso{
 Useful links:
@@ -25,6 +25,11 @@ Authors:
   \item Emily de la Rua \email{emily.de_la_rua@contractors.roche.com}
   \item Davide Garolini \email{davide.garolini@roche.com}
   \item Abinaya Yogasekaram \email{abinaya.yogasekaram@contractors.roche.com}
+}
+
+Other contributors:
+\itemize{
+  \item F. Hoffmann-La Roche AG [copyright holder, funder]
 }
 
 }

@@ -23,7 +23,7 @@ the blank rows do not render. But they will appear when the
 table is rendered to Word.
 }
 \examples{
-trial |>
+gtsummary::trial |>
   tbl_demographics(
     by = trt,
     include = c(age, marker, grade)
