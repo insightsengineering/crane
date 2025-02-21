@@ -1,7 +1,12 @@
 #' Add Blank Row
 #'
+#' @description
 #' Add a blank row below each variable group.
 #' A blank row will not be added to the bottom of the table.
+#'
+#' *NOTE*: For HTML flextable output (which includes the RStudio IDE Viewer),
+#'         the blank rows do not render. But they will appear when the
+#'         table is rendered to Word.
 #'
 #' @param x (`gtsummary`)\cr
 #'   a 'gtsummary' table. The table must include a column named `'variable'`
@@ -11,15 +16,12 @@
 #' @export
 #'
 #' @examples
-#' theme_gtsummary_roche()
 #' trial |>
 #'   tbl_demographics(
 #'     by = trt,
 #'     include = c(age, marker, grade)
 #'   ) |>
 #'   add_blank_row()
-#'
-#' reset_gtsummary_theme()
 add_blank_row <- function(x) {
   set_cli_abort_call()
   # check inputs ---------------------------------------------------------------

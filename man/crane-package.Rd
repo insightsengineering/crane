@@ -6,7 +6,7 @@
 \alias{crane-package}
 \title{crane: Supplements 'gtsummary' for Pharmaceutical Reporting}
 \description{
-We often need to make modifications to functions found in the 'gtsummary' package to fit the purposes of reporting in the pharmaceutical industry. This package adds functionality by exporting new to build tables and functions to modify tables created directly by 'gtsummary'.
+We often need to make modifications to functions found in the 'gtsummary' package to fit the purposes of reporting in the pharmaceutical industry. This package adds functionality by exporting new functions to build tables and functions to modify tables created directly by 'gtsummary'.
 }
 \seealso{
 Useful links:

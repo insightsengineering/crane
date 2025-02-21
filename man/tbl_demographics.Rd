@@ -85,7 +85,7 @@ This is a thin wrapper of \code{\link[gtsummary:tbl_summary]{gtsummary::tbl_summ
 and placed on the row under the header.
 \item The \verb{tbl_summary(missing*)} arguments have been renamed to
 \verb{tbl_demographics(nonmissing*)} with updated default values.
-\item Default footnotes from \code{tbl_summary()} are removed.
+\item The default footnotes from \code{tbl_summary()} are removed.
 }
 }
 \examples{
