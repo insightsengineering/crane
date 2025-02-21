@@ -1,34 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="attach_messaging" timestamp="2025-02-21T21:46:47Z" hostname="fb6e17d0f38d" tests="1" skipped="1" failures="0" errors="0" time="0.793">
-    <testcase time="0.793" classname="character(0)" name="if_no_packages_shows_nothing">
-      <skipped message="Reason: On CRAN ('test-attach_messaging.R:2:3')"/>
-    </testcase>
+  <testsuite name="attach_messaging" timestamp="2025-02-21T21:46:55Z" hostname="d406691aa676" tests="1" skipped="0" failures="0" errors="0" time="0.838">
+    <testcase time="0.838" classname="character(0)" name="if_no_packages_shows_nothing"/>
   </testsuite>
-  <testsuite name="attach_messaging" timestamp="2025-02-21T21:46:47Z" hostname="fb6e17d0f38d" tests="1" skipped="1" failures="0" errors="0" time="0.033">
-    <testcase time="0.0329999999999999" classname="character(0)" name="message_lists_all_attached_packages">
-      <skipped message="Reason: On CRAN ('test-attach_messaging.R:7:3')"/>
-    </testcase>
+  <testsuite name="attach_messaging" timestamp="2025-02-21T21:46:55Z" hostname="d406691aa676" tests="1" skipped="0" failures="0" errors="0" time="0.015">
+    <testcase time="0.0150000000000001" classname="character(0)" name="message_lists_all_attached_packages"/>
   </testsuite>
-  <testsuite name="attach_messaging" timestamp="2025-02-21T21:46:47Z" hostname="fb6e17d0f38d" tests="1" skipped="1" failures="0" errors="0" time="0.03">
-    <testcase time="0.03" classname="character(0)" name="highlights_dev_versions_in_red">
-      <skipped message="Reason: On CRAN ('test-attach_messaging.R:13:3')"/>
-    </testcase>
+  <testsuite name="attach_messaging" timestamp="2025-02-21T21:46:55Z" hostname="d406691aa676" tests="1" skipped="0" failures="0" errors="0" time="0.015">
+    <testcase time="0.0149999999999999" classname="character(0)" name="highlights_dev_versions_in_red"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-02-21T21:46:48Z" hostname="fb6e17d0f38d" tests="1" skipped="0" failures="0" errors="0" time="0.814">
-    <testcase time="0.814" classname="character(0)" name="add_blank_row_works"/>
+  <testsuite name="add_blank_row" timestamp="2025-02-21T21:46:56Z" hostname="d406691aa676" tests="1" skipped="0" failures="0" errors="0" time="0.741">
+    <testcase time="0.741" classname="character(0)" name="add_blank_row_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-02-21T21:46:48Z" hostname="fb6e17d0f38d" tests="1" skipped="1" failures="0" errors="0" time="0.002">
-    <testcase time="0.00200000000000022" classname="character(0)" name="add_blank_row_messaging">
-      <skipped message="Reason: On CRAN ('test-add_blank_row.R:15:3')"/>
-    </testcase>
+  <testsuite name="add_blank_row" timestamp="2025-02-21T21:46:56Z" hostname="d406691aa676" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999978" classname="character(0)" name="add_blank_row_messaging"/>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-02-21T21:46:48Z" hostname="fb6e17d0f38d" tests="1" skipped="1" failures="0" errors="0" time="0.061">
-    <testcase time="0.0609999999999999" classname="character(0)" name="theme_gtsummary_roche_works">
-      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:3:3')"/>
-    </testcase>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-02-21T21:46:56Z" hostname="d406691aa676" tests="1" skipped="0" failures="0" errors="0" time="0.067">
+    <testcase time="0.0670000000000002" classname="character(0)" name="theme_gtsummary_roche_works"/>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-02-21T21:46:48Z" hostname="fb6e17d0f38d" tests="1" skipped="0" failures="0" errors="0" time="0.014">
-    <testcase time="0.0139999999999998" classname="character(0)" name="tbl_demographics_works"/>
+  <testsuite name="tbl_demographics" timestamp="2025-02-21T21:46:56Z" hostname="d406691aa676" tests="1" skipped="0" failures="0" errors="0" time="0.035">
+    <testcase time="0.0350000000000001" classname="character(0)" name="tbl_demographics_works"/>
   </testsuite>
 </testsuites>
