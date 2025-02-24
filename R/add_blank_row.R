@@ -16,7 +16,7 @@
 #' @export
 #'
 #' @examples
-#' gtsummary::trial |>
+#' trial |>
 #'   tbl_demographics(
 #'     by = trt,
 #'     include = c(age, marker, grade)

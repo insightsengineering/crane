@@ -6,6 +6,7 @@
 \alias{\%>\%}
 \alias{all_continuous}
 \alias{all_categorical}
+\alias{all_dichotomous}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -15,6 +16,6 @@ below to see their documentation.
 \describe{
   \item{dplyr}{\code{\link[dplyr:reexports]{\%>\%}}}
 
-  \item{gtsummary}{\code{\link[gtsummary:select_helpers]{all_categorical}}, \code{\link[gtsummary:select_helpers]{all_continuous}}}
+  \item{gtsummary}{\code{\link[gtsummary:select_helpers]{all_categorical}}, \code{\link[gtsummary:select_helpers]{all_continuous}}, \code{\link[gtsummary:select_helpers]{all_dichotomous}}}
 }}
 
