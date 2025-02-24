@@ -1,19 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="tbl_demographics" timestamp="2025-02-24T18:05:45Z" hostname="f6223cc5750e" tests="1" skipped="0" failures="0" errors="0" time="1.417">
-    <testcase time="1.417" classname="character(0)" name="tbl_demographics_works"/>
+  <testsuite name="tbl_demographics" timestamp="2025-02-24T18:09:13Z" hostname="43f11b625ba0" tests="1" skipped="0" failures="0" errors="0" time="1.479">
+    <testcase time="1.479" classname="character(0)" name="tbl_demographics_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-02-24T18:05:45Z" hostname="f6223cc5750e" tests="1" skipped="0" failures="0" errors="0" time="0.116">
-    <testcase time="0.116" classname="character(0)" name="add_blank_row_works"/>
+  <testsuite name="add_blank_row" timestamp="2025-02-24T18:09:13Z" hostname="43f11b625ba0" tests="1" skipped="0" failures="0" errors="0" time="0.115">
+    <testcase time="0.115" classname="character(0)" name="add_blank_row_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-02-24T18:05:45Z" hostname="f6223cc5750e" tests="1" skipped="1" failures="0" errors="0" time="0.012">
-    <testcase time="0.012" classname="character(0)" name="add_blank_row_messaging">
-      <skipped message="Reason: On CRAN ('test-add_blank_row.R:15:3')"/>
-    </testcase>
+  <testsuite name="add_blank_row" timestamp="2025-02-24T18:09:13Z" hostname="43f11b625ba0" tests="1" skipped="0" failures="0" errors="0" time="0.015">
+    <testcase time="0.0150000000000001" classname="character(0)" name="add_blank_row_messaging"/>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-02-24T18:05:45Z" hostname="f6223cc5750e" tests="1" skipped="1" failures="0" errors="0" time="0.013">
-    <testcase time="0.0129999999999999" classname="character(0)" name="theme_gtsummary_roche_works">
-      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:3:3')"/>
-    </testcase>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-02-24T18:09:13Z" hostname="43f11b625ba0" tests="1" skipped="0" failures="0" errors="0" time="0.005">
+    <testcase time="0.00499999999999989" classname="character(0)" name="theme_gtsummary_roche_works"/>
   </testsuite>
 </testsuites>
