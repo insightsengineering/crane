@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="tbl_demographics" timestamp="2025-02-24T18:15:33Z" hostname="e4a473a095ad" tests="1" skipped="0" failures="0" errors="0" time="1.419">
-    <testcase time="1.419" classname="character(0)" name="tbl_demographics_works"/>
+  <testsuite name="tbl_demographics" timestamp="2025-02-24T18:15:34Z" hostname="9adedfca1419" tests="1" skipped="0" failures="0" errors="0" time="1.43">
+    <testcase time="1.43" classname="character(0)" name="tbl_demographics_works"/>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-02-24T18:15:33Z" hostname="e4a473a095ad" tests="1" skipped="0" failures="0" errors="0" time="0.141">
-    <testcase time="0.141" classname="character(0)" name="theme_gtsummary_roche_works"/>
+  <testsuite name="add_blank_row" timestamp="2025-02-24T18:15:34Z" hostname="9adedfca1419" tests="1" skipped="0" failures="0" errors="0" time="0.112">
+    <testcase time="0.112" classname="character(0)" name="add_blank_row_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-02-24T18:15:33Z" hostname="e4a473a095ad" tests="1" skipped="0" failures="0" errors="0" time="0.026">
-    <testcase time="0.0259999999999998" classname="character(0)" name="add_blank_row_works"/>
+  <testsuite name="add_blank_row" timestamp="2025-02-24T18:15:34Z" hostname="9adedfca1419" tests="1" skipped="1" failures="0" errors="0" time="0.015">
+    <testcase time="0.0150000000000001" classname="character(0)" name="add_blank_row_messaging">
+      <skipped message="Reason: On CRAN ('test-add_blank_row.R:15:3')"/>
+    </testcase>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-02-24T18:15:33Z" hostname="e4a473a095ad" tests="1" skipped="0" failures="0" errors="0" time="0.002">
-    <testcase time="0.00200000000000022" classname="character(0)" name="add_blank_row_messaging"/>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-02-24T18:15:34Z" hostname="9adedfca1419" tests="1" skipped="1" failures="0" errors="0" time="0.015">
+    <testcase time="0.0150000000000001" classname="character(0)" name="theme_gtsummary_roche_works">
+      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:3:3')"/>
+    </testcase>
   </testsuite>
 </testsuites>
