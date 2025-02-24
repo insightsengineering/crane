@@ -1,3 +1,3 @@
-# crane 0.0.0.9015
+# crane 0.1.0
 
 * Initial CRAN submission.

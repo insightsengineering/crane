@@ -23,12 +23,13 @@ The {crane} package provides supplementary functions to the {gtsummary} specific
 
 ## Installation
 
-You can install the development version of crane from [GitHub](https://github.com/) with:
+You can install {crane} with the following code.  
 
 ``` r
-# install.packages("pak")
-pak::pak("insightsengineering/crane")
+install.packages("crane")
 ```
+
+Install the development version with `pak::pak("insightsengineering/crane")`
 
 ## Example
 

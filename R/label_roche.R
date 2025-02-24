@@ -33,6 +33,5 @@ roche_pvalue <- function(x,
 label_roche_pvalue <- function(big.mark = ifelse(decimal.mark == ",", " ", ","),
                                decimal.mark = getOption("OutDec"),
                                ...) {
-
   function(x) roche_pvalue(x, big.mark = big.mark, decimal.mark = decimal.mark, ...)
 }
