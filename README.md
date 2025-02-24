@@ -33,8 +33,6 @@ library(crane)
 #> ✔ crane     0.1.0     ✔ gtsummary 2.1.0
 #> 
 #> ▶ Setting Roche gtsummary theme. See ?theme_gtsummary_roche() (`?crane::theme_gtsummary_roche()`).
-theme_gtsummary_roche()
-#> Setting theme "Roche"
 
 tbl <- trial |>
   tbl_demographics(by = trt, include = c(age, grade)) |>
