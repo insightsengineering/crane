@@ -29,4 +29,3 @@ gtsummary::label_style_number
 #' @export
 #' @importFrom ggsurvfit Surv_CNSR
 ggsurvfit::Surv_CNSR
-
