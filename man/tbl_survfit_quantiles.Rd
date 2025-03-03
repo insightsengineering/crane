@@ -10,7 +10,7 @@ tbl_survfit_quantiles(
   by = NULL,
   header = "Time to event",
   estimate_fun = label_style_number(digits = 1),
-  method.args = list()
+  method.args = list(conf.int = 0.95)
 )
 }
 \arguments{
@@ -24,7 +24,7 @@ The default value is \code{"Surv_CNSR()"}, which is a shortcut for
 
 \item{by}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 A single column from \code{data}. Summary statistics will be stratified by this variable.
-Default is \code{NULL}.}
+Default is \code{NULL}, which returns results for the unstratified model.}
 
 \item{header}{(\code{string})\cr
 String for the header of the survival quantile chunks.
@@ -50,6 +50,10 @@ Create a gtsummary table with Kaplan-Meier estimated survival quantiles.
 }
 \section{ARD-first}{
 
+
+This function is a helper for creating a common summary.
+But if you need to modify the appearance of this table, you may need to build
+it from ARDs.
 
 Here's the general outline for creating this table directly from ARDs.
 \enumerate{

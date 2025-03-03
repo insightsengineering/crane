@@ -22,7 +22,7 @@ Depends:
     R (>= 4.2)
 Imports: 
     cards (>= 0.5.0),
-    cardx (>= 0.2.3),
+    cardx (>= 0.2.3.9002),
     cli (>= 3.6.4),
     dplyr (>= 1.1.4),
     flextable (>= 0.9.7),
@@ -36,6 +36,7 @@ Suggests:
     survival (>= 3.6-4),
     testthat (>= 3.0.0),
     withr (>= 2.5.0)
+Remotes: insightsengineering/cardx
 Config/Needs/check: hms
 Config/Needs/website: rmarkdown, yaml, insightsengineering/nesttemplate
 Config/testthat/edition: 3

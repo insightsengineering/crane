@@ -22,6 +22,18 @@
       4    25% and 75%-ile             17.4, NA              14.5, NA
       5              Range          3.5 to 24.0           5.3 to 24.0
 
+---
+
+    Code
+      as.data.frame(tbl)
+    Output
+        **Characteristic** **Overall**  \nN = 254
+      1      Time to event                   <NA>
+      2             Median                   51.0
+      3             90% CI           (46.0, 68.0)
+      4    25% and 75%-ile               22.0, NA
+      5              Range           1.0 to 198.0
+
 # tbl_survfit_quantiles(by) messaging
 
     Code

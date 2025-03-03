@@ -22,6 +22,30 @@ test_that("tbl_survfit_quantiles() works", {
       )
   )
   expect_snapshot(as.data.frame(tbl))
+
+  # works for unstratified models
+  expect_silent(
+    tbl <-
+      tbl_survfit_quantiles(
+        data = cards::ADTTE,
+        method.args = list(conf.int = 0.90)
+      )
+  )
+  expect_snapshot(as.data.frame(tbl))
+
+  # works with NSE inputs in `method.args()`
+  expect_equal(
+    tbl_survfit_quantiles(
+      data = cards::ADTTE,
+      method.args = list(id = SEX)
+    ) |>
+      gtsummary::gather_ard() |>
+      dplyr::filter(variable == "prob") |>
+      dplyr::select(-fmt_fn),
+    survival::survfit(Surv_CNSR() ~ 1, data = cards::ADTTE, id = SEX) |>
+      cardx::ard_survival_survfit(probs = c(0.25, 0.50, 0.75)) |>
+      dplyr::select(-fmt_fn)
+  )
 })
 
 test_that("tbl_survfit_quantiles(by) messaging", {

@@ -10,7 +10,7 @@
 #'   `survival::Surv(time = AVAL, event = 1 - CNSR, type = "right", origin = 0)`.
 #' @param by ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   A single column from `data`. Summary statistics will be stratified by this variable.
-#'   Default is `NULL`.
+#'   Default is `NULL`, which returns results for the unstratified model.
 #' @param header (`string`)\cr
 #'   String for the header of the survival quantile chunks.
 #'   Default is `"Time to event"`.
@@ -29,6 +29,10 @@
 #' @export
 #'
 #' @section ARD-first:
+#'
+#' This function is a helper for creating a common summary.
+#' But if you need to modify the appearance of this table, you may need to build
+#' it from ARDs.
 #'
 #' Here's the general outline for creating this table directly from ARDs.
 #' 1. Create an ARD of survival quantiles using `cardx::ard_survival_survfit()`.
@@ -106,7 +110,7 @@ tbl_survfit_quantiles <- function(data,
                                   by = NULL,
                                   header = "Time to event",
                                   estimate_fun = label_style_number(digits = 1),
-                                  method.args = list()) {
+                                  method.args = list(conf.int = 0.95)) {
   method.args <- enquo(method.args)
 
   # check inputs ---------------------------------------------------------------
@@ -147,6 +151,8 @@ tbl_survfit_quantiles <- function(data,
       stat_names = c("estimate", "conf.low", "conf.high"),
       fmt_fn = estimate_fun
     )
+  # get the confidence level
+  conf.level <- call_args(method.args)[["conf.int"]] %||% 0.95
 
   # calculate range of followup times ------------------------------------------
   df_time <-
@@ -205,7 +211,7 @@ tbl_survfit_quantiles <- function(data,
         mutate(
           label = dplyr::case_when(
             .data$label == "Survival Probability" ~ "Median",
-            .data$label == "(CI Lower Bound, CI Upper Bound)" ~ "95% CI",
+            .data$label == "(CI Lower Bound, CI Upper Bound)" ~ glue("{gtsummary::style_number(conf.level, scale = 100)}% CI"),
             .data$label == "Survival Probability, Survival Probability" ~ "25% and 75%-ile",
             .default = .data$label
           )
@@ -213,7 +219,7 @@ tbl_survfit_quantiles <- function(data,
     ) |>
     gtsummary::modify_column_indent(
       columns = "label",
-      rows = .data$label == "95% CI",
+      rows = .data$label == glue("{gtsummary::style_number(conf.level, scale = 100)}% CI"),
       indent = 8L
     ) |>
     gtsummary::modify_column_indent(
