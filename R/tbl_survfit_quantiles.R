@@ -143,7 +143,7 @@ tbl_survfit_quantiles <- function(data,
     cardx::ard_survival_survfit(
       x = data,
       y = y,
-      variables = by,
+      variables = any_of(by),
       probs = c(0.25, 0.50, 0.75),
       method.args = !!method.args
     ) |>
