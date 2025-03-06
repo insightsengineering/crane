@@ -1,3 +1,5 @@
+skip_if_not(is_pkg_installed("withr"))
+
 test_that("tbl_demographics() works", {
   expect_silent(
     tbl <-
