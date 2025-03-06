@@ -37,6 +37,7 @@ test_that("tbl_demographics() |> add_overall() works", {
     tbl_demographics(
       trial,
       by = trt,
+      digits = list(grade = list(p = 1)),
       include = c(age, grade)
     ) |>
       add_overall() |>
