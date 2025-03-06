@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="add_blank_row" timestamp="2025-03-06T23:27:25Z" hostname="b214b32c3049" tests="1" skipped="0" failures="0" errors="0" time="1.519">
+  <testsuite name="add_blank_row" timestamp="2025-03-06T23:27:30Z" hostname="c1ffb023e2c9" tests="1" skipped="0" failures="0" errors="0" time="1.519">
     <testcase time="1.519" classname="character(0)" name="add_blank_row_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-03-06T23:27:25Z" hostname="b214b32c3049" tests="1" skipped="0" failures="0" errors="0" time="0.018">
-    <testcase time="0.0180000000000002" classname="character(0)" name="add_blank_row_messaging"/>
+  <testsuite name="add_blank_row" timestamp="2025-03-06T23:27:30Z" hostname="c1ffb023e2c9" tests="1" skipped="1" failures="0" errors="0" time="0.018">
+    <testcase time="0.0179999999999998" classname="character(0)" name="add_blank_row_messaging">
+      <skipped message="Reason: On CRAN ('test-add_blank_row.R:15:3')"/>
+    </testcase>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-03-06T23:27:25Z" hostname="b214b32c3049" tests="1" skipped="0" failures="0" errors="0" time="0.101">
-    <testcase time="0.101" classname="character(0)" name="theme_gtsummary_roche_works"/>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-03-06T23:27:30Z" hostname="c1ffb023e2c9" tests="1" skipped="1" failures="0" errors="0" time="0.079">
+    <testcase time="0.0790000000000002" classname="character(0)" name="theme_gtsummary_roche_works">
+      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:3:3')"/>
+    </testcase>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-03-06T23:27:28Z" hostname="b214b32c3049" tests="1" skipped="0" failures="0" errors="0" time="3.428">
-    <testcase time="3.428" classname="character(0)" name="tbl_demographics_works"/>
+  <testsuite name="tbl_demographics" timestamp="2025-03-06T23:27:34Z" hostname="c1ffb023e2c9" tests="1" skipped="0" failures="0" errors="0" time="3.496">
+    <testcase time="3.496" classname="character(0)" name="tbl_demographics_works"/>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-03-06T23:27:28Z" hostname="b214b32c3049" tests="2" skipped="0" failures="0" errors="0" time="0.002">
-    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_demographics_add_overall_works"/>
-    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_demographics_add_overall_works"/>
+  <testsuite name="tbl_demographics" timestamp="2025-03-06T23:27:34Z" hostname="c1ffb023e2c9" tests="2" skipped="1" failures="0" errors="0" time="0.005">
+    <testcase time="0.00199999999999978" classname="character(0)" name="tbl_demographics_add_overall_works"/>
+    <testcase time="0.00300000000000011" classname="character(0)" name="tbl_demographics_add_overall_works">
+      <skipped message="Reason: On CRAN ('test-tbl_demographics.R:36:3')"/>
+    </testcase>
   </testsuite>
 </testsuites>
