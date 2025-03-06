@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="tbl_demographics" timestamp="2025-03-05T20:54:46Z" hostname="88bee45cd9f9" tests="1" skipped="0" failures="0" errors="0" time="1.432">
-    <testcase time="1.432" classname="character(0)" name="tbl_demographics_works"/>
+  <testsuite name="add_blank_row" timestamp="2025-03-06T23:51:38Z" hostname="05327cf61583" tests="1" skipped="0" failures="0" errors="0" time="1.533">
+    <testcase time="1.533" classname="character(0)" name="add_blank_row_works"/>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-03-05T20:54:46Z" hostname="88bee45cd9f9" tests="1" skipped="1" failures="0" errors="0" time="0.122">
-    <testcase time="0.122" classname="character(0)" name="theme_gtsummary_roche_works">
-      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:3:3')"/>
-    </testcase>
+  <testsuite name="add_blank_row" timestamp="2025-03-06T23:51:38Z" hostname="05327cf61583" tests="1" skipped="0" failures="0" errors="0" time="0.016">
+    <testcase time="0.016" classname="character(0)" name="add_blank_row_messaging"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-03-05T20:54:46Z" hostname="88bee45cd9f9" tests="1" skipped="0" failures="0" errors="0" time="0.029">
-    <testcase time="0.0289999999999999" classname="character(0)" name="add_blank_row_works"/>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-03-06T23:51:38Z" hostname="05327cf61583" tests="1" skipped="0" failures="0" errors="0" time="0.088">
+    <testcase time="0.0880000000000001" classname="character(0)" name="theme_gtsummary_roche_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-03-05T20:54:46Z" hostname="88bee45cd9f9" tests="1" skipped="1" failures="0" errors="0" time="0.002">
-    <testcase time="0.00200000000000022" classname="character(0)" name="add_blank_row_messaging">
-      <skipped message="Reason: On CRAN ('test-add_blank_row.R:15:3')"/>
-    </testcase>
+  <testsuite name="tbl_demographics" timestamp="2025-03-06T23:51:41Z" hostname="05327cf61583" tests="1" skipped="0" failures="0" errors="0" time="3.307">
+    <testcase time="3.307" classname="character(0)" name="tbl_demographics_works"/>
+  </testsuite>
+  <testsuite name="tbl_demographics" timestamp="2025-03-06T23:51:41Z" hostname="05327cf61583" tests="2" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00200000000000067" classname="character(0)" name="tbl_demographics_add_overall_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_demographics_add_overall_works"/>
   </testsuite>
 </testsuites>
