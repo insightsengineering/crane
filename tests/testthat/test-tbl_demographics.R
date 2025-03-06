@@ -10,6 +10,7 @@ test_that("tbl_demographics() works", {
 })
 
 test_that("tbl_demographics() |> add_overall() works", {
+  withr::local_options(list(width = 300))
   expect_equal(
     tbl_demographics(
       trial,
