@@ -98,8 +98,8 @@ tbl_demographics <- function(data,
   x$inputs$missing_text <- NULL
 
   x$inputs <- x$inputs |>
-    utils::modifyList(
-      val = list(
+    append(
+      list(
         nonmissing = nonmissing,
         nonmissing_stat = nonmissing_stat,
         nonmissing_text = nonmissing_text
