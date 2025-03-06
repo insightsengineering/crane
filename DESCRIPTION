@@ -26,9 +26,11 @@ Imports:
     flextable (>= 0.9.7),
     gt (>= 0.11.1),
     gtsummary (>= 2.1.0),
-    rlang (>= 1.1.4)
+    rlang (>= 1.1.4),
+    tidyr
 Suggests: 
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    withr (>= 3.0.1)
 Config/Needs/check: hms
 Config/Needs/website: rmarkdown, yaml, insightsengineering/nesttemplate
 Config/testthat/edition: 3
