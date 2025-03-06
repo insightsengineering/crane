@@ -26,7 +26,8 @@
 #'   tbl_demographics(
 #'     by = trt,
 #'     include = c(age, grade)
-#'   )
+#'   ) |>
+#'   add_overall()
 tbl_demographics <- function(data,
                              by = NULL,
                              label = NULL,
