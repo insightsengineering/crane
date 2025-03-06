@@ -94,5 +94,6 @@ trial |>
   tbl_demographics(
     by = trt,
     include = c(age, grade)
-  )
+  ) |>
+  add_overall()
 }

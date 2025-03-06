@@ -26,7 +26,8 @@
 #'   tbl_demographics(
 #'     by = trt,
 #'     include = c(age, grade)
-#'   )
+#'   ) |>
+#'   add_overall()
 tbl_demographics <- function(data,
                              by = NULL,
                              label = NULL,
@@ -92,6 +93,18 @@ tbl_demographics <- function(data,
     structure(class = c("tbl_demographics", "tbl_summary", "gtsummary"))
 
   # return table ---------------------------------------------------------------
+  x$inputs$missing <- NULL
+  x$inputs$missing_stat <- NULL
+  x$inputs$missing_text <- NULL
+
+  x$inputs <- x$inputs |>
+    append(
+      list(
+        nonmissing = nonmissing,
+        nonmissing_stat = nonmissing_stat,
+        nonmissing_text = nonmissing_text
+      )
+    )
   x$call_list <- list(tbl_demographics = match.call())
   x
 }
