@@ -3,36 +3,36 @@
     Code
       as.data.frame(tbl)
     Output
-        **Characteristic** **Placebo**  \nN = 86 **Xanomeline High Dose**  \nN = 84 **Xanomeline Low Dose**  \nN = 84
-      1      Time to event                  <NA>                               <NA>                              <NA>
-      2             Median                    NA                               36.0                              33.0
-      3             95% CI              (NA, NA)                       (25.0, 47.0)                      (28.0, 51.0)
-      4    25% and 75%-ile              70.0, NA                         14.0, 58.0                        19.0, 80.0
-      5              Range          1.0 to 198.0                       1.0 to 189.0                      1.0 to 190.0
+                        **Placebo**  \nN = 86 **Xanomeline High Dose**  \nN = 84 **Xanomeline Low Dose**  \nN = 84
+      1   Time to event                  <NA>                               <NA>                              <NA>
+      2          Median                    NA                               36.0                              33.0
+      3          95% CI              (NA, NA)                       (25.0, 47.0)                      (28.0, 51.0)
+      4 25% and 75%-ile              70.0, NA                         14.0, 58.0                        19.0, 80.0
+      5           Range          1.0 to 198.0                       1.0 to 189.0                      1.0 to 190.0
 
 ---
 
     Code
       as.data.frame(tbl)
     Output
-        **Characteristic** **Drug A**  \nN = 98 **Drug B**  \nN = 102
-      1      Time to event                 <NA>                  <NA>
-      2             Median                 23.5                  21.2
-      3             95% CI           (21.2, NA)            (18.2, NA)
-      4    25% and 75%-ile             17.4, NA              14.5, NA
-      5              Range          3.5 to 24.0           5.3 to 24.0
+                        **Drug A**  \nN = 98 **Drug B**  \nN = 102
+      1   Time to event                 <NA>                  <NA>
+      2          Median                 23.5                  21.2
+      3          95% CI           (21.2, NA)            (18.2, NA)
+      4 25% and 75%-ile             17.4, NA              14.5, NA
+      5           Range          3.5 to 24.0           5.3 to 24.0
 
 ---
 
     Code
       as.data.frame(tbl)
     Output
-        **Characteristic** **Overall**  \nN = 254
-      1      Time to event                   <NA>
-      2             Median                   51.0
-      3             90% CI           (46.0, 68.0)
-      4    25% and 75%-ile               22.0, NA
-      5              Range           1.0 to 198.0
+                        **Overall**  \nN = 254
+      1   Time to event                   <NA>
+      2          Median                   51.0
+      3          90% CI           (46.0, 68.0)
+      4 25% and 75%-ile               22.0, NA
+      5           Range           1.0 to 198.0
 
 # tbl_survfit_quantiles(by) messaging
 
@@ -56,10 +56,10 @@
       as.data.frame(tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA", estimate_fun = gtsummary::label_style_number(
         digits = 3)))
     Output
-        **Characteristic** **Placebo**  \nN = 86 **Xanomeline High Dose**  \nN = 84 **Xanomeline Low Dose**  \nN = 84
-      1      Time to event                  <NA>                               <NA>                              <NA>
-      2             Median                    NA                             36.000                            33.000
-      3             95% CI              (NA, NA)                   (25.000, 47.000)                  (28.000, 51.000)
-      4    25% and 75%-ile            70.000, NA                     14.000, 58.000                    19.000, 80.000
-      5              Range      1.000 to 198.000                   1.000 to 189.000                  1.000 to 190.000
+                        **Placebo**  \nN = 86 **Xanomeline High Dose**  \nN = 84 **Xanomeline Low Dose**  \nN = 84
+      1   Time to event                  <NA>                               <NA>                              <NA>
+      2          Median                    NA                             36.000                            33.000
+      3          95% CI              (NA, NA)                   (25.000, 47.000)                  (28.000, 51.000)
+      4 25% and 75%-ile            70.000, NA                     14.000, 58.000                    19.000, 80.000
+      5           Range      1.000 to 198.000                   1.000 to 189.000                  1.000 to 190.000
 

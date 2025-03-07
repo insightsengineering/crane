@@ -79,6 +79,8 @@ tbl_demographics <- function(data,
     ) |>
     # remove default footnote
     gtsummary::remove_footnote_header(columns = everything()) |>
+    # remove the default "Characteristic" header
+    gtsummary::modify_header(label = "") |>
     # sort the missing row to just below the header row
     gtsummary::modify_table_body(
       function(.x) {

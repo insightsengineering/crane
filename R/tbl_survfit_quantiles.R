@@ -205,7 +205,10 @@ tbl_survfit_quantiles <- function(data,
         time = "Range"
       )
     ) |>
-    gtsummary::modify_header(all_stat_cols() ~ "**{level}**  \nN = {n}") |>
+    gtsummary::modify_header(
+      all_stat_cols() ~ "**{level}**  \nN = {n}",
+      label = ""
+    ) |>
     gtsummary::modify_table_body(
       ~ .x |>
         mutate(
