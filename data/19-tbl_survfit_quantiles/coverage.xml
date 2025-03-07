@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0.931623931623932" branch-rate="0" lines-covered="327" lines-valid="351" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2025-03-06 23:53:24.43197">
+<coverage line-rate="0.932394366197183" branch-rate="0" lines-covered="331" lines-valid="355" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2025-03-07 00:23:53.768455">
   <sources>
     <source>/__w/crane/crane/crane</source>
   </sources>
   <packages>
-    <package name="crane" line-rate="0.931623931623932" branch-rate="0" complexity="0">
+    <package name="crane" line-rate="0.932394366197183" branch-rate="0" complexity="0">
       <classes>
         <class name="add_blank_row.R" filename="R/add_blank_row.R" line-rate="1" branch-rate="0" complexity="0">
           <methods>
@@ -449,7 +449,6 @@
                 <line number="79" hits="6" branch="false"/>
                 <line number="81" hits="6" branch="false"/>
                 <line number="83" hits="6" branch="false"/>
-                <line number="84" hits="6" branch="false"/>
                 <line number="85" hits="6" branch="false"/>
                 <line number="86" hits="6" branch="false"/>
                 <line number="87" hits="6" branch="false"/>
@@ -457,12 +456,12 @@
                 <line number="89" hits="6" branch="false"/>
                 <line number="90" hits="6" branch="false"/>
                 <line number="91" hits="6" branch="false"/>
+                <line number="92" hits="6" branch="false"/>
                 <line number="93" hits="6" branch="false"/>
-                <line number="96" hits="6" branch="false"/>
-                <line number="97" hits="6" branch="false"/>
+                <line number="95" hits="6" branch="false"/>
                 <line number="98" hits="6" branch="false"/>
+                <line number="99" hits="6" branch="false"/>
                 <line number="100" hits="6" branch="false"/>
-                <line number="101" hits="6" branch="false"/>
                 <line number="102" hits="6" branch="false"/>
                 <line number="103" hits="6" branch="false"/>
                 <line number="104" hits="6" branch="false"/>
@@ -471,6 +470,8 @@
                 <line number="107" hits="6" branch="false"/>
                 <line number="108" hits="6" branch="false"/>
                 <line number="109" hits="6" branch="false"/>
+                <line number="110" hits="6" branch="false"/>
+                <line number="111" hits="6" branch="false"/>
               </lines>
             </method>
           </methods>
@@ -507,7 +508,6 @@
             <line number="79" hits="6" branch="false"/>
             <line number="81" hits="6" branch="false"/>
             <line number="83" hits="6" branch="false"/>
-            <line number="84" hits="6" branch="false"/>
             <line number="85" hits="6" branch="false"/>
             <line number="86" hits="6" branch="false"/>
             <line number="87" hits="6" branch="false"/>
@@ -515,12 +515,12 @@
             <line number="89" hits="6" branch="false"/>
             <line number="90" hits="6" branch="false"/>
             <line number="91" hits="6" branch="false"/>
+            <line number="92" hits="6" branch="false"/>
             <line number="93" hits="6" branch="false"/>
-            <line number="96" hits="6" branch="false"/>
-            <line number="97" hits="6" branch="false"/>
+            <line number="95" hits="6" branch="false"/>
             <line number="98" hits="6" branch="false"/>
+            <line number="99" hits="6" branch="false"/>
             <line number="100" hits="6" branch="false"/>
-            <line number="101" hits="6" branch="false"/>
             <line number="102" hits="6" branch="false"/>
             <line number="103" hits="6" branch="false"/>
             <line number="104" hits="6" branch="false"/>
@@ -529,6 +529,8 @@
             <line number="107" hits="6" branch="false"/>
             <line number="108" hits="6" branch="false"/>
             <line number="109" hits="6" branch="false"/>
+            <line number="110" hits="6" branch="false"/>
+            <line number="111" hits="6" branch="false"/>
           </lines>
         </class>
         <class name="tbl_survfit_quantiles.R" filename="R/tbl_survfit_quantiles.R" line-rate="1" branch-rate="0" complexity="0">
@@ -635,15 +637,18 @@
                 <line number="228" hits="6" branch="false"/>
                 <line number="229" hits="6" branch="false"/>
                 <line number="230" hits="6" branch="false"/>
+                <line number="231" hits="6" branch="false"/>
+                <line number="232" hits="6" branch="false"/>
                 <line number="233" hits="6" branch="false"/>
-                <line number="234" hits="6" branch="false"/>
-                <line number="235" hits="6" branch="false"/>
                 <line number="236" hits="6" branch="false"/>
                 <line number="237" hits="6" branch="false"/>
                 <line number="238" hits="6" branch="false"/>
                 <line number="239" hits="6" branch="false"/>
                 <line number="240" hits="6" branch="false"/>
                 <line number="241" hits="6" branch="false"/>
+                <line number="242" hits="6" branch="false"/>
+                <line number="243" hits="6" branch="false"/>
+                <line number="244" hits="6" branch="false"/>
               </lines>
             </method>
           </methods>
@@ -748,15 +753,18 @@
             <line number="228" hits="6" branch="false"/>
             <line number="229" hits="6" branch="false"/>
             <line number="230" hits="6" branch="false"/>
+            <line number="231" hits="6" branch="false"/>
+            <line number="232" hits="6" branch="false"/>
             <line number="233" hits="6" branch="false"/>
-            <line number="234" hits="6" branch="false"/>
-            <line number="235" hits="6" branch="false"/>
             <line number="236" hits="6" branch="false"/>
             <line number="237" hits="6" branch="false"/>
             <line number="238" hits="6" branch="false"/>
             <line number="239" hits="6" branch="false"/>
             <line number="240" hits="6" branch="false"/>
             <line number="241" hits="6" branch="false"/>
+            <line number="242" hits="6" branch="false"/>
+            <line number="243" hits="6" branch="false"/>
+            <line number="244" hits="6" branch="false"/>
           </lines>
         </class>
         <class name="theme_gtsummary_roche.R" filename="R/theme_gtsummary_roche.R" line-rate="1" branch-rate="0" complexity="0">
