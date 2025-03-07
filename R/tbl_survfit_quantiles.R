@@ -5,8 +5,8 @@
 #' @param data (`data.frame`)\cr
 #'   A data frame
 #' @param y (`string`)\cr
-#'   A string with the survival outcome, e.g. `survival::Surv(time, status)`.
-#'   The default value is `"Surv_CNSR()"`, which is a shortcut for
+#'   A string with the survival outcome, e.g. `'survival::Surv(time, status)'`.
+#'   The default value is
 #'   `survival::Surv(time = AVAL, event = 1 - CNSR, type = "right", origin = 0)`.
 #' @param by ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   A single column from `data`. Summary statistics will be stratified by this variable.
@@ -106,7 +106,7 @@
 #'   by = "TRTA"
 #' )
 tbl_survfit_quantiles <- function(data,
-                                  y = "Surv_CNSR()",
+                                  y = survival::Surv(time = AVAL, event = 1 - CNSR, type = "right", origin = 0),
                                   by = NULL,
                                   header = "Time to event",
                                   estimate_fun = label_style_number(digits = 1),

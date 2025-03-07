@@ -6,7 +6,7 @@
 \usage{
 tbl_survfit_quantiles(
   data,
-  y = "Surv_CNSR()",
+  y = survival::Surv(time = AVAL, event = 1 - CNSR, type = "right", origin = 0),
   by = NULL,
   header = "Time to event",
   estimate_fun = label_style_number(digits = 1),
@@ -18,8 +18,8 @@ tbl_survfit_quantiles(
 A data frame}
 
 \item{y}{(\code{string})\cr
-A string with the survival outcome, e.g. \code{survival::Surv(time, status)}.
-The default value is \code{"Surv_CNSR()"}, which is a shortcut for
+A string with the survival outcome, e.g. \code{'survival::Surv(time, status)'}.
+The default value is
 \code{survival::Surv(time = AVAL, event = 1 - CNSR, type = "right", origin = 0)}.}
 
 \item{by}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
