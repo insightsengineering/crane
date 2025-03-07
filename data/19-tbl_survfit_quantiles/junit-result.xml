@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="add_blank_row" timestamp="2025-03-07T17:45:53Z" hostname="d5bae9d6856d" tests="1" skipped="0" failures="0" errors="0" time="2.269">
-    <testcase time="2.269" classname="character(0)" name="add_blank_row_works"/>
+  <testsuite name="add_blank_row" timestamp="2025-03-07T17:45:59Z" hostname="f4e489931bb5" tests="1" skipped="0" failures="0" errors="0" time="2.268">
+    <testcase time="2.268" classname="character(0)" name="add_blank_row_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-03-07T17:45:53Z" hostname="d5bae9d6856d" tests="1" skipped="1" failures="0" errors="0" time="0.148">
-    <testcase time="0.148" classname="character(0)" name="add_blank_row_messaging">
-      <skipped message="Reason: On CRAN ('test-add_blank_row.R:15:3')"/>
-    </testcase>
+  <testsuite name="add_blank_row" timestamp="2025-03-07T17:45:59Z" hostname="f4e489931bb5" tests="1" skipped="0" failures="0" errors="0" time="0.16">
+    <testcase time="0.16" classname="character(0)" name="add_blank_row_messaging"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-07T17:45:54Z" hostname="d5bae9d6856d" tests="1" skipped="0" failures="0" errors="1" time="0.178">
-    <testcase time="0.178" classname="character(0)" name="tbl_survfit_quantiles_works">
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-07T17:45:59Z" hostname="f4e489931bb5" tests="1" skipped="0" failures="0" errors="1" time="0.371">
+    <testcase time="0.371" classname="character(0)" name="tbl_survfit_quantiles_works">
       <error type="error" message="Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = &quot;TRTA&quot;)`: object 'AVAL' not found ('test-tbl_survfit_quantiles.R:6:3')">Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA")`: object 'AVAL' not found
 Backtrace:
      ▆
@@ -27,13 +25,23 @@ Backtrace:
  12.   └─survival::Surv(...)</error>
     </testcase>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-07T17:45:54Z" hostname="d5bae9d6856d" tests="1" skipped="1" failures="0" errors="0" time="0.031">
-    <testcase time="0.0309999999999997" classname="character(0)" name="tbl_survfit_quantiles_by_messaging">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:53:3')"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-07T17:45:59Z" hostname="f4e489931bb5" tests="2" skipped="0" failures="1" errors="0" time="0.043">
+    <testcase time="0.0230000000000006" classname="character(0)" name="tbl_survfit_quantiles_by_messaging">
+      <failure type="failure" message="Snapshot of code has changed: ('test-tbl_survfit_quantiles.R:53:3')">Snapshot of code has changed:
+old[2:5] vs new[2:5]
+    tbl_survfit_quantiles(data = cards::ADTTE, by = everything())
+  Condition
+    Error in `tbl_survfit_quantiles()`:
+-   ! The `by` argument must be empty or a single stratifying variable name.
++   ! object 'AVAL' not found
+
+* Run `testthat::snapshot_accept('tbl_survfit_quantiles')` to accept the change.
+* Run `testthat::snapshot_review('tbl_survfit_quantiles')` to interactively review the change.</failure>
     </testcase>
+    <testcase time="0.0199999999999996" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-07T17:45:54Z" hostname="d5bae9d6856d" tests="1" skipped="0" failures="0" errors="1" time="0.022">
-    <testcase time="0.0220000000000002" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_">
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-07T17:45:59Z" hostname="f4e489931bb5" tests="1" skipped="0" failures="0" errors="1" time="0.002">
+    <testcase time="0.00199999999999978" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_">
       <error type="error" message="Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = &quot;TRTA&quot;, estimate_fun = gtsummary::label_style_number(digits = 3))`: object 'AVAL' not found ('test-tbl_survfit_quantiles.R:73:3')">Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA", estimate_fun = gtsummary::label_style_number(digits = 3))`: object 'AVAL' not found
 Backtrace:
     ▆
@@ -41,8 +49,8 @@ Backtrace:
  2.   └─rlang::cnd_signal(state$error)</error>
     </testcase>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-07T17:45:54Z" hostname="d5bae9d6856d" tests="1" skipped="0" failures="0" errors="1" time="0.02">
-    <testcase time="0.0200000000000005" classname="character(0)" name="tbl_survfit_quantiles_method.args_">
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-07T17:45:59Z" hostname="f4e489931bb5" tests="1" skipped="0" failures="0" errors="1" time="0.029">
+    <testcase time="0.0290000000000008" classname="character(0)" name="tbl_survfit_quantiles_method.args_">
       <error type="error" message="Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = &quot;TRTA&quot;, method.args = list(conf.int = 0.9,  ('test-tbl_survfit_quantiles.R:85:3')">Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA", method.args = list(conf.int = 0.9, 
     conf.type = "logit"))`: object 'AVAL' not found
 Backtrace:
@@ -61,18 +69,14 @@ Backtrace:
  12.   └─survival::Surv(...)</error>
     </testcase>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-03-07T17:45:54Z" hostname="d5bae9d6856d" tests="1" skipped="1" failures="0" errors="0" time="0.073">
-    <testcase time="0.0729999999999995" classname="character(0)" name="theme_gtsummary_roche_works">
-      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:3:3')"/>
-    </testcase>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-03-07T17:45:59Z" hostname="f4e489931bb5" tests="1" skipped="0" failures="0" errors="0" time="0.098">
+    <testcase time="0.0979999999999999" classname="character(0)" name="theme_gtsummary_roche_works"/>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-03-07T17:45:57Z" hostname="d5bae9d6856d" tests="1" skipped="0" failures="0" errors="0" time="3.027">
-    <testcase time="3.027" classname="character(0)" name="tbl_demographics_works"/>
+  <testsuite name="tbl_demographics" timestamp="2025-03-07T17:46:02Z" hostname="f4e489931bb5" tests="1" skipped="0" failures="0" errors="0" time="2.938">
+    <testcase time="2.938" classname="character(0)" name="tbl_demographics_works"/>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-03-07T17:45:57Z" hostname="d5bae9d6856d" tests="2" skipped="1" failures="0" errors="0" time="0.003">
+  <testsuite name="tbl_demographics" timestamp="2025-03-07T17:46:02Z" hostname="f4e489931bb5" tests="2" skipped="0" failures="0" errors="0" time="0.002">
     <testcase time="0.00199999999999978" classname="character(0)" name="tbl_demographics_add_overall_works"/>
-    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_demographics_add_overall_works">
-      <skipped message="Reason: On CRAN ('test-tbl_demographics.R:40:3')"/>
-    </testcase>
+    <testcase time="0" classname="character(0)" name="tbl_demographics_add_overall_works"/>
   </testsuite>
 </testsuites>
