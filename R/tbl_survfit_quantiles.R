@@ -7,7 +7,7 @@
 #' @param y (`string`)\cr
 #'   A string with the survival outcome, e.g. `'survival::Surv(time, status)'`.
 #'   The default value is
-#'   `survival::Surv(time = AVAL, event = 1 - CNSR, type = "right", origin = 0)`.
+#'   `'survival::Surv(time = AVAL, event = 1 - CNSR, type = "right", origin = 0)'`.
 #' @param by ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   A single column from `data`. Summary statistics will be stratified by this variable.
 #'   Default is `NULL`, which returns results for the unstratified model.
@@ -101,12 +101,16 @@
 #' ```
 #'
 #' @examples
+#' # Example 1 ----------------------------------
 #' tbl_survfit_quantiles(
 #'   data = cards::ADTTE,
 #'   by = "TRTA"
 #' )
+#'
+#' # Example 2 ----------------------------------
+#' tbl_survfit_quantiles(data = cards::ADTTE)
 tbl_survfit_quantiles <- function(data,
-                                  y = survival::Surv(time = AVAL, event = 1 - CNSR, type = "right", origin = 0),
+                                  y = "survival::Surv(time = AVAL, event = 1 - CNSR, type = 'right', origin = 0)",
                                   by = NULL,
                                   header = "Time to event",
                                   estimate_fun = label_style_number(digits = 1),
@@ -135,7 +139,7 @@ tbl_survfit_quantiles <- function(data,
   func_inputs <- as.list(environment())
 
   # subset data on complete row ------------------------------------------------
-  form <- glue("{y} ~ {ifelse(is_empty(by), 1, cardx::bt(by))}")
+  form <- glue("{y} ~ {ifelse(is_empty(by), 1, cardx::bt(by))}") |> stats::as.formula()
   data <- data[stats::complete.cases(data[all.vars(form)]), ]
 
   # get survival quantiles -----------------------------------------------------
