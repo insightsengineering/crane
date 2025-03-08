@@ -1,82 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="add_blank_row" timestamp="2025-03-07T17:45:59Z" hostname="f4e489931bb5" tests="1" skipped="0" failures="0" errors="0" time="2.268">
-    <testcase time="2.268" classname="character(0)" name="add_blank_row_works"/>
+  <testsuite name="add_blank_row" timestamp="2025-03-08T00:07:57Z" hostname="5fc226c452c8" tests="1" skipped="0" failures="0" errors="0" time="2.177">
+    <testcase time="2.177" classname="character(0)" name="add_blank_row_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-03-07T17:45:59Z" hostname="f4e489931bb5" tests="1" skipped="0" failures="0" errors="0" time="0.16">
-    <testcase time="0.16" classname="character(0)" name="add_blank_row_messaging"/>
+  <testsuite name="add_blank_row" timestamp="2025-03-08T00:07:57Z" hostname="5fc226c452c8" tests="1" skipped="0" failures="0" errors="0" time="0.15">
+    <testcase time="0.15" classname="character(0)" name="add_blank_row_messaging"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-07T17:45:59Z" hostname="f4e489931bb5" tests="1" skipped="0" failures="0" errors="1" time="0.371">
-    <testcase time="0.371" classname="character(0)" name="tbl_survfit_quantiles_works">
-      <error type="error" message="Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = &quot;TRTA&quot;)`: object 'AVAL' not found ('test-tbl_survfit_quantiles.R:6:3')">Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA")`: object 'AVAL' not found
-Backtrace:
-     ▆
-  1. ├─testthat::expect_silent(...) at test-tbl_survfit_quantiles.R:6:3
-  2. │ └─testthat:::quasi_capture(enquo(object), NULL, evaluate_promise)
-  3. │   ├─testthat (local) .capture(...)
-  4. │   │ ├─withr::with_output_sink(...)
-  5. │   │ │ └─base::force(code)
-  6. │   │ ├─base::withCallingHandlers(...)
-  7. │   │ └─base::withVisible(code)
-  8. │   └─rlang::eval_bare(quo_get_expr(.quo), quo_get_env(.quo))
-  9. └─crane::tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA")
- 10.   ├─crane:::check_string(y)
- 11.   │ └─crane:::check_class(...)
- 12.   └─survival::Surv(...)</error>
-    </testcase>
+  <testsuite name="tbl_demographics" timestamp="2025-03-08T00:08:00Z" hostname="5fc226c452c8" tests="1" skipped="0" failures="0" errors="0" time="3.564">
+    <testcase time="3.564" classname="character(0)" name="tbl_demographics_works"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-07T17:45:59Z" hostname="f4e489931bb5" tests="2" skipped="0" failures="1" errors="0" time="0.043">
-    <testcase time="0.0230000000000006" classname="character(0)" name="tbl_survfit_quantiles_by_messaging">
-      <failure type="failure" message="Snapshot of code has changed: ('test-tbl_survfit_quantiles.R:53:3')">Snapshot of code has changed:
-old[2:5] vs new[2:5]
-    tbl_survfit_quantiles(data = cards::ADTTE, by = everything())
-  Condition
-    Error in `tbl_survfit_quantiles()`:
--   ! The `by` argument must be empty or a single stratifying variable name.
-+   ! object 'AVAL' not found
-
-* Run `testthat::snapshot_accept('tbl_survfit_quantiles')` to accept the change.
-* Run `testthat::snapshot_review('tbl_survfit_quantiles')` to interactively review the change.</failure>
-    </testcase>
-    <testcase time="0.0199999999999996" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
+  <testsuite name="tbl_demographics" timestamp="2025-03-08T00:08:00Z" hostname="5fc226c452c8" tests="2" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_demographics_add_overall_works"/>
+    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_demographics_add_overall_works"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-07T17:45:59Z" hostname="f4e489931bb5" tests="1" skipped="0" failures="0" errors="1" time="0.002">
-    <testcase time="0.00199999999999978" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_">
-      <error type="error" message="Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = &quot;TRTA&quot;, estimate_fun = gtsummary::label_style_number(digits = 3))`: object 'AVAL' not found ('test-tbl_survfit_quantiles.R:73:3')">Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA", estimate_fun = gtsummary::label_style_number(digits = 3))`: object 'AVAL' not found
-Backtrace:
-    ▆
- 1. └─testthat::expect_snapshot(...) at test-tbl_survfit_quantiles.R:73:3
- 2.   └─rlang::cnd_signal(state$error)</error>
-    </testcase>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-03-08T00:08:00Z" hostname="5fc226c452c8" tests="1" skipped="0" failures="0" errors="0" time="0.068">
+    <testcase time="0.0679999999999996" classname="character(0)" name="theme_gtsummary_roche_works"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-07T17:45:59Z" hostname="f4e489931bb5" tests="1" skipped="0" failures="0" errors="1" time="0.029">
-    <testcase time="0.0290000000000008" classname="character(0)" name="tbl_survfit_quantiles_method.args_">
-      <error type="error" message="Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = &quot;TRTA&quot;, method.args = list(conf.int = 0.9,  ('test-tbl_survfit_quantiles.R:85:3')">Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA", method.args = list(conf.int = 0.9, 
-    conf.type = "logit"))`: object 'AVAL' not found
-Backtrace:
-     ▆
-  1. ├─testthat::expect_equal(...) at test-tbl_survfit_quantiles.R:85:3
-  2. │ └─testthat::quasi_label(enquo(object), label, arg = "object")
-  3. │   └─rlang::eval_bare(expr, quo_get_env(quo))
-  4. ├─dplyr::select(...)
-  5. ├─dplyr::mutate(...)
-  6. ├─dplyr::filter(...)
-  7. ├─gtsummary::gather_ard(...)
-  8. │ └─gtsummary:::check_class(x, "gtsummary")
-  9. └─crane::tbl_survfit_quantiles(...)
- 10.   ├─crane:::check_string(y)
- 11.   │ └─crane:::check_class(...)
- 12.   └─survival::Surv(...)</error>
-    </testcase>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-08T00:08:01Z" hostname="5fc226c452c8" tests="7" skipped="0" failures="0" errors="0" time="0.525">
+    <testcase time="0.522" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-03-07T17:45:59Z" hostname="f4e489931bb5" tests="1" skipped="0" failures="0" errors="0" time="0.098">
-    <testcase time="0.0979999999999999" classname="character(0)" name="theme_gtsummary_roche_works"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-08T00:08:01Z" hostname="5fc226c452c8" tests="2" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999978" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-03-07T17:46:02Z" hostname="f4e489931bb5" tests="1" skipped="0" failures="0" errors="0" time="2.938">
-    <testcase time="2.938" classname="character(0)" name="tbl_demographics_works"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-08T00:08:01Z" hostname="5fc226c452c8" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_"/>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-03-07T17:46:02Z" hostname="f4e489931bb5" tests="2" skipped="0" failures="0" errors="0" time="0.002">
-    <testcase time="0.00199999999999978" classname="character(0)" name="tbl_demographics_add_overall_works"/>
-    <testcase time="0" classname="character(0)" name="tbl_demographics_add_overall_works"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-08T00:08:01Z" hostname="5fc226c452c8" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999978" classname="character(0)" name="tbl_survfit_quantiles_method.args_"/>
   </testsuite>
 </testsuites>
