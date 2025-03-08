@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0.900826446280992" branch-rate="0" lines-covered="218" lines-valid="242" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2025-03-06 23:51:09.692147">
+<coverage line-rate="0.893004115226337" branch-rate="0" lines-covered="217" lines-valid="243" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2025-03-08 00:31:54.892267">
   <sources>
     <source>/__w/crane/crane/crane</source>
   </sources>
   <packages>
-    <package name="crane" line-rate="0.900826446280992" branch-rate="0" complexity="0">
+    <package name="crane" line-rate="0.893004115226337" branch-rate="0" complexity="0">
       <classes>
         <class name="add_blank_row.R" filename="R/add_blank_row.R" line-rate="1" branch-rate="0" complexity="0">
           <methods>
@@ -69,7 +69,7 @@
             <line number="61" hits="1" branch="false"/>
           </lines>
         </class>
-        <class name="attach.R" filename="R/attach.R" line-rate="0.9" branch-rate="0" complexity="0">
+        <class name="attach.R" filename="R/attach.R" line-rate="0.897959183673469" branch-rate="0" complexity="0">
           <methods>
             <method name="core_unloaded" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
@@ -79,8 +79,8 @@
             </method>
             <method name="same_library" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
-                <line number="11" hits="8" branch="false"/>
-                <line number="12" hits="8" branch="false"/>
+                <line number="11" hits="16" branch="false"/>
+                <line number="12" hits="16" branch="false"/>
               </lines>
             </method>
             <method name="crane_attach" signature="" line-rate="1" branch-rate="0" complexity="0">
@@ -93,7 +93,7 @@
                 <line number="23" hits="4" branch="false"/>
               </lines>
             </method>
-            <method name="crane_attach_message" signature="" line-rate="0.875" branch-rate="0" complexity="0">
+            <method name="crane_attach_message" signature="" line-rate="0.866666666666667" branch-rate="0" complexity="0">
               <lines>
                 <line number="27" hits="4" branch="false"/>
                 <line number="28" hits="0" branch="false"/>
@@ -101,68 +101,67 @@
                 <line number="32" hits="4" branch="false"/>
                 <line number="33" hits="4" branch="false"/>
                 <line number="35" hits="4" branch="false"/>
-                <line number="36" hits="4" branch="false"/>
+                <line number="37" hits="4" branch="false"/>
                 <line number="38" hits="4" branch="false"/>
                 <line number="39" hits="4" branch="false"/>
                 <line number="40" hits="4" branch="false"/>
-                <line number="41" hits="4" branch="false"/>
-                <line number="43" hits="4" branch="false"/>
-                <line number="44" hits="0" branch="false"/>
+                <line number="42" hits="4" branch="false"/>
+                <line number="43" hits="0" branch="false"/>
+                <line number="45" hits="4" branch="false"/>
                 <line number="46" hits="4" branch="false"/>
-                <line number="47" hits="4" branch="false"/>
-                <line number="49" hits="4" branch="false"/>
+                <line number="48" hits="4" branch="false"/>
               </lines>
             </method>
             <method name="package_version_h" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
-                <line number="53" hits="8" branch="false"/>
+                <line number="52" hits="16" branch="false"/>
               </lines>
             </method>
             <method name="highlight_version" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
-                <line number="57" hits="8" branch="false"/>
-                <line number="59" hits="8" branch="false"/>
-                <line number="60" hits="8" branch="false"/>
-                <line number="61" hits="8" branch="false"/>
-                <line number="62" hits="8" branch="false"/>
-                <line number="64" hits="8" branch="false"/>
-                <line number="65" hits="8" branch="false"/>
-                <line number="66" hits="8" branch="false"/>
+                <line number="56" hits="16" branch="false"/>
+                <line number="58" hits="16" branch="false"/>
+                <line number="59" hits="16" branch="false"/>
+                <line number="60" hits="16" branch="false"/>
+                <line number="61" hits="16" branch="false"/>
+                <line number="63" hits="16" branch="false"/>
+                <line number="64" hits="16" branch="false"/>
+                <line number="65" hits="16" branch="false"/>
               </lines>
             </method>
             <method name="inform_startup" signature="" line-rate="0.6" branch-rate="0" complexity="0">
               <lines>
-                <line number="72" hits="9" branch="false"/>
-                <line number="73" hits="0" branch="false"/>
-                <line number="75" hits="9" branch="false"/>
-                <line number="76" hits="0" branch="false"/>
-                <line number="79" hits="9" branch="false"/>
+                <line number="71" hits="9" branch="false"/>
+                <line number="72" hits="0" branch="false"/>
+                <line number="74" hits="9" branch="false"/>
+                <line number="75" hits="0" branch="false"/>
+                <line number="78" hits="9" branch="false"/>
               </lines>
             </method>
             <method name="invert" signature="" line-rate="0.75" branch-rate="0" complexity="0">
               <lines>
-                <line number="83" hits="4" branch="false"/>
-                <line number="84" hits="0" branch="false"/>
+                <line number="82" hits="4" branch="false"/>
+                <line number="83" hits="0" branch="false"/>
+                <line number="85" hits="4" branch="false"/>
                 <line number="86" hits="4" branch="false"/>
-                <line number="87" hits="4" branch="false"/>
               </lines>
             </method>
             <method name="crane_theme_message" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
+                <line number="91" hits="4" branch="false"/>
                 <line number="92" hits="4" branch="false"/>
                 <line number="93" hits="4" branch="false"/>
                 <line number="94" hits="4" branch="false"/>
                 <line number="95" hits="4" branch="false"/>
                 <line number="96" hits="4" branch="false"/>
-                <line number="97" hits="4" branch="false"/>
               </lines>
             </method>
           </methods>
           <lines>
             <line number="4" hits="4" branch="false"/>
             <line number="5" hits="4" branch="false"/>
-            <line number="11" hits="8" branch="false"/>
-            <line number="12" hits="8" branch="false"/>
+            <line number="11" hits="16" branch="false"/>
+            <line number="12" hits="16" branch="false"/>
             <line number="16" hits="4" branch="false"/>
             <line number="17" hits="4" branch="false"/>
             <line number="19" hits="4" branch="false"/>
@@ -175,40 +174,39 @@
             <line number="32" hits="4" branch="false"/>
             <line number="33" hits="4" branch="false"/>
             <line number="35" hits="4" branch="false"/>
-            <line number="36" hits="4" branch="false"/>
+            <line number="37" hits="4" branch="false"/>
             <line number="38" hits="4" branch="false"/>
             <line number="39" hits="4" branch="false"/>
             <line number="40" hits="4" branch="false"/>
-            <line number="41" hits="4" branch="false"/>
-            <line number="43" hits="4" branch="false"/>
-            <line number="44" hits="0" branch="false"/>
+            <line number="42" hits="4" branch="false"/>
+            <line number="43" hits="0" branch="false"/>
+            <line number="45" hits="4" branch="false"/>
             <line number="46" hits="4" branch="false"/>
-            <line number="47" hits="4" branch="false"/>
-            <line number="49" hits="4" branch="false"/>
-            <line number="53" hits="8" branch="false"/>
-            <line number="57" hits="8" branch="false"/>
-            <line number="59" hits="8" branch="false"/>
-            <line number="60" hits="8" branch="false"/>
-            <line number="61" hits="8" branch="false"/>
-            <line number="62" hits="8" branch="false"/>
-            <line number="64" hits="8" branch="false"/>
-            <line number="65" hits="8" branch="false"/>
-            <line number="66" hits="8" branch="false"/>
-            <line number="72" hits="9" branch="false"/>
-            <line number="73" hits="0" branch="false"/>
-            <line number="75" hits="9" branch="false"/>
-            <line number="76" hits="0" branch="false"/>
-            <line number="79" hits="9" branch="false"/>
-            <line number="83" hits="4" branch="false"/>
-            <line number="84" hits="0" branch="false"/>
+            <line number="48" hits="4" branch="false"/>
+            <line number="52" hits="16" branch="false"/>
+            <line number="56" hits="16" branch="false"/>
+            <line number="58" hits="16" branch="false"/>
+            <line number="59" hits="16" branch="false"/>
+            <line number="60" hits="16" branch="false"/>
+            <line number="61" hits="16" branch="false"/>
+            <line number="63" hits="16" branch="false"/>
+            <line number="64" hits="16" branch="false"/>
+            <line number="65" hits="16" branch="false"/>
+            <line number="71" hits="9" branch="false"/>
+            <line number="72" hits="0" branch="false"/>
+            <line number="74" hits="9" branch="false"/>
+            <line number="75" hits="0" branch="false"/>
+            <line number="78" hits="9" branch="false"/>
+            <line number="82" hits="4" branch="false"/>
+            <line number="83" hits="0" branch="false"/>
+            <line number="85" hits="4" branch="false"/>
             <line number="86" hits="4" branch="false"/>
-            <line number="87" hits="4" branch="false"/>
+            <line number="91" hits="4" branch="false"/>
             <line number="92" hits="4" branch="false"/>
             <line number="93" hits="4" branch="false"/>
             <line number="94" hits="4" branch="false"/>
             <line number="95" hits="4" branch="false"/>
             <line number="96" hits="4" branch="false"/>
-            <line number="97" hits="4" branch="false"/>
           </lines>
         </class>
         <class name="conflicts.R" filename="R/conflicts.R" line-rate="0.830985915492958" branch-rate="0" complexity="0">
@@ -283,29 +281,29 @@
             </method>
             <method name="confirm_conflict" signature="" line-rate="0.9" branch-rate="0" complexity="0">
               <lines>
-                <line number="83" hits="17" branch="false"/>
-                <line number="84" hits="17" branch="false"/>
-                <line number="85" hits="17" branch="false"/>
-                <line number="87" hits="17" branch="false"/>
+                <line number="83" hits="88" branch="false"/>
+                <line number="84" hits="88" branch="false"/>
+                <line number="85" hits="88" branch="false"/>
+                <line number="87" hits="88" branch="false"/>
                 <line number="88" hits="0" branch="false"/>
-                <line number="92" hits="17" branch="false"/>
-                <line number="93" hits="17" branch="false"/>
-                <line number="94" hits="17" branch="false"/>
-                <line number="95" hits="16" branch="false"/>
+                <line number="92" hits="88" branch="false"/>
+                <line number="93" hits="88" branch="false"/>
+                <line number="94" hits="88" branch="false"/>
+                <line number="95" hits="87" branch="false"/>
                 <line number="98" hits="1" branch="false"/>
               </lines>
             </method>
             <method name="ls_env" signature="" line-rate="0.444444444444444" branch-rate="0" complexity="0">
               <lines>
-                <line number="102" hits="27" branch="false"/>
-                <line number="105" hits="27" branch="false"/>
+                <line number="102" hits="35" branch="false"/>
+                <line number="105" hits="35" branch="false"/>
                 <line number="106" hits="0" branch="false"/>
-                <line number="109" hits="27" branch="false"/>
+                <line number="109" hits="35" branch="false"/>
                 <line number="110" hits="0" branch="false"/>
                 <line number="111" hits="0" branch="false"/>
                 <line number="112" hits="0" branch="false"/>
                 <line number="113" hits="0" branch="false"/>
-                <line number="116" hits="27" branch="false"/>
+                <line number="116" hits="35" branch="false"/>
               </lines>
             </method>
           </methods>
@@ -362,25 +360,39 @@
             <line number="74" hits="4" branch="false"/>
             <line number="75" hits="4" branch="false"/>
             <line number="78" hits="4" branch="false"/>
-            <line number="83" hits="17" branch="false"/>
-            <line number="84" hits="17" branch="false"/>
-            <line number="85" hits="17" branch="false"/>
-            <line number="87" hits="17" branch="false"/>
+            <line number="83" hits="88" branch="false"/>
+            <line number="84" hits="88" branch="false"/>
+            <line number="85" hits="88" branch="false"/>
+            <line number="87" hits="88" branch="false"/>
             <line number="88" hits="0" branch="false"/>
-            <line number="92" hits="17" branch="false"/>
-            <line number="93" hits="17" branch="false"/>
-            <line number="94" hits="17" branch="false"/>
-            <line number="95" hits="16" branch="false"/>
+            <line number="92" hits="88" branch="false"/>
+            <line number="93" hits="88" branch="false"/>
+            <line number="94" hits="88" branch="false"/>
+            <line number="95" hits="87" branch="false"/>
             <line number="98" hits="1" branch="false"/>
-            <line number="102" hits="27" branch="false"/>
-            <line number="105" hits="27" branch="false"/>
+            <line number="102" hits="35" branch="false"/>
+            <line number="105" hits="35" branch="false"/>
             <line number="106" hits="0" branch="false"/>
-            <line number="109" hits="27" branch="false"/>
+            <line number="109" hits="35" branch="false"/>
             <line number="110" hits="0" branch="false"/>
             <line number="111" hits="0" branch="false"/>
             <line number="112" hits="0" branch="false"/>
             <line number="113" hits="0" branch="false"/>
-            <line number="116" hits="27" branch="false"/>
+            <line number="116" hits="35" branch="false"/>
+          </lines>
+        </class>
+        <class name="crane-package.R" filename="R/crane-package.R" line-rate="0" branch-rate="0" complexity="0">
+          <methods>
+            <method name="silenced" signature="" line-rate="0" branch-rate="0" complexity="0">
+              <lines>
+                <line number="14" hits="0" branch="false"/>
+                <line number="15" hits="0" branch="false"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="14" hits="0" branch="false"/>
+            <line number="15" hits="0" branch="false"/>
           </lines>
         </class>
         <class name="label_roche.R" filename="R/label_roche.R" line-rate="0.125" branch-rate="0" complexity="0">
