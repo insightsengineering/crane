@@ -8,10 +8,3 @@
 ## usethis namespace: start
 ## usethis namespace: end
 NULL
-
-
-# silence notes about unused pkgs
-silenced <- function() {
-  cards::ard_continuous
-  cardx::ard_continuous
-}
