@@ -1,4 +1,4 @@
-core <- c("crane", "gtsummary")
+core <- c("crane", "gtsummary", "cards", "cardx")
 
 core_unloaded <- function() {
   search <- paste0("package:", core)
@@ -32,7 +32,6 @@ crane_attach_message <- function(to_load) {
     left = cli::style_bold("Attaching packages")
   )
 
-  to_load <- sort(to_load)
   versions <- vapply(to_load, package_version_h, character(1))
 
   packages <- paste0(
