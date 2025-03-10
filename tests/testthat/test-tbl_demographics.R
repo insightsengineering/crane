@@ -33,6 +33,7 @@ test_that("tbl_demographics() |> add_overall() works", {
       missing = "no"
     ) |>
       add_overall() |>
+      modify_header(label = "") |>
       as.data.frame()
   )
 
