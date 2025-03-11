@@ -17,7 +17,7 @@ tbl_survfit_quantiles(
 \item{data}{(\code{data.frame})\cr
 A data frame}
 
-\item{y}{(\code{string} of \code{expression})\cr
+\item{y}{(\code{string} or \code{expression})\cr
 A string or expression with the survival outcome, e.g. \code{survival::Surv(time, status)}.
 The default value is
 \code{survival::Surv(time = AVAL, event = 1 - CNSR, type = "right", origin = 0)}.}
@@ -132,6 +132,6 @@ tbl_survfit_quantiles(
   by = "TRTA"
 )
 
-# Example 2 ----------------------------------
+# Example 2: unstratified analysis -----------
 tbl_survfit_quantiles(data = cards::ADTTE)
 }

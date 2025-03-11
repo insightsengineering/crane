@@ -25,7 +25,3 @@ gtsummary::all_stat_cols
 #' @importFrom gtsummary label_style_number
 gtsummary::label_style_number
 
-# ggsurvfit --------------------------------------------------------------------
-#' @export
-#' @importFrom ggsurvfit Surv_CNSR
-ggsurvfit::Surv_CNSR

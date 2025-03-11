@@ -109,7 +109,7 @@
 #'   by = "TRTA"
 #' )
 #'
-#' # Example 2: unstratified analysis ----------------------------------
+#' # Example 2: unstratified analysis -----------
 #' tbl_survfit_quantiles(data = cards::ADTTE)
 tbl_survfit_quantiles <- function(data,
                                   y = "survival::Surv(time = AVAL, event = 1 - CNSR, type = 'right', origin = 0)",
