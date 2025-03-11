@@ -8,3 +8,8 @@
 ## usethis namespace: start
 ## usethis namespace: end
 NULL
+
+# using pkgs to silence NOTE
+.silence <- function() {
+  broom::tidy
+}
