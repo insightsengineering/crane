@@ -1,38 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="add_blank_row" timestamp="2025-03-11T14:33:08Z" hostname="619e6f9ab63d" tests="1" skipped="0" failures="0" errors="0" time="1.546">
-    <testcase time="1.546" classname="character(0)" name="add_blank_row_works"/>
+  <testsuite name="add_blank_row" timestamp="2025-03-11T14:33:10Z" hostname="fcd58b6c2643" tests="1" skipped="0" failures="0" errors="0" time="1.739">
+    <testcase time="1.739" classname="character(0)" name="add_blank_row_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-03-11T14:33:08Z" hostname="619e6f9ab63d" tests="1" skipped="0" failures="0" errors="0" time="0.024">
-    <testcase time="0.024" classname="character(0)" name="add_blank_row_messaging"/>
+  <testsuite name="add_blank_row" timestamp="2025-03-11T14:33:10Z" hostname="fcd58b6c2643" tests="1" skipped="1" failures="0" errors="0" time="0.028">
+    <testcase time="0.028" classname="character(0)" name="add_blank_row_messaging">
+      <skipped message="Reason: On CRAN ('test-add_blank_row.R:15:3')"/>
+    </testcase>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-03-11T14:33:11Z" hostname="619e6f9ab63d" tests="1" skipped="0" failures="0" errors="0" time="3.818">
-    <testcase time="3.818" classname="character(0)" name="tbl_demographics_works"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-11T14:33:13Z" hostname="fcd58b6c2643" tests="2" skipped="1" failures="0" errors="0" time="3.261">
+    <testcase time="3.26" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_works">
+      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:13:3')"/>
+    </testcase>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-03-11T14:33:11Z" hostname="619e6f9ab63d" tests="2" skipped="0" failures="0" errors="0" time="0.002">
-    <testcase time="0.00200000000000067" classname="character(0)" name="tbl_demographics_add_overall_works"/>
-    <testcase time="0" classname="character(0)" name="tbl_demographics_add_overall_works"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-11T14:33:13Z" hostname="fcd58b6c2643" tests="1" skipped="1" failures="0" errors="0" time="0.017">
+    <testcase time="0.0170000000000003" classname="character(0)" name="tbl_survfit_quantiles_by_messaging">
+      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:53:3')"/>
+    </testcase>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-03-11T14:33:11Z" hostname="619e6f9ab63d" tests="1" skipped="0" failures="0" errors="0" time="0.066">
-    <testcase time="0.0659999999999998" classname="character(0)" name="theme_gtsummary_roche_works"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-11T14:33:13Z" hostname="fcd58b6c2643" tests="1" skipped="1" failures="0" errors="0" time="0.018">
+    <testcase time="0.0179999999999998" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_">
+      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:73:3')"/>
+    </testcase>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-11T14:33:12Z" hostname="619e6f9ab63d" tests="7" skipped="0" failures="0" errors="0" time="0.832">
-    <testcase time="0.829" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-11T14:33:13Z" hostname="fcd58b6c2643" tests="1" skipped="0" failures="0" errors="0" time="0.013">
+    <testcase time="0.0129999999999999" classname="character(0)" name="tbl_survfit_quantiles_method.args_"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-11T14:33:12Z" hostname="619e6f9ab63d" tests="2" skipped="0" failures="0" errors="0" time="0.002">
-    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-03-11T14:33:13Z" hostname="fcd58b6c2643" tests="1" skipped="1" failures="0" errors="0" time="0.057">
+    <testcase time="0.0570000000000004" classname="character(0)" name="theme_gtsummary_roche_works">
+      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:3:3')"/>
+    </testcase>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-11T14:33:12Z" hostname="619e6f9ab63d" tests="1" skipped="0" failures="0" errors="0" time="0.001">
-    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_"/>
+  <testsuite name="tbl_demographics" timestamp="2025-03-11T14:33:14Z" hostname="fcd58b6c2643" tests="1" skipped="0" failures="0" errors="0" time="0.89">
+    <testcase time="0.89" classname="character(0)" name="tbl_demographics_works"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-11T14:33:12Z" hostname="619e6f9ab63d" tests="1" skipped="0" failures="0" errors="0" time="0.001">
-    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_method.args_"/>
+  <testsuite name="tbl_demographics" timestamp="2025-03-11T14:33:14Z" hostname="fcd58b6c2643" tests="2" skipped="1" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999978" classname="character(0)" name="tbl_demographics_add_overall_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_demographics_add_overall_works">
+      <skipped message="Reason: On CRAN ('test-tbl_demographics.R:40:3')"/>
+    </testcase>
   </testsuite>
 </testsuites>
