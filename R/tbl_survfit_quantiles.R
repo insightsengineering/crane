@@ -7,7 +7,7 @@
 #' @param data (`data.frame`)\cr
 #'   A data frame
 #' @param y (`string` of `expression`)\cr
-#'   A string oe expression with the survival outcome, e.g. `survival::Surv(time, status)`.
+#'   A string or expression with the survival outcome, e.g. `survival::Surv(time, status)`.
 #'   The default value is
 #'   `survival::Surv(time = AVAL, event = 1 - CNSR, type = "right", origin = 0)`.
 #' @param by ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
@@ -258,4 +258,3 @@ tbl_survfit_quantiles <- function(data,
   else x <- expr_deparse(quo_get_expr(x))  # styler: off
   x
 }
-

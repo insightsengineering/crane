@@ -18,7 +18,7 @@ tbl_survfit_quantiles(
 A data frame}
 
 \item{y}{(\code{string} of \code{expression})\cr
-A string oe expression with the survival outcome, e.g. \code{survival::Surv(time, status)}.
+A string or expression with the survival outcome, e.g. \code{survival::Surv(time, status)}.
 The default value is
 \code{survival::Surv(time = AVAL, event = 1 - CNSR, type = "right", origin = 0)}.}
 
