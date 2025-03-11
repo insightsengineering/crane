@@ -6,7 +6,7 @@
 #'
 #' @param data (`data.frame`)\cr
 #'   A data frame
-#' @param y (`string` of `expression`)\cr
+#' @param y (`string` or `expression`)\cr
 #'   A string or expression with the survival outcome, e.g. `survival::Surv(time, status)`.
 #'   The default value is
 #'   `survival::Surv(time = AVAL, event = 1 - CNSR, type = "right", origin = 0)`.
