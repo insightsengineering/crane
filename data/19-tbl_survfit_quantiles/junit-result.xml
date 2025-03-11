@@ -1,44 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="add_blank_row" timestamp="2025-03-11T04:09:20Z" hostname="8b7b6d388026" tests="1" skipped="0" failures="0" errors="0" time="2.21">
-    <testcase time="2.21" classname="character(0)" name="add_blank_row_works"/>
+  <testsuite name="add_blank_row" timestamp="2025-03-11T14:27:59Z" hostname="e9ea2f518f7a" tests="1" skipped="0" failures="0" errors="0" time="1.55">
+    <testcase time="1.55" classname="character(0)" name="add_blank_row_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-03-11T04:09:20Z" hostname="8b7b6d388026" tests="1" skipped="1" failures="0" errors="0" time="0.015">
-    <testcase time="0.0150000000000001" classname="character(0)" name="add_blank_row_messaging">
-      <skipped message="Reason: On CRAN ('test-add_blank_row.R:15:3')"/>
+  <testsuite name="add_blank_row" timestamp="2025-03-11T14:27:59Z" hostname="e9ea2f518f7a" tests="1" skipped="0" failures="0" errors="0" time="0.021">
+    <testcase time="0.0209999999999999" classname="character(0)" name="add_blank_row_messaging"/>
+  </testsuite>
+  <testsuite name="tbl_demographics" timestamp="2025-03-11T14:28:03Z" hostname="e9ea2f518f7a" tests="1" skipped="0" failures="0" errors="0" time="3.96">
+    <testcase time="3.96" classname="character(0)" name="tbl_demographics_works"/>
+  </testsuite>
+  <testsuite name="tbl_demographics" timestamp="2025-03-11T14:28:03Z" hostname="e9ea2f518f7a" tests="2" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_demographics_add_overall_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_demographics_add_overall_works"/>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-03-11T14:28:03Z" hostname="e9ea2f518f7a" tests="1" skipped="0" failures="0" errors="0" time="0.073">
+    <testcase time="0.0729999999999995" classname="character(0)" name="theme_gtsummary_roche_works"/>
+  </testsuite>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-11T14:28:04Z" hostname="e9ea2f518f7a" tests="7" skipped="0" failures="0" errors="1" time="0.639">
+    <testcase time="0.636" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_works">
+      <error type="error" message="Error in `Surv_CNSR()`: could not find function &quot;Surv_CNSR&quot; ('test-tbl_survfit_quantiles.R:37:3')">Error in `Surv_CNSR()`: could not find function "Surv_CNSR"
+Backtrace:
+    ▆
+ 1. ├─stats::model.frame(...)
+ 2. └─stats::model.frame.default(...)
+ 3.   └─base::eval(predvars, data, env)
+ 4.     └─base::eval(predvars, data, env)</error>
     </testcase>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-11T04:09:23Z" hostname="8b7b6d388026" tests="2" skipped="1" failures="0" errors="0" time="2.264">
-    <testcase time="2.264" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:13:3')"/>
-    </testcase>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-11T14:28:04Z" hostname="e9ea2f518f7a" tests="2" skipped="0" failures="0" errors="0" time="0.019">
+    <testcase time="0.0179999999999998" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
+    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-11T04:09:23Z" hostname="8b7b6d388026" tests="1" skipped="1" failures="0" errors="0" time="0.019">
-    <testcase time="0.0190000000000001" classname="character(0)" name="tbl_survfit_quantiles_by_messaging">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:53:3')"/>
-    </testcase>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-11T14:28:04Z" hostname="e9ea2f518f7a" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-11T04:09:23Z" hostname="8b7b6d388026" tests="1" skipped="1" failures="0" errors="0" time="0.021">
-    <testcase time="0.0209999999999999" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:73:3')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-11T04:09:23Z" hostname="8b7b6d388026" tests="1" skipped="0" failures="0" errors="0" time="0.013">
-    <testcase time="0.0129999999999999" classname="character(0)" name="tbl_survfit_quantiles_method.args_"/>
-  </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-03-11T04:09:23Z" hostname="8b7b6d388026" tests="1" skipped="1" failures="0" errors="0" time="0.051">
-    <testcase time="0.0510000000000002" classname="character(0)" name="theme_gtsummary_roche_works">
-      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:3:3')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-03-11T04:09:24Z" hostname="8b7b6d388026" tests="1" skipped="0" failures="0" errors="0" time="1.212">
-    <testcase time="1.212" classname="character(0)" name="tbl_demographics_works"/>
-  </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-03-11T04:09:24Z" hostname="8b7b6d388026" tests="2" skipped="1" failures="0" errors="0" time="0.002">
-    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_demographics_add_overall_works"/>
-    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_demographics_add_overall_works">
-      <skipped message="Reason: On CRAN ('test-tbl_demographics.R:40:3')"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-11T14:28:04Z" hostname="e9ea2f518f7a" tests="1" skipped="0" failures="0" errors="1" time="0.001">
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_method.args_">
+      <error type="error" message="Error in `Surv_CNSR()`: could not find function &quot;Surv_CNSR&quot; ('test-tbl_survfit_quantiles.R:85:3')">Error in `Surv_CNSR()`: could not find function "Surv_CNSR"
+Backtrace:
+    ▆
+ 1. ├─stats::model.frame(formula = Surv_CNSR() ~ TRTA, data = cards::ADTTE)
+ 2. └─stats::model.frame.default(formula = Surv_CNSR() ~ TRTA, data = cards::ADTTE)
+ 3.   └─base::eval(predvars, data, env)
+ 4.     └─base::eval(predvars, data, env)</error>
     </testcase>
   </testsuite>
 </testsuites>
