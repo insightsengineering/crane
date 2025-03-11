@@ -68,7 +68,7 @@ Here's the general outline for creating this table directly from ARDs.
 ard_surv_quantiles <-
   cardx::ard_survival_survfit(
     x = cards::ADTTE,
-    y = Surv_CNSR(),
+    y = survival::Surv(time = AVAL, event = 1 - CNSR, type = 'right', origin = 0),
     variables = "TRTA",
     probs = c(0.25, 0.50, 0.75)
   ) |>

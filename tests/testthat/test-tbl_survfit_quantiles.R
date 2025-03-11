@@ -42,7 +42,7 @@ test_that("tbl_survfit_quantiles() works", {
       gtsummary::gather_ard() |>
       dplyr::filter(variable == "prob") |>
       dplyr::select(-fmt_fn),
-    survival::survfit(Surv_CNSR() ~ 1, data = cards::ADTTE, id = SEX) |>
+    survival::survfit(survival::Surv(time = AVAL, event = 1 - CNSR) ~ 1, data = cards::ADTTE, id = SEX) |>
       cardx::ard_survival_survfit(probs = c(0.25, 0.50, 0.75)) |>
       dplyr::select(-fmt_fn)
   )
@@ -93,7 +93,7 @@ test_that("tbl_survfit_quantiles(method.args)", {
       dplyr::mutate(group1_level = map(group1_level, as.character)) |>
       dplyr::select(-"fmt_fn"),
     cardx::ard_survival_survfit(
-      survival::survfit(Surv_CNSR() ~ TRTA, data = cards::ADTTE, conf.int = 0.90, conf.type = "logit"),
+      survival::survfit(survival::Surv(time = AVAL, event = 1 - CNSR) ~ TRTA, data = cards::ADTTE, conf.int = 0.90, conf.type = "logit"),
       probs = c(0.25, 0.50, 0.75)
     ) |>
       dplyr::mutate(group1_level = map(group1_level, as.character)) |>
