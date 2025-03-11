@@ -1,13 +1,15 @@
 #' Survival Quantiles
 #'
 #' Create a gtsummary table with Kaplan-Meier estimated survival quantiles.
+#' If you must further customize the way these results are presented,
+#' see the Details section below for the full details.
 #'
 #' @param data (`data.frame`)\cr
 #'   A data frame
-#' @param y (`string`)\cr
-#'   A string with the survival outcome, e.g. `'survival::Surv(time, status)'`.
+#' @param y (`string` of `expression`)\cr
+#'   A string oe expression with the survival outcome, e.g. `survival::Surv(time, status)`.
 #'   The default value is
-#'   `'survival::Surv(time = AVAL, event = 1 - CNSR, type = "right", origin = 0)'`.
+#'   `survival::Surv(time = AVAL, event = 1 - CNSR, type = "right", origin = 0)`.
 #' @param by ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   A single column from `data`. Summary statistics will be stratified by this variable.
 #'   Default is `NULL`, which returns results for the unstratified model.
@@ -110,7 +112,7 @@
 #' # Example 2 ----------------------------------
 #' tbl_survfit_quantiles(data = cards::ADTTE)
 tbl_survfit_quantiles <- function(data,
-                                  y = "survival::Surv(time = AVAL, event = 1 - CNSR, type = 'right', origin = 0)",
+                                  y = survival::Surv(time = AVAL, event = 1 - CNSR, type = 'right', origin = 0),
                                   by = NULL,
                                   header = "Time to event",
                                   estimate_fun = label_style_number(digits = 1),
@@ -120,7 +122,6 @@ tbl_survfit_quantiles <- function(data,
   # check inputs ---------------------------------------------------------------
   set_cli_abort_call()
   check_not_missing(data)
-  check_string(y)
   check_string(header)
   cards::process_selectors(data, by = {{ by }})
   check_class(estimate_fun, "function")
@@ -136,6 +137,7 @@ tbl_survfit_quantiles <- function(data,
       call = get_cli_abort_call()
     )
   }
+  y <- .expr_as_string({{ y }}) # convert y to string (if not already)
   func_inputs <- as.list(environment())
 
   # subset data on complete row ------------------------------------------------
@@ -247,3 +249,13 @@ tbl_survfit_quantiles <- function(data,
   tbl_survift_quantiles$inputs <- func_inputs
   tbl_survift_quantiles
 }
+
+.expr_as_string <- function(x) {
+  x <- enquo(x)
+  # if a character was passed, return it as is
+  if (tryCatch(is.character(eval_tidy(x)), error = \(e) FALSE)) x <- eval_tidy(x) # styler: off
+  # otherwise, convert expr to string
+  else x <- expr_deparse(quo_get_expr(x))  # styler: off
+  x
+}
+

@@ -6,7 +6,7 @@
 \usage{
 tbl_survfit_quantiles(
   data,
-  y = "survival::Surv(time = AVAL, event = 1 - CNSR, type = 'right', origin = 0)",
+  y = survival::Surv(time = AVAL, event = 1 - CNSR, type = "right", origin = 0),
   by = NULL,
   header = "Time to event",
   estimate_fun = label_style_number(digits = 1),
@@ -17,10 +17,10 @@ tbl_survfit_quantiles(
 \item{data}{(\code{data.frame})\cr
 A data frame}
 
-\item{y}{(\code{string})\cr
-A string with the survival outcome, e.g. \code{'survival::Surv(time, status)'}.
+\item{y}{(\code{string} of \code{expression})\cr
+A string oe expression with the survival outcome, e.g. \code{survival::Surv(time, status)}.
 The default value is
-\code{'survival::Surv(time = AVAL, event = 1 - CNSR, type = "right", origin = 0)'}.}
+\code{survival::Surv(time = AVAL, event = 1 - CNSR, type = "right", origin = 0)}.}
 
 \item{by}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 A single column from \code{data}. Summary statistics will be stratified by this variable.
@@ -47,6 +47,8 @@ a gtsummary table
 }
 \description{
 Create a gtsummary table with Kaplan-Meier estimated survival quantiles.
+If you must further customize the way these results are presented,
+see the Details section below for the full details.
 }
 \section{ARD-first}{
 
