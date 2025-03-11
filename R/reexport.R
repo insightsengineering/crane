@@ -24,4 +24,3 @@ gtsummary::all_stat_cols
 #' @export
 #' @importFrom gtsummary label_style_number
 gtsummary::label_style_number
-
