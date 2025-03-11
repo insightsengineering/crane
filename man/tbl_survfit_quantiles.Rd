@@ -6,7 +6,7 @@
 \usage{
 tbl_survfit_quantiles(
   data,
-  y = survival::Surv(time = AVAL, event = 1 - CNSR, type = "right", origin = 0),
+  y = "survival::Surv(time = AVAL, event = 1 - CNSR, type = 'right', origin = 0)",
   by = NULL,
   header = "Time to event",
   estimate_fun = label_style_number(digits = 1),
