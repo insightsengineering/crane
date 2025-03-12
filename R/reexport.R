@@ -16,3 +16,11 @@ gtsummary::all_categorical
 #' @export
 #' @importFrom gtsummary all_dichotomous
 gtsummary::all_dichotomous
+
+#' @export
+#' @importFrom gtsummary all_stat_cols
+gtsummary::all_stat_cols
+
+#' @export
+#' @importFrom gtsummary label_style_number
+gtsummary::label_style_number
