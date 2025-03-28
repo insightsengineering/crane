@@ -19,7 +19,7 @@
 #' tbl_demographics(trial, by = trt, include = c(age, grade))
 #'
 #' reset_gtsummary_theme()
-theme_gtsummary_roche <- function(set_theme = TRUE, font_size = 8, border = flextable::fp_border_default(width = 0.5)) {
+theme_gtsummary_roche <- function(set_theme = TRUE, font_size = 8) {
   # start with the compact theme -----------------------------------------------
   lst_theme <- gtsummary::theme_gtsummary_compact(set_theme = FALSE, font_size = font_size)
   lst_theme$`pkgwide-str:theme_name` <- "Roche"
