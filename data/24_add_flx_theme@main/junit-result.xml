@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="add_blank_row" timestamp="2025-03-28T17:11:33Z" hostname="0af6f187416b" tests="1" skipped="0" failures="0" errors="0" time="1.92">
-    <testcase time="1.92" classname="character(0)" name="add_blank_row_works"/>
+  <testsuite name="add_blank_row" timestamp="2025-03-28T17:11:34Z" hostname="12a0bf3cdbfd" tests="1" skipped="0" failures="0" errors="0" time="1.944">
+    <testcase time="1.944" classname="character(0)" name="add_blank_row_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-03-28T17:11:33Z" hostname="0af6f187416b" tests="1" skipped="1" failures="0" errors="0" time="0.089">
-    <testcase time="0.089" classname="character(0)" name="add_blank_row_messaging">
-      <skipped message="Reason: On CRAN ('test-add_blank_row.R:15:3')"/>
-    </testcase>
+  <testsuite name="add_blank_row" timestamp="2025-03-28T17:11:34Z" hostname="12a0bf3cdbfd" tests="1" skipped="0" failures="0" errors="0" time="0.09">
+    <testcase time="0.0900000000000003" classname="character(0)" name="add_blank_row_messaging"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-28T17:11:34Z" hostname="0af6f187416b" tests="1" skipped="0" failures="0" errors="1" time="1.069">
-    <testcase time="1.069" classname="character(0)" name="tbl_survfit_quantiles_works">
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-28T17:11:36Z" hostname="12a0bf3cdbfd" tests="1" skipped="0" failures="0" errors="1" time="1.148">
+    <testcase time="1.148" classname="character(0)" name="tbl_survfit_quantiles_works">
       <error type="error" message="&lt;rlib_error_package_not_found/rlang_error/error/condition&gt; ('test-tbl_survfit_quantiles.R:6:3')">&lt;rlib_error_package_not_found/rlang_error/error/condition&gt;
 Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA")`: The package "broom" (&gt;= 1.0.7.9000) is required.
 Backtrace:
@@ -37,13 +35,12 @@ Backtrace:
  21.         └─rlang::check_installed(...)</error>
     </testcase>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-28T17:11:34Z" hostname="0af6f187416b" tests="1" skipped="1" failures="0" errors="0" time="0.038">
-    <testcase time="0.0380000000000003" classname="character(0)" name="tbl_survfit_quantiles_by_messaging">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:53:3')"/>
-    </testcase>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-28T17:11:36Z" hostname="12a0bf3cdbfd" tests="2" skipped="0" failures="0" errors="0" time="0.031">
+    <testcase time="0.0299999999999994" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
+    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-28T17:11:34Z" hostname="0af6f187416b" tests="1" skipped="0" failures="0" errors="1" time="0.022">
-    <testcase time="0.0220000000000002" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_">
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-28T17:11:36Z" hostname="12a0bf3cdbfd" tests="1" skipped="0" failures="0" errors="1" time="0.001">
+    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_">
       <error type="error" message="&lt;rlib_error_package_not_found/rlang_error/error/condition&gt; ('test-tbl_survfit_quantiles.R:73:3')">&lt;rlib_error_package_not_found/rlang_error/error/condition&gt;
 Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA", estimate_fun = gtsummary::label_style_number(digits = 3))`: The package "broom" (&gt;= 1.0.7.9000) is required.
 Backtrace:
@@ -52,8 +49,8 @@ Backtrace:
  2.   └─rlang::cnd_signal(state$error)</error>
     </testcase>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-28T17:11:34Z" hostname="0af6f187416b" tests="1" skipped="0" failures="0" errors="1" time="0.018">
-    <testcase time="0.0179999999999998" classname="character(0)" name="tbl_survfit_quantiles_method.args_">
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-28T17:11:36Z" hostname="12a0bf3cdbfd" tests="1" skipped="0" failures="0" errors="1" time="0.036">
+    <testcase time="0.0359999999999996" classname="character(0)" name="tbl_survfit_quantiles_method.args_">
       <error type="error" message="&lt;rlib_error_package_not_found/rlang_error/error/condition&gt; ('test-tbl_survfit_quantiles.R:85:3')">&lt;rlib_error_package_not_found/rlang_error/error/condition&gt;
 Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA", method.args = list(conf.int = 0.9, 
     conf.type = "logit"))`: The package "broom" (&gt;= 1.0.7.9000) is required.
@@ -82,23 +79,17 @@ Backtrace:
  21.         └─rlang::check_installed(...)</error>
     </testcase>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-03-28T17:11:35Z" hostname="0af6f187416b" tests="1" skipped="1" failures="0" errors="0" time="0.575">
-    <testcase time="0.575" classname="character(0)" name="theme_gtsummary_roche_works">
-      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:3:3')"/>
-    </testcase>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-03-28T17:11:36Z" hostname="12a0bf3cdbfd" tests="1" skipped="0" failures="0" errors="0" time="0.617">
+    <testcase time="0.617" classname="character(0)" name="theme_gtsummary_roche_works"/>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-03-28T17:11:35Z" hostname="0af6f187416b" tests="1" skipped="1" failures="0" errors="0" time="0.011">
-    <testcase time="0.0110000000000001" classname="character(0)" name="theme_gtsummary_roche_adds_relevant_flextable_directives">
-      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:12:3')"/>
-    </testcase>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-03-28T17:11:36Z" hostname="12a0bf3cdbfd" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.000999999999999446" classname="character(0)" name="theme_gtsummary_roche_adds_relevant_flextable_directives"/>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-03-28T17:11:36Z" hostname="0af6f187416b" tests="1" skipped="0" failures="0" errors="0" time="1.673">
-    <testcase time="1.673" classname="character(0)" name="tbl_demographics_works"/>
+  <testsuite name="tbl_demographics" timestamp="2025-03-28T17:11:38Z" hostname="12a0bf3cdbfd" tests="1" skipped="0" failures="0" errors="0" time="1.734">
+    <testcase time="1.734" classname="character(0)" name="tbl_demographics_works"/>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-03-28T17:11:36Z" hostname="0af6f187416b" tests="2" skipped="1" failures="0" errors="0" time="0.002">
-    <testcase time="0.00199999999999978" classname="character(0)" name="tbl_demographics_add_overall_works"/>
-    <testcase time="0" classname="character(0)" name="tbl_demographics_add_overall_works">
-      <skipped message="Reason: On CRAN ('test-tbl_demographics.R:40:3')"/>
-    </testcase>
+  <testsuite name="tbl_demographics" timestamp="2025-03-28T17:11:38Z" hostname="12a0bf3cdbfd" tests="2" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_demographics_add_overall_works"/>
+    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_demographics_add_overall_works"/>
   </testsuite>
 </testsuites>
