@@ -30,11 +30,9 @@ theme_gtsummary_roche <- function(set_theme = TRUE, font_size = 8, border = flex
       list(
         "tbl_summary-fn:percent_fun" = gtsummary::label_style_number(digits = 1, scale = 100),
         "pkgwide-fn:pvalue_fun" = label_roche_pvalue(),
-        "pkgwide-fun:pre_conversion" = gtsummary::bold_labels(),
         "pkgwide-str:print_engine" = "flextable"
       )
     )
-
 
   # use arial font for flextables ----------------------------------------------
   lst_theme$`as_flex_table-lst:addl_cmds` <-
