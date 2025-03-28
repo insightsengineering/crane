@@ -5,10 +5,9 @@
 #' - Calls the [`gtsummary::theme_gtsummary_compact()`] theme.
 #' - Uses `label_roche_pvalue()` as the default formatting function for all p-values.
 #' - Defaults to a mono-spaced font for gt tables.
+#' - Border defaults to `flextable::fp_border_default(width = 0.5)`.
 #'
 #' @inheritParams gtsummary::theme_gtsummary_compact
-#' @param border (`fp_border`)\cr
-#'   Border style. Defaults to `flextable::fp_border_default(width = 0.5)`.
 #'
 #' @return theme list
 #' @export
@@ -35,6 +34,7 @@ theme_gtsummary_roche <- function(set_theme = TRUE, font_size = 8) {
     )
 
   # use arial font for flextables ----------------------------------------------
+  border <- flextable::fp_border_default(width = 0.5)
   lst_theme$`as_flex_table-lst:addl_cmds` <-
     c(
       lst_theme$`as_flex_table-lst:addl_cmds`,
@@ -51,25 +51,6 @@ theme_gtsummary_roche <- function(set_theme = TRUE, font_size = 8) {
         valign = rlang::expr(flextable::line_spacing(space = 1, part = "all"))
       )
     )
-  # todo:
-  # * vertical padding different for label rows (3 + 0.2)
-  # * horizontal padding has various different defaults
-  # * section_properties (landscape e.g.): officer::body_set_default_section(doc, section_properties)
-  # * metadata: do.call(officer::set_doc_properties, c(list("x" = doc), doc_metadata))
-#   } else { # A4
-# page_size <- officer::page_size(
-#     orient = orientation,
-#     width = 8.27, height = 11.69
-#   )
-# }
-#
-# # Final output
-# officer::prop_section(
-#   page_size = page_size,
-#   type = "continuous",
-#   page_margins = margins_potrait()
-# )
-
 
   # add a monospace font for gt ------------------------------------------------
   lst_theme$`as_gt-lst:addl_cmds` <-
@@ -77,7 +58,6 @@ theme_gtsummary_roche <- function(set_theme = TRUE, font_size = 8) {
       lst_theme$`as_gt-lst:addl_cmds`,
       list(font_type = rlang::expr(gt::opt_table_font(stack = "monospace-code")))
     )
-
 
   # finishing up ---------------------------------------------------------------
   if (set_theme == TRUE) gtsummary::set_gtsummary_theme(lst_theme)
