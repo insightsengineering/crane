@@ -1,95 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="add_blank_row" timestamp="2025-03-28T17:11:34Z" hostname="12a0bf3cdbfd" tests="1" skipped="0" failures="0" errors="0" time="1.944">
-    <testcase time="1.944" classname="character(0)" name="add_blank_row_works"/>
+  <testsuite name="add_blank_row" timestamp="2025-03-29T03:16:18Z" hostname="b0cab66074d5" tests="1" skipped="0" failures="0" errors="0" time="1.937">
+    <testcase time="1.937" classname="character(0)" name="add_blank_row_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-03-28T17:11:34Z" hostname="12a0bf3cdbfd" tests="1" skipped="0" failures="0" errors="0" time="0.09">
-    <testcase time="0.0900000000000003" classname="character(0)" name="add_blank_row_messaging"/>
+  <testsuite name="add_blank_row" timestamp="2025-03-29T03:16:18Z" hostname="b0cab66074d5" tests="1" skipped="0" failures="0" errors="0" time="0.093">
+    <testcase time="0.093" classname="character(0)" name="add_blank_row_messaging"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-28T17:11:36Z" hostname="12a0bf3cdbfd" tests="1" skipped="0" failures="0" errors="1" time="1.148">
-    <testcase time="1.148" classname="character(0)" name="tbl_survfit_quantiles_works">
-      <error type="error" message="&lt;rlib_error_package_not_found/rlang_error/error/condition&gt; ('test-tbl_survfit_quantiles.R:6:3')">&lt;rlib_error_package_not_found/rlang_error/error/condition&gt;
-Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA")`: The package "broom" (&gt;= 1.0.7.9000) is required.
-Backtrace:
-     ▆
-  1. ├─testthat::expect_silent(...) at test-tbl_survfit_quantiles.R:6:3
-  2. │ └─testthat:::quasi_capture(enquo(object), NULL, evaluate_promise)
-  3. │   ├─testthat (local) .capture(...)
-  4. │   │ ├─withr::with_output_sink(...)
-  5. │   │ │ └─base::force(code)
-  6. │   │ ├─base::withCallingHandlers(...)
-  7. │   │ └─base::withVisible(code)
-  8. │   └─rlang::eval_bare(quo_get_expr(.quo), quo_get_env(.quo))
-  9. └─crane::tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA")
- 10.   ├─cards::update_ard_fmt_fn(...)
- 11.   │ └─cards:::check_class(x, "card")
- 12.   ├─cardx::ard_survival_survfit(...)
- 13.   └─cardx:::ard_survival_survfit.data.frame(...)
- 14.     ├─cardx:::.restore_original_column_types(...)
- 15.     │ └─dplyr::select(ard, cards::all_ard_groups("names"))
- 16.     ├─cardx::ard_survival_survfit(...)
- 17.     └─cardx:::ard_survival_survfit.survfit(...)
- 18.       └─cardx:::check_pkg_installed(c("survival", "broom"))
- 19.         ├─base::suppressWarnings(...)
- 20.         │ └─base::withCallingHandlers(...)
- 21.         └─rlang::check_installed(...)</error>
-    </testcase>
+  <testsuite name="tbl_demographics" timestamp="2025-03-29T03:16:21Z" hostname="b0cab66074d5" tests="1" skipped="0" failures="0" errors="0" time="3.485">
+    <testcase time="3.485" classname="character(0)" name="tbl_demographics_works"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-28T17:11:36Z" hostname="12a0bf3cdbfd" tests="2" skipped="0" failures="0" errors="0" time="0.031">
-    <testcase time="0.0299999999999994" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
-    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
+  <testsuite name="tbl_demographics" timestamp="2025-03-29T03:16:21Z" hostname="b0cab66074d5" tests="2" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999978" classname="character(0)" name="tbl_demographics_add_overall_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_demographics_add_overall_works"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-28T17:11:36Z" hostname="12a0bf3cdbfd" tests="1" skipped="0" failures="0" errors="1" time="0.001">
-    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_">
-      <error type="error" message="&lt;rlib_error_package_not_found/rlang_error/error/condition&gt; ('test-tbl_survfit_quantiles.R:73:3')">&lt;rlib_error_package_not_found/rlang_error/error/condition&gt;
-Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA", estimate_fun = gtsummary::label_style_number(digits = 3))`: The package "broom" (&gt;= 1.0.7.9000) is required.
-Backtrace:
-    ▆
- 1. └─testthat::expect_snapshot(...) at test-tbl_survfit_quantiles.R:73:3
- 2.   └─rlang::cnd_signal(state$error)</error>
-    </testcase>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-03-29T03:16:22Z" hostname="b0cab66074d5" tests="1" skipped="0" failures="0" errors="0" time="0.594">
+    <testcase time="0.594" classname="character(0)" name="theme_gtsummary_roche_works"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-28T17:11:36Z" hostname="12a0bf3cdbfd" tests="1" skipped="0" failures="0" errors="1" time="0.036">
-    <testcase time="0.0359999999999996" classname="character(0)" name="tbl_survfit_quantiles_method.args_">
-      <error type="error" message="&lt;rlib_error_package_not_found/rlang_error/error/condition&gt; ('test-tbl_survfit_quantiles.R:85:3')">&lt;rlib_error_package_not_found/rlang_error/error/condition&gt;
-Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA", method.args = list(conf.int = 0.9, 
-    conf.type = "logit"))`: The package "broom" (&gt;= 1.0.7.9000) is required.
-Backtrace:
-     ▆
-  1. ├─testthat::expect_equal(...) at test-tbl_survfit_quantiles.R:85:3
-  2. │ └─testthat::quasi_label(enquo(object), label, arg = "object")
-  3. │   └─rlang::eval_bare(expr, quo_get_env(quo))
-  4. ├─dplyr::select(...)
-  5. ├─dplyr::mutate(...)
-  6. ├─dplyr::filter(...)
-  7. ├─gtsummary::gather_ard(...)
-  8. │ └─gtsummary:::check_class(x, "gtsummary")
-  9. └─crane::tbl_survfit_quantiles(...)
- 10.   ├─cards::update_ard_fmt_fn(...)
- 11.   │ └─cards:::check_class(x, "card")
- 12.   ├─cardx::ard_survival_survfit(...)
- 13.   └─cardx:::ard_survival_survfit.data.frame(...)
- 14.     ├─cardx:::.restore_original_column_types(...)
- 15.     │ └─dplyr::select(ard, cards::all_ard_groups("names"))
- 16.     ├─cardx::ard_survival_survfit(...)
- 17.     └─cardx:::ard_survival_survfit.survfit(...)
- 18.       └─cardx:::check_pkg_installed(c("survival", "broom"))
- 19.         ├─base::suppressWarnings(...)
- 20.         │ └─base::withCallingHandlers(...)
- 21.         └─rlang::check_installed(...)</error>
-    </testcase>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-03-29T03:16:22Z" hostname="b0cab66074d5" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.00100000000000033" classname="character(0)" name="theme_gtsummary_roche_adds_relevant_flextable_directives"/>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-03-28T17:11:36Z" hostname="12a0bf3cdbfd" tests="1" skipped="0" failures="0" errors="0" time="0.617">
-    <testcase time="0.617" classname="character(0)" name="theme_gtsummary_roche_works"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-29T03:16:23Z" hostname="b0cab66074d5" tests="7" skipped="0" failures="0" errors="0" time="0.72">
+    <testcase time="0.716" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_works"/>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-03-28T17:11:36Z" hostname="12a0bf3cdbfd" tests="1" skipped="0" failures="0" errors="0" time="0.001">
-    <testcase time="0.000999999999999446" classname="character(0)" name="theme_gtsummary_roche_adds_relevant_flextable_directives"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-29T03:16:23Z" hostname="b0cab66074d5" tests="2" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999978" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-03-28T17:11:38Z" hostname="12a0bf3cdbfd" tests="1" skipped="0" failures="0" errors="0" time="1.734">
-    <testcase time="1.734" classname="character(0)" name="tbl_demographics_works"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-29T03:16:23Z" hostname="b0cab66074d5" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999978" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_"/>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-03-28T17:11:38Z" hostname="12a0bf3cdbfd" tests="2" skipped="0" failures="0" errors="0" time="0.002">
-    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_demographics_add_overall_works"/>
-    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_demographics_add_overall_works"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-03-29T03:16:23Z" hostname="b0cab66074d5" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_method.args_"/>
   </testsuite>
 </testsuites>
