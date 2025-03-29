@@ -1,4 +1,4 @@
-# crane 0.1.0.9004
+# crane 0.1.0.9005
 
 * Added `tbl_survfit_quantiles()` to create a table of survival quantiles. (#19)
 * Changed the default header in `tbl_demographics()` tables from `**Characteristic**` to an empty string.
