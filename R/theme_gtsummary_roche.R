@@ -5,6 +5,7 @@
 #' - Calls the [`gtsummary::theme_gtsummary_compact()`] theme.
 #' - Uses `label_roche_pvalue()` as the default formatting function for all p-values.
 #' - Defaults to a mono-spaced font for gt tables.
+#' - Font size defaults are 8 points for all the table by the footers that are 7 points.
 #' - Border defaults to `flextable::fp_border_default(width = 0.5)`.
 #'
 #' @inheritParams gtsummary::theme_gtsummary_compact
@@ -18,7 +19,11 @@
 #' tbl_demographics(trial, by = trt, include = c(age, grade))
 #'
 #' reset_gtsummary_theme()
-theme_gtsummary_roche <- function(set_theme = TRUE, font_size = 8) {
+theme_gtsummary_roche <- function(set_theme = TRUE) {
+  # {crane} defaults
+  font_size <- 8
+  border <- flextable::fp_border_default(width = 0.5)
+
   # start with the compact theme -----------------------------------------------
   lst_theme <- gtsummary::theme_gtsummary_compact(set_theme = FALSE, font_size = font_size)
   lst_theme$`pkgwide-str:theme_name` <- "Roche"
@@ -33,8 +38,7 @@ theme_gtsummary_roche <- function(set_theme = TRUE, font_size = 8) {
       )
     )
 
-  # use arial font for flextables ----------------------------------------------
-  border <- flextable::fp_border_default(width = 0.5)
+  # {flextable} options ----------------------------------------------
   lst_theme$`as_flex_table-lst:addl_cmds` <-
     c(
       lst_theme$`as_flex_table-lst:addl_cmds`,
@@ -56,7 +60,7 @@ theme_gtsummary_roche <- function(set_theme = TRUE, font_size = 8) {
   lst_theme$`as_gt-lst:addl_cmds` <-
     c(
       lst_theme$`as_gt-lst:addl_cmds`,
-      list(font_type = rlang::expr(gt::opt_table_font(stack = "monospace-code")))
+      list(tab_spanner = rlang::expr(gt::opt_table_font(stack = "monospace-code")))
     )
 
   # finishing up ---------------------------------------------------------------
