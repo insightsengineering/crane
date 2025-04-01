@@ -24,9 +24,25 @@ theme_gtsummary_roche <- function(set_theme = TRUE) {
   font_size <- 8
   border <- flextable::fp_border_default(width = 0.5)
 
-  # start with the compact theme -----------------------------------------------
-  lst_theme <- gtsummary::theme_gtsummary_compact(set_theme = FALSE, font_size = font_size)
-  lst_theme$`pkgwide-str:theme_name` <- "Roche"
+  # Initialization with compact gt options -------------------------------------
+  lst_theme <-
+    list(
+      "pkgwide-str:theme_name" = "Roche",
+      # compact gt tables
+      "as_gt-lst:addl_cmds" = list(
+        tab_spanner = rlang::expr(
+          gt::tab_options(
+            table.font.size = !!font_size,
+            data_row.padding = gt::px(1),
+            summary_row.padding = gt::px(1),
+            grand_summary_row.padding = gt::px(1),
+            footnotes.padding = gt::px(1),
+            source_notes.padding = gt::px(1),
+            row_group.padding = gt::px(1)
+          )
+        )
+      )
+    )
 
   # updating with some pharma-specific bits ------------------------------------
   lst_theme <- lst_theme |>
@@ -38,21 +54,23 @@ theme_gtsummary_roche <- function(set_theme = TRUE) {
       )
     )
 
-  # {flextable} options ----------------------------------------------
+  # {flextable} options --------------------------------------------------------
   lst_theme$`as_flex_table-lst:addl_cmds` <-
     c(
       lst_theme$`as_flex_table-lst:addl_cmds`,
       list(
+        fontsize = rlang::expr(flextable::fontsize(size = !!font_size, part = "all")),
         fontsize = rlang::expr(flextable::fontsize(size = !!font_size - 1, part = "footer")),
-        border = rlang::expr(
-          flextable::border_outer(part = "body", border = !!border)
-        ),
-        border = rlang::expr(
-          flextable::border_outer(part = "header", border = !!border)
-        ),
+        border = rlang::expr(flextable::border_outer(part = "body", border = !!border)),
+        border = rlang::expr(flextable::border_outer(part = "header", border = !!border)),
         valign = rlang::expr(flextable::valign(valign = "top", part = "all")),
-        valign = rlang::expr(flextable::font(fontname = "Arial", part = "all")), # valign only bc last cmd
-        valign = rlang::expr(flextable::line_spacing(space = 1, part = "all"))
+        valign = list( # valign only because it will append to to last commands
+          rlang::expr(flextable::font(fontname = "Arial", part = "all")),
+          rlang::expr(flextable::padding(padding.top = 0, part = "all")),
+          rlang::expr(flextable::padding(padding.bottom = 0, part = "all")),
+          rlang::expr(flextable::line_spacing(space = 1, part = "all")),
+          rlang::expr(flextable::set_table_properties(layout = "autofit"))
+        )
       )
     )
 
