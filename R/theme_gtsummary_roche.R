@@ -22,6 +22,7 @@
 theme_gtsummary_roche <- function(set_theme = TRUE) {
   # {crane} defaults
   font_size <- 8
+  font_size_gt <- 13 # gt counts size points differently
   border <- flextable::fp_border_default(width = 0.5)
 
   # Initialization with compact gt options -------------------------------------
@@ -32,7 +33,7 @@ theme_gtsummary_roche <- function(set_theme = TRUE) {
       "as_gt-lst:addl_cmds" = list(
         tab_spanner = rlang::expr(
           gt::tab_options(
-            table.font.size = !!font_size,
+            table.font.size = !!font_size_gt,
             data_row.padding = gt::px(1),
             summary_row.padding = gt::px(1),
             grand_summary_row.padding = gt::px(1),
