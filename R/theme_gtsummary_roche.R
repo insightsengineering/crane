@@ -79,7 +79,19 @@ theme_gtsummary_roche <- function(set_theme = TRUE) {
   lst_theme$`as_gt-lst:addl_cmds` <-
     c(
       lst_theme$`as_gt-lst:addl_cmds`,
-      list(tab_spanner = rlang::expr(gt::opt_table_font(stack = "monospace-code")))
+      list(
+        cols_hide = rlang::expr(gt::opt_table_font(font = "arial")),
+        cols_hide =
+          rlang::expr(
+            gt::tab_options(table.font.size = 13,
+                            data_row.padding = gt::px(1),
+                            summary_row.padding = gt::px(1),
+                            grand_summary_row.padding = gt::px(1),
+                            footnotes.padding = gt::px(1),
+                            source_notes.padding = gt::px(1),
+                            row_group.padding = gt::px(1))
+          )
+      )
     )
 
   # finishing up ---------------------------------------------------------------

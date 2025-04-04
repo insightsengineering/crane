@@ -13,3 +13,9 @@ test_that("theme_gtsummary_roche() adds relevant {flextable} directives", {
     added_cmds_roche_specific
   )
 })
+
+test_that("theme_gtsummary_roche() no errors with a gt print", {
+  expect_silent(
+    tbl_summary(data.frame(1)) |> as_gt()
+  )
+})
