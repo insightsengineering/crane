@@ -33,15 +33,15 @@
       $user_added3[[2]]
       flextable::font(fontname = "Arial", part = "all")
       
-      $user_added3[[2]]
+      $user_added3[[3]]
       flextable::padding(padding.top = 0, part = "all")
       
-      $user_added3[[3]]
+      $user_added3[[4]]
       flextable::padding(padding.bottom = 0, part = "all")
       
-      $user_added3[[4]]
+      $user_added3[[5]]
       flextable::line_spacing(space = 1, part = "all")
       
-      $user_added3[[5]]
+      $user_added3[[6]]
       flextable::set_table_properties(layout = "autofit")
       
