@@ -21,6 +21,9 @@ test_that("theme_gtsummary_roche() adds relevant {flextable} directives", {
 
 test_that("theme_gtsummary_roche() no errors with a gt print", {
   expect_silent(
-    tbl_summary(data.frame(1)) |> as_gt()
+    gtsummary::with_gtsummary_theme(
+      theme_gtsummary_roche(),
+      tbl_summary(data.frame(1)) |> as_gt()
+    )
   )
 })
