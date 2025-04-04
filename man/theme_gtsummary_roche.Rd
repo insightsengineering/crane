@@ -4,16 +4,12 @@
 \alias{theme_gtsummary_roche}
 \title{Roche Theme}
 \usage{
-theme_gtsummary_roche(set_theme = TRUE, font_size = NULL)
+theme_gtsummary_roche(set_theme = TRUE)
 }
 \arguments{
 \item{set_theme}{(scalar \code{logical})\cr
 Logical indicating whether to set the theme. Default is \code{TRUE}.
 When \code{FALSE} the named list of theme elements is returned invisibly}
-
-\item{font_size}{(scalar \code{numeric})\cr
-Numeric font size for compact theme.
-Default is 13 for gt tables, and 8 for all other output types}
 }
 \value{
 theme list
@@ -24,6 +20,8 @@ A gtsummary theme for Roche tables
 \item Calls the \code{\link[gtsummary:theme_gtsummary]{gtsummary::theme_gtsummary_compact()}} theme.
 \item Uses \code{label_roche_pvalue()} as the default formatting function for all p-values.
 \item Defaults to a mono-spaced font for gt tables.
+\item Font size defaults are 8 points for all the table by the footers that are 7 points.
+\item Border defaults to \code{flextable::fp_border_default(width = 0.5)}.
 }
 }
 \examples{

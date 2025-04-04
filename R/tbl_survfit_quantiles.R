@@ -158,7 +158,11 @@ tbl_survfit_quantiles <- function(data,
       fmt_fn = estimate_fun
     )
   # get the confidence level
-  conf.level <- call_args(method.args)[["conf.int"]] %||% 0.95
+  conf.level <-
+    ard_surv_quantiles |>
+    dplyr::filter(.data$stat_name == "conf.level") |>
+    getElement("stat") |>
+    getElement(1L)
 
   # calculate range of followup times ------------------------------------------
   df_time <-
@@ -191,12 +195,14 @@ tbl_survfit_quantiles <- function(data,
   tbl_survift_quantiles <-
     dplyr::bind_rows(
       ard_surv_quantiles |>
+        # remove model-wide stats
+        dplyr::filter(.data$variable == "prob") |>
         dplyr::mutate(
           stat_name = paste0(.data$stat_name, 100 * unlist(.data$variable_level)),
           variable_level = list(NULL)
         ),
       ard_followup_range,
-      if (!is_empty(by)) ard_by,  # styler: off
+      case_switch(!is_empty(by) ~ ard_by),
       ard_n
     ) |>
     gtsummary::tbl_ard_summary(
