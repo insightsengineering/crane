@@ -1,4 +1,4 @@
-# crane 0.1.0.9006
+# crane 0.1.0.9007
 
 * Added `tbl_survfit_quantiles()` to create a table of survival quantiles. (#19)
 
