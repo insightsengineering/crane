@@ -14,8 +14,9 @@
       $user_added1[[1]]
       flextable::fontsize(size = 8, part = "all")
       
-      $user_added1[[1]]
+      $user_added1[[2]]
       flextable::fontsize(size = 7, part = "footer")
+      
       
       $user_added2
       $user_added2[[1]]
@@ -25,6 +26,7 @@
       $user_added2[[2]]
       flextable::border_outer(part = "header", border = list(width = 0.5, 
           color = "#666666", style = "solid"))
+      
       
       $user_added3
       $user_added3[[1]]
