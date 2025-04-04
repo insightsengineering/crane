@@ -60,12 +60,17 @@ theme_gtsummary_roche <- function(set_theme = TRUE) {
     c(
       lst_theme$`as_flex_table-lst:addl_cmds`,
       list(
-        fontsize = rlang::expr(flextable::fontsize(size = !!font_size, part = "all")),
-        fontsize = rlang::expr(flextable::fontsize(size = !!font_size - 1, part = "footer")),
-        border = rlang::expr(flextable::border_outer(part = "body", border = !!border)),
-        border = rlang::expr(flextable::border_outer(part = "header", border = !!border)),
-        valign = rlang::expr(flextable::valign(valign = "top", part = "all")),
+        fontsize =
+          list(
+            rlang::expr(flextable::fontsize(size = !!font_size, part = "all")),
+            rlang::expr(flextable::fontsize(size = !!(font_size - 1), part = "footer"))
+          ),
+        border = list(
+          rlang::expr(flextable::border_outer(part = "body", border = !!border)),
+          rlang::expr(flextable::border_outer(part = "header", border = !!border))
+        ),
         valign = list( # valign only because it will append to to last commands
+          rlang::expr(flextable::valign(valign = "top", part = "all")),
           rlang::expr(flextable::font(fontname = "Arial", part = "all")),
           rlang::expr(flextable::padding(padding.top = 0, part = "all")),
           rlang::expr(flextable::padding(padding.bottom = 0, part = "all")),
@@ -80,17 +85,19 @@ theme_gtsummary_roche <- function(set_theme = TRUE) {
     c(
       lst_theme$`as_gt-lst:addl_cmds`,
       list(
-        cols_hide = rlang::expr(gt::opt_table_font(font = "arial")),
         cols_hide =
-          rlang::expr(
-            gt::tab_options(
-              table.font.size = 13,
-              data_row.padding = gt::px(1),
-              summary_row.padding = gt::px(1),
-              grand_summary_row.padding = gt::px(1),
-              footnotes.padding = gt::px(1),
-              source_notes.padding = gt::px(1),
-              row_group.padding = gt::px(1)
+          list(
+            rlang::expr(gt::opt_table_font(font = "arial")),
+            rlang::expr(
+              gt::tab_options(
+                table.font.size = 13,
+                data_row.padding = gt::px(1),
+                summary_row.padding = gt::px(1),
+                grand_summary_row.padding = gt::px(1),
+                footnotes.padding = gt::px(1),
+                source_notes.padding = gt::px(1),
+                row_group.padding = gt::px(1)
+              )
             )
           )
       )
