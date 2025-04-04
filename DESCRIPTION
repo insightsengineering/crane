@@ -23,13 +23,13 @@ Depends:
 Imports: 
     broom (>= 1.0.8),
     cards (>= 0.5.0),
-    cardx (>= 0.2.3.9005),
+    cardx (>= 0.2.3.9010),
     cli (>= 3.6.4),
     dplyr (>= 1.1.4),
     flextable (>= 0.9.7),
     glue (>= 1.8.0),
     gt (>= 0.11.1),
-    gtsummary (>= 2.1.0),
+    gtsummary (>= 2.1.0.9011),
     rlang (>= 1.1.5),
     survival (>= 3.6-4),
     tidyr (>= 1.3.0)
@@ -37,7 +37,7 @@ Suggests:
     testthat (>= 3.0.0),
     withr (>= 3.0.1)
 Remotes: 
-    insightsengineering/cardx
+    insightsengineering/cardx, ddsjoberg/gtsummary
 Config/Needs/check: hms
 Config/Needs/website: rmarkdown, yaml, insightsengineering/nesttemplate
 Config/testthat/edition: 3
