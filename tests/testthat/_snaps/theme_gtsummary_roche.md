@@ -15,7 +15,7 @@
       flextable::fontsize(size = 8, part = "all")
       
       $user_added1[[1]]
-      flextable::fontsize(size = 8 - 1, part = "footer")
+      flextable::fontsize(size = 7, part = "footer")
       
       $user_added2
       $user_added2[[1]]
