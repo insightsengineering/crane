@@ -1,41 +1,116 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="add_blank_row" timestamp="2025-04-02T07:38:56Z" hostname="fa336d75a745" tests="1" skipped="0" failures="0" errors="0" time="1.918">
-    <testcase time="1.918" classname="character(0)" name="add_blank_row_works"/>
+  <testsuite name="add_blank_row" timestamp="2025-04-04T21:56:33Z" hostname="88b3342af5f7" tests="1" skipped="0" failures="0" errors="0" time="2.208">
+    <testcase time="2.208" classname="character(0)" name="add_blank_row_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-04-02T07:38:56Z" hostname="fa336d75a745" tests="1" skipped="0" failures="0" errors="0" time="0.087">
-    <testcase time="0.0870000000000002" classname="character(0)" name="add_blank_row_messaging"/>
+  <testsuite name="add_blank_row" timestamp="2025-04-04T21:56:33Z" hostname="88b3342af5f7" tests="1" skipped="0" failures="0" errors="0" time="0.129">
+    <testcase time="0.129" classname="character(0)" name="add_blank_row_messaging"/>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-04-02T07:39:00Z" hostname="fa336d75a745" tests="1" skipped="0" failures="0" errors="0" time="3.531">
-    <testcase time="3.531" classname="character(0)" name="tbl_demographics_works"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-04T21:56:35Z" hostname="88b3342af5f7" tests="1" skipped="0" failures="0" errors="1" time="2.314">
+    <testcase time="2.314" classname="character(0)" name="tbl_survfit_quantiles_works">
+      <error type="error" message="Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = &quot;TRTA&quot;)`: Statistic &quot;median&quot;, &quot;p25&quot;, and &quot;p75&quot; is not available for variable &quot;..ard_survival_survfit..&quot;. ('test-tbl_survfit_quantiles.R:6:3')">Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA")`: Statistic "median", "p25", and "p75" is not available for variable "..ard_survival_survfit..".
+i Select among "conf.level25" and "conf.type25".
+Backtrace:
+     ▆
+  1. ├─testthat::expect_silent(...) at test-tbl_survfit_quantiles.R:6:3
+  2. │ └─testthat:::quasi_capture(enquo(object), NULL, evaluate_promise)
+  3. │   ├─testthat (local) .capture(...)
+  4. │   │ ├─withr::with_output_sink(...)
+  5. │   │ │ └─base::force(code)
+  6. │   │ ├─base::withCallingHandlers(...)
+  7. │   │ └─base::withVisible(code)
+  8. │   └─rlang::eval_bare(quo_get_expr(.quo), quo_get_env(.quo))
+  9. └─crane::tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA")
+ 10.   ├─gtsummary::remove_footnote_header(...)
+ 11.   ├─gtsummary::modify_column_indent(...)
+ 12.   ├─gtsummary::modify_column_indent(...)
+ 13.   ├─gtsummary::modify_table_body(...)
+ 14.   │ └─gtsummary:::check_class(x, "gtsummary")
+ 15.   ├─gtsummary::modify_header(...)
+ 16.   └─gtsummary::tbl_ard_summary(...)
+ 17.     └─gtsummary:::.check_stats_available(cards, statistic)
+ 18.       └─gtsummary:::imap(...)
+ 19.         └─gtsummary:::map2(.x, names(.x) %||% seq_along(.x), .f, ...)
+ 20.           └─base::mapply(.f, .x, .y, MoreArgs = list(...), SIMPLIFY = FALSE)
+ 21.             └─gtsummary (local) `&lt;fn&gt;`(dots[[1L]][[2L]], dots[[2L]][[2L]])
+ 22.               └─cli::cli_abort(...)
+ 23.                 └─rlang::abort(...)</error>
+    </testcase>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-04-02T07:39:00Z" hostname="fa336d75a745" tests="2" skipped="0" failures="0" errors="0" time="0.002">
-    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_demographics_add_overall_works"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_demographics_add_overall_works"/>
-  </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-04-02T07:39:00Z" hostname="fa336d75a745" tests="1" skipped="0" failures="0" errors="0" time="0.61">
-    <testcase time="0.61" classname="character(0)" name="theme_gtsummary_roche_works"/>
-  </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-04-02T07:39:00Z" hostname="fa336d75a745" tests="1" skipped="0" failures="0" errors="0" time="0.002">
-    <testcase time="0.00199999999999978" classname="character(0)" name="theme_gtsummary_roche_adds_relevant_flextable_directives"/>
-  </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-02T07:39:01Z" hostname="fa336d75a745" tests="7" skipped="0" failures="0" errors="0" time="0.57">
-    <testcase time="0.566" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-  </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-02T07:39:01Z" hostname="fa336d75a745" tests="2" skipped="0" failures="0" errors="0" time="0.002">
-    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-04T21:56:35Z" hostname="88b3342af5f7" tests="2" skipped="0" failures="0" errors="0" time="0.095">
+    <testcase time="0.0940000000000003" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
     <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-02T07:39:01Z" hostname="fa336d75a745" tests="1" skipped="0" failures="0" errors="0" time="0.001">
-    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-04T21:56:35Z" hostname="88b3342af5f7" tests="1" skipped="0" failures="0" errors="1" time="0.001">
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_">
+      <error type="error" message="Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = &quot;TRTA&quot;, estimate_fun = gtsummary::label_style_number(digits = 3))`: Statistic &quot;median&quot;, &quot;p25&quot;, and &quot;p75&quot; is not available for variable &quot;..ard_survival_survfit..&quot;. ('test-tbl_survfit_quantiles.R:73:3')">Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA", estimate_fun = gtsummary::label_style_number(digits = 3))`: Statistic "median", "p25", and "p75" is not available for variable "..ard_survival_survfit..".
+i Select among "conf.level25" and "conf.type25".
+Backtrace:
+     ▆
+  1. ├─base::as.data.frame(...)
+  2. └─crane::tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA", estimate_fun = gtsummary::label_style_number(digits = 3))
+  3.   ├─gtsummary::remove_footnote_header(...)
+  4.   ├─gtsummary::modify_column_indent(...)
+  5.   ├─gtsummary::modify_column_indent(...)
+  6.   ├─gtsummary::modify_table_body(...)
+  7.   │ └─gtsummary:::check_class(x, "gtsummary")
+  8.   ├─gtsummary::modify_header(...)
+  9.   └─gtsummary::tbl_ard_summary(...)
+ 10.     └─gtsummary:::.check_stats_available(cards, statistic)
+ 11.       └─gtsummary:::imap(...)
+ 12.         └─gtsummary:::map2(.x, names(.x) %||% seq_along(.x), .f, ...)
+ 13.           └─base::mapply(.f, .x, .y, MoreArgs = list(...), SIMPLIFY = FALSE)
+ 14.             └─gtsummary (local) `&lt;fn&gt;`(dots[[1L]][[2L]], dots[[2L]][[2L]])
+ 15.               └─cli::cli_abort(...)
+ 16.                 └─rlang::abort(...)</error>
+    </testcase>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-02T07:39:01Z" hostname="fa336d75a745" tests="1" skipped="0" failures="0" errors="0" time="0.002">
-    <testcase time="0.00199999999999978" classname="character(0)" name="tbl_survfit_quantiles_method.args_"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-04T21:56:35Z" hostname="88b3342af5f7" tests="1" skipped="0" failures="0" errors="1" time="0.07">
+    <testcase time="0.0700000000000003" classname="character(0)" name="tbl_survfit_quantiles_method.args_">
+      <error type="error" message="Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = &quot;TRTA&quot;, method.args = list(conf.int = 0.9,  ('test-tbl_survfit_quantiles.R:85:3')">Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA", method.args = list(conf.int = 0.9, 
+    conf.type = "logit"))`: Statistic "median", "p25", and "p75" is not available for variable "..ard_survival_survfit..".
+i Select among "conf.level25" and "conf.type25".
+Backtrace:
+     ▆
+  1. ├─testthat::expect_equal(...) at test-tbl_survfit_quantiles.R:85:3
+  2. │ └─testthat::quasi_label(enquo(object), label, arg = "object")
+  3. │   └─rlang::eval_bare(expr, quo_get_env(quo))
+  4. ├─dplyr::select(...)
+  5. ├─dplyr::mutate(...)
+  6. ├─dplyr::filter(...)
+  7. ├─gtsummary::gather_ard(...)
+  8. │ └─gtsummary:::check_class(x, "gtsummary")
+  9. └─crane::tbl_survfit_quantiles(...)
+ 10.   ├─gtsummary::remove_footnote_header(...)
+ 11.   ├─gtsummary::modify_column_indent(...)
+ 12.   ├─gtsummary::modify_column_indent(...)
+ 13.   ├─gtsummary::modify_table_body(...)
+ 14.   │ └─gtsummary:::check_class(x, "gtsummary")
+ 15.   ├─gtsummary::modify_header(...)
+ 16.   └─gtsummary::tbl_ard_summary(...)
+ 17.     └─gtsummary:::.check_stats_available(cards, statistic)
+ 18.       └─gtsummary:::imap(...)
+ 19.         └─gtsummary:::map2(.x, names(.x) %||% seq_along(.x), .f, ...)
+ 20.           └─base::mapply(.f, .x, .y, MoreArgs = list(...), SIMPLIFY = FALSE)
+ 21.             └─gtsummary (local) `&lt;fn&gt;`(dots[[1L]][[2L]], dots[[2L]][[2L]])
+ 22.               └─cli::cli_abort(...)
+ 23.                 └─rlang::abort(...)</error>
+    </testcase>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-04-04T21:56:36Z" hostname="88b3342af5f7" tests="1" skipped="0" failures="0" errors="0" time="1.176">
+    <testcase time="1.176" classname="character(0)" name="theme_gtsummary_roche_works"/>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-04-04T21:56:36Z" hostname="88b3342af5f7" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999978" classname="character(0)" name="theme_gtsummary_roche_adds_relevant_flextable_directives"/>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-04-04T21:56:36Z" hostname="88b3342af5f7" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.00100000000000033" classname="character(0)" name="theme_gtsummary_roche_no_errors_with_a_gt_print"/>
+  </testsuite>
+  <testsuite name="tbl_demographics" timestamp="2025-04-04T21:56:37Z" hostname="88b3342af5f7" tests="1" skipped="0" failures="0" errors="0" time="0.117">
+    <testcase time="0.117" classname="character(0)" name="tbl_demographics_works"/>
+  </testsuite>
+  <testsuite name="tbl_demographics" timestamp="2025-04-04T21:56:37Z" hostname="88b3342af5f7" tests="2" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00199999999999978" classname="character(0)" name="tbl_demographics_add_overall_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_demographics_add_overall_works"/>
   </testsuite>
 </testsuites>
