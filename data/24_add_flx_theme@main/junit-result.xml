@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="add_blank_row" timestamp="2025-04-04T21:56:33Z" hostname="88b3342af5f7" tests="1" skipped="0" failures="0" errors="0" time="2.208">
-    <testcase time="2.208" classname="character(0)" name="add_blank_row_works"/>
+  <testsuite name="add_blank_row" timestamp="2025-04-04T21:56:34Z" hostname="804f5c402470" tests="1" skipped="0" failures="0" errors="0" time="1.868">
+    <testcase time="1.868" classname="character(0)" name="add_blank_row_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-04-04T21:56:33Z" hostname="88b3342af5f7" tests="1" skipped="0" failures="0" errors="0" time="0.129">
-    <testcase time="0.129" classname="character(0)" name="add_blank_row_messaging"/>
+  <testsuite name="add_blank_row" timestamp="2025-04-04T21:56:34Z" hostname="804f5c402470" tests="1" skipped="1" failures="0" errors="0" time="0.094">
+    <testcase time="0.0939999999999999" classname="character(0)" name="add_blank_row_messaging">
+      <skipped message="Reason: On CRAN ('test-add_blank_row.R:15:3')"/>
+    </testcase>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-04T21:56:35Z" hostname="88b3342af5f7" tests="1" skipped="0" failures="0" errors="1" time="2.314">
-    <testcase time="2.314" classname="character(0)" name="tbl_survfit_quantiles_works">
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-04T21:56:36Z" hostname="804f5c402470" tests="1" skipped="0" failures="0" errors="1" time="2.033">
+    <testcase time="2.033" classname="character(0)" name="tbl_survfit_quantiles_works">
       <error type="error" message="Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = &quot;TRTA&quot;)`: Statistic &quot;median&quot;, &quot;p25&quot;, and &quot;p75&quot; is not available for variable &quot;..ard_survival_survfit..&quot;. ('test-tbl_survfit_quantiles.R:6:3')">Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA")`: Statistic "median", "p25", and "p75" is not available for variable "..ard_survival_survfit..".
 i Select among "conf.level25" and "conf.type25".
 Backtrace:
@@ -37,12 +39,13 @@ Backtrace:
  23.                 └─rlang::abort(...)</error>
     </testcase>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-04T21:56:35Z" hostname="88b3342af5f7" tests="2" skipped="0" failures="0" errors="0" time="0.095">
-    <testcase time="0.0940000000000003" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
-    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-04T21:56:36Z" hostname="804f5c402470" tests="1" skipped="1" failures="0" errors="0" time="0.097">
+    <testcase time="0.0969999999999995" classname="character(0)" name="tbl_survfit_quantiles_by_messaging">
+      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:53:3')"/>
+    </testcase>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-04T21:56:35Z" hostname="88b3342af5f7" tests="1" skipped="0" failures="0" errors="1" time="0.001">
-    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_">
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-04T21:56:36Z" hostname="804f5c402470" tests="1" skipped="0" failures="0" errors="1" time="0.018">
+    <testcase time="0.0180000000000007" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_">
       <error type="error" message="Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = &quot;TRTA&quot;, estimate_fun = gtsummary::label_style_number(digits = 3))`: Statistic &quot;median&quot;, &quot;p25&quot;, and &quot;p75&quot; is not available for variable &quot;..ard_survival_survfit..&quot;. ('test-tbl_survfit_quantiles.R:73:3')">Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA", estimate_fun = gtsummary::label_style_number(digits = 3))`: Statistic "median", "p25", and "p75" is not available for variable "..ard_survival_survfit..".
 i Select among "conf.level25" and "conf.type25".
 Backtrace:
@@ -65,8 +68,8 @@ Backtrace:
  16.                 └─rlang::abort(...)</error>
     </testcase>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-04T21:56:35Z" hostname="88b3342af5f7" tests="1" skipped="0" failures="0" errors="1" time="0.07">
-    <testcase time="0.0700000000000003" classname="character(0)" name="tbl_survfit_quantiles_method.args_">
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-04T21:56:36Z" hostname="804f5c402470" tests="1" skipped="0" failures="0" errors="1" time="0.048">
+    <testcase time="0.048" classname="character(0)" name="tbl_survfit_quantiles_method.args_">
       <error type="error" message="Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = &quot;TRTA&quot;, method.args = list(conf.int = 0.9,  ('test-tbl_survfit_quantiles.R:85:3')">Error in `tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA", method.args = list(conf.int = 0.9, 
     conf.type = "logit"))`: Statistic "median", "p25", and "p75" is not available for variable "..ard_survival_survfit..".
 i Select among "conf.level25" and "conf.type25".
@@ -97,20 +100,26 @@ Backtrace:
  23.                 └─rlang::abort(...)</error>
     </testcase>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-04-04T21:56:36Z" hostname="88b3342af5f7" tests="1" skipped="0" failures="0" errors="0" time="1.176">
-    <testcase time="1.176" classname="character(0)" name="theme_gtsummary_roche_works"/>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-04-04T21:56:37Z" hostname="804f5c402470" tests="1" skipped="1" failures="0" errors="0" time="1.107">
+    <testcase time="1.107" classname="character(0)" name="theme_gtsummary_roche_works">
+      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:3:3')"/>
+    </testcase>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-04-04T21:56:36Z" hostname="88b3342af5f7" tests="1" skipped="0" failures="0" errors="0" time="0.002">
-    <testcase time="0.00199999999999978" classname="character(0)" name="theme_gtsummary_roche_adds_relevant_flextable_directives"/>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-04-04T21:56:37Z" hostname="804f5c402470" tests="1" skipped="1" failures="0" errors="0" time="0.011">
+    <testcase time="0.0110000000000001" classname="character(0)" name="theme_gtsummary_roche_adds_relevant_flextable_directives">
+      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:12:3')"/>
+    </testcase>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-04-04T21:56:36Z" hostname="88b3342af5f7" tests="1" skipped="0" failures="0" errors="0" time="0.001">
-    <testcase time="0.00100000000000033" classname="character(0)" name="theme_gtsummary_roche_no_errors_with_a_gt_print"/>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-04-04T21:56:37Z" hostname="804f5c402470" tests="1" skipped="0" failures="0" errors="0" time="0.011">
+    <testcase time="0.0110000000000001" classname="character(0)" name="theme_gtsummary_roche_no_errors_with_a_gt_print"/>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-04-04T21:56:37Z" hostname="88b3342af5f7" tests="1" skipped="0" failures="0" errors="0" time="0.117">
-    <testcase time="0.117" classname="character(0)" name="tbl_demographics_works"/>
+  <testsuite name="tbl_demographics" timestamp="2025-04-04T21:56:38Z" hostname="804f5c402470" tests="1" skipped="0" failures="0" errors="0" time="0.339">
+    <testcase time="0.339" classname="character(0)" name="tbl_demographics_works"/>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-04-04T21:56:37Z" hostname="88b3342af5f7" tests="2" skipped="0" failures="0" errors="0" time="0.003">
+  <testsuite name="tbl_demographics" timestamp="2025-04-04T21:56:38Z" hostname="804f5c402470" tests="2" skipped="1" failures="0" errors="0" time="0.002">
     <testcase time="0.00199999999999978" classname="character(0)" name="tbl_demographics_add_overall_works"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_demographics_add_overall_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_demographics_add_overall_works">
+      <skipped message="Reason: On CRAN ('test-tbl_demographics.R:40:3')"/>
+    </testcase>
   </testsuite>
 </testsuites>
