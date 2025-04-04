@@ -83,13 +83,15 @@ theme_gtsummary_roche <- function(set_theme = TRUE) {
         cols_hide = rlang::expr(gt::opt_table_font(font = "arial")),
         cols_hide =
           rlang::expr(
-            gt::tab_options(table.font.size = 13,
-                            data_row.padding = gt::px(1),
-                            summary_row.padding = gt::px(1),
-                            grand_summary_row.padding = gt::px(1),
-                            footnotes.padding = gt::px(1),
-                            source_notes.padding = gt::px(1),
-                            row_group.padding = gt::px(1))
+            gt::tab_options(
+              table.font.size = 13,
+              data_row.padding = gt::px(1),
+              summary_row.padding = gt::px(1),
+              grand_summary_row.padding = gt::px(1),
+              footnotes.padding = gt::px(1),
+              source_notes.padding = gt::px(1),
+              row_group.padding = gt::px(1)
+            )
           )
       )
     )
