@@ -22,7 +22,7 @@
       $user_added2[[1]]
       flextable::border_outer(part = "body", border = list(width = 0.5, 
           color = "#666666", style = "solid"))
-
+      
       $user_added2[[2]]
       flextable::border_outer(part = "header", border = list(width = 0.5, 
           color = "#666666", style = "solid"))
@@ -47,3 +47,5 @@
       $user_added3[[6]]
       flextable::set_table_properties(layout = "autofit")
       
+      
+
