@@ -39,8 +39,7 @@ Suggests:
     withr (>= 3.0.1)
 Remotes: 
     ddsjoberg/gtsummary,
-    insightsengineering/cardx,
-    syntheticadam=git::https://code.roche.com/admiral/syntheticadam.git
+    insightsengineering/cardx
 Config/Needs/check: hms
 Config/Needs/website: rmarkdown, yaml, insightsengineering/nesttemplate
 Config/testthat/edition: 3
