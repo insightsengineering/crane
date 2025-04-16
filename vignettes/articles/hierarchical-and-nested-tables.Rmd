@@ -177,10 +177,10 @@ Oftentimes in clinical trial reporting we want a similar nested structure to hie
 Take for example the standard LBT01 table which reports summary statistics of the `AVAL` variable stratified by the `PARAM` and `AVISIT` variables:
 
 ```{r tbl_strata_nested_stack}
-ADLB_subset <- syntheticadam::adlb |>
+ADLB_subset <- pharmaverseadam::adlb |>
   dplyr::filter(
-    PARAMCD %in% c("ALBUMSI", "ALKPHSI"),
-    AVISIT %in% c("BASELINE", "WEEK 2", "WEEK 4")
+    PARAMCD %in% c("ALB", "ALKPH"),
+    AVISIT %in% c("Baseline", "Week 2", "Week 4")
   )
 
 tbl_strata_nested_stack(
