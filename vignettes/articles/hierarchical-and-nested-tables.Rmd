@@ -63,7 +63,7 @@ tbl <-
     digits = everything() ~ list(p = 0),
     overall_row = TRUE,
     label = list(..ard_hierarchical_overall.. = "Any Adverse Event")
-  ) |> 
+  ) |>
   add_overall()
 
 tbl
@@ -123,7 +123,8 @@ For example, consider the following table:
 ```{r tbl_hierarchical ordered}
 ADAE_subset <- cards::ADAE |>
   dplyr::filter(
-    AEBODSYS %in% c("SKIN AND SUBCUTANEOUS TISSUE DISORDERS", "EAR AND LABYRINTH DISORDERS", "CARDIAC DISORDERS")) |>
+    AEBODSYS %in% c("SKIN AND SUBCUTANEOUS TISSUE DISORDERS", "EAR AND LABYRINTH DISORDERS", "CARDIAC DISORDERS")
+  ) |>
   dplyr::filter(.by = AEBODSYS, dplyr::row_number() < 20) |>
   dplyr::mutate(AESEV = factor(AESEV, ordered = TRUE, levels = c("MILD", "MODERATE", "SEVERE")))
 
@@ -161,7 +162,7 @@ tbl <-
     denominator = cards::ADSL |> mutate(TRTA = ARM),
     id = USUBJID,
     overall_row = TRUE
-  ) |> 
+  ) |>
   add_overall()
 
 tbl |>
@@ -181,13 +182,13 @@ ADLB_subset <- syntheticadam::adlb |>
     PARAMCD %in% c("ALBUMSI", "ALKPHSI"),
     AVISIT %in% c("BASELINE", "WEEK 2", "WEEK 4")
   )
-  
+
 tbl_strata_nested_stack(
   ADLB_subset,
   strata = c(PARAM, AVISIT),
   .tbl_fun = ~ .x |>
     crane::tbl_demographics(
-      include = AVAL, 
+      include = AVAL,
       by = TRT01A,
       type = list(AVAL = "continuous2"),
       statistic = list(AVAL = c("{mean} ({sd})", "{median}", "{min} - {max}"))
