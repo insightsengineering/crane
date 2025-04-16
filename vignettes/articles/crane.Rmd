@@ -1,0 +1,72 @@
+---
+title: "Introduction to the {crane} package"
+author: Emily de la Rua
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## What is {crane}?
+
+The {crane} package was created to supplement the {gtsummary} package by providing additional functionality for creating clinical trial tables used specifically within the pharmaceutical industry. Since gtsummary was created as a very general framework to build tables, we want to avoid cluttering that package with pharma-specific functions that are only used by a small subset of {gtsummary} users. Instead, this pharma-specific functionality is added to the {crane} package for pharmaceutical data scientists to use. 
+
+This package includes several wrapper functions for pre-existing {gtsummary} functions which make it easier to apply common pharma-specific modifications to basic table formats (for example, demographics tables which use certain variables and formatting conventions as a default). 
+
+When the crane package is loaded into your R session, a Roche gtsummary theme is loaded by default which automatically applies Roche-specific formatting to any subsequently generated gtsummary tables. This includes applying standard settings used by the rtables & tern packages, such as using a mono-spaced font for `gt` tables and specific p-value formatting. See `gtsummary::theme_gtsummary_roche()` documentation for details.
+
+#### Where should I add new functions?
+
+- If the function might be useful to R programmers outside of the pharmaceutical industry, add it to **{gtsummary}**.
+- If the function is used specifically to adhere to pharmaceutical standards and/or to create FDA tables, TLG catalog tables, etc., add it to **{crane}**.
+
+## {crane} Functionality
+
+To keep the templates in the {tlg.templates} package simple, if a template cannot be easily constructed with the functions already available in {gtsummary} and {crane} (e.g. many functions or complex modifications are needed) consider adding a function to {crane} to assist.
+
+Currently, functions available in the {crane} package include:
+
+- `tbl_demographics()`, a wrapper for `gtsummary::tbl_summary()` which assists in creating standard DMT01 tables.
+- `tbl_survfit_quantiles()`, which uses `cardx::ard_survival_survfit()` and `gtsummary::tbl_ard_summary()` to create a survival time table (similar to the output of `tern::surv_time()`), useful for creating tables LBT11, LBT11_BL, DORT01, and TTET01 from the TLG catalog.
+
+## Example: Building a demographics table using {gtsummary} vs. {crane}
+
+In the following example, we will compare two simple demographics tables summarizing the `age` and `grade` variables across treatment variable `trt` in the `trial` dataset to demonstrate the differences between {gtsummary} and {crane} functions. The first table will be built using `gtsummary::tbl_summary()` and the second with it's corresponding wrapper function in {crane}, `tbl_demographics()`,
+
+First, we generate a basic demographics table using `tbl_summary()`:
+
+```{r}
+library(gtsummary)
+
+trial |>
+  tbl_summary(
+    by = trt, 
+    include = c(age, grade)
+  )
+```
+
+Next the same table is generated using the {crane} function `tbl_demographics()`:
+
+```{r}
+library(crane)
+
+trial |>
+  tbl_demographics(
+    by = trt, 
+    include = c(age, grade)
+  )
+```
+
+We can see that the default `tbl_demographics()` table is much more comprehensive than the default `tbl_summary()` output. 
+
+Some of the most noticeable differences in the second table are:
+
+- The Roche gtsummary theme is applied to create a more compact and customized appearance. 
+- More appropriate statistics for a demographics table are displayed - `n` for all variables, and numeric statistics are displayed on multiple rows for the numeric `age` variable, with more included. 
+- Footnotes have been removed
+- Percentages are reported with an extra decimal place. 
+
+To achieve the same result using only {gtsummary} functions many more lines of code would be required, which is why we prefer to use {crane} functions where possible when creating pharmaceutical tables and adding table templates within the {tlg.templates} package.
