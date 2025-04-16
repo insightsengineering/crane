@@ -43,7 +43,7 @@ library(gtsummary)
 
 trial |>
   tbl_summary(
-    by = trt, 
+    by = trt,
     include = c(age, grade)
   )
 ```
@@ -55,7 +55,7 @@ library(crane)
 
 trial |>
   tbl_demographics(
-    by = trt, 
+    by = trt,
     include = c(age, grade)
   )
 ```
