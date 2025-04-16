@@ -17,12 +17,11 @@ library(gtsummary)
 theme_gtsummary_compact()
 ```
 
-
 ## Hierarchical Tables
 
 ### Event Rate Tables - `tbl_hierarchical()`
 
-The `gtsummary::tbl_hierarchical()` function was created to create hierarchy tables, which are most commonly seen when reporting rates of adverse events (AEs). The `variables` argument takes a vector of variable names, where the first corresponds to the outermost hierarchy level and the last corresponds to the innermost hierarchy level. AE rates are calculated within each hierarchy for each level of the innermost variable. By default, summary AE rates are also calculated on label rows at each outer level of the hierachy. This setting is controlled by the `include` argument, such that any `variable` not in `include` will not include summary AE counts. The `by` parameter can be used to set a single variable on which the table will be split column-wise. To include an overall row where AE rates are calculated for the overall dataset at the top of the table, set `overall_row = TRUE`.
+The `gtsummary::tbl_hierarchical()` function was created to create hierarchy tables, which are most commonly seen when reporting rates of adverse events (AEs). The `variables` argument takes a vector of variable names, where the first corresponds to the outermost hierarchy level and the last corresponds to the innermost hierarchy level. AE rates are calculated within each hierarchy for each level of the innermost variable. By default, summary AE rates are also calculated on label rows at each outer level of the hierarchy. This setting is controlled by the `include` argument, such that any `variable` not in `include` will not include summary AE counts. The `by` parameter can be used to set a single variable on which the table will be split column-wise. To include an overall row where AE rates are calculated for the overall dataset at the top of the table, set `overall_row = TRUE`.
 
 The function reports on each row the total number of subjects with the specified AE within the current context determined by the variables specified. If multiple AEs are recorded for a single subject, all of these events are counted once for that subject. Unique subjects are identified via the variable supplied using the required `id` argument. The dataset specified via the required `denominator` argument is used to calculate the denominators in any percentage calculations as well as any `N` counts included in the table header.
 
@@ -50,7 +49,7 @@ tbl
 
 As is typical of most `tbl_*()` functions in {gtsummary}, the `tbl_hierarchical()` function also has the `statistic`, `label`, and `digits` arguments to further customize hierarchy tables. Valid statistics include `n`, `N`, and `p`. The `label` argument can specify the top-left labels for each variable as well as the label used for the "overall" row (if `overall_row = TRUE`).
 
-See below the same example with further customizations applied.
+See below the same example with further customization applied.
 
 ```{r tbl_hierarchical custom}
 tbl <-
@@ -139,7 +138,7 @@ tbl_hierarchical(
 )
 ```
 
-Since each subject has exactly one event recorded for this type of table, the numbers within each hierarchy section will always add up to the numbers in the preceding summary row - for example, see in the table above that the total number of subjects with treatment Placebo in the CARDIAC DISORDERS section is 4, and the numbers within the section below, for all severities, also add up to 4.
+Since each subject has exactly one event recorded for this type of table, the numbers within each hierarchy section will always add up to the numbers in the preceding summary row - for example, see in the table above that the total number of subjects with treatment Placebo in the CARDIAC DISORDERS section is 4, and the numbers within the section below, for all severity levels, also add up to 4.
 
 ### Sorting & Filtering Hierarchical Tables
 
@@ -172,7 +171,7 @@ tbl |>
 
 ## Tables with Stratified Nesting - `tbl_strata_nested_stack()`
 
-Oftentimes in clinical trial reporting we want a similar nested structure to hierarchical tables but don't want to calculate event rates or counts. For these calculations, we use the `gtsummary::tbl_strata_nested_stack()` function so that instead of treating the variables provided as a hierarchy they areused as nested stratifying variables. Stratified sections are then stacked to produce the full table. This function is similar to `tbl_strata()` but nests and indents each stratified section.
+Oftentimes in clinical trial reporting we want a similar nested structure to hierarchical tables but don't want to calculate event rates or counts. For these calculations, we use the `gtsummary::tbl_strata_nested_stack()` function so that instead of treating the variables provided as a hierarchy they are used as nested stratifying variables. Stratified sections are then stacked to produce the full table. This function is similar to `tbl_strata()` but nests and indents each stratified section.
 
 Take for example the standard LBT01 table which reports summary statistics of the `AVAL` variable stratified by the `PARAM` and `AVISIT` variables:
 
