@@ -19,7 +19,7 @@ Instead, this pharma-specific functionality is added to the {crane} package for 
 
 This package includes several wrapper functions for pre-existing {gtsummary} functions which make it easier to apply common pharma-specific modifications to basic table formats (for example, demographics tables which use certain variables and formatting conventions as a default). 
 
-When the crane package is loaded into your R session, a Roche gtsummary theme is loaded by default which automatically applies Roche-specific formatting to any subsequently generated gtsummary tables. This includes applying standard settings used by the rtables & tern packages, such as using a mono-spaced font for `gt` tables and specific p-value formatting. See `gtsummary::theme_gtsummary_roche()` documentation for details.
+When the crane package is loaded into your R session, a Roche gtsummary theme is loaded by default which automatically applies Roche-specific formatting to any subsequently generated gtsummary tables. This includes applying standard settings used by the {rtables} & {tern} packages, such as using a mono-spaced font for `gt` tables and specific p-value formatting. See `gtsummary::theme_gtsummary_roche()` documentation for details.
 
 #### Where should I add new functions?
 
