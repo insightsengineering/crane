@@ -1,44 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="add_blank_row" timestamp="2025-04-16T22:45:53Z" hostname="4ec963684e43" tests="1" skipped="0" failures="0" errors="0" time="1.939">
-    <testcase time="1.939" classname="character(0)" name="add_blank_row_works"/>
+  <testsuite name="add_blank_row" timestamp="2025-04-17T21:24:25Z" hostname="5217b6881922" tests="1" skipped="0" failures="0" errors="0" time="1.856">
+    <testcase time="1.856" classname="character(0)" name="add_blank_row_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-04-16T22:45:53Z" hostname="4ec963684e43" tests="1" skipped="0" failures="0" errors="0" time="0.091">
-    <testcase time="0.0910000000000002" classname="character(0)" name="add_blank_row_messaging"/>
+  <testsuite name="add_blank_row" timestamp="2025-04-17T21:24:25Z" hostname="5217b6881922" tests="1" skipped="0" failures="0" errors="0" time="0.096">
+    <testcase time="0.0960000000000001" classname="character(0)" name="add_blank_row_messaging"/>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-04-16T22:45:57Z" hostname="4ec963684e43" tests="1" skipped="0" failures="0" errors="0" time="3.468">
-    <testcase time="3.468" classname="character(0)" name="tbl_demographics_works"/>
+  <testsuite name="tbl_demographics" timestamp="2025-04-17T21:24:29Z" hostname="5217b6881922" tests="1" skipped="0" failures="0" errors="0" time="3.926">
+    <testcase time="3.926" classname="character(0)" name="tbl_demographics_works"/>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-04-16T22:45:57Z" hostname="4ec963684e43" tests="2" skipped="0" failures="0" errors="0" time="0.003">
-    <testcase time="0.00300000000000011" classname="character(0)" name="tbl_demographics_add_overall_works"/>
-    <testcase time="0" classname="character(0)" name="tbl_demographics_add_overall_works"/>
+  <testsuite name="tbl_demographics" timestamp="2025-04-17T21:24:29Z" hostname="5217b6881922" tests="2" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00200000000000067" classname="character(0)" name="tbl_demographics_add_overall_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_demographics_add_overall_works"/>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-04-16T22:45:58Z" hostname="4ec963684e43" tests="1" skipped="0" failures="0" errors="0" time="1.155">
-    <testcase time="1.155" classname="character(0)" name="theme_gtsummary_roche_works"/>
-  </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-04-16T22:45:58Z" hostname="4ec963684e43" tests="1" skipped="0" failures="0" errors="0" time="0.001">
-    <testcase time="0.000999999999999446" classname="character(0)" name="theme_gtsummary_roche_adds_relevant_flextable_directives"/>
-  </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-04-16T22:45:58Z" hostname="4ec963684e43" tests="1" skipped="0" failures="0" errors="0" time="0.002">
-    <testcase time="0.00199999999999978" classname="character(0)" name="theme_gtsummary_roche_no_errors_with_a_gt_print"/>
-  </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-16T22:45:58Z" hostname="4ec963684e43" tests="7" skipped="0" failures="0" errors="0" time="0.275">
-    <testcase time="0.271000000000001" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-17T21:24:29Z" hostname="5217b6881922" tests="7" skipped="0" failures="0" errors="0" time="0.879">
+    <testcase time="0.873" classname="character(0)" name="tbl_survfit_quantiles_works"/>
     <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_works"/>
     <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_works"/>
     <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_works"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-16T22:45:58Z" hostname="4ec963684e43" tests="2" skipped="0" failures="0" errors="0" time="0.002">
-    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-17T21:24:29Z" hostname="5217b6881922" tests="2" skipped="0" failures="0" errors="0" time="0.004">
+    <testcase time="0.00300000000000011" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
     <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-16T22:45:58Z" hostname="4ec963684e43" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-17T21:24:29Z" hostname="5217b6881922" tests="1" skipped="0" failures="0" errors="0" time="0.002">
     <testcase time="0.00200000000000067" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-16T22:45:58Z" hostname="4ec963684e43" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-04-17T21:24:29Z" hostname="5217b6881922" tests="1" skipped="0" failures="0" errors="0" time="0.001">
     <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_method.args_"/>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-04-17T21:24:30Z" hostname="5217b6881922" tests="1" skipped="0" failures="0" errors="0" time="0.299">
+    <testcase time="0.298999999999999" classname="character(0)" name="theme_gtsummary_roche_works"/>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-04-17T21:24:30Z" hostname="5217b6881922" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.00100000000000122" classname="character(0)" name="theme_gtsummary_roche_adds_relevant_flextable_directives"/>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-04-17T21:24:30Z" hostname="5217b6881922" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999889" classname="character(0)" name="theme_gtsummary_roche_no_errors_with_a_gt_print"/>
   </testsuite>
 </testsuites>
