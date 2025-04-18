@@ -84,7 +84,7 @@ tbl_demographics <- function(data,
     gtsummary::modify_header(label = "") |>
     # convert "0 (0.0%)" to "0"
     gtsummary::modify_post_fmt_fun(
-      fmt_fun = ~ifelse(. == "0 (0.0%)", "0", .),
+      fmt_fun = ~ ifelse(. == "0 (0.0%)", "0", .),
       columns = all_stat_cols()
     ) |>
     # sort the missing row to just below the header row
