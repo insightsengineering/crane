@@ -92,7 +92,7 @@ crane_theme_message <- function() {
   paste0(
     "\n",
     cli::col_green(cli::symbol$play),
-    cli::format_inline(" Setting {.strong Roche} {.pkg gtsummary} theme. See {.help [?theme_gtsummary_roche()](crane::theme_gtsummary_roche)}."),
+    cli::format_inline(" Setting {.strong Roche} {.pkg gtsummary} theme. See {.help crane::theme_gtsummary_roche} for details."),
     "\n"
   )
 }

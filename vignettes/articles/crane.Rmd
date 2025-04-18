@@ -1,5 +1,5 @@
 ---
-title: "Introduction to the {crane} package"
+title: "Introduction to {crane}"
 ---
 
 ```{r, include = FALSE}
@@ -11,65 +11,77 @@ knitr::opts_chunk$set(
 
 ## What is {crane}?
 
-The {crane} package was created to supplement the {gtsummary} package by providing additional functionality for creating clinical trial tables used specifically within the pharmaceutical industry. 
+The {crane} package supplements the {gtsummary} package to ease the process of creating Roche clinical trial tables. 
+{gtsummary} is a general framework for building tables, and {crane} utilizes the frame work and exports functions meant to simplify the creation of summary tables in pharmaceutical industry.
 
-Since gtsummary was created as a very general framework to build tables, we want to avoid cluttering that package with pharma-specific functions that are only used by a small subset of {gtsummary} users. 
+The {crane} package includes wrapper functions for {gtsummary} functions to make it easier to apply common pharma-specific modifications to table formats.
+For example, demographics tables which use certain variables and formatting conventions as a default. 
 
-Instead, this pharma-specific functionality is added to the {crane} package for pharmaceutical data scientists to use. 
+When the crane package is loaded into your R session, a couple of things occur.
 
-This package includes several wrapper functions for pre-existing {gtsummary} functions which make it easier to apply common pharma-specific modifications to basic table formats (for example, demographics tables which use certain variables and formatting conventions as a default). 
-
-When the crane package is loaded into your R session, a Roche gtsummary theme is loaded by default which automatically applies Roche-specific formatting to any subsequently generated gtsummary tables. This includes applying standard settings used by the {rtables} & {tern} packages, such as using a mono-spaced font for `gt` tables and specific p-value formatting. See `gtsummary::theme_gtsummary_roche()` documentation for details.
-
-#### Where should I add new functions?
-
-- If the function might be useful to R programmers outside of the pharmaceutical industry, add it to **{gtsummary}**.
-- If the function is used specifically to adhere to pharmaceutical standards and/or to create FDA tables, TLG catalog tables, etc., add it to **{crane}**.
-
-## {crane} Functionality
-
-To keep standard clinical trial table code simple, if the table cannot be easily constructed with the functions already available in {gtsummary} and {crane} (e.g. many functions or complex modifications are needed) consider adding a function to {crane} to assist.
-
-Currently, functions available in the {crane} package include:
-
-- `tbl_demographics()`, a wrapper for `gtsummary::tbl_summary()` which assists in creating standard demographics tables.
-- `tbl_survfit_quantiles()`, which uses `cardx::ard_survival_survfit()` and `gtsummary::tbl_ard_summary()` to create a survival time table, useful for creating tables that report survival quantiles.
-
-## Example: Building a demographics table using {gtsummary} vs. {crane}
-
-In the following example, we will compare two simple demographics tables summarizing the `age` and `grade` variables across treatment variable `trt` in the `trial` dataset to demonstrate the differences between {gtsummary} and {crane} functions. The first table will be built using `gtsummary::tbl_summary()` and the second with it's corresponding wrapper function in {crane}, `tbl_demographics()`,
-
-First, we generate a basic demographics table using `tbl_summary()`:
-
-```{r}
-library(gtsummary)
-
-trial |>
-  tbl_summary(
-    by = trt,
-    include = c(age, grade)
-  )
-```
-
-Next the same table is generated using the {crane} function `tbl_demographics()`:
+- As expected, the {crane} package is loaded, but the {gtsummary}, {cards}, and {cardx} packages are also loaded.
+- The Roche gtsummary theme is set by running `crane::theme_gtsummary_roche()`. This theme changes a few default behaviors for {gtsummary} tables; for example, all p-values are rounded with `label_roche_pvalue()`, and tables are printed with {flextable} instead of {gt}. See the function's help file for details.
 
 ```{r}
 library(crane)
+```
 
-trial |>
+#### When should I add a new function to  {crane}?
+
+While all Roche tables can be created using {gtsummary}, for some tables the code can become long.
+In these cases, adding a new function to {crane} is warranted.
+
+For example, our standard demographics table can be created with `gtsummary::tbl_summary()`.
+But for such a common table, the code is somewhat long, and we therefore created `crane::tbl_demographics()`.
+
+To create the Roche standard demographics table, we simple call:
+
+```{r}
+ADSL |>
   tbl_demographics(
-    by = trt,
-    include = c(age, grade)
+    by = ARM,
+    include = c(AGE, RACE)
   )
 ```
 
-We can see that the default `tbl_demographics()` table is much more comprehensive than the default `tbl_summary()` output. 
+To create this table with `gtsummary::tbl_summary()`, we'd need the following code.
+As some of these steps are not the most straightforward, we created the `tbl_demographics()` wrapper.
 
-Some of the most noticeable differences in the second table are:
+```r
+ADSL |> 
+  tbl_summary(
+    by = ARM, 
+    include = c(AGE, RACE),
+    type = list(AGE = "continuous2"),
+    statistic = list(AGE = c("{mean} ({sd})", "{median}", "{min} - {max}")),
+    digits = all_categorical() ~ list(p = 1),
+    missing = "always",
+    missing_stat = "{N_nonmiss}",
+    missing_text = "n"
+  ) |>
+    # remove default footnote
+    remove_footnote_header(columns = everything()) |>
+    # remove the default "Characteristic" header
+    modify_header(label = "") |>
+    # convert "0 (0.0%)" to "0"
+    gtsummary::modify_post_fmt_fun(
+      fmt_fun = ~ifelse(. == "0 (0.0%)", "0", .),
+      columns = all_stat_cols()
+    ) |>
+    # sort the missing row to just below the header row
+    modify_table_body(
+      function(x) {
+        x |>
+          dplyr::mutate(
+            .by = "variable",
+            dplyr::across(dplyr::everything(), ~ .[order(row_type != "label", row_type != "missing")])
+          )
+      }
+    )
+```
 
-- The Roche gtsummary theme is applied to create a more compact and customized appearance. 
-- More appropriate statistics for a demographics table are displayed - `n` for all variables, and numeric statistics are displayed on multiple rows for the numeric `age` variable, with more included. 
-- Footnotes have been removed
-- Percentages are reported with an extra decimal place. 
+Another case where we may create helper functions in {crane}, is when the table can only be created in {gtsummary} using an ARD-first approach.
+Generally, creating an ARD of all results in a summary table, then creating then table is more cumbersome.
+In these cumbersome cases, a new function in {crane} is warranted.
 
-To achieve the same result using only {gtsummary} functions many more lines of code would be required, which is why we prefer to use {crane} functions where possible when creating pharmaceutical tables.
+
