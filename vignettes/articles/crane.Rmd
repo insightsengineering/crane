@@ -1,0 +1,87 @@
+---
+title: "Introduction to {crane}"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## What is {crane}?
+
+The {crane} package supplements the {gtsummary} package to ease the process of creating Roche clinical trial tables. 
+{gtsummary} is a general framework for building tables, and {crane} utilizes the frame work and exports functions meant to simplify the creation of summary tables in pharmaceutical industry.
+
+The {crane} package includes wrapper functions for {gtsummary} functions to make it easier to apply common pharma-specific modifications to table formats.
+For example, demographics tables which use certain variables and formatting conventions as a default. 
+
+When the crane package is loaded into your R session, a couple of things occur.
+
+- As expected, the {crane} package is loaded, but the {gtsummary}, {cards}, and {cardx} packages are also loaded.
+- The Roche gtsummary theme is set by running `crane::theme_gtsummary_roche()`. This theme changes a few default behaviors for {gtsummary} tables; for example, all p-values are rounded with `label_roche_pvalue()`, and tables are printed with {flextable} instead of {gt}. See the function's help file for details.
+
+```{r}
+library(crane)
+```
+
+#### When should I add a new function to  {crane}?
+
+While all Roche tables can be created using {gtsummary}, for some tables the code can become long.
+In these cases, adding a new function to {crane} is warranted.
+
+For example, our standard demographics table can be created with `gtsummary::tbl_summary()`.
+But for such a common table, the code is somewhat long, and we therefore created `crane::tbl_demographics()`.
+
+To create the Roche standard demographics table, we simple call:
+
+```{r}
+ADSL |>
+  tbl_demographics(
+    by = ARM,
+    include = c(AGE, RACE)
+  )
+```
+
+To create this table with `gtsummary::tbl_summary()`, we'd need the following code.
+As some of these steps are not the most straightforward, we created the `tbl_demographics()` wrapper.
+
+```r
+ADSL |> 
+  tbl_summary(
+    by = ARM, 
+    include = c(AGE, RACE),
+    type = list(AGE = "continuous2"),
+    statistic = list(AGE = c("{mean} ({sd})", "{median}", "{min} - {max}")),
+    digits = all_categorical() ~ list(p = 1),
+    missing = "always",
+    missing_stat = "{N_nonmiss}",
+    missing_text = "n"
+  ) |>
+    # remove default footnote
+    remove_footnote_header(columns = everything()) |>
+    # remove the default "Characteristic" header
+    modify_header(label = "") |>
+    # convert "0 (0.0%)" to "0"
+    gtsummary::modify_post_fmt_fun(
+      fmt_fun = ~ifelse(. == "0 (0.0%)", "0", .),
+      columns = all_stat_cols()
+    ) |>
+    # sort the missing row to just below the header row
+    modify_table_body(
+      function(x) {
+        x |>
+          dplyr::mutate(
+            .by = "variable",
+            dplyr::across(dplyr::everything(), ~ .[order(row_type != "label", row_type != "missing")])
+          )
+      }
+    )
+```
+
+Another case where we may create helper functions in {crane}, is when the table can only be created in {gtsummary} using an ARD-first approach.
+Generally, creating an ARD of all results in a summary table, then creating then table is more cumbersome.
+In these cumbersome cases, a new function in {crane} is warranted.
+
+
