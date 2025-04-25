@@ -202,7 +202,7 @@ For these calculations, we use the `gtsummary::tbl_strata_nested_stack()` functi
 
 This function is similar to `tbl_strata()` but nests and indents each stratified section.
 
-Take for example the standard LBT01 table which reports summary statistics of the `AVAL` variable stratified by the `PARAM` and `AVISIT` variables:
+Take for example the standard laboratory results table which reports summary statistics of the `AVAL` variable stratified by the `PARAM` and `AVISIT` variables:
 
 ```{r tbl_strata_nested_stack}
 ADLB_subset <- pharmaverseadam::adlb |>
