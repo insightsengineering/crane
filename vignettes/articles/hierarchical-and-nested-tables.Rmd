@@ -20,13 +20,23 @@ theme_gtsummary_compact()
 
 ### Event Rate Tables - `tbl_hierarchical()`
 
-The `gtsummary::tbl_hierarchical()` function was created to create hierarchy tables, which are most commonly seen when reporting rates of adverse events (AEs). The `variables` argument takes a vector of variable names, where the first corresponds to the outermost hierarchy level and the last corresponds to the innermost hierarchy level. AE rates are calculated within each hierarchy for each level of the innermost variable. By default, summary AE rates are also calculated on label rows at each outer level of the hierarchy. This setting is controlled by the `include` argument, such that any `variable` not in `include` will not include summary AE counts. The `by` parameter can be used to set a single variable on which the table will be split column-wise. To include an overall row where AE rates are calculated for the overall dataset at the top of the table, set `overall_row = TRUE`.
+The `gtsummary::tbl_hierarchical()` function was created to create hierarchy tables, which are most commonly seen when reporting rates of adverse events (AEs). 
 
-The function reports on each row the total number of subjects with the specified AE within the current context determined by the variables specified. If multiple AEs are recorded for a single subject, all of these events are counted once for that subject. Unique subjects are identified via the variable supplied using the required `id` argument. The dataset specified via the required `denominator` argument is used to calculate the denominators in any percentage calculations as well as any `N` counts included in the table header.
+The `variables` argument takes a vector of variable names, where the first corresponds to the outermost hierarchy level and the last corresponds to the innermost hierarchy level. 
+
+AE rates are calculated within each hierarchy for each level of the innermost variable. By default, summary AE rates are also calculated on label rows at each outer level of the hierarchy. This setting is controlled by the `include` argument, such that any `variable` not in `include` will not include summary AE counts. 
+
+The `by` parameter can be used to set a single variable on which the table will be split column-wise. To include an overall row where AE rates are calculated for the overall dataset at the top of the table, set `overall_row = TRUE`.
+
+The function reports on each row the total number of subjects with the specified AE within the current context determined by the variables specified. If multiple AEs are recorded for a single subject, all of these events are counted once for that subject. 
+
+Unique subjects are identified via the variable supplied using the required `id` argument. 
+
+The dataset specified via the required `denominator` argument is used to calculate the denominators in any percentage calculations as well as any `N` counts included in the table header.
 
 Note that only *observed* combinations of hierarchy levels are included in the table - if all event rates within a given row are zero the row will be excluded.
 
-See the basic `tbl_hierarchical()` example with a two-variable hierarchy below.
+See a basic `tbl_hierarchical()` example with a two-variable hierarchy below.
 
 ```{r tbl_hierarchical}
 ADAE_subset <- cards::ADAE |>
@@ -70,7 +80,13 @@ tbl
 
 ### Event Count Tables - `tbl_hierarchical_count()`
 
-Similar to the `tbl_hierarchical()` function, the `tbl_hierarchical_count()` function also exists within the {gtsummary} package. Instead of event *rates* per subject this function calculates overall event *counts*, with no option to specify an `id` parameter. This means that events from every row of `data` will be counted, regardless of whether they occur multiple times per subject. If `denominator` is specified, it is only used to calculate `N` values in the table header. Only the `n` statistic is available when using this function.
+Similar to the `tbl_hierarchical()` function, the `tbl_hierarchical_count()` function also exists within the {gtsummary} package. 
+
+Instead of event *rates* per subject this function calculates overall event *counts*, with no option to specify an `id` parameter. This means that events from every row of `data` will be counted, regardless of whether they occur multiple times per subject. 
+
+If `denominator` is specified, it is only used to calculate `N` values in the table header. 
+
+Only the `n` statistic is available when using this function.
 
 ```{r tbl_hierarchical_count}
 ADAE_subset <- cards::ADAE |>
@@ -88,9 +104,12 @@ tbl <-
 
 tbl
 ```
+
 ### ARD-First Hierarchical Tables - `tbl_ard_hierarchical()`
 
-In addition to the above two functions which use a data frame-first approach to creating hierarchy tables, an ARD-first approach can be taken using the `gtsummary::tbl_ard_hierarchical()` function. This function takes a hierarchical ARD object of class `"card"` and converts it to a hierarchical table. Hierarchical ARDs can be constructed using the `ard_stack_hierarchical()` (for event rates) and `ard_stack_hierarchical_count()` (for event counts) functions from the {cards} package.
+In addition to the above two functions which use a data frame-first approach to creating hierarchy tables, an ARD-first approach can be taken using the `gtsummary::tbl_ard_hierarchical()` function. This function takes a hierarchical ARD object of class `"card"` and converts it to a hierarchical table. 
+
+Hierarchical ARDs can be constructed using the `ard_stack_hierarchical()` (for event rates) and `ard_stack_hierarchical_count()` (for event counts) functions from the {cards} package.
 
 For example:
 
@@ -146,7 +165,13 @@ Hierarchical tables can be further customized after creation by sorting and filt
 
 By default, hierarchical tables are sorted alphanumerically at each level of the hierarchy. By applying the `sort_hierarchical()` function to an existing hierarchical table the sort order can be changed to "descending" - sorting rows by descending event rate/count sum at each level of the hierarchy such that the most prevalent events will be listed first.
 
-In addition to sorting, hierarchical tables can also be filtered using `filter_hierarchical()`, which uses a given expression to filter out rows of the table. For examples of possible filters please see the documentation for the `filter_hierarchical()` function. Filtering is only applied at the innermost hierarchy level, with all summary rows from outer hierarchy levels kept. If all rows of a section are filtered out then the summary row for that section is also removed unless `keep_empty = TRUE` is specified. 
+In addition to sorting, hierarchical tables can also be filtered using `filter_hierarchical()`, which uses a given expression to filter out rows of the table. 
+
+For examples of possible filters please see the documentation for the `filter_hierarchical()` function. 
+
+Filtering is only applied at the innermost hierarchy level, with all summary rows from outer hierarchy levels kept. 
+
+If all rows of a section are filtered out then the summary row for that section is also removed unless `keep_empty = TRUE` is specified. 
 
 If the table contains an overall column then this column is ignored when filtering.
 
@@ -171,7 +196,11 @@ tbl |>
 
 ## Tables with Stratified Nesting - `tbl_strata_nested_stack()`
 
-Oftentimes in clinical trial reporting we want a similar nested structure to hierarchical tables but don't want to calculate event rates or counts. For these calculations, we use the `gtsummary::tbl_strata_nested_stack()` function so that instead of treating the variables provided as a hierarchy they are used as nested stratifying variables. Stratified sections are then stacked to produce the full table. This function is similar to `tbl_strata()` but nests and indents each stratified section.
+Oftentimes in clinical trial reporting we want a similar nested structure to hierarchical tables but don't want to calculate event rates or counts. 
+
+For these calculations, we use the `gtsummary::tbl_strata_nested_stack()` function so that instead of treating the variables provided as a hierarchy they are used as nested stratifying variables. Stratified sections are then stacked to produce the full table. 
+
+This function is similar to `tbl_strata()` but nests and indents each stratified section.
 
 Take for example the standard LBT01 table which reports summary statistics of the `AVAL` variable stratified by the `PARAM` and `AVISIT` variables:
 
