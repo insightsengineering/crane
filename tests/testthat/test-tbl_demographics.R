@@ -47,4 +47,19 @@ test_that("tbl_demographics() |> add_overall() works", {
       add_overall() |>
       as.data.frame()
   )
+
+  # addresses issue #41
+  expect_equal(
+    trial |>
+      dplyr::mutate(grade = fct_expand(grade, "other")) |>
+      tbl_demographics(
+        by = trt,
+        include = grade
+      ) |>
+      gtsummary::add_overall() |>
+      as.data.frame(col_labels = FALSE) |>
+      dplyr::pull("stat_0") |>
+      dplyr::last(),
+    "0"
+  )
 })
