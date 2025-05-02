@@ -169,7 +169,7 @@ ard <-
   )
 
 # Build the table from the ARD
-tbl <- 
+tbl <-
   tbl_ard_hierarchical(
     cards = ard,
     variables = c(AESOC, AETERM),
@@ -188,15 +188,15 @@ For example, if we wanted to add an "Any AE" row which calculates the number of 
 
 ```{r any_ae}
 # Calculate subjects with any AE across TRTA and create a single-line table for this result
-any_ae <- 
+any_ae <-
   ADAE_subset |>
-  distinct(USUBJID, TRTA) |> 
-  mutate(AE_ANY = TRUE) |> 
+  distinct(USUBJID, TRTA) |>
+  mutate(AE_ANY = TRUE) |>
   cards::ard_dichotomous(
     by = TRTA,
     variables = AE_ANY,
     denominator = cards::ADSL
-  ) |> 
+  ) |>
   tbl_ard_summary(by = TRTA, label = list(AE_ANY = "Any AE"))
 
 any_ae
@@ -208,7 +208,7 @@ The "Any AE" table header differs from the previous table header as it does not 
 # Stack tables so that the "Any AE" row is added at the top of the previous table
 tbl_stack(
   tbls = list(any_ae, tbl),
-  attr_order = 2, 
+  attr_order = 2,
   quiet = TRUE
 )
 ```
