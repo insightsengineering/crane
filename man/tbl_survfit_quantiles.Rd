@@ -118,8 +118,8 @@ cards::bind_ard(
       )
   ) |>
   # update indentation to match spec
-  modify_column_indent(columns = "label", rows = label == "95\% CI", indent = 8L) |>
-  modify_column_indent(columns = "label", rows = .data$label == "Range", indent = 4L) |>
+  modify_indent(columns = "label", rows = label == "95\% CI", indent = 8L) |>
+  modify_indent(columns = "label", rows = .data$label == "Range", indent = 4L) |>
   # remove default footnotes
   remove_footnote_header(columns = all_stat_cols())
 }\if{html}{\out{</div>}}
