@@ -9,10 +9,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-Using functions from the {gtsummary} package we can produce nested tables and hierarchical tables commonly-used in clinical reporting.
+Using functions from the {gtsummary} package we can produce nested tables and hierarchical tables commonly used in clinical reporting.
 
-```{r}
+```{r, message=FALSE}
 library(gtsummary)
+library(dplyr)
 theme_gtsummary_compact()
 ```
 
@@ -24,11 +25,15 @@ The `gtsummary::tbl_hierarchical()` function was created to create hierarchy tab
 
 The `variables` argument takes a vector of variable names, where the first corresponds to the outermost hierarchy level and the last corresponds to the innermost hierarchy level. 
 
-AE rates are calculated within each hierarchy for each level of the innermost variable. By default, summary AE rates are also calculated on label rows at each outer level of the hierarchy. This setting is controlled by the `include` argument, such that any `variable` not in `include` will not include summary AE counts. 
+AE rates are calculated within each hierarchy for each level of the innermost variable. 
+
+By default, summary AE rates are also calculated on label rows at each outer level of the hierarchy. This setting is controlled by the `include` argument, such that any `variable` not in `include` will not include summary AE counts. 
 
 The `by` parameter can be used to set a single variable on which the table will be split column-wise. To include an overall row where AE rates are calculated for the overall dataset at the top of the table, set `overall_row = TRUE`.
 
-The function reports on each row the total number of subjects with the specified AE within the current context determined by the variables specified. If multiple AEs are recorded for a single subject, all of these events are counted once for that subject. 
+The function reports on each row the total number of subjects with the specified AE within the current context determined by the variables specified. 
+
+If multiple AEs are recorded for a single subject, all of these events are counted once for that subject. 
 
 Unique subjects are identified via the variable supplied using the required `id` argument. 
 
@@ -56,7 +61,11 @@ tbl <-
 tbl
 ```
 
-As is typical of most `tbl_*()` functions in {gtsummary}, the `tbl_hierarchical()` function also has the `statistic`, `label`, and `digits` arguments to further customize hierarchy tables. Valid statistics include `n`, `N`, and `p`. The `label` argument can specify the top-left labels for each variable as well as the label used for the "overall" row (if `overall_row = TRUE`).
+As is typical of most `tbl_*()` functions in {gtsummary}, the `tbl_hierarchical()` function also has the `statistic`, `label`, and `digits` arguments to further customize hierarchy tables. 
+
+Valid statistics include `n`, `N`, and `p`. 
+
+The `label` argument can specify the top-left labels for each variable as well as the label used for the "overall" row (if `overall_row = TRUE`).
 
 See below the same example with further customization applied.
 
@@ -82,7 +91,9 @@ tbl
 
 Similar to the `tbl_hierarchical()` function, the `tbl_hierarchical_count()` function also exists within the {gtsummary} package. 
 
-Instead of event *rates* per subject this function calculates overall event *counts*, with no option to specify an `id` parameter. This means that events from every row of `data` will be counted, regardless of whether they occur multiple times per subject. 
+Instead of event *rates* per subject this function calculates overall event *counts*, with no option to specify an `id` parameter. 
+
+This means that events from every row of `data` will be counted, regardless of whether they occur multiple times per subject. 
 
 If `denominator` is specified, it is only used to calculate `N` values in the table header. 
 
@@ -105,36 +116,13 @@ tbl <-
 tbl
 ```
 
-### ARD-First Hierarchical Tables - `tbl_ard_hierarchical()`
-
-In addition to the above two functions which use a data frame-first approach to creating hierarchy tables, an ARD-first approach can be taken using the `gtsummary::tbl_ard_hierarchical()` function. This function takes a hierarchical ARD object of class `"card"` and converts it to a hierarchical table. 
-
-Hierarchical ARDs can be constructed using the `ard_stack_hierarchical()` (for event rates) and `ard_stack_hierarchical_count()` (for event counts) functions from the {cards} package.
-
-For example:
-
-```{r tbl_ard_hierarchical}
-# Build the ARD
-ard <-
-  cards::ard_stack_hierarchical(
-    data = ADAE_subset,
-    variables = c(AESOC, AETERM),
-    by = TRTA,
-    denominator = cards::ADSL |> mutate(TRTA = ARM),
-    id = USUBJID
-  )
-
-# Build the table from the ARD
-tbl_ard_hierarchical(
-  cards = ard,
-  variables = c(AESOC, AETERM),
-  by = TRTA
-)
-```
-
 ### Tables of Event Rates by Highest Severity
 
-In addition to the standard implementation of `tbl_hierarchical()` to create tables of event rates, this function can also be used to generate tables of event rates by highest severity. This means that for each subject in `data` only one event - the event with highest severity - will be reported in the table. To do so, the innermost hierarchy variable (the last variable in `variable`) must be converted to an ordered factor variable.
+In addition to the standard implementation of `tbl_hierarchical()` to create tables of event rates, this function can also be used to generate tables of event rates by highest severity. 
+
+This means that for each subject in `data` only one event - the event with highest severity - will be reported in the table. 
+
+To do so, the innermost hierarchy variable (the last variable in `variable`) must be converted to an ordered factor variable.
 
 For example, consider the following table:
 
@@ -159,11 +147,79 @@ tbl_hierarchical(
 
 Since each subject has exactly one event recorded for this type of table, the numbers within each hierarchy section will always add up to the numbers in the preceding summary row - for example, see in the table above that the total number of subjects with treatment Placebo in the CARDIAC DISORDERS section is 4, and the numbers within the section below, for all severity levels, also add up to 4.
 
+### ARD-First Hierarchical Tables - `tbl_ard_hierarchical()`
+
+In addition to the above two functions which use a data frame-first approach to creating hierarchy tables, an ARD-first approach can be taken using the `gtsummary::tbl_ard_hierarchical()` function. 
+
+This function takes a hierarchical ARD object of class `"card"` and converts it to a hierarchical table. 
+
+Hierarchical ARDs can be constructed using the `ard_stack_hierarchical()` (for event rates) and `ard_stack_hierarchical_count()` (for event counts) functions from the {cards} package.
+
+For example:
+
+```{r tbl_ard_hierarchical}
+# Build the ARD
+ard <-
+  cards::ard_stack_hierarchical(
+    data = ADAE_subset,
+    variables = c(AESOC, AETERM),
+    by = TRTA,
+    denominator = cards::ADSL |> mutate(TRTA = ARM),
+    id = USUBJID
+  )
+
+# Build the table from the ARD
+tbl <- 
+  tbl_ard_hierarchical(
+    cards = ard,
+    variables = c(AESOC, AETERM),
+    by = TRTA,
+    label = list(AESOC = "Body System or Organ Class", AETERM = "Dictionary-Derived Term")
+  )
+
+tbl
+```
+
+### Combining Hierarchical and Other Tables
+
+We can stack hierarchical table results with results from another table if additional rows are needed.
+
+For example, if we wanted to add an "Any AE" row which calculates the number of unique subjects for which any AE was observed to the previous hierarchical table, we could do so as follows using `gtsummary::tbl_stack()`:
+
+```{r any_ae}
+# Calculate subjects with any AE across TRTA and create a single-line table for this result
+any_ae <- 
+  ADAE_subset |>
+  distinct(USUBJID, TRTA) |> 
+  mutate(AE_ANY = TRUE) |> 
+  cards::ard_dichotomous(
+    by = TRTA,
+    variables = AE_ANY,
+    denominator = cards::ADSL
+  ) |> 
+  tbl_ard_summary(by = TRTA, label = list(AE_ANY = "Any AE"))
+
+any_ae
+```
+
+The "Any AE" table header differs from the previous table header as it does not include labels or the column N values, so we specify `attr_order = 2` in the following `tbl_stack()` call to keep the table header from the second table in the stack and not the first (and `quiet = TRUE` to silence the warning about differing headers).
+
+```{r tbl_stack}
+# Stack tables so that the "Any AE" row is added at the top of the previous table
+tbl_stack(
+  tbls = list(any_ae, tbl),
+  attr_order = 2, 
+  quiet = TRUE
+)
+```
+
 ### Sorting & Filtering Hierarchical Tables
 
 Hierarchical tables can be further customized after creation by sorting and filtering them using the `gtsummary::sort_hierarchical()` and `gtsummary::filter_hierarchical()` functions, respectively.
 
-By default, hierarchical tables are sorted alphanumerically at each level of the hierarchy. By applying the `sort_hierarchical()` function to an existing hierarchical table the sort order can be changed to "descending" - sorting rows by descending event rate/count sum at each level of the hierarchy such that the most prevalent events will be listed first.
+By default, hierarchical tables are sorted alphanumerically at each level of the hierarchy. 
+
+By applying the `sort_hierarchical()` function to an existing hierarchical table the sort order can be changed to "descending" - sorting rows by descending event rate/count sum at each level of the hierarchy such that the most prevalent events will be listed first.
 
 In addition to sorting, hierarchical tables can also be filtered using `filter_hierarchical()`, which uses a given expression to filter out rows of the table. 
 
