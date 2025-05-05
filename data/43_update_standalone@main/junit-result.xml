@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="add_blank_row" timestamp="2025-05-05T14:10:19Z" hostname="cd915629faae" tests="1" skipped="0" failures="0" errors="0" time="1.929">
+    <testcase time="1.929" classname="character(0)" name="add_blank_row_works"/>
+  </testsuite>
+  <testsuite name="add_blank_row" timestamp="2025-05-05T14:10:19Z" hostname="cd915629faae" tests="1" skipped="0" failures="0" errors="0" time="0.099">
+    <testcase time="0.0989999999999998" classname="character(0)" name="add_blank_row_messaging"/>
+  </testsuite>
+  <testsuite name="tbl_demographics" timestamp="2025-05-05T14:10:24Z" hostname="cd915629faae" tests="1" skipped="0" failures="0" errors="0" time="4.839">
+    <testcase time="4.839" classname="character(0)" name="tbl_demographics_works"/>
+  </testsuite>
+  <testsuite name="tbl_demographics" timestamp="2025-05-05T14:10:24Z" hostname="cd915629faae" tests="3" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00199999999999978" classname="character(0)" name="tbl_demographics_add_overall_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_demographics_add_overall_works"/>
+    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_demographics_add_overall_works"/>
+  </testsuite>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-05-05T14:10:25Z" hostname="cd915629faae" tests="15" skipped="0" failures="0" errors="0" time="0.521">
+    <testcase time="0.512" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+  </testsuite>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-05-05T14:10:25Z" hostname="cd915629faae" tests="2" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00200000000000067" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
+  </testsuite>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-05-05T14:10:25Z" hostname="cd915629faae" tests="1" skipped="0" failures="1" errors="0" time="0.002">
+    <testcase time="0.00199999999999889" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_">
+      <failure type="failure" message="Snapshot of code has changed: ('test-tbl_survfit_quantiles.R:74:3')">Snapshot of code has changed:
+old[1:6] vs new[1:13]
+  Code
+    as.data.frame(tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA", estimate_fun = gtsummary::label_style_number(
+      digits = 3)))
++ Condition
++   Warning:
++   `modify_column_indent()` was deprecated in gtsummary 2.3.0.
++   i Please use `modify_indent()` instead.
++   Warning:
++   `modify_column_indent()` was deprecated in gtsummary 2.3.0.
++   i Please use `modify_indent()` instead.
+  Output
+                      **Placebo**  \nN = 86 **Xanomeline High Dose**  \nN = 84 **Xanomeline Low Dose**  \nN = 84
+    1   Time to event                  &lt;NA&gt;                               &lt;NA&gt;                              &lt;NA&gt;
+
+* Run `testthat::snapshot_accept('tbl_survfit_quantiles')` to accept the change.
+* Run `testthat::snapshot_review('tbl_survfit_quantiles')` to interactively review the change.</failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-05-05T14:10:25Z" hostname="cd915629faae" tests="3" skipped="0" failures="0" errors="0" time="0.017">
+    <testcase time="0.0150000000000006" classname="character(0)" name="tbl_survfit_quantiles_method.args_"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_method.args_"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_quantiles_method.args_"/>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-05-05T14:10:26Z" hostname="cd915629faae" tests="1" skipped="0" failures="0" errors="0" time="0.638">
+    <testcase time="0.638" classname="character(0)" name="theme_gtsummary_roche_works"/>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-05-05T14:10:26Z" hostname="cd915629faae" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.000999999999999446" classname="character(0)" name="theme_gtsummary_roche_adds_relevant_flextable_directives"/>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-05-05T14:10:26Z" hostname="cd915629faae" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00200000000000067" classname="character(0)" name="theme_gtsummary_roche_no_errors_with_a_gt_print"/>
+  </testsuite>
+</testsuites>
