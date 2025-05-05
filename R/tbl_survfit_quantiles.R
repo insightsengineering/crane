@@ -96,8 +96,8 @@
 #'       )
 #'   ) |>
 #'   # update indentation to match spec
-#'   modify_column_indent(columns = "label", rows = label == "95% CI", indent = 8L) |>
-#'   modify_column_indent(columns = "label", rows = .data$label == "Range", indent = 4L) |>
+#'   modify_indent(columns = "label", rows = label == "95% CI", indent = 8L) |>
+#'   modify_indent(columns = "label", rows = .data$label == "Range", indent = 4L) |>
 #'   # remove default footnotes
 #'   remove_footnote_header(columns = all_stat_cols())
 #' ```
@@ -232,12 +232,12 @@ tbl_survfit_quantiles <- function(data,
           )
         )
     ) |>
-    gtsummary::modify_column_indent(
+    gtsummary::modify_indent(
       columns = "label",
       rows = .data$label == glue("{gtsummary::style_number(conf.level, scale = 100)}% CI"),
       indent = 8L
     ) |>
-    gtsummary::modify_column_indent(
+    gtsummary::modify_indent(
       columns = "label",
       rows = .data$label == "Range",
       indent = 4L
