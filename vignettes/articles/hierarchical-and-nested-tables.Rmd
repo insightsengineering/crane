@@ -1,0 +1,272 @@
+---
+title: "Hierarchical and Stratified Nested Tables"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Using functions from the {gtsummary} package we can produce nested tables and hierarchical tables commonly used in clinical reporting.
+
+```{r, message=FALSE}
+library(gtsummary)
+library(dplyr)
+theme_gtsummary_compact()
+```
+
+## Hierarchical Tables
+
+### Event Rate Tables: `tbl_hierarchical()`
+
+To begin, let's create a basic `tbl_hierarchical()` adverse event table summarizing adverse events (AEs) within System Organ Class (SOC).
+
+
+```{r tbl_hierarchical}
+ADAE_subset <- cards::ADAE |>
+  dplyr::filter(AEBODSYS %in% c("SKIN AND SUBCUTANEOUS TISSUE DISORDERS", "EAR AND LABYRINTH DISORDERS")) |>
+  dplyr::filter(.by = AEBODSYS, dplyr::row_number() < 20)
+
+tbl <-
+  tbl_hierarchical(
+    data = ADAE_subset,
+    variables = c(AEBODSYS, AEDECOD),
+    by = TRTA,
+    denominator = cards::ADSL |> mutate(TRTA = ARM),
+    id = USUBJID,
+    overall_row = TRUE
+  )
+
+tbl
+```
+
+The `gtsummary::tbl_hierarchical()` function was created to build hierarchy tables, which are most commonly seen when reporting rates of adverse events. . 
+
+The `variables` argument takes a vector of variable names, where the first corresponds to the outermost hierarchy level and the last corresponds to the innermost hierarchy level. 
+
+AE rates are calculated within each hierarchy for each level of the innermost variable. 
+
+By default, summary AE rates are also calculated on label rows at each outer level of the hierarchy. This setting is controlled by the `include` argument, such that any `variable` not in `include` will not include summary AE counts.
+For example, the table above includes summaries for both AE and SOC, but had we specified `include = AEDECOD` the resulting table would include rows for both AEs and SOCs, but only AE rows would have summary statistics.
+
+The `by` parameter can be used to set a single variable on which the table will be split column-wise.
+To include an overall row where AE rates are calculated for the overall dataset at the top of the table, set `overall_row = TRUE`.
+
+If multiple AEs are recorded for a subject, only one of these events is counted once for that subject. 
+Unique subjects are identified via the variable supplied using the required `id` argument. 
+
+The dataset specified via the required `denominator` argument is used to calculate the denominators in percentage calculations as well as any `N` counts included in the table header.
+
+Note that only *observed* combinations of hierarchy levels are included in the table---if all event rates within a given row are zero the row will be excluded.
+
+As is typical of most `tbl_*()` functions in {gtsummary}, the `tbl_hierarchical()` function also has the `statistic`, `label`, and `digits` arguments to further customize hierarchy tables. 
+Valid statistics include `n`, `N`, and `p`. 
+The `label` argument can specify the top-left labels for each variable as well as the label used for the "overall" row (if `overall_row = TRUE`).
+
+See below the same example with further customization applied.
+
+```{r tbl_hierarchical custom}
+tbl <-
+  tbl_hierarchical(
+    data = ADAE_subset,
+    variables = c(AEBODSYS, AEDECOD),
+    by = TRTA,
+    denominator = cards::ADSL |> mutate(TRTA = ARM),
+    id = USUBJID,
+    include = AEDECOD,
+    digits = everything() ~ list(p = 0),
+    overall_row = TRUE,
+    label = list(..ard_hierarchical_overall.. = "Any Adverse Event")
+  ) |>
+  add_overall()
+
+tbl
+```
+
+### Event Count Tables: `tbl_hierarchical_count()`
+
+Similar to the `tbl_hierarchical()` function, the `tbl_hierarchical_count()` operates on nested data structures. 
+Instead of event *rates* this function calculates event *counts*, with no option to specify an `id` parameter. 
+This means that events from every row of `data` will be counted, regardless of whether they occur multiple times per subject. 
+If `denominator` is specified, it is only used to calculate `N` values in the table header. 
+
+Only the `n` statistic is available when using this function.
+
+```{r tbl_hierarchical_count}
+ADAE_subset <- cards::ADAE |>
+  dplyr::filter(AEBODSYS %in% c("SKIN AND SUBCUTANEOUS TISSUE DISORDERS", "EAR AND LABYRINTH DISORDERS")) |>
+  dplyr::filter(.by = AEBODSYS, dplyr::row_number() < 20)
+
+tbl <-
+  tbl_hierarchical_count(
+    data = ADAE_subset,
+    variables = c(AEBODSYS, AEDECOD),
+    by = TRTA,
+    denominator = cards::ADSL |> mutate(TRTA = ARM),
+    overall_row = TRUE
+  )
+
+tbl
+```
+
+### Tables of Event Rates by Highest Severity
+
+In addition to the standard implementation of `tbl_hierarchical()` to create tables of event rates, this function can also be used to generate tables of event rates by highest severity. 
+
+This means that for each subject in `data` only one event---the event with highest severity---will be reported in the table. 
+To do so, the innermost hierarchy variable (the last variable in `variable`) must be converted to a factor variable.
+For example, consider the following table:
+
+```{r tbl_hierarchical ordered}
+ADAE_subset <- cards::ADAE |>
+  dplyr::filter(
+    AEBODSYS %in% c("SKIN AND SUBCUTANEOUS TISSUE DISORDERS", "EAR AND LABYRINTH DISORDERS", "CARDIAC DISORDERS")
+  ) |>
+  dplyr::filter(.by = AEBODSYS, dplyr::row_number() < 20) |>
+  dplyr::mutate(AESEV = factor(AESEV, ordered = TRUE, levels = c("MILD", "MODERATE", "SEVERE")))
+
+tbl_hierarchical(
+  data = ADAE_subset,
+  variables = c(AESOC, AESEV),
+  id = USUBJID,
+  denominator = cards::ADSL |> dplyr::rename(TRTA = ARM),
+  by = TRTA,
+  overall_row = TRUE,
+  label = list(AESEV = "Highest Severity")
+)
+```
+
+Since each subject has exactly one event recorded for this type of table, the numbers within each hierarchy section will always add up to the numbers in the preceding summary row.
+For example, see in the table above that the total number of subjects with treatment Placebo in the CARDIAC DISORDERS section is 4, and the numbers within the section below, for all severity levels, also add up to 4.
+
+### ARD-First Hierarchical Tables: `tbl_ard_hierarchical()`
+
+In addition to the above two functions which use a data frame-first approach to creating hierarchy tables, an ARD-first approach can be taken using the `gtsummary::tbl_ard_hierarchical()` function. 
+
+This function takes a hierarchical ARD object of class `"card"` and converts it to a hierarchical table. 
+Hierarchical ARDs can be constructed using the `cards::ard_stack_hierarchical()` (for event rates) and `cards::ard_stack_hierarchical_count()` (for event counts) functions.
+
+For example:
+
+```{r tbl_ard_hierarchical}
+# Build the ARD
+ard <-
+  cards::ard_stack_hierarchical(
+    data = ADAE_subset,
+    variables = c(AESOC, AETERM),
+    by = TRTA,
+    denominator = cards::ADSL |> mutate(TRTA = ARM),
+    id = USUBJID
+  )
+
+# Build the table from the ARD
+tbl <-
+  tbl_ard_hierarchical(
+    cards = ard,
+    variables = c(AESOC, AETERM),
+    by = TRTA,
+    label = list(AESOC = "Body System or Organ Class", AETERM = "Dictionary-Derived Term")
+  )
+
+tbl
+```
+
+### Combining Hierarchical and Other Tables
+
+We can stack hierarchical table results with results from another table if additional rows are needed.
+For example, if we wanted to add an "Any AE" row which calculates the number of unique subjects for which any AE was observed to the previous hierarchical table, we could do so as follows using `gtsummary::tbl_stack()`:
+
+```{r any_ae}
+# Calculate subjects with any AE across TRTA and create a single-line table for this result
+any_ae <-
+  ADAE_subset |>
+  distinct(USUBJID, TRTA) |>
+  mutate(AE_ANY = TRUE) |>
+  cards::ard_dichotomous(
+    by = TRTA,
+    variables = AE_ANY,
+    denominator = cards::ADSL
+  ) |>
+  tbl_ard_summary(by = TRTA, label = list(AE_ANY = "Any AE"))
+
+any_ae
+```
+
+The "Any AE" table header differs from the previous table header as it does not include labels or the column N values, so we specify `attr_order = 2` in the following `tbl_stack()` call to keep the table header from the second table in the stack and not the first (and `quiet = TRUE` to silence the message about differing headers).
+
+```{r tbl_stack}
+# Stack tables so that the "Any AE" row is added at the top of the previous table
+tbl_stack(
+  tbls = list(any_ae, tbl),
+  attr_order = 2,
+  quiet = TRUE
+)
+```
+
+### Sorting & Filtering Hierarchical Tables
+
+Hierarchical tables can be further customized after creation by sorting and filtering them using the `gtsummary::sort_hierarchical()` and `gtsummary::filter_hierarchical()` functions, respectively.
+
+By default, hierarchical tables are sorted alphanumerically at each level of the hierarchy. 
+
+By applying the `sort_hierarchical()` function to an existing hierarchical table the sort order can be changed to "descending" - sorting rows by descending event rate/count sum at each level of the hierarchy such that the most prevalent events will be listed first.
+
+In addition to sorting, hierarchical tables can also be filtered using `filter_hierarchical()`, which uses a given expression to filter out rows of the table. 
+
+For examples of possible filters please see the documentation for the `filter_hierarchical()` function. 
+
+Filtering is only applied at the innermost hierarchy level, with all summary rows from outer hierarchy levels kept. 
+If all rows of a section are filtered out then the summary row for that section is also removed unless `keep_empty = TRUE` is specified. 
+
+If the table contains an overall column then this column is ignored when filtering.
+
+See the following example where a hierarchy table is sorted in descending order and filtered so that only rows with more than one event recorded across all treatment groups are kept.
+
+```{r sort/filter}
+tbl <-
+  tbl_hierarchical(
+    data = ADAE_subset,
+    variables = c(AEBODSYS, AEDECOD),
+    by = TRTA,
+    denominator = cards::ADSL |> mutate(TRTA = ARM),
+    id = USUBJID,
+    overall_row = TRUE
+  ) |>
+  add_overall()
+
+tbl |>
+  sort_hierarchical("descending") |>
+  filter_hierarchical(sum(n) > 1)
+```
+
+## Tables with Stratified Nesting: `tbl_strata_nested_stack()`
+
+Oftentimes in clinical trial reporting we want a similar nested structure to hierarchical tables but don't want to calculate event rates or counts. 
+
+For these calculations, we use the `gtsummary::tbl_strata_nested_stack()` function so that instead of treating the variables provided as a hierarchy they are used as nested stratifying variables. Stratified sections are then stacked to produce the full table. 
+
+This function is similar to `tbl_strata()` but nests and indents each stratified section.
+Take for example the standard laboratory results table which reports summary statistics of the `AVAL` variable stratified by the `PARAM` and `AVISIT` variables:
+
+```{r tbl_strata_nested_stack}
+ADLB_subset <- pharmaverseadam::adlb |>
+  dplyr::filter(
+    PARAMCD %in% c("ALB", "ALKPH"),
+    AVISIT %in% c("Baseline", "Week 2", "Week 4")
+  )
+
+tbl_strata_nested_stack(
+  ADLB_subset,
+  strata = c(PARAM, AVISIT),
+  .tbl_fun = ~ .x |>
+    crane::tbl_demographics(
+      include = AVAL,
+      by = TRT01A,
+      type = list(AVAL = "continuous2"),
+      statistic = list(AVAL = c("{mean} ({sd})", "{median}", "{min} - {max}"))
+    ) |>
+    modify_header(all_stat_cols() ~ "**{level}**")
+)
+```
