@@ -27,8 +27,6 @@
 #' )
 tbl_hierarchical_groups <- function(data,
                                     variables,
-                                    level_groups = list(),
-                                    levels_exclude = NULL,
                                     id,
                                     denominator,
                                     by = NULL,
@@ -36,7 +34,9 @@ tbl_hierarchical_groups <- function(data,
                                     include_overall = everything(),
                                     statistic = everything() ~ "{n} ({p}%)",
                                     labels = NULL,
-                                    digits = NULL) {
+                                    digits = NULL,
+                                    level_groups = list(),
+                                    levels_exclude = NULL) {
   # check inputs ---------------------------------------------------------------
   set_cli_abort_call()
   cards::process_selectors(data, variables = {{ variables }}, by = {{ by }}, id = {{ id }})
@@ -45,7 +45,7 @@ tbl_hierarchical_groups <- function(data,
   var <- last(variables)
   ord <- is.ordered(data[[var]])
   by_cols <- if (!is.null(by)) c("group1", "group1_level") else NULL
-  lvls <- levels(data[[var]])#droplevels(data_no_gps[[var]]))
+  lvls <- levels(data[[var]])
 
   if (is.null(labels)) {
     labels <- lapply(variables, \(x) attr(data[[x]], "label") %||% x) |> setNames(variables)
