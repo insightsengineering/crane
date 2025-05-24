@@ -4,6 +4,7 @@
 \name{reexports}
 \alias{reexports}
 \alias{\%>\%}
+\alias{add_overall}
 \alias{all_continuous}
 \alias{all_categorical}
 \alias{all_dichotomous}
@@ -18,6 +19,6 @@ below to see their documentation.
 \describe{
   \item{dplyr}{\code{\link[dplyr:reexports]{\%>\%}}}
 
-  \item{gtsummary}{\code{\link[gtsummary:select_helpers]{all_categorical}}, \code{\link[gtsummary:select_helpers]{all_continuous}}, \code{\link[gtsummary:select_helpers]{all_dichotomous}}, \code{\link[gtsummary:select_helpers]{all_stat_cols}}, \code{\link[gtsummary:label_style]{label_style_number}}}
+  \item{gtsummary}{\code{\link[gtsummary]{add_overall}}, \code{\link[gtsummary:select_helpers]{all_categorical}}, \code{\link[gtsummary:select_helpers]{all_continuous}}, \code{\link[gtsummary:select_helpers]{all_dichotomous}}, \code{\link[gtsummary:select_helpers]{all_stat_cols}}, \code{\link[gtsummary:label_style]{label_style_number}}}
 }}
 
