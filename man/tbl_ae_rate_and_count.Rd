@@ -2,6 +2,7 @@
 % Please edit documentation in R/tbl_ae_rate_and_count.R
 \name{tbl_ae_rate_and_count}
 \alias{tbl_ae_rate_and_count}
+\alias{add_overall.tbl_ae_rate_and_count}
 \title{AE Rates and Counts}
 \usage{
 tbl_ae_rate_and_count(
@@ -15,6 +16,15 @@ tbl_ae_rate_and_count(
   digits = NULL,
   filter = NULL,
   sort = NULL
+)
+
+\method{add_overall}{tbl_ae_rate_and_count}(
+  x,
+  last = FALSE,
+  col_label = "**Overall**  \\nN = {style_number(N)}",
+  statistic = NULL,
+  digits = NULL,
+  ...
 )
 }
 \arguments{
@@ -53,6 +63,22 @@ default formatting is assigned via \code{label_style_number()} for statistics \c
 and \code{gtsummary::sort_hierarchical(sort)}.
 All filtering and sorting is applied to the \emph{rates-related} statistics, and
 not the counts.}
+
+\item{x}{(\code{tbl_summary}, \code{tbl_svysummary}, \code{tbl_continuous}, \code{tbl_custom_summary})\cr
+A stratified 'gtsummary' table}
+
+\item{last}{(scalar \code{logical})\cr
+Logical indicator to display overall column last in table.
+Default is \code{FALSE}, which will display overall column first.}
+
+\item{col_label}{(\code{string})\cr
+String indicating the column label. Default is \code{"**Overall**  \nN = {style_number(N)}"}}
+
+\item{statistic}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
+used to specify the summary statistics to display for all variables in \code{tbl_hierarchical()}.
+The default is \code{everything() ~ "{n} ({p})"}.}
+
+\item{...}{These dots are for future extensions and must be empty.}
 }
 \value{
 a gtsummary table
@@ -69,7 +95,7 @@ cards::ADAE |>
     by = TRTA,
     ae = AEDECOD,
     soc = AEBODSYS,
-    # Keep rows where AEs across the row have an overall prevalence of greater than 1\%
-    filter = sum(n) / sum(N) > 0.01
+    # Keep rows where AEs across the row have an overall prevalence of greater than 10\%
+    filter = sum(n) / sum(N) > 0.10
   )
 }

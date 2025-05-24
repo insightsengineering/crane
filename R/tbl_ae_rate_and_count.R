@@ -5,6 +5,7 @@
 #' (from `tbl_hierarchical_count()`).
 #'
 #' @inheritParams gtsummary::tbl_hierarchical
+#' @inheritParams gtsummary::add_overall.tbl_hierarchical
 #' @param ae ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   a single column name with the adverse event terms.
 #' @param soc ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
@@ -18,7 +19,7 @@
 #'   not the counts.
 #'
 #' @returns a gtsummary table
-#' @export
+#' @name tbl_ae_rate_and_count
 #'
 #' @examples
 #' # Example 1 ----------------------------------
@@ -28,9 +29,13 @@
 #'     by = TRTA,
 #'     ae = AEDECOD,
 #'     soc = AEBODSYS,
-#'     # Keep rows where AEs across the row have an overall prevalence of greater than 1%
-#'     filter = sum(n) / sum(N) > 0.01
+#'     # Keep rows where AEs across the row have an overall prevalence of greater than 10%
+#'     filter = sum(n) / sum(N) > 0.10
 #'   )
+NULL
+
+#' @rdname tbl_ae_rate_and_count
+#' @export
 tbl_ae_rate_and_count <- function(data, ae, soc, denominator,
                                   hlt = NULL, by = NULL, id = "USUBJID",
                                   digits = NULL, filter = NULL, sort = NULL) {
@@ -41,14 +46,16 @@ tbl_ae_rate_and_count <- function(data, ae, soc, denominator,
   check_not_missing(soc)
   check_not_missing(denominator)
   check_data_frame(data)
-  filter <- enquo(filter)
+  filter <- .my_enquo({{ filter }})
+  # filter <- enquo(filter)
 
   cards::process_selectors(data,
-                           ae = {{ ae }},
-                           soc = {{ soc }},
-                           hlt = {{ hlt }},
-                           by = {{ by }},
-                           id = {{ id }})
+    ae = {{ ae }},
+    soc = {{ soc }},
+    hlt = {{ hlt }},
+    by = {{ by }},
+    id = {{ id }}
+  )
   check_scalar(ae)
   check_scalar(soc)
   check_scalar(hlt, allow_empty = TRUE)
@@ -189,11 +196,25 @@ tbl_ae_rate_and_count <- function(data, ae, soc, denominator,
   tbl_final$cards <-
     list(
       tbl_ae_rate_and_count =
-        list(tbl_hierarchical = tbl_rates$cards$tbl_hierarchical,
-             tbl_hierarchical_count = tbl_count$cards$tbl_hierarchical_count)
+        list(
+          tbl_hierarchical = tbl_rates$cards$tbl_hierarchical,
+          tbl_hierarchical_count = tbl_count$cards$tbl_hierarchical_count
+        )
     )
   tbl_final$inputs <- tbl_ae_rate_and_count_inputs
 
   tbl_final |>
     structure(class = c("tbl_ae_rate_and_count", "gtsummary"))
+}
+
+#' @rdname tbl_ae_rate_and_count
+#' @export
+add_overall.tbl_ae_rate_and_count <- asNamespace("gtsummary")[["add_overall.tbl_hierarchical"]]
+
+# if epxression is already a quo, return as is. otherwise make it a quosure
+.my_enquo <- function(x) {
+  if (tryCatch(is_quosure(x), error = \(e) FALSE)) {
+    return(x)
+  }
+  enquo(x)
 }
