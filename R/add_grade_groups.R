@@ -13,11 +13,17 @@
 #'
 #' tbl_hierarchical_groups(
 #'   ADAE |> mutate(AETOXGR = factor(AETOXGR, ordered = TRUE)),
-#'   variables = c(AEBODSYS, AETOXGR),
+#'   variables = c(AEBODSYS, AEDECOD, AETOXGR),
 #'   level_groups = grade_groups,
+#'   levels_exclude = "5",
 #'   id = USUBJID,
 #'   denominator = ADSL,
-#'   by = ACTARM
+#'   by = ACTARM,
+#'   labels = list(
+#'     AEBODSYS = "MedDRA System Organ Class",
+#'     AEDECOD = "MedDRA Preferred Term",
+#'     AETOXGR = "Grade"
+#'   )
 #' )
 tbl_hierarchical_groups <- function(data,
                                     variables,
@@ -27,7 +33,7 @@ tbl_hierarchical_groups <- function(data,
                                     denominator,
                                     by = NULL,
                                     include = last(variables),
-                                    include_overall = everything(), ## TODO
+                                    include_overall = everything(),
                                     statistic = everything() ~ "{n} ({p}%)",
                                     labels = NULL,
                                     digits = NULL) {
@@ -37,9 +43,9 @@ tbl_hierarchical_groups <- function(data,
   cards::process_selectors(data[variables], include_overall = {{ include_overall }})
 
   var <- last(variables)
-  lvls <- levels(data[[var]])
   ord <- is.ordered(data[[var]])
   by_cols <- if (!is.null(by)) c("group1", "group1_level") else NULL
+  lvls <- levels(data[[var]])#droplevels(data_no_gps[[var]]))
 
   if (is.null(labels)) {
     labels <- lapply(variables, \(x) attr(data[[x]], "label") %||% x) |> setNames(variables)
@@ -135,7 +141,8 @@ tbl_hierarchical_groups <- function(data,
               overall_row = FALSE,
               labels,
               {{ digits }}
-            )
+            ) |>
+            suppressMessages()
 
           ard <- gather_ard(tbl)[[1]]
 
@@ -167,16 +174,20 @@ tbl_hierarchical_groups <- function(data,
         } else {
           dat$idx_lvl <- NA
           dat$idx_lvl[unlist(dat$variable_level) == "- Any Grade -"] <- 0
-          dat$idx_lvl[is.na(dat$idx_lvl) & !unlist(dat$variable_level) %in% gp_nms] <-
-            sapply(
-              dat$variable_level[is.na(dat$idx_lvl) & !unlist(dat$variable_level) %in% gp_nms],
-              \(x) which(lvls == unlist(x))
-            )
-          dat$idx_lvl[unlist(dat$variable_level) %in% gp_nms] <-
-            sapply(
-              dat$variable_level[unlist(dat$variable_level) %in% gp_nms],
-              \(x) min(which(lvls %in% gps[[unlist(x)]])) - 0.5
-            )
+          if (any(unlist(dat$variable_level) %in% lvls)) {
+            dat$idx_lvl[is.na(dat$idx_lvl) & !unlist(dat$variable_level) %in% gp_nms] <-
+              sapply(
+                dat$variable_level[is.na(dat$idx_lvl) & !unlist(dat$variable_level) %in% gp_nms],
+                \(x) which(lvls == unlist(x))
+              )
+          }
+          if (any(unlist(dat$variable_level) %in% gp_nms)) {
+            dat$idx_lvl[unlist(dat$variable_level) %in% gp_nms] <-
+              sapply(
+                dat$variable_level[unlist(dat$variable_level) %in% gp_nms],
+                \(x) min(which(lvls %in% gps[[unlist(x)]])) - 0.5
+              )
+          }
           dat |>
             arrange(idx_lvl, idx) |>
             mutate(idx = seq(min(idx), max(idx))) |>
