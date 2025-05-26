@@ -4,6 +4,7 @@
 #' If you must further customize the way these results are presented,
 #' see the Details section below for the full details.
 #'
+#' @inheritParams gtsummary::add_overall.tbl_summary
 #' @param data (`data.frame`)\cr
 #'   A data frame
 #' @param y (`string` or `expression`)\cr
@@ -21,6 +22,8 @@
 #'   Default is `label_style_number(digits = 1)`.
 #' @param method.args (named `list`)\cr
 #'   Named list of arguments that will be passed to `survival::survfit()`.
+#' @param x (`tbl_survfit_quantiles`)\cr
+#'   A stratified 'tbl_survfit_quantiles' object
 #'
 #'   Note that this list may contain non-standard evaluation components, and
 #'   must be handled similarly to tidyselect inputs by using
@@ -270,7 +273,19 @@ tbl_survfit_quantiles <- function(data,
 
 #' @export
 #' @rdname tbl_survfit_quantiles
-add_overall.tbl_survfit_quantiles <- getNamespace("gtsummary")[["add_overall.tbl_summary"]]
+add_overall.tbl_survfit_quantiles <- function(x,
+                                              last = FALSE,
+                                              col_label = "**Overall**  \nN = {gtsummary::style_number(N)}",
+                                              ...) {
+  set_cli_abort_call()
+  rlang::check_dots_empty(call = get_cli_abort_call())
+
+  do.call(
+    what = getNamespace("gtsummary")[["add_overall.tbl_summary"]],
+    args = list(x = x, last = last, col_label = col_label)
+  )
+
+}
 
 .expr_as_string <- function(x) {
   x <- enquo(x)

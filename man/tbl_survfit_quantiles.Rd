@@ -17,9 +17,7 @@ tbl_survfit_quantiles(
 \method{add_overall}{tbl_survfit_quantiles}(
   x,
   last = FALSE,
-  col_label = "**Overall**  \\nN = {style_number(N)}",
-  statistic = NULL,
-  digits = NULL,
+  col_label = "**Overall**  \\nN = {gtsummary::style_number(N)}",
   ...
 )
 }
@@ -45,12 +43,24 @@ Function used to round and format the estimates in the table.
 Default is \code{label_style_number(digits = 1)}.}
 
 \item{method.args}{(named \code{list})\cr
-Named list of arguments that will be passed to \code{survival::survfit()}.
+Named list of arguments that will be passed to \code{survival::survfit()}.}
+
+\item{x}{(\code{tbl_survfit_quantiles})\cr
+A stratified 'tbl_survfit_quantiles' object
 
 Note that this list may contain non-standard evaluation components, and
 must be handled similarly to tidyselect inputs by using
 rlang's embrace operator \code{{{ . }}} or \code{!!enquo()} when programming with this
 function.}
+
+\item{last}{(scalar \code{logical})\cr
+Logical indicator to display overall column last in table.
+Default is \code{FALSE}, which will display overall column first.}
+
+\item{col_label}{(\code{string})\cr
+String indicating the column label. Default is \code{"**Overall**  \nN = {style_number(N)}"}}
+
+\item{...}{These dots are for future extensions and must be empty.}
 }
 \value{
 a gtsummary table
