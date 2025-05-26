@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="add_blank_row" timestamp="2025-05-26T23:24:29Z" hostname="1bdb4a59794d" tests="1" skipped="0" failures="0" errors="0" time="1.826">
+    <testcase time="1.826" classname="character(0)" name="add_blank_row_works"/>
+  </testsuite>
+  <testsuite name="add_blank_row" timestamp="2025-05-26T23:24:29Z" hostname="1bdb4a59794d" tests="1" skipped="1" failures="0" errors="0" time="0.053">
+    <testcase time="0.0529999999999999" classname="character(0)" name="add_blank_row_messaging">
+      <skipped message="Reason: On CRAN ('test-add_blank_row.R:15:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tbl_demographics" timestamp="2025-05-26T23:24:33Z" hostname="1bdb4a59794d" tests="1" skipped="0" failures="0" errors="0" time="3.757">
+    <testcase time="3.757" classname="character(0)" name="tbl_demographics_works"/>
+  </testsuite>
+  <testsuite name="tbl_demographics" timestamp="2025-05-26T23:24:33Z" hostname="1bdb4a59794d" tests="2" skipped="1" failures="0" errors="0" time="0.002">
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_demographics_add_overall_works"/>
+    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_demographics_add_overall_works">
+      <skipped message="Reason: On CRAN ('test-tbl_demographics.R:40:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-05-26T23:24:34Z" hostname="1bdb4a59794d" tests="2" skipped="1" failures="0" errors="0" time="0.524">
+    <testcase time="0.523" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_survfit_quantiles_works">
+      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:13:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-05-26T23:24:34Z" hostname="1bdb4a59794d" tests="1" skipped="1" failures="0" errors="0" time="0.014">
+    <testcase time="0.0140000000000002" classname="character(0)" name="tbl_survfit_quantiles_by_messaging">
+      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:54:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-05-26T23:24:34Z" hostname="1bdb4a59794d" tests="1" skipped="1" failures="0" errors="0" time="0.022">
+    <testcase time="0.0219999999999994" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_">
+      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:74:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-05-26T23:24:34Z" hostname="1bdb4a59794d" tests="1" skipped="0" failures="0" errors="1" time="0.013">
+    <testcase time="0.0129999999999999" classname="character(0)" name="tbl_survfit_quantiles_method.args_">
+      <error type="error" message="Error in `UseMethod(&quot;filter&quot;)`: no applicable method for 'filter' applied to an object of class &quot;list&quot; ('test-tbl_survfit_quantiles.R:86:3')">Error in `UseMethod("filter")`: no applicable method for 'filter' applied to an object of class "list"
+Backtrace:
+    ▆
+ 1. ├─testthat::expect_equal(...) at test-tbl_survfit_quantiles.R:86:3
+ 2. │ └─testthat::quasi_label(enquo(object), label, arg = "object")
+ 3. │   └─rlang::eval_bare(expr, quo_get_env(quo))
+ 4. ├─dplyr::select(...)
+ 5. ├─dplyr::mutate(...)
+ 6. ├─dplyr::filter(...)
+ 7. └─dplyr::filter(...)</error>
+    </testcase>
+  </testsuite>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-05-26T23:24:34Z" hostname="1bdb4a59794d" tests="1" skipped="1" failures="0" errors="0" time="0.027">
+    <testcase time="0.0270000000000001" classname="character(0)" name="add_overall.tbl_survfit_quantiles_works">
+      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:108:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-05-26T23:24:34Z" hostname="1bdb4a59794d" tests="1" skipped="1" failures="0" errors="0" time="0.545">
+    <testcase time="0.545" classname="character(0)" name="theme_gtsummary_roche_works">
+      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:3:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-05-26T23:24:34Z" hostname="1bdb4a59794d" tests="1" skipped="1" failures="0" errors="0" time="0.01">
+    <testcase time="0.0100000000000007" classname="character(0)" name="theme_gtsummary_roche_adds_relevant_flextable_directives">
+      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:17:3')"/>
+    </testcase>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-05-26T23:24:34Z" hostname="1bdb4a59794d" tests="1" skipped="0" failures="0" errors="0" time="0.01">
+    <testcase time="0.00999999999999979" classname="character(0)" name="theme_gtsummary_roche_no_errors_with_a_gt_print"/>
+  </testsuite>
+</testsuites>
