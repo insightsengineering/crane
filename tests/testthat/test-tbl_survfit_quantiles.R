@@ -40,6 +40,7 @@ test_that("tbl_survfit_quantiles() works", {
       method.args = list(id = SEX)
     ) |>
       gtsummary::gather_ard() |>
+      getElement("tbl_survfit_quantiles") |>
       dplyr::filter(variable == "prob") |>
       dplyr::select(-fmt_fn),
     survival::survfit(survival::Surv(time = AVAL, event = 1 - CNSR) ~ 1, data = cards::ADTTE, id = SEX) |>
@@ -90,6 +91,7 @@ test_that("tbl_survfit_quantiles(method.args)", {
       method.args = list(conf.int = 0.90, conf.type = "logit")
     ) |>
       gtsummary::gather_ard() |>
+      getElement("tbl_survfit_quantiles") |>
       dplyr::filter(context == "survival_survfit") |>
       dplyr::filter(variable == "prob") |>
       dplyr::mutate(group1_level = map(group1_level, as.character)) |>
@@ -105,6 +107,7 @@ test_that("tbl_survfit_quantiles(method.args)", {
 })
 
 test_that("add_overall.tbl_survfit_quantiles() works", {
+  withr::local_options(list(width = 180))
   expect_snapshot(
     tbl_survfit_quantiles(
       data = cards::ADTTE,
@@ -114,4 +117,3 @@ test_that("add_overall.tbl_survfit_quantiles() works", {
       as.data.frame()
   )
 })
-
