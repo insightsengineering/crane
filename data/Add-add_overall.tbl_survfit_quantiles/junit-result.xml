@@ -1,69 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="add_blank_row" timestamp="2025-05-26T23:24:38Z" hostname="faf884de298d" tests="1" skipped="0" failures="0" errors="0" time="1.899">
-    <testcase time="1.899" classname="character(0)" name="add_blank_row_works"/>
+  <testsuite name="add_blank_row" timestamp="2025-05-26T23:31:09Z" hostname="1eb0cfa1f87f" tests="1" skipped="0" failures="0" errors="0" time="1.869">
+    <testcase time="1.869" classname="character(0)" name="add_blank_row_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-05-26T23:24:38Z" hostname="faf884de298d" tests="1" skipped="0" failures="0" errors="0" time="0.059">
-    <testcase time="0.0589999999999997" classname="character(0)" name="add_blank_row_messaging"/>
+  <testsuite name="add_blank_row" timestamp="2025-05-26T23:31:09Z" hostname="1eb0cfa1f87f" tests="1" skipped="0" failures="0" errors="0" time="0.05">
+    <testcase time="0.0499999999999998" classname="character(0)" name="add_blank_row_messaging"/>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-05-26T23:24:43Z" hostname="faf884de298d" tests="1" skipped="0" failures="0" errors="0" time="5.048">
-    <testcase time="5.048" classname="character(0)" name="tbl_demographics_works"/>
+  <testsuite name="tbl_demographics" timestamp="2025-05-26T23:31:13Z" hostname="1eb0cfa1f87f" tests="1" skipped="0" failures="0" errors="0" time="4.765">
+    <testcase time="4.765" classname="character(0)" name="tbl_demographics_works"/>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-05-26T23:24:43Z" hostname="faf884de298d" tests="3" skipped="0" failures="0" errors="0" time="0.002">
-    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_demographics_add_overall_works"/>
+  <testsuite name="tbl_demographics" timestamp="2025-05-26T23:31:13Z" hostname="1eb0cfa1f87f" tests="3" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_demographics_add_overall_works"/>
+    <testcase time="0.00100000000000033" classname="character(0)" name="tbl_demographics_add_overall_works"/>
     <testcase time="0" classname="character(0)" name="tbl_demographics_add_overall_works"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_demographics_add_overall_works"/>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-05-26T23:24:44Z" hostname="faf884de298d" tests="1" skipped="0" failures="0" errors="0" time="1.195">
-    <testcase time="1.195" classname="character(0)" name="theme_gtsummary_roche_works"/>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-05-26T23:31:15Z" hostname="1eb0cfa1f87f" tests="1" skipped="0" failures="0" errors="0" time="1.212">
+    <testcase time="1.212" classname="character(0)" name="theme_gtsummary_roche_works"/>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-05-26T23:24:44Z" hostname="faf884de298d" tests="1" skipped="0" failures="0" errors="0" time="0.001">
-    <testcase time="0.000999999999999446" classname="character(0)" name="theme_gtsummary_roche_adds_relevant_flextable_directives"/>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-05-26T23:31:15Z" hostname="1eb0cfa1f87f" tests="1" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00299999999999834" classname="character(0)" name="theme_gtsummary_roche_adds_relevant_flextable_directives"/>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-05-26T23:24:44Z" hostname="faf884de298d" tests="1" skipped="0" failures="0" errors="0" time="0.001">
-    <testcase time="0.000999999999999446" classname="character(0)" name="theme_gtsummary_roche_no_errors_with_a_gt_print"/>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-05-26T23:31:15Z" hostname="1eb0cfa1f87f" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00200000000000067" classname="character(0)" name="theme_gtsummary_roche_no_errors_with_a_gt_print"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-05-26T23:24:44Z" hostname="faf884de298d" tests="7" skipped="0" failures="0" errors="1" time="0.185">
-    <testcase time="0.182" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-05-26T23:31:15Z" hostname="1eb0cfa1f87f" tests="7" skipped="0" failures="0" errors="0" time="0.232">
+    <testcase time="0.228" classname="character(0)" name="tbl_survfit_quantiles_works"/>
     <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works">
-      <error type="error" message="Error in `UseMethod(&quot;filter&quot;)`: no applicable method for 'filter' applied to an object of class &quot;list&quot; ('test-tbl_survfit_quantiles.R:37:3')">Error in `UseMethod("filter")`: no applicable method for 'filter' applied to an object of class "list"
-Backtrace:
-    ▆
- 1. ├─testthat::expect_equal(...) at test-tbl_survfit_quantiles.R:37:3
- 2. │ └─testthat::quasi_label(enquo(object), label, arg = "object")
- 3. │   └─rlang::eval_bare(expr, quo_get_env(quo))
- 4. ├─dplyr::select(...)
- 5. └─dplyr::filter(...)</error>
-    </testcase>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_works"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-05-26T23:24:44Z" hostname="faf884de298d" tests="2" skipped="0" failures="0" errors="0" time="0.027">
-    <testcase time="0.0259999999999998" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-05-26T23:31:15Z" hostname="1eb0cfa1f87f" tests="2" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00200000000000067" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-05-26T23:24:44Z" hostname="faf884de298d" tests="1" skipped="0" failures="0" errors="0" time="0.001">
-    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-05-26T23:31:15Z" hostname="1eb0cfa1f87f" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00200000000000067" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-05-26T23:24:44Z" hostname="faf884de298d" tests="1" skipped="0" failures="0" errors="1" time="0.002">
-    <testcase time="0.00200000000000067" classname="character(0)" name="tbl_survfit_quantiles_method.args_">
-      <error type="error" message="Error in `UseMethod(&quot;filter&quot;)`: no applicable method for 'filter' applied to an object of class &quot;list&quot; ('test-tbl_survfit_quantiles.R:86:3')">Error in `UseMethod("filter")`: no applicable method for 'filter' applied to an object of class "list"
-Backtrace:
-    ▆
- 1. ├─testthat::expect_equal(...) at test-tbl_survfit_quantiles.R:86:3
- 2. │ └─testthat::quasi_label(enquo(object), label, arg = "object")
- 3. │   └─rlang::eval_bare(expr, quo_get_env(quo))
- 4. ├─dplyr::select(...)
- 5. ├─dplyr::mutate(...)
- 6. ├─dplyr::filter(...)
- 7. └─dplyr::filter(...)</error>
-    </testcase>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-05-26T23:31:15Z" hostname="1eb0cfa1f87f" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_method.args_"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-05-26T23:24:44Z" hostname="faf884de298d" tests="2" skipped="0" failures="0" errors="0" time="0.041">
-    <testcase time="0.0399999999999991" classname="character(0)" name="add_overall.tbl_survfit_quantiles_works"/>
-    <testcase time="0.00100000000000122" classname="character(0)" name="add_overall.tbl_survfit_quantiles_works"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-05-26T23:31:15Z" hostname="1eb0cfa1f87f" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00200000000000067" classname="character(0)" name="add_overall.tbl_survfit_quantiles_works"/>
   </testsuite>
 </testsuites>
