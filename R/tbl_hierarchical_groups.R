@@ -1,4 +1,5 @@
 #' AE Analysis of Grade Groups
+#'
 #' @export
 #'
 #' @examples
@@ -35,12 +36,13 @@ tbl_hierarchical_groups <- function(data,
                                     statistic = everything() ~ "{n} ({p}%)",
                                     labels = NULL,
                                     digits = NULL,
+                                    sort = "descending",
                                     level_groups = list(),
                                     levels_exclude = NULL) {
   # check inputs ---------------------------------------------------------------
   set_cli_abort_call()
   cards::process_selectors(data, variables = {{ variables }}, by = {{ by }}, id = {{ id }})
-  cards::process_selectors(data[variables], include_overall = {{ include_overall }})
+  cards::process_selectors(data[variables], include = {{ include }}, include_overall = {{ include_overall }})
 
   var <- last(variables)
   ord <- is.ordered(data[[var]])
@@ -92,7 +94,7 @@ tbl_hierarchical_groups <- function(data,
 
       if (i > 1) {
         ard |>
-          filter(variable == var) |>
+          filter(variable %in% c(variables[1], var)) |>
           select(-all_ard_groups("levels"), by_cols, group2_level)
       } else {
         ard
@@ -148,7 +150,7 @@ tbl_hierarchical_groups <- function(data,
 
           if (which_data > 1) {
             ard |>
-              filter(variable == var) |>
+              filter(variable %in% c(variables[1], var)) |>
               select(-all_ard_groups("levels"), by_cols, group2_level)
           } else {
             ard
@@ -161,7 +163,7 @@ tbl_hierarchical_groups <- function(data,
       ard_list,
       .quiet = TRUE
     ) |>
-      sort_ard_hierarchical("alphanumeric")
+      sort_ard_hierarchical(sort)
 
     # arrange with groups prior to their first level
     ard <- ard |>
