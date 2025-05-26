@@ -103,3 +103,15 @@ test_that("tbl_survfit_quantiles(method.args)", {
       dplyr::select(-"fmt_fn")
   )
 })
+
+test_that("add_overall.tbl_survfit_quantiles() works", {
+  expect_snapshot(
+    tbl_survfit_quantiles(
+      data = cards::ADTTE,
+      by = "TRTA"
+    ) |>
+      add_overall(last = TRUE, col_label = "**All Participants**  \nN = {n}") |>
+      as.data.frame()
+  )
+})
+

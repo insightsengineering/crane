@@ -2,6 +2,7 @@
 % Please edit documentation in R/tbl_survfit_quantiles.R
 \name{tbl_survfit_quantiles}
 \alias{tbl_survfit_quantiles}
+\alias{add_overall.tbl_survfit_quantiles}
 \title{Survival Quantiles}
 \usage{
 tbl_survfit_quantiles(
@@ -11,6 +12,15 @@ tbl_survfit_quantiles(
   header = "Time to event",
   estimate_fun = label_style_number(digits = 1),
   method.args = list(conf.int = 0.95)
+)
+
+\method{add_overall}{tbl_survfit_quantiles}(
+  x,
+  last = FALSE,
+  col_label = "**Overall**  \\nN = {style_number(N)}",
+  statistic = NULL,
+  digits = NULL,
+  ...
 )
 }
 \arguments{
@@ -129,8 +139,10 @@ cards::bind_ard(
 # Example 1 ----------------------------------
 tbl_survfit_quantiles(
   data = cards::ADTTE,
-  by = "TRTA"
-)
+  by = "TRTA",
+  estimate_fun = label_style_number(digits = 1, na = "NE")
+) |>
+  add_overall(last = TRUE, col_label = "**All Participants**  \nN = {n}")
 
 # Example 2: unstratified analysis -----------
 tbl_survfit_quantiles(data = cards::ADTTE)

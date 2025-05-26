@@ -6,6 +6,10 @@ dplyr::`%>%`
 
 # gtsummary ------------------------------------------------------------------------
 #' @export
+#' @importFrom gtsummary add_overall
+gtsummary::add_overall
+
+#' @export
 #' @importFrom gtsummary all_continuous
 gtsummary::all_continuous
 
