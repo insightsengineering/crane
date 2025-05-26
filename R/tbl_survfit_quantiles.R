@@ -284,7 +284,6 @@ add_overall.tbl_survfit_quantiles <- function(x,
     what = getNamespace("gtsummary")[["add_overall.tbl_summary"]],
     args = list(x = x, last = last, col_label = col_label)
   )
-
 }
 
 .expr_as_string <- function(x) {
