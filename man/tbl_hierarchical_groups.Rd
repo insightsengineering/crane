@@ -10,11 +10,13 @@ tbl_hierarchical_groups(
   id,
   denominator,
   by = NULL,
-  include = last(variables),
+  include = dplyr::last(variables),
   include_overall = everything(),
   statistic = everything() ~ "{n} ({p}\%)",
   labels = NULL,
   digits = NULL,
+  sort = "alphanumeric",
+  filter = NULL,
   level_groups = list(),
   levels_exclude = NULL
 )
