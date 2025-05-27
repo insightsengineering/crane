@@ -15,10 +15,10 @@ tbl_hierarchical_groups(
   statistic = everything() ~ "{n} ({p}\%)",
   labels = NULL,
   digits = NULL,
-  sort = "alphanumeric",
+  sort = "descending",
   filter = NULL,
-  level_groups = list(),
-  levels_exclude = NULL
+  grade_groups = list(),
+  grades_exclude = NULL
 )
 }
 \description{
@@ -37,8 +37,8 @@ grade_groups <- list(
 tbl_hierarchical_groups(
   ADAE |> mutate(AETOXGR = factor(AETOXGR, ordered = TRUE)),
   variables = c(AEBODSYS, AEDECOD, AETOXGR),
-  level_groups = grade_groups,
-  levels_exclude = "5",
+  grade_groups = grade_groups,
+  grades_exclude = "5",
   id = USUBJID,
   denominator = ADSL,
   by = ACTARM,

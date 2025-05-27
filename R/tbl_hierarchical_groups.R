@@ -15,8 +15,8 @@
 #' tbl_hierarchical_groups(
 #'   ADAE |> mutate(AETOXGR = factor(AETOXGR, ordered = TRUE)),
 #'   variables = c(AEBODSYS, AEDECOD, AETOXGR),
-#'   level_groups = grade_groups,
-#'   levels_exclude = "5",
+#'   grade_groups = grade_groups,
+#'   grades_exclude = "5",
 #'   id = USUBJID,
 #'   denominator = ADSL,
 #'   by = ACTARM,
@@ -36,10 +36,10 @@ tbl_hierarchical_groups <- function(data,
                                     statistic = everything() ~ "{n} ({p}%)",
                                     labels = NULL,
                                     digits = NULL,
-                                    sort = "alphanumeric",
+                                    sort = "descending",
                                     filter = NULL,
-                                    level_groups = list(),
-                                    levels_exclude = NULL) {
+                                    grade_groups = list(),
+                                    grades_exclude = NULL) {
   # check inputs ---------------------------------------------------------------
   set_cli_abort_call()
   cards::process_selectors(data, variables = {{ variables }}, by = {{ by }}, id = {{ id }})
@@ -90,12 +90,12 @@ tbl_hierarchical_groups <- function(data,
   )
 
   # grouped data -------
-  if (length(level_groups) > 0) {
+  if (length(grade_groups) > 0) {
     ## groups mutually exclusive?
     ## at least 2 vars
 
-    gp_nms <- sapply(seq_along(level_groups), \(x) level_groups[[x]][[3]])
-    gps <- lapply(seq_along(level_groups), \(x) (level_groups[[x]][[2]] |> eval())) |> setNames(gp_nms)
+    gp_nms <- sapply(seq_along(grade_groups), \(x) grade_groups[[x]][[3]])
+    gps <- lapply(seq_along(grade_groups), \(x) (grade_groups[[x]][[2]] |> eval())) |> setNames(gp_nms)
 
     tbl_list <- c(
       tbl_list,
@@ -106,7 +106,7 @@ tbl_hierarchical_groups <- function(data,
           data[[var]] <-
             do.call(
               dplyr::case_match,
-              args = c(list(.x = data[[var]]), level_groups)
+              args = c(list(.x = data[[var]]), grade_groups)
             ) |>
             factor(levels = gp_nms, ordered = ord)
 
@@ -138,8 +138,8 @@ tbl_hierarchical_groups <- function(data,
     # arrange with groups prior to their first level
     tbl <- tbl |>
       modify_table_body(
-        function(tb) {
-          tb |>
+        function(table_body) {
+          table_body |>
             mutate(idx = dplyr::row_number()) |>
             dplyr::group_by(dplyr::pick(all_ard_groups(), "variable")) |>
             dplyr::group_split() |>
@@ -163,13 +163,13 @@ tbl_hierarchical_groups <- function(data,
                     )
                 }
                 dat |>
-                  dplyr::arrange("idx_lvl", "idx") |>
-                  mutate(idx = seq(min(.data$idx), max(.data$idx))) |>
+                  dplyr::arrange(.data$idx_lvl, .data$idx) |>
+                  mutate(idx = sort(dat$idx)) |>
                   select(-"idx_lvl")
               }
             }) |>
             dplyr::bind_rows() |>
-            dplyr::arrange("idx") |>
+            dplyr::arrange(.data$idx) |>
             select(-"idx")
         }
       )
@@ -178,8 +178,8 @@ tbl_hierarchical_groups <- function(data,
   tbl <- tbl |>
     # Add "- Any Grade -" rows
     modify_table_body(
-      function(tb) {
-        tb |>
+      function(table_body) {
+        table_body |>
           mutate(idx = dplyr::row_number()) |>
           dplyr::group_by(dplyr::pick(all_ard_groups())) |>
           dplyr::group_split() |>
@@ -187,13 +187,11 @@ tbl_hierarchical_groups <- function(data,
             function(x) {
               if (any(x$variable == variables[length(variables) - 1])) {
                 dplyr::bind_rows(
-                  x[1, ] |>
-                    mutate(across(all_stat_cols(), ~ if (.data$variable %in% include) . else NA)),
-                  x[1, ] |>
-                    mutate(variable = var, label = "- Any Grade -", idx = .data$idx + 0.5),
+                  x[1, ] |> mutate(across(all_stat_cols(), ~ if (.data$variable %in% include) . else NA)),
+                  x[1, ] |> mutate(variable = var, label = "- Any Grade -", idx = .data$idx + 0.5),
                   x[-1, ]
                 ) |>
-                  dplyr::filter(!.data$label %in% levels_exclude)
+                  dplyr::filter(!.data$label %in% grades_exclude)
               } else {
                 x
               }
@@ -201,7 +199,7 @@ tbl_hierarchical_groups <- function(data,
           ) |>
           dplyr::bind_rows() |>
           dplyr::filter(!(.data$label == "- Any adverse events -" & .data$idx == 2)) |>
-          dplyr::arrange("idx") |>
+          dplyr::arrange(.data$idx) |>
           select(-"idx")
       }
     ) |>
