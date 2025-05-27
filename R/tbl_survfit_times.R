@@ -56,6 +56,12 @@ tbl_survfit_times <- function(data,
   check_class(estimate_fun, "function")
   cards::process_selectors(data, by = {{ by }})
   check_scalar(by, allow_empty = TRUE)
+  if ("time" %in% by) {
+    cli::cli_abort(
+      "The {.arg by} column cannot be named {.val time}.",
+      call = get_cli_abort_call()
+    )
+  }
 
   y <- .expr_as_string({{ y }}) # convert y to string (if not already)
   func_inputs <- as.list(environment())
