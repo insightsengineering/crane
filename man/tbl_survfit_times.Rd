@@ -63,6 +63,13 @@ function.}
 \item{x}{(\code{survfit} or \code{data.frame})\cr
 an object of class \code{survfit} created with \code{\link[survival:survfit]{survival::survfit()}} or a data frame. See below for details.}
 
+\item{last}{(scalar \code{logical})\cr
+Logical indicator to display overall column last in table.
+Default is \code{FALSE}, which will display overall column first.}
+
+\item{col_label}{(\code{string})\cr
+String indicating the column label. Default is \code{"**Overall**  \nN = {style_number(N)}"}}
+
 \item{...}{These dots are for future extensions and must be empty.}
 }
 \value{
@@ -73,9 +80,12 @@ Create a gtsummary table with Kaplan-Meier estimated survival estimates
 and specified times.
 }
 \examples{
+# Example 1 ----------------------------------
 tbl_survfit_times(
   data = cards::ADTTE,
   by = "TRTA",
-  times = c(6, 12)
-)
+  times = c(30, 60),
+  label = "Day {time}"
+) |>
+  add_overall()
 }

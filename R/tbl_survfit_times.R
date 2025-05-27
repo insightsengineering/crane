@@ -5,6 +5,7 @@
 #'
 #' @inheritParams tbl_survfit_quantiles
 #' @inheritParams cardx::ard_survival_survfit
+#' @inheritParams gtsummary::add_overall.tbl_summary
 #' @param label (`string`)\cr
 #'   Label to appear in the header row. Default is `"Time {time}"`, where
 #'   the glue syntax injects the time estimate into the label.
@@ -20,11 +21,14 @@
 #' @name tbl_survfit_times
 #'
 #' @examples
+#' # Example 1 ----------------------------------
 #' tbl_survfit_times(
 #'   data = cards::ADTTE,
 #'   by = "TRTA",
-#'   times = c(6, 12)
-#' )
+#'   times = c(30, 60),
+#'   label = "Day {time}"
+#' ) |>
+#'   add_overall()
 NULL
 
 #' @rdname tbl_survfit_times
@@ -59,7 +63,6 @@ tbl_survfit_times <- function(data,
   data <- data[stats::complete.cases(data[all.vars(form)]), ]
 
   # get survival quantiles -----------------------------------------------------
-  browser()
   ard_surv_times <-
     cardx::ard_survival_survfit(
       x = data,
@@ -100,8 +103,7 @@ tbl_survfit_times <- function(data,
           variable = paste0(.data$variable, unlist(.data$variable_level)),
           variable_level = NULL
         ),
-      # TODO: This is causing an error in `tbl_ard_summary()` and I need to investigate
-      # case_switch(!is_empty(by) ~ ard_by),
+      case_switch(!is_empty(by) ~ ard_by),
       ard_n
     ) |>
     gtsummary::tbl_ard_summary(
@@ -112,22 +114,24 @@ tbl_survfit_times <- function(data,
         map(times, ~ glue::glue_data(list(time = .x), label)) |>
         set_names(paste0("time", times))
     ) |>
-    # TODO: add this back once `ard_by` is added back
-    # gtsummary::modify_header(
-    #   all_stat_cols() ~ "**{level}**  \nN = {n}",
-    #   label = ""
-    # ) |>
+    gtsummary::modify_header(
+      all_stat_cols() ~ "**{level}**  \nN = {n}",
+      label = ""
+    ) |>
     gtsummary::modify_table_body(
       ~ .x |>
         mutate(
           label = dplyr::case_when(
             .data$label == "Number of Subjects at Risk" ~ "Patients remaining at risk",
-            .data$label == "(CI Lower Bound, CI Upper Bound)" ~ glue("{gtsummary::style_number(conf.level, scale = 100)}% CI"),
-            .data$label == "Survival Probability, Survival Probability" ~ "25% and 75%-ile",
+            .data$label == "Survival Probability%" ~ "Event Free Rate (%)",
+            .data$label == "CI Lower Bound%, CI Upper Bound%" ~ glue("{gtsummary::style_number(conf.level, scale = 100)}% CI"),
             .default = .data$label
           )
         )
     )
+
+  # update statistic labels with defaults --------------------------------------
+
 
   # return tbl -----------------------------------------------------------------
   tbl$cards <-
@@ -135,7 +139,6 @@ tbl_survfit_times <- function(data,
       tbl_survfit_times =
         dplyr::bind_rows(
           ard_surv_times,
-          ard_followup_range,
           if (!is_empty(by)) ard_by,  # styler: off
           ard_n
         )
