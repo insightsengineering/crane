@@ -111,10 +111,10 @@ tbl_survfit_times <- function(data,
     gtsummary::tbl_ard_summary(
       by = any_of(by),
       type = starts_with("time") ~ "continuous2",
-      statistic =  starts_with("time") ~ statistic,
+      statistic = starts_with("time") ~ statistic,
       label =
         map(times, ~ glue::glue_data(list(time = .x), label)) |>
-        set_names(paste0("time", times))
+          set_names(paste0("time", times))
     ) |>
     gtsummary::modify_header(
       all_stat_cols() ~ "**{level}**  \nN = {n}",
