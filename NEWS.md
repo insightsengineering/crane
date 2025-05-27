@@ -1,10 +1,10 @@
-# crane 0.1.0.9013
+# crane 0.1.0.9014
 
 * Added an article giving an overview of the {crane} package. (#37)
 
 * Updated `tbl_demographics()` to convert cells with `"0 (0.0%)"` to `"0"`.
 
-* Added `tbl_survfit_quantiles()` to create a table of survival quantiles. (#19)
+* Added `tbl_survfit_quantiles()` and `add_overall.tbl_survfit_quantiles()` to create a table of survival quantiles. (#19)
 
 * Changed the default header in `tbl_demographics()` tables from `**Characteristic**` to an empty string.
 

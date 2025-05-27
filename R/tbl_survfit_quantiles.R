@@ -4,6 +4,7 @@
 #' If you must further customize the way these results are presented,
 #' see the Details section below for the full details.
 #'
+#' @inheritParams gtsummary::add_overall.tbl_summary
 #' @param data (`data.frame`)\cr
 #'   A data frame
 #' @param y (`string` or `expression`)\cr
@@ -21,6 +22,8 @@
 #'   Default is `label_style_number(digits = 1)`.
 #' @param method.args (named `list`)\cr
 #'   Named list of arguments that will be passed to `survival::survfit()`.
+#' @param x (`tbl_survfit_quantiles`)\cr
+#'   A stratified 'tbl_survfit_quantiles' object
 #'
 #'   Note that this list may contain non-standard evaluation components, and
 #'   must be handled similarly to tidyselect inputs by using
@@ -28,7 +31,7 @@
 #'   function.
 #'
 #' @returns a gtsummary table
-#' @export
+#' @name tbl_survfit_quantiles
 #'
 #' @section ARD-first:
 #'
@@ -106,16 +109,22 @@
 #' # Example 1 ----------------------------------
 #' tbl_survfit_quantiles(
 #'   data = cards::ADTTE,
-#'   by = "TRTA"
-#' )
+#'   by = "TRTA",
+#'   estimate_fun = label_style_number(digits = 1, na = "NE")
+#' ) |>
+#'   add_overall(last = TRUE, col_label = "**All Participants**  \nN = {n}")
 #'
 #' # Example 2: unstratified analysis -----------
 #' tbl_survfit_quantiles(data = cards::ADTTE)
+NULL
+
+#' @export
+#' @rdname tbl_survfit_quantiles
 tbl_survfit_quantiles <- function(data,
                                   y = "survival::Surv(time = AVAL, event = 1 - CNSR, type = 'right', origin = 0)",
                                   by = NULL,
                                   header = "Time to event",
-                                  estimate_fun = label_style_number(digits = 1),
+                                  estimate_fun = label_style_number(digits = 1, na = "NE"),
                                   method.args = list(conf.int = 0.95)) {
   method.args <- enquo(method.args)
 
@@ -192,7 +201,7 @@ tbl_survfit_quantiles <- function(data,
   ard_n <- cards::ard_total_n(data)
 
   # build gtsummary table ------------------------------------------------------
-  tbl_survift_quantiles <-
+  res <-
     dplyr::bind_rows(
       ard_surv_quantiles |>
         # remove model-wide stats
@@ -245,15 +254,36 @@ tbl_survfit_quantiles <- function(data,
     gtsummary::remove_footnote_header(columns = all_stat_cols())
 
   # return tbl -----------------------------------------------------------------
-  tbl_survift_quantiles$cards <-
-    dplyr::bind_rows(
-      ard_surv_quantiles,
-      ard_followup_range,
-      if (!is_empty(by)) ard_by,  # styler: off
-      ard_n
+  res$cards <-
+    list(
+      tbl_survfit_quantiles =
+        dplyr::bind_rows(
+          ard_surv_quantiles,
+          ard_followup_range,
+          if (!is_empty(by)) ard_by,  # styler: off
+          ard_n
+        )
     )
-  tbl_survift_quantiles$inputs <- func_inputs
-  tbl_survift_quantiles
+
+  res$inputs <- func_inputs
+  res[["call_list"]] <- list(tbl_survfit_quantiles = match.call())
+  res |>
+    structure(class = c("tbl_survfit_quantiles", "gtsummary"))
+}
+
+#' @export
+#' @rdname tbl_survfit_quantiles
+add_overall.tbl_survfit_quantiles <- function(x,
+                                              last = FALSE,
+                                              col_label = "**Overall**  \nN = {gtsummary::style_number(N)}",
+                                              ...) {
+  set_cli_abort_call()
+  rlang::check_dots_empty(call = get_cli_abort_call())
+
+  do.call(
+    what = getNamespace("gtsummary")[["add_overall.tbl_summary"]],
+    args = list(x = x, last = last, col_label = col_label)
+  )
 }
 
 .expr_as_string <- function(x) {
