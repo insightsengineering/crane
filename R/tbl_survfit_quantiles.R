@@ -157,12 +157,6 @@ tbl_survfit_quantiles <- function(data,
       stat_names = c("estimate", "conf.low", "conf.high"),
       fmt_fn = estimate_fun
     )
-  # get the confidence level
-  conf.level <-
-    ard_surv_quantiles |>
-    dplyr::filter(.data$stat_name == "conf.level") |>
-    getElement("stat") |>
-    getElement(1L)
 
   # calculate range of followup times ------------------------------------------
   df_time <-
@@ -190,6 +184,13 @@ tbl_survfit_quantiles <- function(data,
     ard_by <- cards::ard_categorical(data, variables = all_of(by))
   }
   ard_n <- cards::ard_total_n(data)
+
+  # get the confidence level
+  conf.level <-
+    ard_surv_times |>
+    dplyr::filter(.data$stat_name == "conf.level") |>
+    dplyr::pull("stat") |>
+    unlist()
 
   # build gtsummary table ------------------------------------------------------
   tbl_survift_quantiles <-
