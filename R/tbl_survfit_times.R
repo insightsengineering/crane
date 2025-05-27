@@ -16,6 +16,8 @@
 #'   Default is `c("{n.risk}", "{estimate}%", "{conf.low}%, {conf.high}%")`
 #' @param estimate_fun (`function`) \cr
 #'   Function used to style/round the `c(estimate, conf.low, conf.high)` statistics.
+#' @param x (`tbl_survfit_times`)\cr
+#'   A stratified 'tbl_survfit_times' object
 #'
 #' @returns a gtsummary table
 #' @name tbl_survfit_times
@@ -151,16 +153,4 @@ tbl_survfit_times <- function(data,
 
 #' @export
 #' @rdname tbl_survfit_times
-add_overall.tbl_survfit_times <- function(x,
-                                          last = FALSE,
-                                          col_label = "**Overall**  \nN = {gtsummary::style_number(N)}",
-                                          ...) {
-  # TODO: we can just replace this with `add_overall.tbl_survfit_times <- add_overall.tbl_survfit_qunatiles`
-  set_cli_abort_call()
-  rlang::check_dots_empty(call = get_cli_abort_call())
-
-  do.call(
-    what = getNamespace("gtsummary")[["add_overall.tbl_summary"]],
-    args = list(x = x, last = last, col_label = col_label)
-  )
-}
+add_overall.tbl_survfit_times <- add_overall.tbl_survfit_quantiles

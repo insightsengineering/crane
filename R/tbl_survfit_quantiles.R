@@ -22,13 +22,13 @@
 #'   Default is `label_style_number(digits = 1)`.
 #' @param method.args (named `list`)\cr
 #'   Named list of arguments that will be passed to `survival::survfit()`.
-#' @param x (`tbl_survfit_quantiles`)\cr
-#'   A stratified 'tbl_survfit_quantiles' object
 #'
 #'   Note that this list may contain non-standard evaluation components, and
 #'   must be handled similarly to tidyselect inputs by using
 #'   rlang's embrace operator `{{ . }}` or `!!enquo()` when programming with this
 #'   function.
+#' @param x (`tbl_survfit_quantiles`)\cr
+#'   A stratified 'tbl_survfit_quantiles' object
 #'
 #' @returns a gtsummary table
 #' @name tbl_survfit_quantiles
@@ -196,7 +196,7 @@ tbl_survfit_quantiles <- function(data,
 
   # get the confidence level
   conf.level <-
-    ard_surv_times |>
+    ard_surv_quantiles |>
     dplyr::filter(.data$stat_name == "conf.level") |>
     dplyr::pull("stat") |>
     unlist()

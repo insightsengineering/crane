@@ -60,8 +60,8 @@ must be handled similarly to tidyselect inputs by using
 rlang's embrace operator \code{{{ . }}} or \code{!!enquo()} when programming with this
 function.}
 
-\item{x}{(\code{survfit} or \code{data.frame})\cr
-an object of class \code{survfit} created with \code{\link[survival:survfit]{survival::survfit()}} or a data frame. See below for details.}
+\item{x}{(\code{tbl_survfit_times})\cr
+A stratified 'tbl_survfit_times' object}
 
 \item{last}{(scalar \code{logical})\cr
 Logical indicator to display overall column last in table.
