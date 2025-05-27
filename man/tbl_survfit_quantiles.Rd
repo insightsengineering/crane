@@ -2,6 +2,7 @@
 % Please edit documentation in R/tbl_survfit_quantiles.R
 \name{tbl_survfit_quantiles}
 \alias{tbl_survfit_quantiles}
+\alias{add_overall.tbl_survfit_quantiles}
 \title{Survival Quantiles}
 \usage{
 tbl_survfit_quantiles(
@@ -9,8 +10,15 @@ tbl_survfit_quantiles(
   y = "survival::Surv(time = AVAL, event = 1 - CNSR, type = 'right', origin = 0)",
   by = NULL,
   header = "Time to event",
-  estimate_fun = label_style_number(digits = 1),
+  estimate_fun = label_style_number(digits = 1, na = "NE"),
   method.args = list(conf.int = 0.95)
+)
+
+\method{add_overall}{tbl_survfit_quantiles}(
+  x,
+  last = FALSE,
+  col_label = "**Overall**  \\nN = {gtsummary::style_number(N)}",
+  ...
 )
 }
 \arguments{
@@ -35,12 +43,24 @@ Function used to round and format the estimates in the table.
 Default is \code{label_style_number(digits = 1)}.}
 
 \item{method.args}{(named \code{list})\cr
-Named list of arguments that will be passed to \code{survival::survfit()}.
+Named list of arguments that will be passed to \code{survival::survfit()}.}
+
+\item{x}{(\code{tbl_survfit_quantiles})\cr
+A stratified 'tbl_survfit_quantiles' object
 
 Note that this list may contain non-standard evaluation components, and
 must be handled similarly to tidyselect inputs by using
 rlang's embrace operator \code{{{ . }}} or \code{!!enquo()} when programming with this
 function.}
+
+\item{last}{(scalar \code{logical})\cr
+Logical indicator to display overall column last in table.
+Default is \code{FALSE}, which will display overall column first.}
+
+\item{col_label}{(\code{string})\cr
+String indicating the column label. Default is \code{"**Overall**  \nN = {style_number(N)}"}}
+
+\item{...}{These dots are for future extensions and must be empty.}
 }
 \value{
 a gtsummary table
@@ -129,8 +149,10 @@ cards::bind_ard(
 # Example 1 ----------------------------------
 tbl_survfit_quantiles(
   data = cards::ADTTE,
-  by = "TRTA"
-)
+  by = "TRTA",
+  estimate_fun = label_style_number(digits = 1, na = "NE")
+) |>
+  add_overall(last = TRUE, col_label = "**All Participants**  \nN = {n}")
 
 # Example 2: unstratified analysis -----------
 tbl_survfit_quantiles(data = cards::ADTTE)
