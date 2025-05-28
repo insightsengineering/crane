@@ -12,7 +12,6 @@ tbl_hierarchical_groups(
   denominator,
   by = NULL,
   id = "USUBJID",
-  include = grade,
   include_overall = everything(),
   statistic = everything() ~ "{n} ({p}\%)",
   overall_row = FALSE,
@@ -51,14 +50,11 @@ Default is \code{NULL}.}
 argument used to subset \code{data} to identify rows in \code{data} to calculate
 event rates in \code{tbl_hierarchical()}.}
 
-\item{include}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-variables from \code{hierarchy} for which summary statistics should be returned (on the variable label rows) Including
-the last element of \code{hierarchy} has no effect since each level has its own row for this variable.
-The default is \code{everything()}.}
-
 \item{include_overall}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-variables from \code{grade}, \code{ae}, and \code{soc} for which an overall section at that hierarchy level should be computed.
-The default is \code{everything()}.}
+Variables from \code{c(grade, ae, soc)} for which an overall section at that hierarchy level should be computed.
+An overall section at the \code{soc} variable level will have label \code{"- Any adverse events -"}. An overall section at
+the \code{ae} variable level will have label \code{"- Overall -"}. An overall row at the \code{grade} variable level will have
+label \code{"- Any Grade -"}. The default is \code{everything()}.}
 
 \item{statistic}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
 used to specify the summary statistics to display for all variables in \code{tbl_hierarchical()}.
@@ -94,11 +90,15 @@ Defaults to \code{"descending"}.}
 \item{filter}{(\code{expression})\cr
 An expression that is used to filter rows of the table. See \code{\link[gtsummary:filter_hierarchical]{gtsummary::filter_hierarchical()}} for details.}
 
+\item{add_overall}{(\code{logical})\cr
+Whether to add a column with overall summary statistics to the tables. Column will be displayed last, with a
+default label of \code{"**All Active Treatments**  \\nN = {style_number(N)}"}. Defaults to \code{FALSE}.}
+
 \item{grade_groups}{(\code{list})\cr
-A list of formulas each corresponding to a grade group. Grade groups must be mutually exclusive, i.e. each grade
-cannot be assigned to more than one grade group. To specify each grade group, create a formula with a vector of
-grades included on the left-hand side of the formula and the name of the grade on the right-hand side, e.g.
-\code{c("1", "2") ~ "Grade 1-2"}.}
+A list of formulas each corresponding to a grade group for which rates should be calculated. Grade groups must be
+mutually exclusive, i.e. each grade cannot be assigned to more than one grade group. To specify each grade group,
+create a formula with a vector of grades included on the left-hand side of the formula and the name of the grade
+on the right-hand side, e.g. \code{c("1", "2") ~ "Grade 1-2"}.}
 
 \item{grades_exclude}{(\code{character})\cr
 A vector of grades to omit individual rows for when printing the table. These grades will still be used when
