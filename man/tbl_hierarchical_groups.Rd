@@ -2,7 +2,7 @@
 % Please edit documentation in R/tbl_hierarchical_groups.R
 \name{tbl_hierarchical_groups}
 \alias{tbl_hierarchical_groups}
-\title{AE Analysis of Grade Groups}
+\title{Hierarchial Table with Grade Groups}
 \usage{
 tbl_hierarchical_groups(
   data,
@@ -13,7 +13,8 @@ tbl_hierarchical_groups(
   include = dplyr::last(variables),
   include_overall = everything(),
   statistic = everything() ~ "{n} ({p}\%)",
-  labels = NULL,
+  overall_row = FALSE,
+  label = NULL,
   digits = NULL,
   sort = "descending",
   filter = NULL,
@@ -21,12 +22,96 @@ tbl_hierarchical_groups(
   grades_exclude = NULL
 )
 }
+\arguments{
+\item{data}{(\code{data.frame})\cr
+a data frame.}
+
+\item{variables}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+character vector or tidy-selector of columns in data used to create a hierarchy. Hierarchy will be built with
+variables in the order given.}
+
+\item{id}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+argument used to subset \code{data} to identify rows in \code{data} to calculate
+event rates in \code{tbl_hierarchical()}.}
+
+\item{denominator}{(\code{data.frame}, \code{integer})\cr
+used to define the denominator and enhance the output.
+The argument is required for \code{tbl_hierarchical()} and optional for \code{tbl_hierarchical_count()}.
+The \code{denominator} argument must be specified when \code{id} is used to calculate event rates.}
+
+\item{by}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+a single column from \code{data}. Summary statistics will be stratified by this variable.
+Default is \code{NULL}.}
+
+\item{include}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+variables from \code{hierarchy} for which summary statistics should be returned (on the variable label rows) Including
+the last element of \code{hierarchy} has no effect since each level has its own row for this variable.
+The default is \code{everything()}.}
+
+\item{statistic}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
+used to specify the summary statistics to display for all variables in \code{tbl_hierarchical()}.
+The default is \code{everything() ~ "{n} ({p})"}.}
+
+\item{overall_row}{(scalar \code{logical})\cr
+whether an overall summary row should be included at the top of the table.
+The default is \code{FALSE}.}
+
+\item{label}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
+used to override default labels in hierarchical table, e.g. \code{list(AESOC = "System Organ Class")}.
+The default for each variable is the column label attribute, \code{attr(., 'label')}.
+If no label has been set, the column name is used.}
+
+\item{digits}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
+Specifies how summary statistics are rounded. Values may be either integer(s) or function(s). If not specified,
+default formatting is assigned via \code{label_style_number()} for statistics \code{n} and \code{N}, and
+\code{label_style_percent(digits=1)} for statistic \code{p}.}
+
+\item{sort}{(\code{string})\cr
+type of sorting to perform. Value must be one of:
+\itemize{
+\item \code{"alphanumeric"} - at each hierarchy level of the table, rows are ordered alphanumerically (i.e. A to Z)
+by label text.
+\item \code{"descending"} - at each hierarchy level of the table, count sums are calculated for each row and rows are
+sorted in descending order by sum. If \code{sort = "descending"}, the \code{n} statistic is used to calculate row sums if
+included in \code{statistic} for all variables, otherwise \code{p} is used. If neither \code{n} nor \code{p} are present in \code{x} for
+all variables, an error will occur.
+}
+
+Defaults to \code{"descending"}.}
+
+\item{filter}{(\code{expression})\cr
+An expression that is used to filter rows of the table. See \code{\link[gtsummary:filter_hierarchical]{gtsummary::filter_hierarchical()}} for details.}
+
+\item{grade_groups}{(\code{list})\cr
+A list of formulas each corresponding to a grade group. Grade groups must be mutually exclusive, i.e. each grade
+cannot be assigned to more than one grade group. To specify each grade group, create a formula with a vector of
+grades included on the left-hand side of the formula and the name of the grade on the right-hand side, e.g.
+\code{c("1", "2") ~ "Grade 1-2"}.}
+
+\item{grades_exclude}{(\code{character})\cr
+A vector of grades to omit individual rows for when printing the table. These grades will still be used when
+computing overall totals and grade group totals. For example, to avoid duplication, if a grade group is defined as
+\code{"5" ~ "Grade 5"}, the individual rows corresponding to grade 5 can be excluded by setting \code{grades_exclude = "5"}.}
+}
+\value{
+a gtsummary table
+}
 \description{
-AE Analysis of Grade Groups
+A wrapper function for \code{\link[gtsummary:tbl_hierarchical]{gtsummary::tbl_hierarchical()}} to calculate rates of toxicity grades with the option to add
+rows for grade groups, with additional (optional) summary sections at each variable level.
+
+To analyze only the highest grade level recorded for each subject, ensure that the toxicity grade variable is an
+ordered factor variable, with factor levels ordered lowest to highest.
+
+Grades will appear in rows in the order of the factor levels given, with each grade group appearing prior to the
+first level in its group.
 }
 \examples{
 ADSL <- random.cdisc.data::cadsl
 ADAE <- random.cdisc.data::cadae
+
+## Order grade variable to analyze *highest* grades per subject
+ADAE$AETOXGR <- factor(ADAE$AETOXGR, ordered = TRUE)
 
 grade_groups <- list(
   c("1", "2") ~ "Grade 1-2",
@@ -35,17 +120,17 @@ grade_groups <- list(
 )
 
 tbl_hierarchical_groups(
-  ADAE |> mutate(AETOXGR = factor(AETOXGR, ordered = TRUE)),
+  ADAE,
   variables = c(AEBODSYS, AEDECOD, AETOXGR),
-  grade_groups = grade_groups,
-  grades_exclude = "5",
   id = USUBJID,
   denominator = ADSL,
   by = ACTARM,
-  labels = list(
+  label = list(
     AEBODSYS = "MedDRA System Organ Class",
     AEDECOD = "MedDRA Preferred Term",
     AETOXGR = "Grade"
-  )
+  ),
+  grade_groups = grade_groups,
+  grades_exclude = "5"
 )
 }
