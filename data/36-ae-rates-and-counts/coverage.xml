@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0.733333333333333" branch-rate="0" lines-covered="418" lines-valid="570" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2025-05-28 01:23:12.696662">
+<coverage line-rate="0.737213403880071" branch-rate="0" lines-covered="418" lines-valid="567" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2025-05-28 14:31:37.57402">
   <sources>
     <source>/__w/crane/crane/crane</source>
   </sources>
   <packages>
-    <package name="crane" line-rate="0.733333333333333" branch-rate="0" complexity="0">
+    <package name="crane" line-rate="0.737213403880071" branch-rate="0" complexity="0">
       <classes>
         <class name="add_blank_row.R" filename="R/add_blank_row.R" line-rate="1" branch-rate="0" complexity="0">
           <methods>
@@ -431,13 +431,13 @@
           <methods>
             <method name="tbl_ae_rate_and_count" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
-                <line number="43" hits="0" branch="false"/>
                 <line number="44" hits="0" branch="false"/>
                 <line number="45" hits="0" branch="false"/>
                 <line number="46" hits="0" branch="false"/>
                 <line number="47" hits="0" branch="false"/>
                 <line number="48" hits="0" branch="false"/>
                 <line number="49" hits="0" branch="false"/>
+                <line number="50" hits="0" branch="false"/>
                 <line number="52" hits="0" branch="false"/>
                 <line number="53" hits="0" branch="false"/>
                 <line number="54" hits="0" branch="false"/>
@@ -562,22 +562,15 @@
                 <line number="207" hits="0" branch="false"/>
               </lines>
             </method>
-            <method name=".my_enquo" signature="" line-rate="0" branch-rate="0" complexity="0">
-              <lines>
-                <line number="216" hits="0" branch="false"/>
-                <line number="217" hits="0" branch="false"/>
-                <line number="219" hits="0" branch="false"/>
-              </lines>
-            </method>
           </methods>
           <lines>
-            <line number="43" hits="0" branch="false"/>
             <line number="44" hits="0" branch="false"/>
             <line number="45" hits="0" branch="false"/>
             <line number="46" hits="0" branch="false"/>
             <line number="47" hits="0" branch="false"/>
             <line number="48" hits="0" branch="false"/>
             <line number="49" hits="0" branch="false"/>
+            <line number="50" hits="0" branch="false"/>
             <line number="52" hits="0" branch="false"/>
             <line number="53" hits="0" branch="false"/>
             <line number="54" hits="0" branch="false"/>
@@ -700,9 +693,6 @@
             <line number="204" hits="0" branch="false"/>
             <line number="206" hits="0" branch="false"/>
             <line number="207" hits="0" branch="false"/>
-            <line number="216" hits="0" branch="false"/>
-            <line number="217" hits="0" branch="false"/>
-            <line number="219" hits="0" branch="false"/>
           </lines>
         </class>
         <class name="tbl_demographics.R" filename="R/tbl_demographics.R" line-rate="1" branch-rate="0" complexity="0">
