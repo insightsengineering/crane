@@ -51,7 +51,7 @@ rlang's embrace operator \code{{{ . }}} or \code{!!enquo()} when programming wit
 function.}
 
 \item{x}{(\code{tbl_survfit_quantiles})\cr
-A stratified 'tbl_survfit_quantiles' object}
+A stratified 'tbl_survfit_quantiles' object.}
 
 \item{last}{(scalar \code{logical})\cr
 Logical indicator to display overall column last in table.

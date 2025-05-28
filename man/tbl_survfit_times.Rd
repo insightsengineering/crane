@@ -79,6 +79,11 @@ a gtsummary table
 Create a gtsummary table with Kaplan-Meier estimated survival estimates
 and specified times.
 }
+\details{
+When the \code{statistic} argument is modified, the statistic labels will likely
+also need to be updated. To change the label, call the \code{modify_table_body()}
+function to directly update the underlying \code{x$table_body} data frame.
+}
 \examples{
 # Example 1 ----------------------------------
 tbl_survfit_times(

@@ -19,6 +19,11 @@
 #' @param x (`tbl_survfit_times`)\cr
 #'   A stratified 'tbl_survfit_times' object
 #'
+#' @details
+#' When the `statistic` argument is modified, the statistic labels will likely
+#' also need to be updated. To change the label, call the `modify_table_body()`
+#' function to directly update the underlying `x$table_body` data frame.
+#'
 #' @returns a gtsummary table
 #' @name tbl_survfit_times
 #'
@@ -137,9 +142,6 @@ tbl_survfit_times <- function(data,
           )
         )
     )
-
-  # update statistic labels with defaults --------------------------------------
-
 
   # return tbl -----------------------------------------------------------------
   tbl$cards <-
