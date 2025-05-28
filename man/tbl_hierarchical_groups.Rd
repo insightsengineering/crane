@@ -6,11 +6,13 @@
 \usage{
 tbl_hierarchical_groups(
   data,
-  variables,
-  id,
+  grade,
+  ae,
+  soc,
   denominator,
   by = NULL,
-  include = dplyr::last(variables),
+  id = "USUBJID",
+  include = grade,
   include_overall = everything(),
   statistic = everything() ~ "{n} ({p}\%)",
   overall_row = FALSE,
@@ -18,6 +20,7 @@ tbl_hierarchical_groups(
   digits = NULL,
   sort = "descending",
   filter = NULL,
+  add_overall = FALSE,
   grade_groups = list(),
   grades_exclude = NULL
 )
@@ -26,13 +29,14 @@ tbl_hierarchical_groups(
 \item{data}{(\code{data.frame})\cr
 a data frame.}
 
-\item{variables}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-character vector or tidy-selector of columns in data used to create a hierarchy. Hierarchy will be built with
-variables in the order given.}
+\item{grade}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+A single column name with the toxicity grade levels.}
 
-\item{id}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-argument used to subset \code{data} to identify rows in \code{data} to calculate
-event rates in \code{tbl_hierarchical()}.}
+\item{ae}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+A single column name with the adverse event terms.}
+
+\item{soc}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+A single column name with the system organ class.}
 
 \item{denominator}{(\code{data.frame}, \code{integer})\cr
 used to define the denominator and enhance the output.
@@ -43,9 +47,17 @@ The \code{denominator} argument must be specified when \code{id} is used to calc
 a single column from \code{data}. Summary statistics will be stratified by this variable.
 Default is \code{NULL}.}
 
+\item{id}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+argument used to subset \code{data} to identify rows in \code{data} to calculate
+event rates in \code{tbl_hierarchical()}.}
+
 \item{include}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 variables from \code{hierarchy} for which summary statistics should be returned (on the variable label rows) Including
 the last element of \code{hierarchy} has no effect since each level has its own row for this variable.
+The default is \code{everything()}.}
+
+\item{include_overall}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+variables from \code{grade}, \code{ae}, and \code{soc} for which an overall section at that hierarchy level should be computed.
 The default is \code{everything()}.}
 
 \item{statistic}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
@@ -121,8 +133,9 @@ grade_groups <- list(
 
 tbl_hierarchical_groups(
   ADAE,
-  variables = c(AEBODSYS, AEDECOD, AETOXGR),
-  id = USUBJID,
+  grade = AETOXGR,
+  ae = AEDECOD,
+  soc = AEBODSYS,
   denominator = ADSL,
   by = ACTARM,
   label = list(

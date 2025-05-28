@@ -13,6 +13,15 @@
 #'
 #' @inheritParams gtsummary::tbl_hierarchical
 #' @inheritParams gtsummary::sort_hierarchical
+#' @param grade ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#'   A single column name with the toxicity grade levels.
+#' @param ae ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#'   A single column name with the adverse event terms.
+#' @param soc ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#'   A single column name with the system organ class.
+#' @param include_overall ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#'   variables from `grade`, `ae`, and `soc` for which an overall section at that hierarchy level should be computed.
+#'   The default is `everything()`.
 #' @param filter (`expression`)\cr
 #'   An expression that is used to filter rows of the table. See [gtsummary::filter_hierarchical()] for details.
 #' @param grade_groups (`list`)\cr
@@ -43,8 +52,9 @@
 #'
 #' tbl_hierarchical_groups(
 #'   ADAE,
-#'   variables = c(AEBODSYS, AEDECOD, AETOXGR),
-#'   id = USUBJID,
+#'   grade = AETOXGR,
+#'   ae = AEDECOD,
+#'   soc = AEBODSYS,
 #'   denominator = ADSL,
 #'   by = ACTARM,
 #'   label = list(
@@ -57,15 +67,16 @@
 #' )
 NULL
 
-
 #' @export
 #' @rdname tbl_hierarchical_groups
 tbl_hierarchical_groups <- function(data,
-                                    variables,
-                                    id,
+                                    grade,
+                                    ae,
+                                    soc,
                                     denominator,
                                     by = NULL,
-                                    include = dplyr::last(variables),
+                                    id = "USUBJID",
+                                    include = grade,
                                     include_overall = everything(),
                                     statistic = everything() ~ "{n} ({p}%)",
                                     overall_row = FALSE,
@@ -73,16 +84,19 @@ tbl_hierarchical_groups <- function(data,
                                     digits = NULL,
                                     sort = "descending",
                                     filter = NULL,
+                                    add_overall = FALSE,
                                     grade_groups = list(),
                                     grades_exclude = NULL) {
   # check inputs ---------------------------------------------------------------
   set_cli_abort_call()
   check_not_missing(data)
-  check_not_missing(variables)
-  check_not_missing(id)
+  check_not_missing(grade)
+  check_not_missing(ae)
+  check_not_missing(soc)
   check_not_missing(denominator)
   check_list_elements(grade_groups, \(x) is_formula(x))
-  cards::process_selectors(data, variables = {{ variables }}, by = {{ by }}, id = {{ id }})
+  cards::process_selectors(data, grade = {{ grade }}, ae = {{ ae }}, soc = {{ soc }}, by = {{ by }}, id = {{ id }})
+  variables <- c(soc, ae, grade)
   cards::process_selectors(data[variables], include = {{ include }}, include_overall = {{ include_overall }})
 
   if (!is.character(grades_exclude)) {
@@ -109,8 +123,7 @@ tbl_hierarchical_groups <- function(data,
 
   filter <- enquo(filter)
   data_list <- list(data)
-  var <- dplyr::last(variables) # get grade variable
-  lvls <- levels(data[[var]]) # get levels of grade variable
+  lvls <- levels(data[[grade]]) # get levels of grade variable
 
   # extract default labels
   if (is.null(label)) {
@@ -119,14 +132,14 @@ tbl_hierarchical_groups <- function(data,
 
   # ungrouped grades overall data ----------------------------------------------
   # overall section at outermost level (- Any adverse events -)
-  if (variables[1] %in% include_overall) {
+  if (soc %in% include_overall) {
     data_overall <- data
-    data_overall[head(variables, -1)] <- "- Any adverse events -"
+    data_overall[ae] <- "- Any adverse events -"
     data_list <- c(data_list, list(data_overall))
   }
 
   # overall section for each remaining outer variable (- Overall -)
-  for (v in setdiff(include_overall, variables[c(1, length(variables))])) {
+  for (v in setdiff(include_overall, c(soc, grade))) {
     data_list[[1]] <- data_list[[1]] |>
       mutate(!!v := "- Overall -") |>
       dplyr::bind_rows(data_list[[1]])
@@ -164,12 +177,12 @@ tbl_hierarchical_groups <- function(data,
           data_i <- data_list[[i]]
 
           # replace grades with their grade groups
-          data_i[[var]] <-
+          data_i[[grade]] <-
             do.call(
               dplyr::case_match,
-              args = c(list(.x = data_i[[var]]), grade_groups)
+              args = c(list(.x = data_i[[grade]]), grade_groups)
             ) |>
-            factor(levels = gp_nms, ordered = is.ordered(data[[var]]))
+            factor(levels = gp_nms, ordered = is.ordered(data[[grade]]))
 
           tbl_hierarchical(
             data = data_i,
@@ -206,7 +219,7 @@ tbl_hierarchical_groups <- function(data,
           dplyr::group_by(dplyr::pick(all_ard_groups(), "variable")) |>
           dplyr::group_split() |>
           map(function(dat) {
-            if (dat$variable[1] != var) {
+            if (dat$variable[1] != grade) {
               dat
             } else {
               dat$idx_lvl <- NA
@@ -237,7 +250,7 @@ tbl_hierarchical_groups <- function(data,
     )
 
   # add overall rows for inner variable (- Any Grade -)
-  if (var %in% include_overall) {
+  if (grade %in% include_overall) {
     tbl <- tbl |>
       modify_table_body(
         function(table_body) {
@@ -247,10 +260,10 @@ tbl_hierarchical_groups <- function(data,
             dplyr::group_split() |>
             map(
               function(x) {
-                if (any(x$variable == variables[length(variables) - 1])) {
+                if (any(x$variable == ae)) {
                   dplyr::bind_rows(
                     x[1, ] |> mutate(across(all_stat_cols(), ~ if (.data$variable %in% include) . else NA)),
-                    x[1, ] |> mutate(variable = var, label = "- Any Grade -", idx = .data$idx + 0.5),
+                    x[1, ] |> mutate(variable = grade, label = "- Any Grade -", idx = .data$idx + 0.5),
                     x[-1, ]
                   ) |>
                     dplyr::filter(!.data$label %in% grades_exclude)
@@ -271,14 +284,16 @@ tbl_hierarchical_groups <- function(data,
       \(table_body) {
         table_body |>
           # remove duplicated Any AE label row
-          dplyr::filter(!(.data$label == "- Any adverse events -" & .data$variable != variables[1])) |>
+          dplyr::filter(!(.data$label == "- Any adverse events -" & .data$variable != soc)) |>
           dplyr::rowwise() |>
           # remove statistics from summary rows for variables not in include
           mutate(
             across(all_stat_cols(), ~ if (.data$variable %in% c(include, "..ard_hierarchical_overall..")) . else NA)
           )
       }
-    )
+    ) |>
+    # remove default footnote
+    gtsummary::remove_footnote_header(columns = everything())
 
   tbl
 }
