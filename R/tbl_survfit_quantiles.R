@@ -28,7 +28,7 @@
 #'   rlang's embrace operator `{{ . }}` or `!!enquo()` when programming with this
 #'   function.
 #' @param x (`tbl_survfit_quantiles`)\cr
-#'   A stratified 'tbl_survfit_quantiles' object
+#'   A stratified 'tbl_survfit_quantiles' object.
 #'
 #' @returns a gtsummary table
 #' @name tbl_survfit_quantiles
