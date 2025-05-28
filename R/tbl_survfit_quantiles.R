@@ -22,13 +22,13 @@
 #'   Default is `label_style_number(digits = 1)`.
 #' @param method.args (named `list`)\cr
 #'   Named list of arguments that will be passed to `survival::survfit()`.
-#' @param x (`tbl_survfit_quantiles`)\cr
-#'   A stratified 'tbl_survfit_quantiles' object
 #'
 #'   Note that this list may contain non-standard evaluation components, and
 #'   must be handled similarly to tidyselect inputs by using
 #'   rlang's embrace operator `{{ . }}` or `!!enquo()` when programming with this
 #'   function.
+#' @param x (`tbl_survfit_quantiles`)\cr
+#'   A stratified 'tbl_survfit_quantiles' object.
 #'
 #' @returns a gtsummary table
 #' @name tbl_survfit_quantiles
@@ -166,12 +166,6 @@ tbl_survfit_quantiles <- function(data,
       stat_names = c("estimate", "conf.low", "conf.high"),
       fmt_fn = estimate_fun
     )
-  # get the confidence level
-  conf.level <-
-    ard_surv_quantiles |>
-    dplyr::filter(.data$stat_name == "conf.level") |>
-    getElement("stat") |>
-    getElement(1L)
 
   # calculate range of followup times ------------------------------------------
   df_time <-
@@ -199,6 +193,13 @@ tbl_survfit_quantiles <- function(data,
     ard_by <- cards::ard_categorical(data, variables = all_of(by))
   }
   ard_n <- cards::ard_total_n(data)
+
+  # get the confidence level
+  conf.level <-
+    ard_surv_quantiles |>
+    dplyr::filter(.data$stat_name == "conf.level") |>
+    dplyr::pull("stat") |>
+    unlist()
 
   # build gtsummary table ------------------------------------------------------
   res <-
