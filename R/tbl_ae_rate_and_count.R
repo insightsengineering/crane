@@ -7,13 +7,13 @@
 #' @inheritParams gtsummary::tbl_hierarchical
 #' @inheritParams gtsummary::add_overall.tbl_hierarchical
 #' @param ae ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
-#'   a single column name with the adverse event terms.
+#'   A single column name with the adverse event terms.
 #' @param soc ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
-#'   a single column name with the system organ class.
+#'   A single column name with the system organ class.
 #' @param hlt ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
-#'   a _optional_ single column name with the higher level terms.
-#' @param filter,sort \cr
-#'   _optional_ arguments passed to `gtsummary::filter_hierarchical(filter)`
+#'   An _optional_ single column name with the higher level terms.
+#' @param filter,sort
+#'   _Optional_ arguments passed to `gtsummary::filter_hierarchical(filter)`
 #'   and `gtsummary::sort_hierarchical(sort)`.
 #'   All filtering and sorting is applied to the _rates-related_ statistics, and
 #'   not the counts.
@@ -31,7 +31,8 @@
 #'     soc = AEBODSYS,
 #'     # Keep rows where AEs across the row have an overall prevalence of greater than 10%
 #'     filter = sum(n) / sum(N) > 0.10
-#'   )
+#'   ) |>
+#'   add_overall(last = TRUE)
 NULL
 
 #' @rdname tbl_ae_rate_and_count
@@ -46,8 +47,7 @@ tbl_ae_rate_and_count <- function(data, ae, soc, denominator,
   check_not_missing(soc)
   check_not_missing(denominator)
   check_data_frame(data)
-  filter <- .my_enquo({{ filter }})
-  # filter <- enquo(filter)
+  filter <- enquo(filter)
 
   cards::process_selectors(data,
     ae = {{ ae }},
@@ -210,11 +210,3 @@ tbl_ae_rate_and_count <- function(data, ae, soc, denominator,
 #' @rdname tbl_ae_rate_and_count
 #' @export
 add_overall.tbl_ae_rate_and_count <- asNamespace("gtsummary")[["add_overall.tbl_hierarchical"]]
-
-# if epxression is already a quo, return as is. otherwise make it a quosure
-.my_enquo <- function(x) {
-  if (tryCatch(is_quosure(x), error = \(e) FALSE)) {
-    return(x)
-  }
-  enquo(x)
-}

@@ -32,10 +32,10 @@ tbl_ae_rate_and_count(
 a data frame.}
 
 \item{ae}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-a single column name with the adverse event terms.}
+A single column name with the adverse event terms.}
 
 \item{soc}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-a single column name with the system organ class.}
+A single column name with the system organ class.}
 
 \item{denominator}{(\code{data.frame}, \code{integer})\cr
 used to define the denominator and enhance the output.
@@ -43,7 +43,7 @@ The argument is required for \code{tbl_hierarchical()} and optional for \code{tb
 The \code{denominator} argument must be specified when \code{id} is used to calculate event rates.}
 
 \item{hlt}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-a \emph{optional} single column name with the higher level terms.}
+An \emph{optional} single column name with the higher level terms.}
 
 \item{by}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 a single column from \code{data}. Summary statistics will be stratified by this variable.
@@ -58,8 +58,7 @@ Specifies how summary statistics are rounded. Values may be either integer(s) or
 default formatting is assigned via \code{label_style_number()} for statistics \code{n} and \code{N}, and
 \code{label_style_percent(digits=1)} for statistic \code{p}.}
 
-\item{filter, sort}{\cr
-\emph{optional} arguments passed to \code{gtsummary::filter_hierarchical(filter)}
+\item{filter, sort}{\emph{Optional} arguments passed to \code{gtsummary::filter_hierarchical(filter)}
 and \code{gtsummary::sort_hierarchical(sort)}.
 All filtering and sorting is applied to the \emph{rates-related} statistics, and
 not the counts.}
@@ -97,5 +96,6 @@ cards::ADAE |>
     soc = AEBODSYS,
     # Keep rows where AEs across the row have an overall prevalence of greater than 10\%
     filter = sum(n) / sum(N) > 0.10
-  )
+  ) |>
+  add_overall(last = TRUE)
 }
