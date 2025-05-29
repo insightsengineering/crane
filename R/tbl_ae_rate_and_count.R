@@ -1,8 +1,8 @@
 #' AE Rates and Counts
 #'
 #' @description
-#' A mix of adverse event rates (from `tbl_hierarchical()`) and counts
-#' (from `tbl_hierarchical_count()`).
+#' A mix of adverse event rates (from `gtsummary::tbl_hierarchical()`) and counts
+#' (from `gtsummary::tbl_hierarchical_count()`).
 #'
 #' @inheritParams gtsummary::tbl_hierarchical
 #' @inheritParams gtsummary::add_overall.tbl_hierarchical
@@ -12,15 +12,17 @@
 #'   A single column name with the system organ class.
 #' @param hlt ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   An _optional_ single column name with the higher level terms.
-#' @param digits ([`formula-list-selector`][syntax])\cr
+#' @param digits ([`formula-list-selector`][gtsummary::syntax])\cr
 #'  Specifies how summary statistics are rounded. Values may be either integer(s) or function(s). If not specified,
-#'  default formatting is assigned via `label_style_number()` for statistics `n` and `N`, and
-#'  `label_style_number(digits=1, scale=100)` for statistic `p`.
+#'  default formatting is assigned via `label_style_number()` for the `n` statistic and
+#'  `label_style_number(digits=1, scale=100)` for the `p` statistic.
 #' @param filter,sort
 #'   _Optional_ arguments passed to `gtsummary::filter_hierarchical(filter)`
 #'   and `gtsummary::sort_hierarchical(sort)`.
 #'   All filtering and sorting is applied to the _rates-related_ statistics, and
 #'   not the counts.
+#' @param x (`tbl_ae_rate_and_count`)\cr
+#'   a stratified 'tbl_ae_rate_and_count' table
 #'
 #' @returns a gtsummary table
 #' @name tbl_ae_rate_and_count

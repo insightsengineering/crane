@@ -54,18 +54,18 @@ Default is \code{NULL}.}
 argument used to subset \code{data} to identify rows in \code{data} to calculate
 event rates in \code{tbl_hierarchical()}.}
 
-\item{digits}{(\code{\link[=syntax]{formula-list-selector}})\cr
+\item{digits}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
 Specifies how summary statistics are rounded. Values may be either integer(s) or function(s). If not specified,
-default formatting is assigned via \code{label_style_number()} for statistics \code{n} and \code{N}, and
-\code{label_style_number(digits=1, scale=100)} for statistic \code{p}.}
+default formatting is assigned via \code{label_style_number()} for the \code{n} statistic and
+\code{label_style_number(digits=1, scale=100)} for the \code{p} statistic.}
 
 \item{filter, sort}{\emph{Optional} arguments passed to \code{gtsummary::filter_hierarchical(filter)}
 and \code{gtsummary::sort_hierarchical(sort)}.
 All filtering and sorting is applied to the \emph{rates-related} statistics, and
 not the counts.}
 
-\item{x}{(\code{tbl_summary}, \code{tbl_svysummary}, \code{tbl_continuous}, \code{tbl_custom_summary})\cr
-A stratified 'gtsummary' table}
+\item{x}{(\code{tbl_ae_rate_and_count})\cr
+a stratified 'tbl_ae_rate_and_count' table}
 
 \item{last}{(scalar \code{logical})\cr
 Logical indicator to display overall column last in table.
@@ -84,8 +84,8 @@ The default is \code{everything() ~ "{n} ({p})"}.}
 a gtsummary table
 }
 \description{
-A mix of adverse event rates (from \code{tbl_hierarchical()}) and counts
-(from \code{tbl_hierarchical_count()}).
+A mix of adverse event rates (from \code{gtsummary::tbl_hierarchical()}) and counts
+(from \code{gtsummary::tbl_hierarchical_count()}).
 }
 \examples{
 # Example 1 ----------------------------------
