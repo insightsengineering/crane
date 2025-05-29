@@ -43,8 +43,10 @@ NULL
 #' @export
 tbl_ae_rate_and_count <- function(data, ae, soc, denominator,
                                   hlt = NULL, by = NULL, id = "USUBJID",
-                                  digits = everything() ~ list(n = label_style_number(),
-                                                               p = label_style_number(digits = 1, scale = 100)),
+                                  digits = everything() ~ list(
+                                    n = label_style_number(),
+                                    p = label_style_number(digits = 1, scale = 100)
+                                  ),
                                   filter = NULL, sort = NULL) {
   # check inputs ---------------------------------------------------------------
   set_cli_abort_call()

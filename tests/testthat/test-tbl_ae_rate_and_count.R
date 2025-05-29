@@ -22,8 +22,10 @@ test_that("tbl_ae_rate_and_count() works", {
   # check the first two labels are the overall rows
   expect_equal(
     tbl$table_body$label[1:2],
-    c("Total number of patients with at least one adverse event",
-      "Overall total number of events")
+    c(
+      "Total number of patients with at least one adverse event",
+      "Overall total number of events"
+    )
   )
 
   # snapshot of the table
@@ -41,7 +43,7 @@ test_that("tbl_ae_rate_and_count(hlt)", {
         by = TRTA,
         ae = AEDECOD,
         soc = AEBODSYS,
-        hlt =AEHLT
+        hlt = AEHLT
       ) |>
       add_overall(last = TRUE)
   )
@@ -71,7 +73,9 @@ test_that("tbl_ae_rate_and_count(filter)", {
       dplyr::pull(stat_0) |>
       str_extract("(?<=\\().*?(?=\\))") |> # extract the percent between the parantheses
       str_remove("%") %>%
-      {as.numeric(.) > 1.0} |> # styler off
+      {
+        as.numeric(.) > 1.0
+      } |> # styler off
       all()
   )
 })
