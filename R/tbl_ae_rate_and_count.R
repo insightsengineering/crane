@@ -12,6 +12,10 @@
 #'   A single column name with the system organ class.
 #' @param hlt ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   An _optional_ single column name with the higher level terms.
+#' @param digits ([`formula-list-selector`][syntax])\cr
+#'  Specifies how summary statistics are rounded. Values may be either integer(s) or function(s). If not specified,
+#'  default formatting is assigned via `label_style_number()` for statistics `n` and `N`, and
+#'  `label_style_number(digits=1, scale=100)` for statistic `p`.
 #' @param filter,sort
 #'   _Optional_ arguments passed to `gtsummary::filter_hierarchical(filter)`
 #'   and `gtsummary::sort_hierarchical(sort)`.
@@ -39,7 +43,9 @@ NULL
 #' @export
 tbl_ae_rate_and_count <- function(data, ae, soc, denominator,
                                   hlt = NULL, by = NULL, id = "USUBJID",
-                                  digits = NULL, filter = NULL, sort = NULL) {
+                                  digits = everything() ~ list(n = label_style_number(),
+                                                               p = label_style_number(digits = 1, scale = 100)),
+                                  filter = NULL, sort = NULL) {
   # check inputs ---------------------------------------------------------------
   set_cli_abort_call()
   check_not_missing(data)
@@ -86,7 +92,7 @@ tbl_ae_rate_and_count <- function(data, ae, soc, denominator,
   }
   if (!is.null(sort)) {
     tbl_rates <- tbl_rates |>
-      gtsummary::sort_hierarchical(sort = !!sort)
+      gtsummary::sort_hierarchical(sort = sort)
   }
 
   # finally, add the row numbers
@@ -189,6 +195,11 @@ tbl_ae_rate_and_count <- function(data, ae, soc, denominator,
       columns = "label",
       rows = .data$variable %in% .env$hlt & .data$label %in% c("Total number of patients with at least one adverse event", "Total number of events"),
       indent = 8L
+    ) |>
+    # convert "0 (0.0%)" to "0"
+    gtsummary::modify_post_fmt_fun(
+      fmt_fun = ~ ifelse(. == "0 (0.0%)", "0", .),
+      columns = all_stat_cols()
     )
 
   # return final table ---------------------------------------------------------

@@ -13,7 +13,8 @@ tbl_ae_rate_and_count(
   hlt = NULL,
   by = NULL,
   id = "USUBJID",
-  digits = NULL,
+  digits = everything() ~ list(n = label_style_number(), p = label_style_number(digits =
+    1, scale = 100)),
   filter = NULL,
   sort = NULL
 )
@@ -53,10 +54,10 @@ Default is \code{NULL}.}
 argument used to subset \code{data} to identify rows in \code{data} to calculate
 event rates in \code{tbl_hierarchical()}.}
 
-\item{digits}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
+\item{digits}{(\code{\link[=syntax]{formula-list-selector}})\cr
 Specifies how summary statistics are rounded. Values may be either integer(s) or function(s). If not specified,
 default formatting is assigned via \code{label_style_number()} for statistics \code{n} and \code{N}, and
-\code{label_style_percent(digits=1)} for statistic \code{p}.}
+\code{label_style_number(digits=1, scale=100)} for statistic \code{p}.}
 
 \item{filter, sort}{\emph{Optional} arguments passed to \code{gtsummary::filter_hierarchical(filter)}
 and \code{gtsummary::sort_hierarchical(sort)}.
