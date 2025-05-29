@@ -80,18 +80,25 @@ test_that("tbl_ae_rate_and_count(filter)", {
   )
 })
 
-# TODO: Update this after this issue is resolved https://github.com/ddsjoberg/gtsummary/issues/2237
-# test_that("tbl_ae_rate_and_count(sort)", {
-#   expect_silent(
-#     tbl <-
-#       ADAE_subset |>
-#       tbl_ae_rate_and_count(
-#         denominator = cards::ADSL |> dplyr::rename(TRTA = TRT01A),
-#         by = TRTA,
-#         ae = AEDECOD,
-#         soc = AEBODSYS,
-#         sort = "descending"
-#       ) |>
-#       add_overall(last = TRUE)
-#   )
-# })
+test_that("tbl_ae_rate_and_count(sort)", {
+  expect_silent(
+    tbl <-
+      ADAE_subset |>
+      tbl_ae_rate_and_count(
+        denominator = cards::ADSL |> dplyr::rename(TRTA = TRT01A),
+        by = TRTA,
+        ae = AEDECOD,
+        soc = AEBODSYS,
+        sort = "descending"
+      ) |>
+      add_overall(last = TRUE)
+  )
+
+  # in this case, the 'GENERAL DISORDERS AND ADMINISTRATION SITE CONDITIONS' should appear before 'GASTROINTESTINAL DISORDERS'
+  expect_equal(
+    tbl$table_body |>
+      dplyr::filter(variable == "AEBODSYS", !startsWith(label, "Total")) |>
+      dplyr::pull("label"),
+    c("GENERAL DISORDERS AND ADMINISTRATION SITE CONDITIONS", "GASTROINTESTINAL DISORDERS")
+  )
+})
