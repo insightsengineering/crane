@@ -94,8 +94,8 @@ tbl_ae_rates_by_grade <- function(data,
                                   denominator,
                                   by = NULL,
                                   id = "USUBJID",
-                                  include = ae,
-                                  include_overall = c(soc, ae),
+                                  include = all_of(ae),
+                                  include_overall = all_of(c(soc, ae)),
                                   statistic = everything() ~ "{n} ({p}%)",
                                   label = list(
                                     "MedDRA System Organ Class",
@@ -129,6 +129,7 @@ tbl_ae_rates_by_grade <- function(data,
     include_overall = {{ include_overall }}
   )
   filter <- enquo(filter)
+  gp_nms <- NULL
 
   if (!all(sapply(grade_groups, is_formula))) {
     cli::cli_abort(
@@ -139,19 +140,23 @@ tbl_ae_rates_by_grade <- function(data,
       )
     )
   }
-  if (length(unique(unlist(grade_groups))) < length(unlist(grade_groups))) {
-    cli::cli_abort(
-      paste(
-        "Grade groups specified via {.arg grade_groups} cannot overlap.",
-        "Please ensure that each grade is included in only one grade group."
+  if (!is_empty(grade_groups)) {
+    gp_nms <- sapply(seq_along(grade_groups), \(x) grade_groups[[x]][[3]]) # get names of grade groups
+    gps <- lapply(seq_along(grade_groups), \(x) (grade_groups[[x]][[2]] |> eval())) |> setNames(gp_nms)
+
+    if (length(unique(unlist(gps))) < length(unlist(gps))) {
+      cli::cli_abort(
+        paste(
+          "Grade groups specified via {.arg grade_groups} cannot overlap.",
+          "Please ensure that each grade is included in only one grade group."
+        )
       )
-    )
+    }
   }
 
   # saving function inputs
   tbl_ae_rates_by_grade_inputs <- as.list(environment())
 
-  gp_nms <- sapply(seq_along(grade_groups), \(x) grade_groups[[x]][[3]]) # get names of grade groups
   lvls <- levels(data[[grade]]) # get levels of grade variable
   if (!is.ordered(data[[grade]])) data[[grade]] <- factor(data[[grade]], levels = lvls, ordered = TRUE)
   data_ungrouped <- data
@@ -181,14 +186,14 @@ tbl_ae_rates_by_grade <- function(data,
   }
 
   # ungrouped grades hierarchical summary --------------------------------------
-  if (length(setdiff(lvls, grades_exclude)) > 0) {
+  if (!is_empty(setdiff(lvls, grades_exclude))) {
     tbl_ungrouped <-
       tbl_hierarchical(
         data = data_ungrouped,
-        variables = variables,
-        id = id,
+        variables = all_of(variables),
+        id = all_of(id),
         denominator = denominator,
-        by = by,
+        by = all_of(by),
         statistic = {{ statistic }},
         label = label,
         digits = {{ digits }}
@@ -201,8 +206,7 @@ tbl_ae_rates_by_grade <- function(data,
   }
 
   # grouped grades hierarchical summary ----------------------------------------
-  if (length(grade_groups) > 0) {
-    gps <- lapply(seq_along(grade_groups), \(x) (grade_groups[[x]][[2]] |> eval())) |> setNames(gp_nms)
+  if (!is_empty(grade_groups)) {
     data_grouped <- data_ungrouped
 
     # replace grades with their grade groups
@@ -211,14 +215,14 @@ tbl_ae_rates_by_grade <- function(data,
         dplyr::case_match,
         args = c(list(.x = data_grouped[[grade]]), grade_groups)
       ) |>
-        factor(levels = gp_nms, ordered = TRUE)
+      factor(levels = gp_nms, ordered = TRUE)
 
     tbl_grouped <- tbl_hierarchical(
       data = data_grouped,
-      variables = variables,
-      id = id,
+      variables = all_of(variables),
+      id = all_of(id),
       denominator = denominator,
-      by = by,
+      by = all_of(by),
       statistic = {{ statistic }},
       label = label,
       digits = {{ digits }}
@@ -231,25 +235,27 @@ tbl_ae_rates_by_grade <- function(data,
         suppressMessages()
     }
 
-    # if both grouped and ungrouped grade rows exist, combine the two tables
-    tbl_list <- list(tbl_ungrouped, tbl_grouped)
-    tbl_final <- tbl_stack(tbl_list)
+    if (is_empty(setdiff(lvls, grades_exclude))) {
+      # if all individual grades excluded, only grade groups included in final table
+      tbl_final <- tbl_grouped
+    } else {
+      # if both grouped and ungrouped grade rows exist, combine the two tables
+      tbl_list <- list(tbl_ungrouped, tbl_grouped)
+      tbl_final <- tbl_stack(tbl_list)
 
-    # set class to tbl_hierarchical
-    class(tbl_final) <- c("tbl_hierarchical", "gtsummary")
+      # set class to tbl_hierarchical
+      class(tbl_final) <- c("tbl_hierarchical", "gtsummary")
 
-    # get original inputs
-    tbl_final$inputs <- tbl_ae_rates_by_grade_inputs
+      # get original inputs
+      tbl_final$inputs <- tbl_ae_rates_by_grade_inputs
 
-    # build tbl$cards, needed for sorting/filtering
-    tbl_final$cards <- list(
-      tbl_hierarchical = dplyr::bind_rows(lapply(tbl_list, \(x) x$cards$tbl_hierarchical)) |>
-        dplyr::distinct(dplyr::pick(-.data$fmt_fn), .keep_all = TRUE)
-    )
-    if (add_overall) tbl_final$cards$add_overall <- dplyr::bind_rows(lapply(tbl_list, \(x) x$cards$add_overall))
-  } else if (is_empty(setdiff(lvls, grades_exclude))) {
-    # if all individual grades excluded, only grade groups included in final table
-    tbl_final <- tbl_grouped
+      # build tbl$cards, needed for sorting/filtering
+      tbl_final$cards <- list(
+        tbl_hierarchical = dplyr::bind_rows(lapply(tbl_list, \(x) x$cards$tbl_hierarchical)) |>
+          dplyr::distinct(dplyr::pick(-"fmt_fn"), .keep_all = TRUE)
+      )
+      if (add_overall) tbl_final$cards$add_overall <- dplyr::bind_rows(lapply(tbl_list, \(x) x$cards$add_overall))
+    }
   } else {
     # if no grade groups, only individual grades included in final table
     tbl_final <- tbl_ungrouped
@@ -335,6 +341,8 @@ tbl_ae_rates_by_grade <- function(data,
         table_body |>
           # remove duplicate Any AE label row
           dplyr::filter(!(.data$label == "- Any adverse events -" & .data$variable != soc)) |>
+          # remove soc summary rows if all sub-rows filtered out
+          dplyr::filter(!(.data$variable == soc & dplyr::lead(.data$variable) %in% c(soc, NA))) |>
           # remove rows for grades in grades_exclude
           dplyr::filter(!.data$label %in% grades_exclude) |>
           dplyr::rowwise() |>
@@ -373,12 +381,12 @@ tbl_ae_rates_by_grade <- function(data,
       "**", label[[grade]], "**"
     )) |>
     # indent grade labels
-    modify_indent(columns = label, rows = variable == grade, indent = 46L)
+    modify_indent(columns = label, rows = .data$variable == grade, indent = 46L)
 
-  # further indent grade level labels if grade groups exist
-  if (length(grade_groups) > 0) {
+  # further indent grade level labels within grade groups
+  if (!is_empty(grade_groups)) {
     tbl_final <- tbl_final |>
-      modify_indent(columns = label, rows = variable == grade & label %in% lvls, indent = 48L)
+      modify_indent(columns = label, rows = .data$variable == grade & .data$label %in% unlist(gps), indent = 48L)
   }
 
   # return final table ---------------------------------------------------------
