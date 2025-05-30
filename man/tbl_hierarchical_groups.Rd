@@ -2,7 +2,7 @@
 % Please edit documentation in R/tbl_hierarchical_groups.R
 \name{tbl_hierarchical_groups}
 \alias{tbl_hierarchical_groups}
-\title{Hierarchial Table with Grade Groups}
+\title{AE Rates by Highest Toxicity Grade}
 \usage{
 tbl_hierarchical_groups(
   data,
@@ -12,9 +12,9 @@ tbl_hierarchical_groups(
   denominator,
   by = NULL,
   id = "USUBJID",
-  include_overall = everything(),
+  include = ae,
+  include_overall = c(soc, ae),
   statistic = everything() ~ "{n} ({p}\%)",
-  overall_row = FALSE,
   label = NULL,
   digits = NULL,
   sort = "descending",
@@ -50,6 +50,11 @@ Default is \code{NULL}.}
 argument used to subset \code{data} to identify rows in \code{data} to calculate
 event rates in \code{tbl_hierarchical()}.}
 
+\item{include}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+variables from \code{hierarchy} for which summary statistics should be returned (on the variable label rows) Including
+the last element of \code{hierarchy} has no effect since each level has its own row for this variable.
+The default is \code{everything()}.}
+
 \item{include_overall}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 Variables from \code{c(grade, ae, soc)} for which an overall section at that hierarchy level should be computed.
 An overall section at the \code{soc} variable level will have label \code{"- Any adverse events -"}. An overall section at
@@ -59,10 +64,6 @@ label \code{"- Any Grade -"}. The default is \code{everything()}.}
 \item{statistic}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
 used to specify the summary statistics to display for all variables in \code{tbl_hierarchical()}.
 The default is \code{everything() ~ "{n} ({p})"}.}
-
-\item{overall_row}{(scalar \code{logical})\cr
-whether an overall summary row should be included at the top of the table.
-The default is \code{FALSE}.}
 
 \item{label}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
 used to override default labels in hierarchical table, e.g. \code{list(AESOC = "System Organ Class")}.
@@ -109,11 +110,11 @@ computing overall totals and grade group totals. For example, to avoid duplicati
 a gtsummary table
 }
 \description{
-A wrapper function for \code{\link[gtsummary:tbl_hierarchical]{gtsummary::tbl_hierarchical()}} to calculate rates of toxicity grades with the option to add
-rows for grade groups, with additional (optional) summary sections at each variable level.
+A wrapper function for \code{\link[gtsummary:tbl_hierarchical]{gtsummary::tbl_hierarchical()}} to calculate rates of highest toxicity grades with the options
+to add rows for grade groups and additional summary sections at each variable level.
 
-To analyze only the highest grade level recorded for each subject, ensure that the toxicity grade variable is an
-ordered factor variable, with factor levels ordered lowest to highest.
+Only the highest grade level recorded for each subject will be analyzed. Prior to running the function, ensure that
+the toxicity grade variable (\code{grade}) is a factor variable, with factor levels ordered lowest to highest.
 
 Grades will appear in rows in the order of the factor levels given, with each grade group appearing prior to the
 first level in its group.
@@ -139,7 +140,7 @@ ADAE_subset <- ADAE_subset |>
   ) |>
   ungroup()
 
-# Example 1 ----------------------------------------------------
+# Example ----------------------------------------------------
 
 ## Order grade variable to analyze *highest* grades per subject
 ADAE_subset$AETOXGR <- factor(ADAE_subset$AETOXGR, ordered = TRUE)
