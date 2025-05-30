@@ -101,7 +101,7 @@ tbl_ae_rates_by_grade <- function(data,
                                     "MedDRA System Organ Class",
                                     "MedDRA Preferred Term",
                                     "Grade"
-                                  ) |> setNames(c(soc, ae, grade)),
+                                  ) |> stats::setNames(c(soc, ae, grade)),
                                   digits = NULL,
                                   sort = "descending",
                                   filter = NULL,
@@ -142,7 +142,7 @@ tbl_ae_rates_by_grade <- function(data,
   }
   if (!is_empty(grade_groups)) {
     gp_nms <- sapply(seq_along(grade_groups), \(x) grade_groups[[x]][[3]]) # get names of grade groups
-    gps <- lapply(seq_along(grade_groups), \(x) (grade_groups[[x]][[2]] |> eval())) |> setNames(gp_nms)
+    gps <- lapply(seq_along(grade_groups), \(x) (grade_groups[[x]][[2]] |> eval())) |> stats::setNames(gp_nms)
 
     if (length(unique(unlist(gps))) < length(unlist(gps))) {
       cli::cli_abort(
@@ -163,7 +163,7 @@ tbl_ae_rates_by_grade <- function(data,
 
   # extract default labels
   if (is.null(label)) {
-    label <- lapply(variables, \(x) attr(data[[x]], "label") %||% x) |> setNames(variables)
+    label <- lapply(variables, \(x) attr(data[[x]], "label") %||% x) |> stats::setNames(variables)
   }
 
   # ungrouped grades overall sections-------------------------------------------
@@ -172,7 +172,7 @@ tbl_ae_rates_by_grade <- function(data,
     data_ungrouped <-
       dplyr::bind_rows(
         data_ungrouped |>
-          mutate(across(all_of(c(soc, ae)), ~ factor("- Any adverse events -"))),
+          dplyr::mutate(across(all_of(c(soc, ae)), ~ factor("- Any adverse events -"))),
         data_ungrouped
       )
   }
@@ -181,14 +181,14 @@ tbl_ae_rates_by_grade <- function(data,
   if (ae %in% include_overall) {
     data_ungrouped <- data_ungrouped |>
       dplyr::filter(.data[[soc]] != "- Any adverse events -") |>
-      mutate(!!ae := "- Overall -") |>
+      dplyr::mutate(!!ae := "- Overall -") |>
       dplyr::bind_rows(data_ungrouped)
   }
 
   # ungrouped grades hierarchical summary --------------------------------------
   if (!is_empty(setdiff(lvls, grades_exclude))) {
     tbl_ungrouped <-
-      tbl_hierarchical(
+      gtsummary::tbl_hierarchical(
         data = data_ungrouped,
         variables = all_of(variables),
         id = all_of(id),
@@ -217,17 +217,18 @@ tbl_ae_rates_by_grade <- function(data,
       ) |>
       factor(levels = gp_nms, ordered = TRUE)
 
-    tbl_grouped <- tbl_hierarchical(
-      data = data_grouped,
-      variables = all_of(variables),
-      id = all_of(id),
-      denominator = denominator,
-      by = all_of(by),
-      statistic = {{ statistic }},
-      label = label,
-      digits = {{ digits }}
-    ) |>
-      suppressMessages()
+    tbl_grouped <-
+      gtsummary::tbl_hierarchical(
+        data = data_grouped,
+        variables = all_of(variables),
+        id = all_of(id),
+        denominator = denominator,
+        by = all_of(by),
+        statistic = {{ statistic }},
+        label = label,
+        digits = {{ digits }}
+      ) |>
+        suppressMessages()
 
     if (add_overall) {
       tbl_grouped <- tbl_grouped |>
@@ -241,7 +242,7 @@ tbl_ae_rates_by_grade <- function(data,
     } else {
       # if both grouped and ungrouped grade rows exist, combine the two tables
       tbl_list <- list(tbl_ungrouped, tbl_grouped)
-      tbl_final <- tbl_stack(tbl_list)
+      tbl_final <- gtsummary::tbl_stack(tbl_list)
 
       # set class to tbl_hierarchical
       class(tbl_final) <- c("tbl_hierarchical", "gtsummary")
@@ -264,16 +265,16 @@ tbl_ae_rates_by_grade <- function(data,
   # format the final table -----------------------------------------------------
 
   # apply sorting/filtering, if specified
-  tbl_final <- tbl_final |> sort_hierarchical(sort)
-  if (!quo_is_null(filter)) tbl_final <- tbl_final |> filter_hierarchical({{ filter }})
+  tbl_final <- tbl_final |> gtsummary::sort_hierarchical(sort)
+  if (!quo_is_null(filter)) tbl_final <- tbl_final |> gtsummary::filter_hierarchical({{ filter }})
 
   # arrange grade rows by level, with all groups prior to their first level
   tbl_final <- tbl_final |>
-    modify_table_body(
+    gtsummary::modify_table_body(
       function(table_body) {
         table_body |>
-          mutate(idx = dplyr::row_number()) |>
-          dplyr::group_by(dplyr::pick(all_ard_groups(), "variable")) |>
+          dplyr::mutate(idx = dplyr::row_number()) |>
+          dplyr::group_by(dplyr::pick(cards::all_ard_groups(), "variable")) |>
           dplyr::group_split() |>
           map(function(dat) {
             if (dat$variable[1] != grade) {
@@ -296,31 +297,31 @@ tbl_ae_rates_by_grade <- function(data,
               }
               dat |>
                 dplyr::arrange(.data$idx_lvl, .data$idx) |>
-                mutate(idx = sort(dat$idx)) |>
-                select(-"idx_lvl")
+                dplyr::mutate(idx = sort(dat$idx)) |>
+                dplyr::select(-"idx_lvl")
             }
           }) |>
           dplyr::bind_rows() |>
           dplyr::arrange(.data$idx) |>
-          select(-"idx")
+          dplyr::select(-"idx")
       }
     )
 
   # if requested, add separate overall rows for grade (- Any Grade -)
   if (grade %in% include_overall) {
     tbl_final <- tbl_final |>
-      modify_table_body(
+      gtsummary::modify_table_body(
         function(table_body) {
           table_body |>
-            mutate(idx = dplyr::row_number()) |>
-            dplyr::group_by(dplyr::pick(all_ard_groups())) |>
+            dplyr::mutate(idx = dplyr::row_number()) |>
+            dplyr::group_by(dplyr::pick(cards::all_ard_groups())) |>
             dplyr::group_split() |>
             map(
               function(x) {
                 if (any(x$variable == ae)) {
                   dplyr::bind_rows(
                     x[1, ], # ae summary row
-                    x[1, ] |> mutate(variable = grade, label = "- Any Grade -", idx = .data$idx + 0.5), # Any Grade row
+                    x[1, ] |> dplyr::mutate(variable = grade, label = "- Any Grade -", idx = .data$idx + 0.5),
                     x[-1, ] # grade rows
                   )
                 } else {
@@ -330,13 +331,13 @@ tbl_ae_rates_by_grade <- function(data,
             ) |>
             dplyr::bind_rows() |>
             dplyr::arrange(.data$idx) |>
-            select(-"idx")
+            dplyr::select(-"idx")
         }
       )
   }
 
   tbl_final <- tbl_final |>
-    modify_table_body(
+    gtsummary::modify_table_body(
       \(table_body) {
         table_body |>
           # remove duplicate Any AE label row
@@ -347,7 +348,7 @@ tbl_ae_rates_by_grade <- function(data,
           dplyr::filter(!.data$label %in% grades_exclude) |>
           dplyr::rowwise() |>
           # remove statistics from summary rows if not an overall row or in include for soc/ae
-          mutate(
+          dplyr::mutate(
             across(
               all_stat_cols(),
               ~ if (
@@ -373,7 +374,7 @@ tbl_ae_rates_by_grade <- function(data,
       columns = all_stat_cols()
     ) |>
     # update header label
-    modify_header(label = paste0(
+    gtsummary::modify_header(label = paste0(
       "**", label[[soc]], "**  \n",
       paste0(rep("\U00A0", 4L), collapse = ""),
       "**", label[[ae]], "**",
@@ -381,12 +382,14 @@ tbl_ae_rates_by_grade <- function(data,
       "**", label[[grade]], "**"
     )) |>
     # indent grade labels
-    modify_indent(columns = label, rows = .data$variable == grade, indent = 46L)
+    gtsummary::modify_indent(columns = label, rows = .data$variable == grade, indent = 46L)
 
   # further indent grade level labels within grade groups
   if (!is_empty(grade_groups)) {
     tbl_final <- tbl_final |>
-      modify_indent(columns = label, rows = .data$variable == grade & .data$label %in% unlist(gps), indent = 48L)
+      gtsummary::modify_indent(
+        columns = label, rows = .data$variable == grade & .data$label %in% unlist(gps), indent = 48L
+      )
   }
 
   # return final table ---------------------------------------------------------

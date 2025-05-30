@@ -71,7 +71,8 @@ test_that("tbl_ae_rates_by_grade() works", {
           grade = AETOXGR,
           ae = AEDECOD,
           soc = AEBODSYS,
-          denominator = ADSL
+          denominator = ADSL,
+          label = NULL
         )
     )
   )
