@@ -1,5 +1,7 @@
 # crane 0.1.0.9016
 
+* Adding `tbl_ae_rate_and_count()` to summarize adverse rates and counts. (#36)
+
 * Adding `tbl_survfit_times()` and `add_overall.tbl_survfit_times()`
 
 * Added an article giving an overview of the {crane} package. (#37)
