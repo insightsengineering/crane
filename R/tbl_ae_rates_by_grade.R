@@ -43,7 +43,7 @@
 #'   `"5" ~ "Grade 5"`, the individual rows corresponding to grade 5 can be excluded by setting `grades_exclude = "5"`.
 #'
 #' @returns a gtsummary table
-#' @name tbl_hierarchical_groups
+#' @name tbl_ae_rates_by_grade
 #'
 #' @examples
 #' ADSL <- cards::ADSL |> mutate(TRTA = ARM)
@@ -64,7 +64,7 @@
 #'       AESEV == "SEVERE" ~ 5,
 #'     ) |> factor(levels = 1:5)
 #'   ) |>
-#'   ungroup()
+#'   dplyr::ungroup()
 #'
 #' # Example ----------------------------------------------------
 #' grade_groups <- list(
@@ -73,7 +73,7 @@
 #'   "5" ~ "Grade 5"
 #' )
 #'
-#' tbl_hierarchical_groups(
+#' tbl_ae_rates_by_grade(
 #'   ADAE_subset,
 #'   grade = AETOXGR,
 #'   ae = AEDECOD,
@@ -86,28 +86,28 @@
 NULL
 
 #' @export
-#' @rdname tbl_hierarchical_groups
-tbl_hierarchical_groups <- function(data,
-                                    grade,
-                                    ae,
-                                    soc,
-                                    denominator,
-                                    by = NULL,
-                                    id = "USUBJID",
-                                    include = ae,
-                                    include_overall = c(soc, ae),
-                                    statistic = everything() ~ "{n} ({p}%)",
-                                    label = list(
-                                      "MedDRA System Organ Class",
-                                      "MedDRA Preferred Term",
-                                      "Grade"
-                                    ) |> setNames(c(soc, ae, grade)),
-                                    digits = NULL,
-                                    sort = "descending",
-                                    filter = NULL,
-                                    add_overall = FALSE,
-                                    grade_groups = list(),
-                                    grades_exclude = NULL) {
+#' @rdname tbl_ae_rates_by_grade
+tbl_ae_rates_by_grade <- function(data,
+                                  grade,
+                                  ae,
+                                  soc,
+                                  denominator,
+                                  by = NULL,
+                                  id = "USUBJID",
+                                  include = ae,
+                                  include_overall = c(soc, ae),
+                                  statistic = everything() ~ "{n} ({p}%)",
+                                  label = list(
+                                    "MedDRA System Organ Class",
+                                    "MedDRA Preferred Term",
+                                    "Grade"
+                                  ) |> setNames(c(soc, ae, grade)),
+                                  digits = NULL,
+                                  sort = "descending",
+                                  filter = NULL,
+                                  add_overall = FALSE,
+                                  grade_groups = list(),
+                                  grades_exclude = NULL) {
   # check inputs ---------------------------------------------------------------
   set_cli_abort_call()
   check_not_missing(data)
@@ -115,21 +115,27 @@ tbl_hierarchical_groups <- function(data,
   check_not_missing(ae)
   check_not_missing(soc)
   check_not_missing(denominator)
-  check_list_elements(grade_groups, \(x) is_formula(x))
-  cards::process_selectors(data, grade = {{ grade }}, ae = {{ ae }}, soc = {{ soc }}, by = {{ by }}, id = {{ id }})
+  check_class(grades_exclude, "character", allow_empty = TRUE)
+  cards::process_selectors(data,
+    grade = {{ grade }},
+    ae = {{ ae }},
+    soc = {{ soc }},
+    by = {{ by }},
+    id = {{ id }}
+  )
   variables <- c(soc, ae, grade)
-  cards::process_selectors(data[variables], include = {{ include }}, include_overall = {{ include_overall }})
+  cards::process_selectors(data[variables],
+    include = {{ include }},
+    include_overall = {{ include_overall }}
+  )
+  filter <- enquo(filter)
 
-  if (!is.character(grades_exclude)) {
-    cli::cli_abort(
-      "Grades to exclude from the table specified via {.arg grades_exclude} must be of class {.cls character}."
-    )
-  }
   if (!all(sapply(grade_groups, is_formula))) {
     cli::cli_abort(
       paste(
-        "Each grade group must be specified via a formula where the left-hand side of the formula is a vector",
-        "of grades and the right-hand side is the name of the grade group."
+        "Each grade group must be specified via a {.cls formula} where the left-hand side of the formula is a vector",
+        "of grades and the right-hand side is the name of the grade group.",
+        'For example, {.code c("3", "4") ~ "Grade 3-4"}'
       )
     )
   }
@@ -142,7 +148,9 @@ tbl_hierarchical_groups <- function(data,
     )
   }
 
-  filter <- enquo(filter)
+  # saving function inputs
+  tbl_ae_rates_by_grade_inputs <- as.list(environment())
+
   data_list <- list(data)
   lvls <- levels(data[[grade]]) # get levels of grade variable
   gp_nms <- sapply(seq_along(grade_groups), \(x) grade_groups[[x]][[3]]) # get names of grade groups
@@ -236,17 +244,17 @@ tbl_hierarchical_groups <- function(data,
   }
 
   # Build and format table -----------------------------------------------------
-  tbl <- tbl_stack(tbl_list)
-  class(tbl) <- class(tbl_list[[1]])
-  tbl$cards <- list(tbl_hierarchical = dplyr::bind_rows(lapply(tbl_list, \(x) x$cards$tbl_hierarchical)))
-  tbl$inputs <- tbl_list[[1]]$inputs
-  tbl <- tbl |> sort_hierarchical(sort)
-  tbl$cards$tbl_hierarchical <- tbl$cards$tbl_hierarchical |>
+  tbl_final <- tbl_stack(tbl_list)
+  class(tbl_final) <- class(tbl_list[[1]])
+  tbl_final$cards <- list(tbl_hierarchical = dplyr::bind_rows(lapply(tbl_list, \(x) x$cards$tbl_hierarchical)))
+  tbl_final$inputs <- tbl_list[[1]]$inputs
+  tbl_final <- tbl_final |> sort_hierarchical(sort)
+  tbl_final$cards$tbl_hierarchical <- tbl_final$cards$tbl_hierarchical |>
     dplyr::distinct(dplyr::pick(-.data$fmt_fn), .keep_all = TRUE)
-  if (!quo_is_null(filter)) tbl <- tbl |> filter_hierarchical({{ filter }})
+  if (!quo_is_null(filter)) tbl_final <- tbl_final |> filter_hierarchical({{ filter }})
 
   # arrange inner variable by level, with all groups prior to their first level
-  tbl <- tbl |>
+  tbl_final <- tbl_final |>
     modify_table_body(
       function(table_body) {
         table_body |>
@@ -286,7 +294,7 @@ tbl_hierarchical_groups <- function(data,
 
   # add overall rows for inner variable (- Any Grade -)
   if (grade %in% include_overall) {
-    tbl <- tbl |>
+    tbl_final <- tbl_final |>
       modify_table_body(
         function(table_body) {
           table_body |>
@@ -313,7 +321,7 @@ tbl_hierarchical_groups <- function(data,
       )
   }
 
-  tbl <- tbl |>
+  tbl_final <- tbl_final |>
     modify_table_body(
       \(table_body) {
         table_body |>
@@ -356,9 +364,21 @@ tbl_hierarchical_groups <- function(data,
 
   # further indent grade level labels if grade groups exist
   if (length(grade_groups) > 0) {
-    tbl <- tbl |>
+    tbl_final <- tbl_final |>
       modify_indent(columns = label, rows = variable == grade & label %in% lvls, indent = 48L)
   }
 
-  tbl
+  # return final table ---------------------------------------------------------
+  tbl_final$call_list <- list(tbl_ae_rates_by_grade = match.call())
+  tbl_final$cards <-
+    list(
+      tbl_ae_rates_by_grade =
+        list(
+          tbl_hierarchical = tbl_rates$cards$tbl_hierarchical,
+          tbl_hierarchical_count = tbl_count$cards$tbl_hierarchical_count
+        )
+    )
+  tbl_final$inputs <- tbl_ae_rates_by_grade_inputs
+
+  tbl_final
 }
