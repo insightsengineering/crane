@@ -1,4 +1,4 @@
-# crane 0.1.0.9016
+# crane 0.1.0.9017
 
 * Adding `tbl_ae_rate_and_count()` to summarize adverse rates and counts. (#36)
 
