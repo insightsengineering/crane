@@ -138,9 +138,9 @@ ADAE_subset <- ADAE_subset |>
       AESEV == "SEVERE" ~ 5,
     ) |> factor(levels = 1:5)
   ) |>
-  ungroup()
+  dplyr::ungroup()
 
-# Example ----------------------------------------------------
+# Example 1 ----------------------------------
 grade_groups <- list(
   c("1", "2") ~ "Grade 1-2",
   c("3", "4") ~ "Grade 3-4",

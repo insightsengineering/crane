@@ -66,7 +66,7 @@
 #'   ) |>
 #'   dplyr::ungroup()
 #'
-#' # Example ----------------------------------------------------
+#' # Example 1 ----------------------------------
 #' grade_groups <- list(
 #'   c("1", "2") ~ "Grade 1-2",
 #'   c("3", "4") ~ "Grade 3-4",
@@ -151,38 +151,40 @@ tbl_ae_rates_by_grade <- function(data,
   # saving function inputs
   tbl_ae_rates_by_grade_inputs <- as.list(environment())
 
-  data_list <- list(data)
-  lvls <- levels(data[[grade]]) # get levels of grade variable
   gp_nms <- sapply(seq_along(grade_groups), \(x) grade_groups[[x]][[3]]) # get names of grade groups
+  lvls <- levels(data[[grade]]) # get levels of grade variable
+  if (!is.ordered(data[[grade]])) data[[grade]] <- factor(data[[grade]], levels = lvls, ordered = TRUE)
+  data_ungrouped <- data
 
   # extract default labels
   if (is.null(label)) {
     label <- lapply(variables, \(x) attr(data[[x]], "label") %||% x) |> setNames(variables)
   }
 
-  if (!is.ordered(data[[grade]])) data[[grade]] <- factor(data[[grade]], levels = lvls, ordered = TRUE)
-
   # ungrouped grades overall sections-------------------------------------------
   # overall section at SOC level (- Any adverse events -)
   if (soc %in% include_overall) {
-    data_overall <- data
-    data_overall[c(soc, ae)] <- factor("- Any adverse events -")
-    data_list <- c(data_list, list(data_overall))
+    data_ungrouped <-
+      dplyr::bind_rows(
+        data_ungrouped |>
+          mutate(across(all_of(c(soc, ae)), ~ factor("- Any adverse events -"))),
+        data_ungrouped
+      )
   }
 
   # overall section for AE variable (- Overall -)
   if (ae %in% include_overall) {
-    data_list[[1]] <- data_list[[1]] |>
+    data_ungrouped <- data_ungrouped |>
+      dplyr::filter(.data[[soc]] != "- Any adverse events -") |>
       mutate(!!ae := "- Overall -") |>
-      dplyr::bind_rows(data_list[[1]])
+      dplyr::bind_rows(data_ungrouped)
   }
 
   # ungrouped grades hierarchical summary --------------------------------------
-  tbl_list <- lapply(
-    rev(seq_along(data_list)),
-    function(i) {
-      tbl <- tbl_hierarchical(
-        data = data_list[[i]],
+  if (length(setdiff(lvls, grades_exclude)) > 0) {
+    tbl_ungrouped <-
+      tbl_hierarchical(
+        data = data_ungrouped,
         variables = variables,
         id = id,
         denominator = denominator,
@@ -192,68 +194,74 @@ tbl_ae_rates_by_grade <- function(data,
         digits = {{ digits }}
       )
 
-      if (add_overall) {
-        tbl <- tbl |> add_overall(col_label = "**All Active Treatments**  \nN = {style_number(N)}", last = TRUE)
-      }
-
-      tbl
+    if (add_overall) {
+      tbl_ungrouped <- tbl_ungrouped |>
+        add_overall(col_label = "**All Active Treatments**  \nN = {style_number(N)}", last = TRUE)
     }
-  )
+  }
 
   # grouped grades hierarchical summary ----------------------------------------
   if (length(grade_groups) > 0) {
     gps <- lapply(seq_along(grade_groups), \(x) (grade_groups[[x]][[2]] |> eval())) |> setNames(gp_nms)
+    data_grouped <- data_ungrouped
 
-    tbl_list <- c(
-      tbl_list,
-      lapply(
-        rev(seq_along(data_list)),
-        function(i) {
-          data_i <- data_list[[i]]
+    # replace grades with their grade groups
+    data_grouped[[grade]] <-
+      do.call(
+        dplyr::case_match,
+        args = c(list(.x = data_grouped[[grade]]), grade_groups)
+      ) |>
+        factor(levels = gp_nms, ordered = TRUE)
 
-          # replace grades with their grade groups
-          data_i[[grade]] <-
-            do.call(
-              dplyr::case_match,
-              args = c(list(.x = data_i[[grade]]), grade_groups)
-            ) |>
-            factor(levels = gp_nms, ordered = TRUE)
+    tbl_grouped <- tbl_hierarchical(
+      data = data_grouped,
+      variables = variables,
+      id = id,
+      denominator = denominator,
+      by = by,
+      statistic = {{ statistic }},
+      label = label,
+      digits = {{ digits }}
+    ) |>
+      suppressMessages()
 
-          tbl <- tbl_hierarchical(
-            data = data_i,
-            variables = variables,
-            id = id,
-            denominator = denominator,
-            by = by,
-            statistic = {{ statistic }},
-            label = label,
-            digits = {{ digits }}
-          ) |>
-            suppressMessages()
+    if (add_overall) {
+      tbl_grouped <- tbl_grouped |>
+        add_overall(col_label = "**All Active Treatments**  \nN = {style_number(N)}", last = TRUE) |>
+        suppressMessages()
+    }
 
-          if (add_overall) {
-            tbl <- tbl |>
-              add_overall(col_label = "**All Active Treatments**  \nN = {style_number(N)}", last = TRUE) |>
-              suppressMessages()
-          }
+    # if both grouped and ungrouped grade rows exist, combine the two tables
+    tbl_list <- list(tbl_ungrouped, tbl_grouped)
+    tbl_final <- tbl_stack(tbl_list)
 
-          tbl
-        }
-      )
+    # set class to tbl_hierarchical
+    class(tbl_final) <- c("tbl_hierarchical", "gtsummary")
+
+    # get original inputs
+    tbl_final$inputs <- tbl_ae_rates_by_grade_inputs
+
+    # build tbl$cards, needed for sorting/filtering
+    tbl_final$cards <- list(
+      tbl_hierarchical = dplyr::bind_rows(lapply(tbl_list, \(x) x$cards$tbl_hierarchical)) |>
+        dplyr::distinct(dplyr::pick(-.data$fmt_fn), .keep_all = TRUE)
     )
+    if (add_overall) tbl_final$cards$add_overall <- dplyr::bind_rows(lapply(tbl_list, \(x) x$cards$add_overall))
+  } else if (is_empty(setdiff(lvls, grades_exclude))) {
+    # if all individual grades excluded, only grade groups included in final table
+    tbl_final <- tbl_grouped
+  } else {
+    # if no grade groups, only individual grades included in final table
+    tbl_final <- tbl_ungrouped
   }
 
-  # Build and format table -----------------------------------------------------
-  tbl_final <- tbl_stack(tbl_list)
-  class(tbl_final) <- class(tbl_list[[1]])
-  tbl_final$cards <- list(tbl_hierarchical = dplyr::bind_rows(lapply(tbl_list, \(x) x$cards$tbl_hierarchical)))
-  tbl_final$inputs <- tbl_list[[1]]$inputs
+  # format the final table -----------------------------------------------------
+
+  # apply sorting/filtering, if specified
   tbl_final <- tbl_final |> sort_hierarchical(sort)
-  tbl_final$cards$tbl_hierarchical <- tbl_final$cards$tbl_hierarchical |>
-    dplyr::distinct(dplyr::pick(-.data$fmt_fn), .keep_all = TRUE)
   if (!quo_is_null(filter)) tbl_final <- tbl_final |> filter_hierarchical({{ filter }})
 
-  # arrange inner variable by level, with all groups prior to their first level
+  # arrange grade rows by level, with all groups prior to their first level
   tbl_final <- tbl_final |>
     modify_table_body(
       function(table_body) {
@@ -292,7 +300,7 @@ tbl_ae_rates_by_grade <- function(data,
       }
     )
 
-  # add overall rows for inner variable (- Any Grade -)
+  # if requested, add separate overall rows for grade (- Any Grade -)
   if (grade %in% include_overall) {
     tbl_final <- tbl_final |>
       modify_table_body(
@@ -325,12 +333,12 @@ tbl_ae_rates_by_grade <- function(data,
     modify_table_body(
       \(table_body) {
         table_body |>
-          # remove duplicated Any AE label row
+          # remove duplicate Any AE label row
           dplyr::filter(!(.data$label == "- Any adverse events -" & .data$variable != soc)) |>
           # remove rows for grades in grades_exclude
           dplyr::filter(!.data$label %in% grades_exclude) |>
           dplyr::rowwise() |>
-          # remove statistics from summary rows for outer variables if not an overall row or in include
+          # remove statistics from summary rows if not an overall row or in include for soc/ae
           mutate(
             across(
               all_stat_cols(),
@@ -351,6 +359,11 @@ tbl_ae_rates_by_grade <- function(data,
     ) |>
     # remove default footnote
     gtsummary::remove_footnote_header(columns = everything()) |>
+    # convert "0 (0.0%)" to "0"
+    gtsummary::modify_post_fmt_fun(
+      fmt_fun = ~ ifelse(. == "0 (0.0%)", "0", .),
+      columns = all_stat_cols()
+    ) |>
     # update header label
     modify_header(label = paste0(
       "**", label[[soc]], "**  \n",
@@ -370,15 +383,6 @@ tbl_ae_rates_by_grade <- function(data,
 
   # return final table ---------------------------------------------------------
   tbl_final$call_list <- list(tbl_ae_rates_by_grade = match.call())
-  tbl_final$cards <-
-    list(
-      tbl_ae_rates_by_grade =
-        list(
-          tbl_hierarchical = tbl_rates$cards$tbl_hierarchical,
-          tbl_hierarchical_count = tbl_count$cards$tbl_hierarchical_count
-        )
-    )
-  tbl_final$inputs <- tbl_ae_rates_by_grade_inputs
 
   tbl_final
 }
