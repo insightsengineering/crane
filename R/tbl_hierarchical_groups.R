@@ -19,16 +19,19 @@
 #'   A single column name with the adverse event terms.
 #' @param soc ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   A single column name with the system organ class.
+#' @param include ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#'   Variables from `c(soc, ae, grade)` for which summary statistics should be returned (on the variable label rows).
+#'   Including `grade` has no effect since each level has its own row for this variable. The default is `ae`.
 #' @param include_overall ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
-#'   Variables from `c(grade, ae, soc)` for which an overall section at that hierarchy level should be computed.
+#'   Variables from `c(soc, ae, grade)` for which an overall section at that hierarchy level should be computed.
 #'   An overall section at the `soc` variable level will have label `"- Any adverse events -"`. An overall section at
 #'   the `ae` variable level will have label `"- Overall -"`. An overall row at the `grade` variable level will have
-#'   label `"- Any Grade -"`. The default is `everything()`.
+#'   label `"- Any Grade -"`. The default is `c(soc, ae)`.
 #' @param filter (`expression`)\cr
 #'   An expression that is used to filter rows of the table. See [gtsummary::filter_hierarchical()] for details.
 #' @param add_overall (`logical`)\cr
 #'   Whether to add a column with overall summary statistics to the tables. Column will be displayed last, with a
-#'   default label of `"**All Active Treatments**  \nN = {style_number(N)}"`. Defaults to `FALSE`.
+#'   default label of `"**All Active Treatments**  \nN = {style_number(N)}"`. The default is `FALSE`.
 #' @param grade_groups (`list`)\cr
 #'   A list of formulas each corresponding to a grade group for which rates should be calculated. Grade groups must be
 #'   mutually exclusive, i.e. each grade cannot be assigned to more than one grade group. To specify each grade group,
@@ -64,10 +67,6 @@
 #'   ungroup()
 #'
 #' # Example ----------------------------------------------------
-#'
-#' ## Order grade variable to analyze *highest* grades per subject
-#' ADAE_subset$AETOXGR <- factor(ADAE_subset$AETOXGR, ordered = TRUE)
-#'
 #' grade_groups <- list(
 #'   c("1", "2") ~ "Grade 1-2",
 #'   c("3", "4") ~ "Grade 3-4",
@@ -81,11 +80,6 @@
 #'   soc = AEBODSYS,
 #'   denominator = ADSL,
 #'   by = TRTA,
-#'   label = list(
-#'     AEBODSYS = "MedDRA System Organ Class",
-#'     AEDECOD = "MedDRA Preferred Term",
-#'     AETOXGR = "Grade"
-#'   ),
 #'   grade_groups = grade_groups,
 #'   grades_exclude = "5"
 #' )
@@ -103,7 +97,11 @@ tbl_hierarchical_groups <- function(data,
                                     include = ae,
                                     include_overall = c(soc, ae),
                                     statistic = everything() ~ "{n} ({p}%)",
-                                    label = NULL,
+                                    label = list(
+                                      "MedDRA System Organ Class",
+                                      "MedDRA Preferred Term",
+                                      "Grade"
+                                    ) |> setNames(c(soc, ae, grade)),
                                     digits = NULL,
                                     sort = "descending",
                                     filter = NULL,
@@ -211,7 +209,7 @@ tbl_hierarchical_groups <- function(data,
               dplyr::case_match,
               args = c(list(.x = data_i[[grade]]), grade_groups)
             ) |>
-            factor(levels = gp_nms, ordered = is.ordered(data[[grade]]))
+            factor(levels = gp_nms, ordered = TRUE)
 
           tbl <- tbl_hierarchical(
             data = data_i,
@@ -299,11 +297,10 @@ tbl_hierarchical_groups <- function(data,
               function(x) {
                 if (any(x$variable == ae)) {
                   dplyr::bind_rows(
-                    x[1, ] |> mutate(across(all_stat_cols(), ~NA)),
-                    x[1, ] |> mutate(variable = grade, label = "- Any Grade -", idx = .data$idx + 0.5),
-                    x[-1, ]
-                  ) |>
-                    dplyr::filter(!.data$label %in% grades_exclude)
+                    x[1, ], # ae summary row
+                    x[1, ] |> mutate(variable = grade, label = "- Any Grade -", idx = .data$idx + 0.5), # Any Grade row
+                    x[-1, ] # grade rows
+                  )
                 } else {
                   x
                 }
@@ -322,6 +319,8 @@ tbl_hierarchical_groups <- function(data,
         table_body |>
           # remove duplicated Any AE label row
           dplyr::filter(!(.data$label == "- Any adverse events -" & .data$variable != soc)) |>
+          # remove rows for grades in grades_exclude
+          dplyr::filter(!.data$label %in% grades_exclude) |>
           dplyr::rowwise() |>
           # remove statistics from summary rows for outer variables if not an overall row or in include
           mutate(
@@ -330,7 +329,8 @@ tbl_hierarchical_groups <- function(data,
               ~ if (
                 .data$variable %in% c(include, "..ard_hierarchical_overall..") |
                   label %in% c(lvls, gp_nms) |
-                  (label == "- Any adverse events -" & !grade %in% include_overall)
+                  (label == "- Any adverse events -" & !grade %in% include_overall) |
+                  (label == "- Any Grade -" & grade %in% include_overall)
               ) {
                 .
               } else {
@@ -341,12 +341,24 @@ tbl_hierarchical_groups <- function(data,
           dplyr::ungroup()
       }
     ) |>
-    # indent grade level labels
-    modify_indent(
-      columns = label, rows = variable == grade & label %in% lvls, indent = 10L
-    ) |>
     # remove default footnote
-    gtsummary::remove_footnote_header(columns = everything())
+    gtsummary::remove_footnote_header(columns = everything()) |>
+    # update header label
+    modify_header(label = paste0(
+      "**", label[[soc]], "**  \n",
+      paste0(rep("\U00A0", 4L), collapse = ""),
+      "**", label[[ae]], "**",
+      paste0(rep("\U00A0", 30L), collapse = ""),
+      "**", label[[grade]], "**"
+    )) |>
+    # indent grade labels
+    modify_indent(columns = label, rows = variable == grade, indent = 46L)
+
+  # further indent grade level labels if grade groups exist
+  if (length(grade_groups) > 0) {
+    tbl <- tbl |>
+      modify_indent(columns = label, rows = variable == grade & label %in% lvls, indent = 48L)
+  }
 
   tbl
 }

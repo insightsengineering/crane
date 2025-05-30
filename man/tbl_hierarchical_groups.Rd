@@ -15,7 +15,8 @@ tbl_hierarchical_groups(
   include = ae,
   include_overall = c(soc, ae),
   statistic = everything() ~ "{n} ({p}\%)",
-  label = NULL,
+  label = setNames(list("MedDRA System Organ Class", "MedDRA Preferred Term", "Grade"),
+    c(soc, ae, grade)),
   digits = NULL,
   sort = "descending",
   filter = NULL,
@@ -51,15 +52,14 @@ argument used to subset \code{data} to identify rows in \code{data} to calculate
 event rates in \code{tbl_hierarchical()}.}
 
 \item{include}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-variables from \code{hierarchy} for which summary statistics should be returned (on the variable label rows) Including
-the last element of \code{hierarchy} has no effect since each level has its own row for this variable.
-The default is \code{everything()}.}
+Variables from \code{c(soc, ae, grade)} for which summary statistics should be returned (on the variable label rows).
+Including \code{grade} has no effect since each level has its own row for this variable. The default is \code{ae}.}
 
 \item{include_overall}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-Variables from \code{c(grade, ae, soc)} for which an overall section at that hierarchy level should be computed.
+Variables from \code{c(soc, ae, grade)} for which an overall section at that hierarchy level should be computed.
 An overall section at the \code{soc} variable level will have label \code{"- Any adverse events -"}. An overall section at
 the \code{ae} variable level will have label \code{"- Overall -"}. An overall row at the \code{grade} variable level will have
-label \code{"- Any Grade -"}. The default is \code{everything()}.}
+label \code{"- Any Grade -"}. The default is \code{c(soc, ae)}.}
 
 \item{statistic}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
 used to specify the summary statistics to display for all variables in \code{tbl_hierarchical()}.
@@ -93,7 +93,7 @@ An expression that is used to filter rows of the table. See \code{\link[gtsummar
 
 \item{add_overall}{(\code{logical})\cr
 Whether to add a column with overall summary statistics to the tables. Column will be displayed last, with a
-default label of \code{"**All Active Treatments**  \\nN = {style_number(N)}"}. Defaults to \code{FALSE}.}
+default label of \code{"**All Active Treatments**  \\nN = {style_number(N)}"}. The default is \code{FALSE}.}
 
 \item{grade_groups}{(\code{list})\cr
 A list of formulas each corresponding to a grade group for which rates should be calculated. Grade groups must be
@@ -141,10 +141,6 @@ ADAE_subset <- ADAE_subset |>
   ungroup()
 
 # Example ----------------------------------------------------
-
-## Order grade variable to analyze *highest* grades per subject
-ADAE_subset$AETOXGR <- factor(ADAE_subset$AETOXGR, ordered = TRUE)
-
 grade_groups <- list(
   c("1", "2") ~ "Grade 1-2",
   c("3", "4") ~ "Grade 3-4",
@@ -158,11 +154,6 @@ tbl_hierarchical_groups(
   soc = AEBODSYS,
   denominator = ADSL,
   by = TRTA,
-  label = list(
-    AEBODSYS = "MedDRA System Organ Class",
-    AEDECOD = "MedDRA Preferred Term",
-    AETOXGR = "Grade"
-  ),
   grade_groups = grade_groups,
   grades_exclude = "5"
 )
