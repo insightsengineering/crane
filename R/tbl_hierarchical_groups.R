@@ -43,11 +43,30 @@
 #' @name tbl_hierarchical_groups
 #'
 #' @examples
-#' ADSL <- random.cdisc.data::cadsl
-#' ADAE <- random.cdisc.data::cadae
+#' ADSL <- cards::ADSL |> mutate(TRTA = ARM)
+#' ADAE_subset <- cards::ADAE |>
+#'   dplyr::filter(
+#'     AESOC %in% unique(cards::ADAE$AESOC)[1:5],
+#'     AETERM %in% unique(cards::ADAE$AETERM)[1:10]
+#'   )
+#'
+#' ## Add AETOXGR variable to example dataset
+#' set.seed(1)
+#' ADAE_subset <- ADAE_subset |>
+#'   dplyr::rowwise() |>
+#'   mutate(
+#'     AETOXGR = dplyr::case_when(
+#'       AESEV == "MILD" ~ sample(1:2, 1),
+#'       AESEV == "MODERATE" ~ sample(3:4, 1),
+#'       AESEV == "SEVERE" ~ 5,
+#'     ) |> factor(levels = 1:5)
+#'   ) |>
+#'   ungroup()
+#'
+#' # Example 1 ----------------------------------------------------
 #'
 #' ## Order grade variable to analyze *highest* grades per subject
-#' ADAE$AETOXGR <- factor(ADAE$AETOXGR, ordered = TRUE)
+#' ADAE_subset$AETOXGR <- factor(ADAE_subset$AETOXGR, ordered = TRUE)
 #'
 #' grade_groups <- list(
 #'   c("1", "2") ~ "Grade 1-2",
@@ -56,12 +75,12 @@
 #' )
 #'
 #' tbl_hierarchical_groups(
-#'   ADAE,
+#'   ADAE_subset,
 #'   grade = AETOXGR,
 #'   ae = AEDECOD,
 #'   soc = AEBODSYS,
 #'   denominator = ADSL,
-#'   by = ACTARM,
+#'   by = TRTA,
 #'   label = list(
 #'     AEBODSYS = "MedDRA System Organ Class",
 #'     AEDECOD = "MedDRA Preferred Term",
@@ -138,7 +157,7 @@ tbl_hierarchical_groups <- function(data,
   # overall section at SOC level (- Any adverse events -)
   if (soc %in% include_overall) {
     data_overall <- data
-    data_overall[c(soc, ae)] <- "- Any adverse events -"
+    data_overall[c(soc, ae)] <- factor("- Any adverse events -")
     data_list <- c(data_list, list(data_overall))
   }
 
@@ -159,7 +178,6 @@ tbl_hierarchical_groups <- function(data,
         id = id,
         denominator = denominator,
         by = by,
-        include = variables,
         statistic = {{ statistic }},
         overall_row = if (i == 1) overall_row else FALSE,
         label = label,
@@ -200,9 +218,7 @@ tbl_hierarchical_groups <- function(data,
             id = id,
             denominator = denominator,
             by = by,
-            include = variables,
             statistic = {{ statistic }},
-            overall_row = FALSE,
             label = label,
             digits = {{ digits }}
           ) |>

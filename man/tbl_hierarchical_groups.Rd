@@ -119,11 +119,30 @@ Grades will appear in rows in the order of the factor levels given, with each gr
 first level in its group.
 }
 \examples{
-ADSL <- random.cdisc.data::cadsl
-ADAE <- random.cdisc.data::cadae
+ADSL <- cards::ADSL |> mutate(TRTA = ARM)
+ADAE_subset <- cards::ADAE |>
+  dplyr::filter(
+    AESOC \%in\% unique(cards::ADAE$AESOC)[1:5],
+    AETERM \%in\% unique(cards::ADAE$AETERM)[1:10]
+  )
+
+## Add AETOXGR variable to example dataset
+set.seed(1)
+ADAE_subset <- ADAE_subset |>
+  dplyr::rowwise() |>
+  mutate(
+    AETOXGR = dplyr::case_when(
+      AESEV == "MILD" ~ sample(1:2, 1),
+      AESEV == "MODERATE" ~ sample(3:4, 1),
+      AESEV == "SEVERE" ~ 5,
+    ) |> factor(levels = 1:5)
+  ) |>
+  ungroup()
+
+# Example 1 ----------------------------------------------------
 
 ## Order grade variable to analyze *highest* grades per subject
-ADAE$AETOXGR <- factor(ADAE$AETOXGR, ordered = TRUE)
+ADAE_subset$AETOXGR <- factor(ADAE_subset$AETOXGR, ordered = TRUE)
 
 grade_groups <- list(
   c("1", "2") ~ "Grade 1-2",
@@ -132,12 +151,12 @@ grade_groups <- list(
 )
 
 tbl_hierarchical_groups(
-  ADAE,
+  ADAE_subset,
   grade = AETOXGR,
   ae = AEDECOD,
   soc = AEBODSYS,
   denominator = ADSL,
-  by = ACTARM,
+  by = TRTA,
   label = list(
     AEBODSYS = "MedDRA System Organ Class",
     AEDECOD = "MedDRA Preferred Term",
