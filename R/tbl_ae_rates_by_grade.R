@@ -228,7 +228,7 @@ tbl_ae_rates_by_grade <- function(data,
         label = label,
         digits = {{ digits }}
       ) |>
-        suppressMessages()
+      suppressMessages()
 
     if (add_overall) {
       tbl_grouped <- tbl_grouped |>
