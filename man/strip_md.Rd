@@ -11,15 +11,17 @@ strip_md_bold(x, type = "star")
 strip_md_italic(x, type = "star")
 }
 \arguments{
-\item{x}{(\code{character})\cr
-A character vector.}
+\item{x}{(\code{gtsummary}/\code{character})\cr
+A 'gtsummary' table or character vector.
+When a 'gtsummary' table is passed, the column headers and spanning headers
+are processed.}
 
 \item{type}{(\code{character})\cr
 Specified which type of markdown syntax to strip.
 Must be one or both of \code{c("star", "underscore")}}
 }
 \value{
-character vector
+character vector or gtsummary table
 }
 \description{
 Strip Markdown Bold or Italic

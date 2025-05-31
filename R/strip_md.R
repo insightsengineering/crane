@@ -1,12 +1,14 @@
 #' Strip Markdown Bold or Italic
 #'
-#' @param x (`character`)\cr
-#'   A character vector.
+#' @param x (`gtsummary`/`character`)\cr
+#'   A 'gtsummary' table or character vector.
+#'   When a 'gtsummary' table is passed, the column headers and spanning headers
+#'   are processed.
 #' @param type (`character`)\cr
 #'   Specified which type of markdown syntax to strip.
 #'   Must be one or both of `c("star", "underscore")`
 #'
-#' @returns character vector
+#' @returns character vector or gtsummary table
 #' @name strip_md
 #'
 #' @examples
@@ -18,8 +20,19 @@ NULL
 strip_md_bold <- function(x, type = "star") {
   # check inputs ---------------------------------------------------------------
   set_cli_abort_call()
-  check_class(x, "character")
+  check_class(x, c("character", "gtsummary"))
   type <- arg_match(type, multiple = TRUE, values = c("star", "underscore"))
+
+  # process gtsummary tables ---------------------------------------------------
+  if (inherits(x, "gtsummary")) {
+    x$table_styling$header$label <-
+      x$table_styling$header$label |>
+      strip_md_bold(type = type)
+    x$table_styling$spanning_header$spanning_header <-
+      x$table_styling$spanning_header$spanning_header |>
+      strip_md_bold(type = type)
+    return(x)
+  }
 
   # remove markdown syntax -----------------------------------------------------
   if ("star" %in% type) {
@@ -38,8 +51,19 @@ strip_md_bold <- function(x, type = "star") {
 strip_md_italic <- function(x, type = "star") {
   # check inputs ---------------------------------------------------------------
   set_cli_abort_call()
-  check_class(x, "character")
+  check_class(x, c("character", "gtsummary"))
   type <- arg_match(type, multiple = TRUE, values = c("star", "underscore"))
+
+  # process gtsummary tables ---------------------------------------------------
+  if (inherits(x, "gtsummary")) {
+    x$table_styling$header$label <-
+      x$table_styling$header$label |>
+      strip_md_italic(type = type)
+    x$table_styling$spanning_header$spanning_header <-
+      x$table_styling$spanning_header$spanning_header |>
+      strip_md_italic(type = type)
+    return(x)
+  }
 
   # remove markdown syntax -----------------------------------------------------
   if ("star" %in% type) {

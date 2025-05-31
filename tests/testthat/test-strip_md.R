@@ -1,4 +1,4 @@
-test_that("strip_md_bold() works", {
+test_that("strip_md_bold() works with character vector", {
   input_string <-
     c(
       "**Placebo**  \nN=45",
@@ -103,5 +103,34 @@ test_that("strip_md_italic() works", {
       "*single",
       "_single"
     )
+  )
+})
+
+test_that("strip_md_bold() works with gtsummary table", {
+  expect_false(
+    tbl_strata(
+      trial,
+      strata = "grade",
+      ~ tbl_summary(.x, include = age)
+    ) |>
+      strip_md_bold() |>
+      as.data.frame() |>
+      names() |>
+      str_detect(pattern = "*", fixed = TRUE) |>
+      any()
+  )
+
+  expect_false(
+    tbl_strata(
+      trial,
+      strata = "grade",
+      ~ tbl_summary(.x, include = age),
+      .header = "_{strata}_"
+    ) |>
+      strip_md_italic() |>
+      as.data.frame() |>
+      names() |>
+      str_detect(pattern = "_", fixed = TRUE) |>
+      any()
   )
 })
