@@ -1,4 +1,4 @@
-# crane 0.1.0.9018
+# crane 0.1.0.9019
 
 * Adding the `strip_md_bold()` and `strip_md_italic()` functions to remove bold and italic markdown syntax from a character vector. (#53)
 
