@@ -1,5 +1,8 @@
 #' Strip Markdown Bold or Italic
 #'
+#' Remove markdown syntax that bold or italicizes headers and spanning
+#' headers from gtsummary tables.
+#'
 #' @param x (`gtsummary`/`character`)\cr
 #'   A 'gtsummary' table or character vector.
 #'   When a 'gtsummary' table is passed, the column headers and spanning headers
@@ -12,6 +15,12 @@
 #' @name strip_md
 #'
 #' @examples
+#' # Example 1 ----------------------------------
+#' gtsummary::trial |>
+#'   tbl_demographics(by = trt, include = age) |>
+#'   strip_md_bold()
+#'
+#' # Example 2 ----------------------------------
 #' strip_md_bold(c("**Placebo**  \nN=45", "**High Dose**  \nN=54"))
 NULL
 
