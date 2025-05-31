@@ -1,5 +1,7 @@
 # crane 0.1.0.9017
 
+* Adding the `strip_md_bold()` and `strip_md_italic()` functions to remove bold and italic markdown syntax from a character vector. (#53)
+
 * Adding `tbl_ae_rate_and_count()` to summarize adverse rates and counts. (#36)
 
 * Adding `tbl_survfit_times()` and `add_overall.tbl_survfit_times()`
