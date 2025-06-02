@@ -238,6 +238,25 @@ test_that("tbl_ae_rates_by_grade(filter) works", {
   )
 })
 
+test_that("tbl_ae_rates_by_grade() works with non-factor `grade` variables", {
+  ADAE_subset$AETOXGR <- as.character(ADAE_subset$AETOXGR)
+  expect_message(
+    expect_message(
+      tbl <-
+        tbl_ae_rates_by_grade(
+          ADAE_subset,
+          grade = AETOXGR,
+          ae = AEDECOD,
+          soc = AEBODSYS,
+          denominator = ADSL,
+          by = TRTA,
+          grade_groups = grade_groups
+        ),
+      "The `grade` variable"
+    )
+  )
+})
+
 test_that("tbl_ae_rates_by_grade(grade_groups) works with some grades not in groups", {
   withr::local_options(width = 200)
 

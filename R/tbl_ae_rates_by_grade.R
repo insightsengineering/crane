@@ -153,6 +153,19 @@ tbl_ae_rates_by_grade <- function(data,
       )
     }
   }
+  if (!is.factor(data[[grade]])) {
+    data[[grade]] <- factor(data[[grade]], ordered = TRUE)
+    vec <- cli::cli_vec(
+      levels(data[[grade]]),
+      style = list("vec-sep" = " < ", "vec-sep2" = " < ", "vec-last" = " < ", "vec-trunc" = 3)
+    )
+    cli::cli_inform(
+      paste(
+        "The {.arg grade} variable {.val {grade}} has been converted to an ordered {.cls factor}",
+        "with levels: {.val {vec}}"
+      )
+    )
+  }
 
   # saving function inputs
   tbl_ae_rates_by_grade_inputs <- as.list(environment())
