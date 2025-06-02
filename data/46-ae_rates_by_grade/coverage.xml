@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0.977324263038549" branch-rate="0" lines-covered="862" lines-valid="882" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2025-05-30 23:49:36.27381">
+<coverage line-rate="0.978118161925602" branch-rate="0" lines-covered="894" lines-valid="914" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2025-06-02 18:42:45.960408">
   <sources>
     <source>/__w/crane/crane/crane</source>
   </sources>
   <packages>
-    <package name="crane" line-rate="0.977324263038549" branch-rate="0" complexity="0">
+    <package name="crane" line-rate="0.978118161925602" branch-rate="0" complexity="0">
       <classes>
         <class name="add_blank_row.R" filename="R/add_blank_row.R" line-rate="1" branch-rate="0" complexity="0">
           <methods>
@@ -425,6 +425,84 @@
             <line number="27" hits="1" branch="false"/>
             <line number="28" hits="1" branch="false"/>
             <line number="36" hits="9" branch="false"/>
+          </lines>
+        </class>
+        <class name="strip_md.R" filename="R/strip_md.R" line-rate="1" branch-rate="0" complexity="0">
+          <methods>
+            <method name="strip_md_bold" signature="" line-rate="1" branch-rate="0" complexity="0">
+              <lines>
+                <line number="31" hits="6" branch="false"/>
+                <line number="32" hits="6" branch="false"/>
+                <line number="33" hits="6" branch="false"/>
+                <line number="36" hits="6" branch="false"/>
+                <line number="37" hits="1" branch="false"/>
+                <line number="38" hits="1" branch="false"/>
+                <line number="39" hits="1" branch="false"/>
+                <line number="40" hits="1" branch="false"/>
+                <line number="41" hits="1" branch="false"/>
+                <line number="42" hits="1" branch="false"/>
+                <line number="43" hits="1" branch="false"/>
+                <line number="47" hits="5" branch="false"/>
+                <line number="48" hits="4" branch="false"/>
+                <line number="50" hits="5" branch="false"/>
+                <line number="51" hits="2" branch="false"/>
+                <line number="55" hits="5" branch="false"/>
+              </lines>
+            </method>
+            <method name="strip_md_italic" signature="" line-rate="1" branch-rate="0" complexity="0">
+              <lines>
+                <line number="62" hits="6" branch="false"/>
+                <line number="63" hits="6" branch="false"/>
+                <line number="64" hits="6" branch="false"/>
+                <line number="67" hits="6" branch="false"/>
+                <line number="68" hits="1" branch="false"/>
+                <line number="69" hits="1" branch="false"/>
+                <line number="70" hits="1" branch="false"/>
+                <line number="71" hits="1" branch="false"/>
+                <line number="72" hits="1" branch="false"/>
+                <line number="73" hits="1" branch="false"/>
+                <line number="74" hits="1" branch="false"/>
+                <line number="78" hits="5" branch="false"/>
+                <line number="79" hits="4" branch="false"/>
+                <line number="81" hits="5" branch="false"/>
+                <line number="82" hits="2" branch="false"/>
+                <line number="86" hits="5" branch="false"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="31" hits="6" branch="false"/>
+            <line number="32" hits="6" branch="false"/>
+            <line number="33" hits="6" branch="false"/>
+            <line number="36" hits="6" branch="false"/>
+            <line number="37" hits="1" branch="false"/>
+            <line number="38" hits="1" branch="false"/>
+            <line number="39" hits="1" branch="false"/>
+            <line number="40" hits="1" branch="false"/>
+            <line number="41" hits="1" branch="false"/>
+            <line number="42" hits="1" branch="false"/>
+            <line number="43" hits="1" branch="false"/>
+            <line number="47" hits="5" branch="false"/>
+            <line number="48" hits="4" branch="false"/>
+            <line number="50" hits="5" branch="false"/>
+            <line number="51" hits="2" branch="false"/>
+            <line number="55" hits="5" branch="false"/>
+            <line number="62" hits="6" branch="false"/>
+            <line number="63" hits="6" branch="false"/>
+            <line number="64" hits="6" branch="false"/>
+            <line number="67" hits="6" branch="false"/>
+            <line number="68" hits="1" branch="false"/>
+            <line number="69" hits="1" branch="false"/>
+            <line number="70" hits="1" branch="false"/>
+            <line number="71" hits="1" branch="false"/>
+            <line number="72" hits="1" branch="false"/>
+            <line number="73" hits="1" branch="false"/>
+            <line number="74" hits="1" branch="false"/>
+            <line number="78" hits="5" branch="false"/>
+            <line number="79" hits="4" branch="false"/>
+            <line number="81" hits="5" branch="false"/>
+            <line number="82" hits="2" branch="false"/>
+            <line number="86" hits="5" branch="false"/>
           </lines>
         </class>
         <class name="tbl_ae_rate_and_count.R" filename="R/tbl_ae_rate_and_count.R" line-rate="1" branch-rate="0" complexity="0">
