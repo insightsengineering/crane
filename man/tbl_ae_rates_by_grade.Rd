@@ -12,7 +12,6 @@ tbl_ae_rates_by_grade(
   denominator,
   by = NULL,
   id = "USUBJID",
-  include = all_of(ae),
   include_overall = all_of(c(soc, ae)),
   statistic = everything() ~ "{n} ({p}\%)",
   label = stats::setNames(list("MedDRA System Organ Class", "MedDRA Preferred Term",
@@ -51,15 +50,10 @@ Default is \code{NULL}.}
 argument used to subset \code{data} to identify rows in \code{data} to calculate
 event rates in \code{tbl_hierarchical()}.}
 
-\item{include}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-Variables from \code{c(soc, ae, grade)} for which summary statistics should be returned (on the variable label rows).
-Including \code{grade} has no effect since each level has its own row for this variable. The default is \code{ae}.}
-
 \item{include_overall}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-Variables from \code{c(soc, ae, grade)} for which an overall section at that hierarchy level should be computed.
+Variables from \code{c(soc, ae)} for which an overall section at that hierarchy level should be computed.
 An overall section at the \code{soc} variable level will have label \code{"- Any adverse events -"}. An overall section at
-the \code{ae} variable level will have label \code{"- Overall -"}. An overall row at the \code{grade} variable level will have
-label \code{"- Any Grade -"}. The default is \code{c(soc, ae)}.}
+the \code{ae} variable level will have label \code{"- Overall -"}. The default is \code{c(soc, ae)}.}
 
 \item{statistic}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
 used to specify the summary statistics to display for all variables in \code{tbl_hierarchical()}.

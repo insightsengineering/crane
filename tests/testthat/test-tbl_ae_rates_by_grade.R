@@ -311,7 +311,7 @@ test_that("tbl_ae_rates_by_grade(grades_exclude) works", {
   expect_identical(
     tbl_excl$table_body,
     tbl_no_excl$table_body |>
-      dplyr::filter(label != "5")
+      dplyr::filter(label_grade != "5")
   )
 
   # all grades excluded
@@ -332,7 +332,7 @@ test_that("tbl_ae_rates_by_grade(grades_exclude) works", {
     tbl_excl$table_body,
     tbl_no_excl$table_body |>
       dplyr::select(-tbl_id1) |>
-      dplyr::filter(!label %in% as.character(1:5))
+      dplyr::filter(!label_grade %in% as.character(1:5))
   )
 })
 

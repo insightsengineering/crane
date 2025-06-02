@@ -19,14 +19,10 @@
 #'   A single column name with the adverse event terms.
 #' @param soc ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   A single column name with the system organ class.
-#' @param include ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
-#'   Variables from `c(soc, ae, grade)` for which summary statistics should be returned (on the variable label rows).
-#'   Including `grade` has no effect since each level has its own row for this variable. The default is `ae`.
 #' @param include_overall ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
-#'   Variables from `c(soc, ae, grade)` for which an overall section at that hierarchy level should be computed.
+#'   Variables from `c(soc, ae)` for which an overall section at that hierarchy level should be computed.
 #'   An overall section at the `soc` variable level will have label `"- Any adverse events -"`. An overall section at
-#'   the `ae` variable level will have label `"- Overall -"`. An overall row at the `grade` variable level will have
-#'   label `"- Any Grade -"`. The default is `c(soc, ae)`.
+#'   the `ae` variable level will have label `"- Overall -"`. The default is `c(soc, ae)`.
 #' @param filter (`expression`)\cr
 #'   An expression that is used to filter rows of the table. See [gtsummary::filter_hierarchical()] for details.
 #' @param add_overall (`logical`)\cr
@@ -94,7 +90,6 @@ tbl_ae_rates_by_grade <- function(data,
                                   denominator,
                                   by = NULL,
                                   id = "USUBJID",
-                                  include = all_of(ae),
                                   include_overall = all_of(c(soc, ae)),
                                   statistic = everything() ~ "{n} ({p}%)",
                                   label = list(
@@ -124,10 +119,7 @@ tbl_ae_rates_by_grade <- function(data,
     id = {{ id }}
   )
   variables <- c(soc, ae, grade)
-  cards::process_selectors(data[variables],
-    include = {{ include }},
-    include_overall = {{ include_overall }}
-  )
+  cards::process_selectors(data[variables], include_overall = {{ include_overall }})
   filter <- enquo(filter)
   gp_nms <- NULL
 
@@ -320,35 +312,6 @@ tbl_ae_rates_by_grade <- function(data,
       }
     )
 
-  # if requested, add separate overall rows for grade (- Any Grade -)
-  if (grade %in% include_overall) {
-    tbl_final <- tbl_final |>
-      gtsummary::modify_table_body(
-        function(table_body) {
-          table_body |>
-            dplyr::mutate(idx = dplyr::row_number()) |>
-            dplyr::group_by(dplyr::pick(cards::all_ard_groups())) |>
-            dplyr::group_split() |>
-            map(
-              function(x) {
-                if (any(x$variable == ae)) {
-                  dplyr::bind_rows(
-                    x[1, ], # ae summary row
-                    x[1, ] |> dplyr::mutate(variable = grade, label = "- Any Grade -", idx = .data$idx + 0.5),
-                    x[-1, ] # grade rows
-                  )
-                } else {
-                  x
-                }
-              }
-            ) |>
-            dplyr::bind_rows() |>
-            dplyr::arrange(.data$idx) |>
-            dplyr::select(-"idx")
-        }
-      )
-  }
-
   tbl_final <- tbl_final |>
     gtsummary::modify_table_body(
       \(table_body) {
@@ -360,15 +323,25 @@ tbl_ae_rates_by_grade <- function(data,
           # remove rows for grades in grades_exclude
           dplyr::filter(!.data$label %in% grades_exclude) |>
           dplyr::rowwise() |>
-          # remove statistics from summary rows if not an overall row or in include for soc/ae
+          # add label_grade column to display grade labels
+          dplyr::mutate(
+            "label_grade" = dplyr::case_when(
+              .data$variable == grade ~ label,
+              .data$variable == ae | label == "- Any adverse events -" ~ "- Any Grade -",
+              .default = ""
+            ),
+            .after = "label"
+          ) |>
+          # remove grade levels from label column
+          dplyr::mutate(label = if (.data$variable == grade) "" else label) |>
+          # remove statistics from summary rows if not an overall row
           dplyr::mutate(
             across(
               all_stat_cols(),
               ~ if (
-                .data$variable %in% c(include, "..ard_hierarchical_overall..") |
-                  label %in% c(lvls, gp_nms) |
-                  (label == "- Any adverse events -" & !grade %in% include_overall) |
-                  (label == "- Any Grade -" & grade %in% include_overall)
+                .data$variable %in% c(ae, "..ard_hierarchical_overall..") |
+                  .data$label_grade %in% c(lvls, gp_nms) |
+                  .data$label == "- Any adverse events -"
               ) {
                 .
               } else {
@@ -379,6 +352,9 @@ tbl_ae_rates_by_grade <- function(data,
           dplyr::ungroup()
       }
     ) |>
+    # show label_grade column
+    gtsummary::modify_column_unhide("label_grade") |>
+    gtsummary::modify_column_alignment("label_grade", align = "left") |>
     # remove default footnote
     gtsummary::remove_footnote_header(columns = everything()) |>
     # convert "0 (0.0%)" to "0"
@@ -387,21 +363,20 @@ tbl_ae_rates_by_grade <- function(data,
       columns = all_stat_cols()
     ) |>
     # update header label
-    gtsummary::modify_header(label = paste0(
-      "**", label[[soc]], "**  \n",
-      paste0(rep("\U00A0", 4L), collapse = ""),
-      "**", label[[ae]], "**",
-      paste0(rep("\U00A0", 30L), collapse = ""),
-      "**", label[[grade]], "**"
-    )) |>
-    # indent grade labels
-    gtsummary::modify_indent(columns = label, rows = .data$variable == grade, indent = 46L)
+    gtsummary::modify_header(
+      label = paste0(
+        "**", label[[soc]], "**  \n",
+        paste0(rep("\U00A0", 4L), collapse = ""),
+        "**", label[[ae]], "**"
+      ),
+      label_grade = paste0("\U00A0  \n**", label[[grade]], "**")
+    )
 
   # further indent grade level labels within grade groups
   if (!is_empty(grade_groups)) {
     tbl_final <- tbl_final |>
       gtsummary::modify_indent(
-        columns = label, rows = .data$variable == grade & .data$label %in% unlist(gps), indent = 48L
+        columns = label_grade, rows = .data$variable == grade & .data$label_grade %in% unlist(gps), indent = 4L
       )
   }
 
