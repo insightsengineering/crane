@@ -325,7 +325,7 @@ tbl_ae_rates_by_grade <- function(data,
           dplyr::rowwise() |>
           # add label_grade column to display grade labels
           dplyr::mutate(
-            "label_grade" = dplyr::case_when(
+            label_grade = dplyr::case_when(
               .data$variable == grade ~ label,
               .data$variable == ae | label == "- Any adverse events -" ~ "- Any Grade -",
               .default = ""
@@ -376,7 +376,7 @@ tbl_ae_rates_by_grade <- function(data,
   if (!is_empty(grade_groups)) {
     tbl_final <- tbl_final |>
       gtsummary::modify_indent(
-        columns = label_grade, rows = .data$variable == grade & .data$label_grade %in% unlist(gps), indent = 4L
+        columns = "label_grade", rows = .data$variable == grade & .data$label_grade %in% unlist(gps), indent = 4L
       )
   }
 
