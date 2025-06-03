@@ -145,6 +145,15 @@ tbl_ae_rates_by_grade <- function(data,
       )
     }
   }
+  if (!is_empty(grades_exclude) & !is_empty(setdiff(grades_exclude, unique(data[[grade]])))) {
+    not_a_grade <- setdiff(grades_exclude, unique(data[[grade]]))
+    cli::cli_abort(
+      paste(
+        "Grade(s) {.val {not_a_grade}} supplied to {.arg grades_exclude} {?is/are} invalid.",
+        "All grades specified via {.arg grades_exclude} must be levels of {.val {grade}}."
+      )
+    )
+  }
   if (!is.factor(data[[grade]])) {
     data[[grade]] <- factor(data[[grade]], ordered = TRUE)
     vec <- cli::cli_vec(

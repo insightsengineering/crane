@@ -118,34 +118,6 @@ test_that("tbl_ae_rates_by_grade(include_overall) works", {
   expect_snapshot(as.data.frame(tbl))
 })
 
-test_that("tbl_ae_rates_by_grade(add_overall) works", {
-  expect_silent(
-    expect_message(
-      expect_message(
-        tbl <-
-          tbl_ae_rates_by_grade(
-            ADAE_subset,
-            grade = AETOXGR,
-            ae = AEDECOD,
-            soc = AEBODSYS,
-            denominator = ADSL,
-            by = TRTA,
-            grade_groups = grade_groups,
-            add_overall = TRUE
-          )
-      )
-    )
-  )
-
-  # overall column is added with correct label
-  expect_equal(
-    tbl$table_styling$header |>
-      dplyr::filter(column == "stat_0") |>
-      dplyr::pull(label),
-    "**All Active Treatments**  \nN = 254"
-  )
-})
-
 test_that("tbl_ae_rates_by_grade(sort) works", {
   # default "descending" sort
   expect_silent(
@@ -377,5 +349,46 @@ test_that("tbl_ae_rates_by_grade() error messaging works", {
         grade_groups = list(c("3", "4") ~ "Grade 3-4", c("4", "5") ~ "Grade 4-5")
       ),
     error = TRUE
+  )
+
+  expect_snapshot(
+    tbl <-
+      tbl_ae_rates_by_grade(
+        ADAE_subset,
+        grade = AETOXGR,
+        ae = AEDECOD,
+        soc = AEBODSYS,
+        denominator = ADSL,
+        by = TRTA,
+        grades_exclude = as.character(c(1:3, 5:7))
+      ),
+    error = TRUE
+  )
+})
+
+test_that("tbl_ae_rates_by_grade() works with add_overall()", {
+  tbl <-
+    tbl_ae_rates_by_grade(
+      ADAE_subset,
+      grade = AETOXGR,
+      ae = AEDECOD,
+      soc = AEBODSYS,
+      denominator = ADSL,
+      by = TRTA,
+      grade_groups = grade_groups
+    )
+
+  expect_silent(
+    expect_message(
+      tbl <- tbl |> add_overall(last = TRUE)
+    )
+  )
+
+  # overall column is added with correct label
+  expect_equal(
+    tbl$table_styling$header |>
+      dplyr::filter(column == "stat_0") |>
+      dplyr::pull(label),
+    "**Overall**  \nN = 254"
   )
 })
