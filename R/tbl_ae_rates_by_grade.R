@@ -24,7 +24,7 @@
 #'   An overall section at the `soc` variable level will have label `"- Any adverse events -"`. An overall section at
 #'   the `ae` variable level will have label `"- Overall -"`. The default is `c(soc, ae)`.
 #' @param filter (`expression`)\cr
-#'   An expression that is used to filter rows of the table. See [gtsummary::filter_hierarchical()] for details.
+#'   An expression that is used to filter rows of the table. See the Details section below for more information.
 #' @param grade_groups (`list`)\cr
 #'   A list of formulas each corresponding to a grade group for which rates should be calculated. Grade groups must be
 #'   mutually exclusive, i.e. each grade cannot be assigned to more than one grade group. To specify each grade group,
@@ -35,7 +35,18 @@
 #'   computing overall totals and grade group totals. For example, to avoid duplication, if a grade group is defined as
 #'   `"5" ~ "Grade 5"`, the individual rows corresponding to grade 5 can be excluded by setting `grades_exclude = "5"`.
 #'
-#' @returns a gtsummary table
+#' @details
+#' When using the `filter` argument, all grade and grade group rows that meet the given filtering criteria will be kept.
+#' If a grade group row meets the filter criteria but the individual grade rows within the group do not, the grade group
+#' row will still be kept. If all rows in a given table hierarchy section have been filtered out, the summary row of
+#' that section will also be excluded. For example, if `soc = AESOC` and no grade or grade group rows in the section
+#' corresponding to `AESOC = "CARDIAC DISORDERS"` meet the filtering criteria, the `"CARDIAC DISORDERS"` summary row and
+#' all subsequent rows in this section will be removed from the table. Filtering out rows does not exclude the records
+#' corresponding to these rows from being included in rate calculations fpr overall sections.
+#'
+#' See the `filter` argument of [gtsummary::filter_hierarchical()] for more details and examples.
+#'
+#' @returns a gtsummary table of class `"tbl_hierarchical"`.
 #' @name tbl_ae_rates_by_grade
 #'
 #' @examples

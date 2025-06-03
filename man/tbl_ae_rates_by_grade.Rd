@@ -81,7 +81,7 @@ all variables, an error will occur.
 Defaults to \code{"descending"}.}
 
 \item{filter}{(\code{expression})\cr
-An expression that is used to filter rows of the table. See \code{\link[gtsummary:filter_hierarchical]{gtsummary::filter_hierarchical()}} for details.}
+An expression that is used to filter rows of the table. See the Details section below for more information.}
 
 \item{grade_groups}{(\code{list})\cr
 A list of formulas each corresponding to a grade group for which rates should be calculated. Grade groups must be
@@ -95,7 +95,7 @@ computing overall totals and grade group totals. For example, to avoid duplicati
 \code{"5" ~ "Grade 5"}, the individual rows corresponding to grade 5 can be excluded by setting \code{grades_exclude = "5"}.}
 }
 \value{
-a gtsummary table
+a gtsummary table of class \code{"tbl_hierarchical"}.
 }
 \description{
 A wrapper function for \code{\link[gtsummary:tbl_hierarchical]{gtsummary::tbl_hierarchical()}} to calculate rates of highest toxicity grades with the options
@@ -106,6 +106,17 @@ the toxicity grade variable (\code{grade}) is a factor variable, with factor lev
 
 Grades will appear in rows in the order of the factor levels given, with each grade group appearing prior to the
 first level in its group.
+}
+\details{
+When using the \code{filter} argument, all grade and grade group rows that meet the given filtering criteria will be kept.
+If a grade group row meets the filter criteria but the individual grade rows within the group do not, the grade group
+row will still be kept. If all rows in a given table hierarchy section have been filtered out, the summary row of
+that section will also be excluded. For example, if \code{soc = AESOC} and no grade or grade group rows in the section
+corresponding to \code{AESOC = "CARDIAC DISORDERS"} meet the filtering criteria, the \code{"CARDIAC DISORDERS"} summary row and
+all subsequent rows in this section will be removed from the table. Filtering out rows does not exclude the records
+corresponding to these rows from being included in rate calculations fpr overall sections.
+
+See the \code{filter} argument of \code{\link[gtsummary:filter_hierarchical]{gtsummary::filter_hierarchical()}} for more details and examples.
 }
 \examples{
 ADSL <- cards::ADSL |> mutate(TRTA = ARM)
