@@ -126,13 +126,13 @@ tbl_ae_rates_by_grade <- function(data,
     by = {{ by }},
     id = {{ id }}
   )
+  cards::process_selectors(data[c(soc, ae, grade)], include_overall = {{ include_overall }})
+  filter <- enquo(filter)
 
   # save function inputs
   tbl_ae_rates_by_grade_inputs <- as.list(environment())
 
   variables <- c(soc, ae, grade)
-  cards::process_selectors(data[variables], include_overall = {{ include_overall }})
-  filter <- enquo(filter)
   gp_nms <- NULL
 
   if (!all(sapply(grade_groups, is_formula))) {
@@ -277,7 +277,7 @@ tbl_ae_rates_by_grade <- function(data,
 
   # apply sorting/filtering, if specified
   tbl_final <- tbl_final |> gtsummary::sort_hierarchical(sort)
-  if (!quo_is_null(filter)) tbl_final <- tbl_final |> gtsummary::filter_hierarchical({{ filter }})
+  if (!quo_is_null(filter)) tbl_final <- tbl_final |> gtsummary::filter_hierarchical(filter = !!filter)
 
   # arrange grade rows by level, with all groups prior to their first level
   tbl_final <- tbl_final |>

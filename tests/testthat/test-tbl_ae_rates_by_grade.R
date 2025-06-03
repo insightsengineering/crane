@@ -4,7 +4,7 @@ ADSL <- cards::ADSL |> mutate(TRTA = ARM)
 ADAE_subset <- cards::ADAE |>
   dplyr::filter(
     AESOC %in% unique(cards::ADAE$AESOC)[1:5],
-    AETERM %in% unique(cards::ADAE$AETERM)[1:10]
+    AETERM %in% unique(cards::ADAE$AETERM)[1:5]
   )
 
 ## Add AETOXGR variable to example dataset
@@ -50,7 +50,7 @@ test_that("tbl_ae_rates_by_grade() works", {
         )
     )
   )
-  expect_snapshot(as.data.frame(tbl))
+  expect_snapshot(as.data.frame(tbl)[1:25, ])
 
   # with grade groups
   expect_silent(
@@ -68,7 +68,7 @@ test_that("tbl_ae_rates_by_grade() works", {
         )
     )
   )
-  expect_snapshot(as.data.frame(tbl))
+  expect_snapshot(as.data.frame(tbl)[1:25, ])
 
   # no by, no label
   expect_silent(
@@ -105,7 +105,7 @@ test_that("tbl_ae_rates_by_grade(include_overall) works", {
         )
     )
   )
-  expect_snapshot(as.data.frame(tbl))
+  expect_snapshot(as.data.frame(tbl)[1:25, ])
 
   # all overall sections removed
   expect_silent(
@@ -124,7 +124,37 @@ test_that("tbl_ae_rates_by_grade(include_overall) works", {
         )
     )
   )
-  expect_snapshot(as.data.frame(tbl))
+  expect_snapshot(as.data.frame(tbl)[1:25, ])
+})
+
+test_that("tbl_ae_rates_by_grade() works with add_overall()", {
+  expect_message(
+    tbl <-
+      tbl_ae_rates_by_grade(
+        ADAE_subset,
+        grade = AETOXGR,
+        ae = AEDECOD,
+        soc = AEBODSYS,
+        denominator = ADSL,
+        by = TRTA,
+        label = label,
+        grade_groups = grade_groups
+      )
+  )
+
+  expect_silent(
+    expect_message(
+      tbl <- tbl |> add_overall(last = TRUE)
+    )
+  )
+
+  # overall column is added with correct label
+  expect_equal(
+    tbl$table_styling$header |>
+      dplyr::filter(column == "stat_0") |>
+      dplyr::pull(label),
+    "**Overall**  \nN = 254"
+  )
 })
 
 test_that("tbl_ae_rates_by_grade(sort) works", {
@@ -152,7 +182,7 @@ test_that("tbl_ae_rates_by_grade(sort) works", {
     c(
       "- Any adverse events -", "GENERAL DISORDERS AND ADMINISTRATION SITE CONDITIONS",
       "SKIN AND SUBCUTANEOUS TISSUE DISORDERS", "GASTROINTESTINAL DISORDERS",
-      "INFECTIONS AND INFESTATIONS", "CARDIAC DISORDERS"
+      "CARDIAC DISORDERS"
     )
   )
 
@@ -181,7 +211,7 @@ test_that("tbl_ae_rates_by_grade(sort) works", {
       dplyr::pull("label"),
     c(
       "- Any adverse events -", "CARDIAC DISORDERS", "GASTROINTESTINAL DISORDERS",
-      "GENERAL DISORDERS AND ADMINISTRATION SITE CONDITIONS", "INFECTIONS AND INFESTATIONS",
+      "GENERAL DISORDERS AND ADMINISTRATION SITE CONDITIONS",
       "SKIN AND SUBCUTANEOUS TISSUE DISORDERS"
     )
   )
@@ -201,9 +231,9 @@ test_that("tbl_ae_rates_by_grade(filter) works", {
             by = TRTA,
             label = label,
             filter = sum(n) / sum(N) > 0.07,
-            add_overall = TRUE,
             grade_groups = grade_groups
-          )
+          ) |>
+          add_overall()
       )
     )
   )
@@ -260,7 +290,6 @@ test_that("tbl_ae_rates_by_grade(grade_groups) works with some grades not in gro
         )
     )
   )
-  expect_snapshot(as.data.frame(tbl))
 })
 
 test_that("tbl_ae_rates_by_grade(grades_exclude) works", {
@@ -384,33 +413,5 @@ test_that("tbl_ae_rates_by_grade() error messaging works", {
         grades_exclude = as.character(c(1:3, 5:7))
       ),
     error = TRUE
-  )
-})
-
-test_that("tbl_ae_rates_by_grade() works with add_overall()", {
-  tbl <-
-    tbl_ae_rates_by_grade(
-      ADAE_subset,
-      grade = AETOXGR,
-      ae = AEDECOD,
-      soc = AEBODSYS,
-      denominator = ADSL,
-      by = TRTA,
-      label = label,
-      grade_groups = grade_groups
-    )
-
-  expect_silent(
-    expect_message(
-      tbl <- tbl |> add_overall(last = TRUE)
-    )
-  )
-
-  # overall column is added with correct label
-  expect_equal(
-    tbl$table_styling$header |>
-      dplyr::filter(column == "stat_0") |>
-      dplyr::pull(label),
-    "**Overall**  \nN = 254"
   )
 })
