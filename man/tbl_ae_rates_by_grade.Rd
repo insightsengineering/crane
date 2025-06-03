@@ -114,7 +114,7 @@ row will still be kept. If all rows in a given table hierarchy section have been
 that section will also be excluded. For example, if \code{soc = AESOC} and no grade or grade group rows in the section
 corresponding to \code{AESOC = "CARDIAC DISORDERS"} meet the filtering criteria, the \code{"CARDIAC DISORDERS"} summary row and
 all subsequent rows in this section will be removed from the table. Filtering out rows does not exclude the records
-corresponding to these rows from being included in rate calculations fpr overall sections.
+corresponding to these rows from being included in rate calculations for overall sections.
 
 See the \code{filter} argument of \code{\link[gtsummary:filter_hierarchical]{gtsummary::filter_hierarchical()}} for more details and examples.
 }

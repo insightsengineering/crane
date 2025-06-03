@@ -42,7 +42,7 @@
 #' that section will also be excluded. For example, if `soc = AESOC` and no grade or grade group rows in the section
 #' corresponding to `AESOC = "CARDIAC DISORDERS"` meet the filtering criteria, the `"CARDIAC DISORDERS"` summary row and
 #' all subsequent rows in this section will be removed from the table. Filtering out rows does not exclude the records
-#' corresponding to these rows from being included in rate calculations fpr overall sections.
+#' corresponding to these rows from being included in rate calculations for overall sections.
 #'
 #' See the `filter` argument of [gtsummary::filter_hierarchical()] for more details and examples.
 #'
