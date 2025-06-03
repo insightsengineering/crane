@@ -20,6 +20,12 @@ ADAE_subset <- ADAE_subset |>
   ) |>
   dplyr::ungroup()
 
+label <- list(
+  AEBODSYS = "MedDRA System Organ Class",
+  AEDECOD = "MedDRA Preferred Term",
+  AETOXGR = "Grade"
+)
+
 grade_groups <- list(
   c("1", "2") ~ "Grade 1-2",
   c("3", "4") ~ "Grade 3-4",
@@ -39,7 +45,8 @@ test_that("tbl_ae_rates_by_grade() works", {
           ae = AEDECOD,
           soc = AEBODSYS,
           denominator = ADSL,
-          by = TRTA
+          by = TRTA,
+          label = label
         )
     )
   )
@@ -56,13 +63,14 @@ test_that("tbl_ae_rates_by_grade() works", {
           soc = AEBODSYS,
           denominator = ADSL,
           by = TRTA,
+          label = label,
           grade_groups = grade_groups
         )
     )
   )
   expect_snapshot(as.data.frame(tbl))
 
-  # no by
+  # no by, no label
   expect_silent(
     expect_message(
       tbl <-
@@ -71,8 +79,7 @@ test_that("tbl_ae_rates_by_grade() works", {
           grade = AETOXGR,
           ae = AEDECOD,
           soc = AEBODSYS,
-          denominator = ADSL,
-          label = NULL
+          denominator = ADSL
         )
     )
   )
@@ -92,6 +99,7 @@ test_that("tbl_ae_rates_by_grade(include_overall) works", {
           soc = AEBODSYS,
           denominator = ADSL,
           by = TRTA,
+          label = label,
           grade_groups = grade_groups,
           include_overall = everything()
         )
@@ -110,6 +118,7 @@ test_that("tbl_ae_rates_by_grade(include_overall) works", {
           soc = AEBODSYS,
           denominator = ADSL,
           by = TRTA,
+          label = label,
           grade_groups = grade_groups,
           include_overall = everything()
         )
@@ -130,6 +139,7 @@ test_that("tbl_ae_rates_by_grade(sort) works", {
           soc = AEBODSYS,
           denominator = ADSL,
           by = TRTA,
+          label = label,
           grade_groups = grade_groups
         )
     )
@@ -157,6 +167,7 @@ test_that("tbl_ae_rates_by_grade(sort) works", {
           soc = AEBODSYS,
           denominator = ADSL,
           by = TRTA,
+          label = label,
           grade_groups = grade_groups,
           sort = "alphanumeric"
         )
@@ -188,6 +199,7 @@ test_that("tbl_ae_rates_by_grade(filter) works", {
             soc = AEBODSYS,
             denominator = ADSL,
             by = TRTA,
+            label = label,
             filter = sum(n) / sum(N) > 0.07,
             add_overall = TRUE,
             grade_groups = grade_groups
@@ -222,6 +234,7 @@ test_that("tbl_ae_rates_by_grade() works with non-factor `grade` variables", {
           soc = AEBODSYS,
           denominator = ADSL,
           by = TRTA,
+          label = label,
           grade_groups = grade_groups
         ),
       "The `grade` variable"
@@ -242,6 +255,7 @@ test_that("tbl_ae_rates_by_grade(grade_groups) works with some grades not in gro
           soc = AEBODSYS,
           denominator = ADSL,
           by = TRTA,
+          label = label,
           grade_groups = list(c("3", "4") ~ "Grade 3-4")
         )
     )
@@ -260,6 +274,7 @@ test_that("tbl_ae_rates_by_grade(grades_exclude) works", {
         soc = AEBODSYS,
         denominator = ADSL,
         by = TRTA,
+        label = label,
         grade_groups = grade_groups
       )
   )
@@ -275,6 +290,7 @@ test_that("tbl_ae_rates_by_grade(grades_exclude) works", {
           soc = AEBODSYS,
           denominator = ADSL,
           by = TRTA,
+          label = label,
           grade_groups = grade_groups,
           grades_exclude = "5"
         )
@@ -296,6 +312,7 @@ test_that("tbl_ae_rates_by_grade(grades_exclude) works", {
         soc = AEBODSYS,
         denominator = ADSL,
         by = TRTA,
+        label = label,
         grade_groups = grade_groups,
         grades_exclude = as.character(1:5)
       )
@@ -318,6 +335,7 @@ test_that("tbl_ae_rates_by_grade() error messaging works", {
         soc = AEBODSYS,
         denominator = ADSL,
         by = TRTA,
+        label = label,
         grades_exclude = 4:5
       ),
     error = TRUE
@@ -332,6 +350,7 @@ test_that("tbl_ae_rates_by_grade() error messaging works", {
         soc = AEBODSYS,
         denominator = ADSL,
         by = TRTA,
+        label = label,
         grade_groups = list("Grade 5" = "5")
       ),
     error = TRUE
@@ -346,6 +365,7 @@ test_that("tbl_ae_rates_by_grade() error messaging works", {
         soc = AEBODSYS,
         denominator = ADSL,
         by = TRTA,
+        label = label,
         grade_groups = list(c("3", "4") ~ "Grade 3-4", c("4", "5") ~ "Grade 4-5")
       ),
     error = TRUE
@@ -360,6 +380,7 @@ test_that("tbl_ae_rates_by_grade() error messaging works", {
         soc = AEBODSYS,
         denominator = ADSL,
         by = TRTA,
+        label = label,
         grades_exclude = as.character(c(1:3, 5:7))
       ),
     error = TRUE
@@ -375,6 +396,7 @@ test_that("tbl_ae_rates_by_grade() works with add_overall()", {
       soc = AEBODSYS,
       denominator = ADSL,
       by = TRTA,
+      label = label,
       grade_groups = grade_groups
     )
 

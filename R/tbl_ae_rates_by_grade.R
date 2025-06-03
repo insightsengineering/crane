@@ -73,6 +73,11 @@
 #'   soc = AEBODSYS,
 #'   denominator = ADSL,
 #'   by = TRTA,
+#'   label = list(
+#'     AEBODSYS = "MedDRA System Organ Class",
+#'     AEDECOD = "MedDRA Preferred Term",
+#'     AETOXGR = "Grade"
+#'   ),
 #'   grade_groups = grade_groups,
 #'   grades_exclude = "5"
 #' )
@@ -89,11 +94,7 @@ tbl_ae_rates_by_grade <- function(data,
                                   id = "USUBJID",
                                   include_overall = all_of(c(soc, ae)),
                                   statistic = everything() ~ "{n} ({p}%)",
-                                  label = list(
-                                    "MedDRA System Organ Class",
-                                    "MedDRA Preferred Term",
-                                    "Grade"
-                                  ) |> stats::setNames(c(soc, ae, grade)),
+                                  label = NULL,
                                   digits = NULL,
                                   sort = "descending",
                                   filter = NULL,
