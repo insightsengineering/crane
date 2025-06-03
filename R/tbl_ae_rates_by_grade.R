@@ -25,9 +25,6 @@
 #'   the `ae` variable level will have label `"- Overall -"`. The default is `c(soc, ae)`.
 #' @param filter (`expression`)\cr
 #'   An expression that is used to filter rows of the table. See [gtsummary::filter_hierarchical()] for details.
-#' @param add_overall (`logical`)\cr
-#'   Whether to add a column with overall summary statistics to the tables. Column will be displayed last, with a
-#'   default label of `"**All Active Treatments**  \nN = {style_number(N)}"`. The default is `FALSE`.
 #' @param grade_groups (`list`)\cr
 #'   A list of formulas each corresponding to a grade group for which rates should be calculated. Grade groups must be
 #'   mutually exclusive, i.e. each grade cannot be assigned to more than one grade group. To specify each grade group,
@@ -100,7 +97,6 @@ tbl_ae_rates_by_grade <- function(data,
                                   digits = NULL,
                                   sort = "descending",
                                   filter = NULL,
-                                  add_overall = FALSE,
                                   grade_groups = list(),
                                   grades_exclude = NULL) {
   # check inputs ---------------------------------------------------------------
@@ -118,6 +114,10 @@ tbl_ae_rates_by_grade <- function(data,
     by = {{ by }},
     id = {{ id }}
   )
+
+  # save function inputs
+  tbl_ae_rates_by_grade_inputs <- as.list(environment())
+
   variables <- c(soc, ae, grade)
   cards::process_selectors(data[variables], include_overall = {{ include_overall }})
   filter <- enquo(filter)
@@ -158,9 +158,6 @@ tbl_ae_rates_by_grade <- function(data,
       )
     )
   }
-
-  # saving function inputs
-  tbl_ae_rates_by_grade_inputs <- as.list(environment())
 
   lvls <- levels(data[[grade]]) # get levels of grade variable
   if (!is.ordered(data[[grade]])) data[[grade]] <- factor(data[[grade]], levels = lvls, ordered = TRUE)
@@ -203,11 +200,6 @@ tbl_ae_rates_by_grade <- function(data,
         label = label,
         digits = {{ digits }}
       )
-
-    if (add_overall) {
-      tbl_ungrouped <- tbl_ungrouped |>
-        add_overall(col_label = "**All Active Treatments**  \nN = {style_number(N)}", last = TRUE)
-    }
   }
 
   # grouped grades hierarchical summary ----------------------------------------
@@ -235,12 +227,6 @@ tbl_ae_rates_by_grade <- function(data,
       ) |>
       suppressMessages()
 
-    if (add_overall) {
-      tbl_grouped <- tbl_grouped |>
-        add_overall(col_label = "**All Active Treatments**  \nN = {style_number(N)}", last = TRUE) |>
-        suppressMessages()
-    }
-
     if (is_empty(setdiff(lvls, grades_exclude))) {
       # if all individual grades excluded, only grade groups included in final table
       tbl_final <- tbl_grouped
@@ -260,7 +246,6 @@ tbl_ae_rates_by_grade <- function(data,
         tbl_hierarchical = dplyr::bind_rows(lapply(tbl_list, \(x) x$cards$tbl_hierarchical)) |>
           dplyr::distinct(dplyr::pick(-"fmt_fn"), .keep_all = TRUE)
       )
-      if (add_overall) tbl_final$cards$add_overall <- dplyr::bind_rows(lapply(tbl_list, \(x) x$cards$add_overall))
     }
   } else {
     # if no grade groups, only individual grades included in final table

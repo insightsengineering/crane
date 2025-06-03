@@ -19,7 +19,6 @@ tbl_ae_rates_by_grade(
   digits = NULL,
   sort = "descending",
   filter = NULL,
-  add_overall = FALSE,
   grade_groups = list(),
   grades_exclude = NULL
 )
@@ -84,10 +83,6 @@ Defaults to \code{"descending"}.}
 
 \item{filter}{(\code{expression})\cr
 An expression that is used to filter rows of the table. See \code{\link[gtsummary:filter_hierarchical]{gtsummary::filter_hierarchical()}} for details.}
-
-\item{add_overall}{(\code{logical})\cr
-Whether to add a column with overall summary statistics to the tables. Column will be displayed last, with a
-default label of \code{"**All Active Treatments**  \\nN = {style_number(N)}"}. The default is \code{FALSE}.}
 
 \item{grade_groups}{(\code{list})\cr
 A list of formulas each corresponding to a grade group for which rates should be calculated. Grade groups must be
