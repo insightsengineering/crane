@@ -106,6 +106,15 @@ computing overall totals and grade group totals. For example, to avoid duplicati
 
 \item{x}{(\code{tbl_ae_rates_by_grade})\cr
 A gtsummary table of class \code{'tbl_ae_rates_by_grade'}.}
+
+\item{last}{(scalar \code{logical})\cr
+Logical indicator to display overall column last in table.
+Default is \code{FALSE}, which will display overall column first.}
+
+\item{col_label}{(\code{string})\cr
+String indicating the column label. Default is \code{"**Overall**  \nN = {style_number(N)}"}}
+
+\item{...}{These dots are for future extensions and must be empty.}
 }
 \value{
 a gtsummary table of class \code{"tbl_ae_rates_by_grade"}.

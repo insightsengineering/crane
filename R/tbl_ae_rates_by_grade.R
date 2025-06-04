@@ -13,6 +13,7 @@
 #'
 #' @inheritParams gtsummary::tbl_hierarchical
 #' @inheritParams gtsummary::sort_hierarchical
+#' @inheritParams gtsummary::add_overall.tbl_hierarchical
 #' @param grade ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   A single column name with the toxicity grade levels.
 #' @param ae ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
