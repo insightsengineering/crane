@@ -14,16 +14,14 @@
 #' @inheritParams gtsummary::tbl_hierarchical
 #' @inheritParams gtsummary::sort_hierarchical
 #' @inheritParams gtsummary::add_overall.tbl_hierarchical
-#' @param grade ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
-#'   A single column name with the toxicity grade levels.
-#' @param ae ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
-#'   A single column name with the adverse event terms.
-#' @param soc ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
-#'   A single column name with the system organ class.
+#' @param variables ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#'   A character vector or tidy-selector of 3 columns in `data` specifying a system organ class variable,
+#'   an adverse event terms variable, and a toxicity grade level variable, respectively.
 #' @param include_overall ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
-#'   Variables from `c(soc, ae)` for which an overall section at that hierarchy level should be computed.
-#'   An overall section at the `soc` variable level will have label `"- Any adverse events -"`. An overall section at
-#'   the `ae` variable level will have label `"- Overall -"`. The default is `c(soc, ae)`.
+#'   Variables from `variables` for which an overall section at that hierarchy level should be computed.
+#'   An overall section at the SOC variable level will have label `"- Any adverse events -"`. An overall section at
+#'   the AE term variable level will have label `"- Overall -"`. If the grade level variable is included it has no
+#'   effect. The default is `everything()`.
 #' @param filter (`expression`)\cr
 #'   An expression that is used to filter rows of the table. See the Details section below for more information.
 #' @param grade_groups (`list`)\cr
@@ -35,22 +33,22 @@
 #'   A vector of grades to omit individual rows for when printing the table. These grades will still be used when
 #'   computing overall totals and grade group totals. For example, to avoid duplication, if a grade group is defined as
 #'   `"5" ~ "Grade 5"`, the individual rows corresponding to grade 5 can be excluded by setting `grades_exclude = "5"`.
-#' @param x (`tbl_ae_rates_by_grade`)\cr
-#'   A gtsummary table of class `'tbl_ae_rates_by_grade'`.
+#' @param x (`tbl_hierarchical_rate_by_grade`)\cr
+#'   A gtsummary table of class `'tbl_hierarchical_rate_by_grade'`.
 #'
 #' @details
 #' When using the `filter` argument, all grade and grade group rows that meet the given filtering criteria will be kept.
 #' If a grade group row meets the filter criteria but the individual grade rows within the group do not, the grade group
 #' row will still be kept. If all rows in a given table hierarchy section have been filtered out, the summary row of
-#' that section will also be excluded. For example, if `soc = AESOC` and no grade or grade group rows in the section
-#' corresponding to `AESOC = "CARDIAC DISORDERS"` meet the filtering criteria, the `"CARDIAC DISORDERS"` summary row and
-#' all subsequent rows in this section will be removed from the table. Filtering out rows does not exclude the records
-#' corresponding to these rows from being included in rate calculations for overall sections.
+#' that section will also be excluded. For example, if the SOC variable is `AESOC` and no grade or grade group rows in
+#' the section corresponding to `AESOC = "CARDIAC DISORDERS"` meet the filtering criteria, the `"CARDIAC DISORDERS"`
+#' summary row and all subsequent rows in this section will be removed from the table. Filtering out rows does not
+#' exclude the records corresponding to these rows from being included in rate calculations for overall sections.
 #'
 #' See the `filter` argument of [gtsummary::filter_hierarchical()] for more details and examples.
 #'
-#' @returns a gtsummary table of class `"tbl_ae_rates_by_grade"`.
-#' @name tbl_ae_rates_by_grade
+#' @returns a gtsummary table of class `"tbl_hierarchical_rate_by_grade"`.
+#' @name tbl_hierarchical_rate_by_grade
 #'
 #' @examples
 #' ADSL <- cards::ADSL |> mutate(TRTA = ARM)
@@ -80,11 +78,9 @@
 #'   "5" ~ "Grade 5"
 #' )
 #'
-#' tbl_ae_rates_by_grade(
+#' tbl_hierarchical_rate_by_grade(
 #'   ADAE_subset,
-#'   grade = AETOXGR,
-#'   ae = AEDECOD,
-#'   soc = AEBODSYS,
+#'   variables = c(AEBODSYS, AEDECOD, AETOXGR),
 #'   denominator = ADSL,
 #'   by = TRTA,
 #'   label = list(
@@ -98,44 +94,41 @@
 NULL
 
 #' @export
-#' @rdname tbl_ae_rates_by_grade
-tbl_ae_rates_by_grade <- function(data,
-                                  grade,
-                                  ae,
-                                  soc,
-                                  denominator,
-                                  by = NULL,
-                                  id = "USUBJID",
-                                  include_overall = all_of(c(soc, ae)),
-                                  statistic = everything() ~ "{n} ({p}%)",
-                                  label = NULL,
-                                  digits = NULL,
-                                  sort = "descending",
-                                  filter = NULL,
-                                  grade_groups = list(),
-                                  grades_exclude = NULL) {
+#' @rdname tbl_hierarchical_rate_by_grade
+tbl_hierarchical_rate_by_grade <- function(data,
+                                           variables,
+                                           denominator,
+                                           by = NULL,
+                                           id = "USUBJID",
+                                           include_overall = everything(),
+                                           statistic = everything() ~ "{n} ({p}%)",
+                                           label = NULL,
+                                           digits = NULL,
+                                           sort = "descending",
+                                           filter = NULL,
+                                           grade_groups = list(),
+                                           grades_exclude = NULL) {
   # check inputs ---------------------------------------------------------------
   set_cli_abort_call()
   check_not_missing(data)
-  check_not_missing(grade)
-  check_not_missing(ae)
-  check_not_missing(soc)
+  check_not_missing(variables)
   check_not_missing(denominator)
   check_class(grades_exclude, "character", allow_empty = TRUE)
   cards::process_selectors(data,
-    grade = {{ grade }},
-    ae = {{ ae }},
-    soc = {{ soc }},
+    variables = {{ variables }},
     by = {{ by }},
     id = {{ id }}
   )
-  cards::process_selectors(data[c(soc, ae, grade)], include_overall = {{ include_overall }})
+  cards::process_selectors(data[variables], include_overall = {{ include_overall }})
+  check_length(variables, 3)
   filter <- enquo(filter)
 
   # save function inputs
-  tbl_ae_rates_by_grade_inputs <- as.list(environment())
+  tbl_hierarchical_rate_by_grade_inputs <- as.list(environment())
 
-  variables <- c(soc, ae, grade)
+  soc <- variables[1]
+  ae <- variables[2]
+  grade <- variables[3]
   gp_nms <- NULL
 
   if (!all(sapply(grade_groups, is_formula))) {
@@ -143,7 +136,7 @@ tbl_ae_rates_by_grade <- function(data,
       paste(
         "Each grade group must be specified via a {.cls formula} where the left-hand side of the formula is a vector",
         "of grades and the right-hand side is the name of the grade group.",
-        'For example, {.code c("3", "4") ~ "Grade 3-4"}'
+        'For example, {.code c("3", "4") ~ "Grade 3-4"}.'
       )
     )
   }
@@ -177,8 +170,7 @@ tbl_ae_rates_by_grade <- function(data,
     )
     cli::cli_inform(
       paste(
-        "The {.arg grade} variable {.val {grade}} has been converted to an ordered {.cls factor}",
-        "with levels: {.val {vec}}"
+        "{.val {grade}} has been converted to an ordered {.cls factor} with levels: {.val {vec}}"
       )
     )
   }
@@ -192,7 +184,7 @@ tbl_ae_rates_by_grade <- function(data,
     label <- lapply(variables, \(x) attr(data[[x]], "label") %||% x) |> stats::setNames(variables)
   }
 
-  # ungrouped grades overall sections-------------------------------------------
+  # ungrouped grades overall sections ------------------------------------------
   # overall section at SOC level (- Any adverse events -)
   if (soc %in% include_overall) {
     data_ungrouped <-
@@ -203,7 +195,7 @@ tbl_ae_rates_by_grade <- function(data,
       )
   }
 
-  # overall section for AE variable (- Overall -)
+  # overall section for AE term level (- Overall -)
   if (ae %in% include_overall) {
     data_ungrouped <- data_ungrouped |>
       dplyr::filter(.data[[soc]] != "- Any adverse events -") |>
@@ -259,13 +251,13 @@ tbl_ae_rates_by_grade <- function(data,
       tbl_list <- list(tbl_ungrouped, tbl_grouped)
       tbl_final <- gtsummary::tbl_stack(tbl_list)
 
-      # set class to tbl_hierarchical
+      # set class to tbl_hierarchical for sorting/filtering
       class(tbl_final) <- c("tbl_hierarchical", "gtsummary")
 
-      # get original inputs
-      tbl_final$inputs <- tbl_ae_rates_by_grade_inputs
+      # # get original inputs
+      # tbl_final$inputs <- tbl_hierarchical_rate_by_grade_inputs
 
-      # build tbl$cards, needed for sorting/filtering
+      # build tbl$cards for sorting/filtering
       tbl_final$cards <- list(
         tbl_hierarchical = dplyr::bind_rows(lapply(tbl_list, \(x) x$cards$tbl_hierarchical)) |>
           dplyr::distinct(dplyr::pick(-"fmt_fn"), .keep_all = TRUE)
@@ -277,7 +269,6 @@ tbl_ae_rates_by_grade <- function(data,
   }
 
   # format the final table -----------------------------------------------------
-
   # apply sorting/filtering, if specified
   tbl_final <- tbl_final |> gtsummary::sort_hierarchical(sort)
   if (!quo_is_null(filter)) tbl_final <- tbl_final |> gtsummary::filter_hierarchical(filter = !!filter)
@@ -386,14 +377,14 @@ tbl_ae_rates_by_grade <- function(data,
   }
 
   # return final table ---------------------------------------------------------
-  tbl_final$call_list <- list(tbl_ae_rates_by_grade = match.call())
-  tbl_final$cards <- list(tbl_ae_rates_by_grade = list(tbl_hierarchical = tbl_final$cards$tbl_hierarchical))
-  tbl_final$inputs <- tbl_ae_rates_by_grade_inputs
+  tbl_final$call_list <- list(tbl_hierarchical_rate_by_grade = match.call())
+  tbl_final$cards <- list(tbl_hierarchical_rate_by_grade = list(tbl_hierarchical = tbl_final$cards$tbl_hierarchical))
+  tbl_final$inputs <- tbl_hierarchical_rate_by_grade_inputs
 
   tbl_final |>
-    structure(class = c("tbl_ae_rates_by_grade", "gtsummary"))
+    structure(class = c("tbl_hierarchical_rate_by_grade", "gtsummary"))
 }
 
-#' @rdname tbl_ae_rates_by_grade
+#' @rdname tbl_hierarchical_rate_by_grade
 #' @export
-add_overall.tbl_ae_rates_by_grade <- asNamespace("gtsummary")[["add_overall.tbl_hierarchical"]]
+add_overall.tbl_hierarchical_rate_by_grade <- asNamespace("gtsummary")[["add_overall.tbl_hierarchical"]]

@@ -129,8 +129,9 @@
 # tbl_hierarchical_rate_by_grade() error messaging works
 
     Code
-      tbl <- tbl_hierarchical_rate_by_grade(ADAE_subset, grade = AETOXGR, ae = AEDECOD, soc = AEBODSYS,
-        denominator = ADSL, by = TRTA, label = label, grades_exclude = 4:5)
+      tbl <- tbl_hierarchical_rate_by_grade(ADAE_subset, variables = c(AEBODSYS,
+        AEDECOD, AETOXGR), denominator = ADSL, by = TRTA, label = label,
+      grades_exclude = 4:5)
     Condition
       Error in `tbl_hierarchical_rate_by_grade()`:
       ! The `grades_exclude` argument must be class <character> or empty, not an integer vector.
@@ -138,18 +139,19 @@
 ---
 
     Code
-      tbl <- tbl_hierarchical_rate_by_grade(ADAE_subset, grade = AETOXGR, ae = AEDECOD, soc = AEBODSYS,
-        denominator = ADSL, by = TRTA, label = label, grade_groups = list(`Grade 5` = "5"))
+      tbl <- tbl_hierarchical_rate_by_grade(ADAE_subset, variables = c(AEBODSYS,
+        AEDECOD, AETOXGR), denominator = ADSL, by = TRTA, label = label,
+      grade_groups = list(`Grade 5` = "5"))
     Condition
       Error in `tbl_hierarchical_rate_by_grade()`:
-      ! Each grade group must be specified via a <formula> where the left-hand side of the formula is a vector of grades and the right-hand side is the name of the grade group. For example, `c("3", "4") ~ "Grade 3-4"`
+      ! Each grade group must be specified via a <formula> where the left-hand side of the formula is a vector of grades and the right-hand side is the name of the grade group. For example, `c("3", "4") ~ "Grade 3-4"`.
 
 ---
 
     Code
-      tbl <- tbl_hierarchical_rate_by_grade(ADAE_subset, grade = AETOXGR, ae = AEDECOD, soc = AEBODSYS,
-        denominator = ADSL, by = TRTA, label = label, grade_groups = list(c("3", "4") ~
-          "Grade 3-4", c("4", "5") ~ "Grade 4-5"))
+      tbl <- tbl_hierarchical_rate_by_grade(ADAE_subset, variables = c(AEBODSYS,
+        AEDECOD, AETOXGR), denominator = ADSL, by = TRTA, label = label,
+      grade_groups = list(c("3", "4") ~ "Grade 3-4", c("4", "5") ~ "Grade 4-5"))
     Condition
       Error in `tbl_hierarchical_rate_by_grade()`:
       ! Grade groups specified via `grade_groups` cannot overlap. Please ensure that each grade is included in only one grade group.
@@ -157,9 +159,9 @@
 ---
 
     Code
-      tbl <- tbl_hierarchical_rate_by_grade(ADAE_subset, grade = AETOXGR, ae = AEDECOD, soc = AEBODSYS,
-        denominator = ADSL, by = TRTA, label = label, grades_exclude = as.character(c(
-          1:3, 5:7)))
+      tbl <- tbl_hierarchical_rate_by_grade(ADAE_subset, variables = c(AEBODSYS,
+        AEDECOD, AETOXGR), denominator = ADSL, by = TRTA, label = label,
+      grades_exclude = as.character(c(1:3, 5:7)))
     Condition
       Error in `tbl_hierarchical_rate_by_grade()`:
       ! Grade(s) "6" and "7" supplied to `grades_exclude` are invalid. All grades specified via `grades_exclude` must be levels of "AETOXGR".

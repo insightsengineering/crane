@@ -32,18 +32,16 @@ grade_groups <- list(
   "5" ~ "Grade 5"
 )
 
-test_that("tbl_ae_rates_by_grade() works", {
-  withr::local_options(width = 200)
+test_that("tbl_hierarchical_rate_by_grade() works", {
+  withr::local_options(width = 300)
 
   # no grade groups
   expect_silent(
     expect_message(
       tbl <-
-        tbl_ae_rates_by_grade(
+        tbl_hierarchical_rate_by_grade(
           ADAE_subset,
-          grade = AETOXGR,
-          ae = AEDECOD,
-          soc = AEBODSYS,
+          variables = c(AEBODSYS, AEDECOD, AETOXGR),
           denominator = ADSL,
           by = TRTA,
           label = label
@@ -56,11 +54,9 @@ test_that("tbl_ae_rates_by_grade() works", {
   expect_silent(
     expect_message(
       tbl <-
-        tbl_ae_rates_by_grade(
+        tbl_hierarchical_rate_by_grade(
           ADAE_subset,
-          grade = AETOXGR,
-          ae = AEDECOD,
-          soc = AEBODSYS,
+          variables = c(AEBODSYS, AEDECOD, AETOXGR),
           denominator = ADSL,
           by = TRTA,
           label = label,
@@ -74,29 +70,25 @@ test_that("tbl_ae_rates_by_grade() works", {
   expect_silent(
     expect_message(
       tbl <-
-        tbl_ae_rates_by_grade(
+        tbl_hierarchical_rate_by_grade(
           ADAE_subset,
-          grade = AETOXGR,
-          ae = AEDECOD,
-          soc = AEBODSYS,
+          variables = c(AEBODSYS, AEDECOD, AETOXGR),
           denominator = ADSL
         )
     )
   )
 })
 
-test_that("tbl_ae_rates_by_grade(include_overall) works", {
-  withr::local_options(width = 200)
+test_that("tbl_hierarchical_rate_by_grade(include_overall) works", {
+  withr::local_options(width = 300)
 
   # all overall sections added
   expect_silent(
     expect_message(
       tbl <-
-        tbl_ae_rates_by_grade(
+        tbl_hierarchical_rate_by_grade(
           ADAE_subset,
-          grade = AETOXGR,
-          ae = AEDECOD,
-          soc = AEBODSYS,
+          variables = c(AEBODSYS, AEDECOD, AETOXGR),
           denominator = ADSL,
           by = TRTA,
           label = label,
@@ -111,11 +103,9 @@ test_that("tbl_ae_rates_by_grade(include_overall) works", {
   expect_silent(
     expect_message(
       tbl <-
-        tbl_ae_rates_by_grade(
+        tbl_hierarchical_rate_by_grade(
           ADAE_subset,
-          grade = AETOXGR,
-          ae = AEDECOD,
-          soc = AEBODSYS,
+          variables = c(AEBODSYS, AEDECOD, AETOXGR),
           denominator = ADSL,
           by = TRTA,
           label = label,
@@ -127,14 +117,12 @@ test_that("tbl_ae_rates_by_grade(include_overall) works", {
   expect_snapshot(as.data.frame(tbl)[1:25, ])
 })
 
-test_that("tbl_ae_rates_by_grade() works with add_overall()", {
+test_that("tbl_hierarchical_rate_by_grade() works with add_overall()", {
   expect_message(
     tbl <-
-      tbl_ae_rates_by_grade(
+      tbl_hierarchical_rate_by_grade(
         ADAE_subset,
-        grade = AETOXGR,
-        ae = AEDECOD,
-        soc = AEBODSYS,
+        variables = c(AEBODSYS, AEDECOD, AETOXGR),
         denominator = ADSL,
         by = TRTA,
         label = label,
@@ -157,16 +145,14 @@ test_that("tbl_ae_rates_by_grade() works with add_overall()", {
   )
 })
 
-test_that("tbl_ae_rates_by_grade(sort) works", {
+test_that("tbl_hierarchical_rate_by_grade(sort) works", {
   # default "descending" sort
   expect_silent(
     expect_message(
       tbl <-
-        tbl_ae_rates_by_grade(
+        tbl_hierarchical_rate_by_grade(
           ADAE_subset,
-          grade = AETOXGR,
-          ae = AEDECOD,
-          soc = AEBODSYS,
+          variables = c(AEBODSYS, AEDECOD, AETOXGR),
           denominator = ADSL,
           by = TRTA,
           label = label,
@@ -190,11 +176,9 @@ test_that("tbl_ae_rates_by_grade(sort) works", {
   expect_silent(
     expect_message(
       tbl_alphanum <-
-        tbl_ae_rates_by_grade(
+        tbl_hierarchical_rate_by_grade(
           ADAE_subset,
-          grade = AETOXGR,
-          ae = AEDECOD,
-          soc = AEBODSYS,
+          variables = c(AEBODSYS, AEDECOD, AETOXGR),
           denominator = ADSL,
           by = TRTA,
           label = label,
@@ -217,16 +201,14 @@ test_that("tbl_ae_rates_by_grade(sort) works", {
   )
 })
 
-test_that("tbl_ae_rates_by_grade(filter) works", {
+test_that("tbl_hierarchical_rate_by_grade(filter) works", {
   expect_silent(
     expect_message(
       expect_message(
         tbl <-
-          tbl_ae_rates_by_grade(
+          tbl_hierarchical_rate_by_grade(
             ADAE_subset,
-            grade = AETOXGR,
-            ae = AEDECOD,
-            soc = AEBODSYS,
+            variables = c(AEBODSYS, AEDECOD, AETOXGR),
             denominator = ADSL,
             by = TRTA,
             label = label,
@@ -252,37 +234,33 @@ test_that("tbl_ae_rates_by_grade(filter) works", {
   )
 })
 
-test_that("tbl_ae_rates_by_grade() works with non-factor `grade` variables", {
+test_that("tbl_hierarchical_rate_by_grade() works with non-factor `grade` variables", {
   ADAE_subset$AETOXGR <- as.character(ADAE_subset$AETOXGR)
   expect_message(
     expect_message(
       tbl <-
-        tbl_ae_rates_by_grade(
+        tbl_hierarchical_rate_by_grade(
           ADAE_subset,
-          grade = AETOXGR,
-          ae = AEDECOD,
-          soc = AEBODSYS,
+          variables = c(AEBODSYS, AEDECOD, AETOXGR),
           denominator = ADSL,
           by = TRTA,
           label = label,
           grade_groups = grade_groups
         ),
-      "The `grade` variable"
+      '"AETOXGR" has been converted'
     )
   )
 })
 
-test_that("tbl_ae_rates_by_grade(grade_groups) works with some grades not in groups", {
+test_that("tbl_hierarchical_rate_by_grade(grade_groups) works with some grades not in groups", {
   withr::local_options(width = 200)
 
   expect_silent(
     expect_message(
       tbl <-
-        tbl_ae_rates_by_grade(
+        tbl_hierarchical_rate_by_grade(
           ADAE_subset,
-          grade = AETOXGR,
-          ae = AEDECOD,
-          soc = AEBODSYS,
+          variables = c(AEBODSYS, AEDECOD, AETOXGR),
           denominator = ADSL,
           by = TRTA,
           label = label,
@@ -292,15 +270,13 @@ test_that("tbl_ae_rates_by_grade(grade_groups) works with some grades not in gro
   )
 })
 
-test_that("tbl_ae_rates_by_grade(grades_exclude) works", {
+test_that("tbl_hierarchical_rate_by_grade(grades_exclude) works", {
   # no grades excluded
   expect_message(
     tbl_no_excl <-
-      tbl_ae_rates_by_grade(
+      tbl_hierarchical_rate_by_grade(
         ADAE_subset,
-        grade = AETOXGR,
-        ae = AEDECOD,
-        soc = AEBODSYS,
+        variables = c(AEBODSYS, AEDECOD, AETOXGR),
         denominator = ADSL,
         by = TRTA,
         label = label,
@@ -312,11 +288,9 @@ test_that("tbl_ae_rates_by_grade(grades_exclude) works", {
   expect_silent(
     expect_message(
       tbl_excl <-
-        tbl_ae_rates_by_grade(
+        tbl_hierarchical_rate_by_grade(
           ADAE_subset,
-          grade = AETOXGR,
-          ae = AEDECOD,
-          soc = AEBODSYS,
+          variables = c(AEBODSYS, AEDECOD, AETOXGR),
           denominator = ADSL,
           by = TRTA,
           label = label,
@@ -334,11 +308,9 @@ test_that("tbl_ae_rates_by_grade(grades_exclude) works", {
   # all grades excluded
   expect_silent(
     tbl_excl <-
-      tbl_ae_rates_by_grade(
+      tbl_hierarchical_rate_by_grade(
         ADAE_subset,
-        grade = AETOXGR,
-        ae = AEDECOD,
-        soc = AEBODSYS,
+        variables = c(AEBODSYS, AEDECOD, AETOXGR),
         denominator = ADSL,
         by = TRTA,
         label = label,
@@ -354,14 +326,12 @@ test_that("tbl_ae_rates_by_grade(grades_exclude) works", {
   )
 })
 
-test_that("tbl_ae_rates_by_grade() error messaging works", {
+test_that("tbl_hierarchical_rate_by_grade() error messaging works", {
   expect_snapshot(
     tbl <-
-      tbl_ae_rates_by_grade(
+      tbl_hierarchical_rate_by_grade(
         ADAE_subset,
-        grade = AETOXGR,
-        ae = AEDECOD,
-        soc = AEBODSYS,
+        variables = c(AEBODSYS, AEDECOD, AETOXGR),
         denominator = ADSL,
         by = TRTA,
         label = label,
@@ -372,11 +342,9 @@ test_that("tbl_ae_rates_by_grade() error messaging works", {
 
   expect_snapshot(
     tbl <-
-      tbl_ae_rates_by_grade(
+      tbl_hierarchical_rate_by_grade(
         ADAE_subset,
-        grade = AETOXGR,
-        ae = AEDECOD,
-        soc = AEBODSYS,
+        variables = c(AEBODSYS, AEDECOD, AETOXGR),
         denominator = ADSL,
         by = TRTA,
         label = label,
@@ -387,11 +355,9 @@ test_that("tbl_ae_rates_by_grade() error messaging works", {
 
   expect_snapshot(
     tbl <-
-      tbl_ae_rates_by_grade(
+      tbl_hierarchical_rate_by_grade(
         ADAE_subset,
-        grade = AETOXGR,
-        ae = AEDECOD,
-        soc = AEBODSYS,
+        variables = c(AEBODSYS, AEDECOD, AETOXGR),
         denominator = ADSL,
         by = TRTA,
         label = label,
@@ -402,11 +368,9 @@ test_that("tbl_ae_rates_by_grade() error messaging works", {
 
   expect_snapshot(
     tbl <-
-      tbl_ae_rates_by_grade(
+      tbl_hierarchical_rate_by_grade(
         ADAE_subset,
-        grade = AETOXGR,
-        ae = AEDECOD,
-        soc = AEBODSYS,
+        variables = c(AEBODSYS, AEDECOD, AETOXGR),
         denominator = ADSL,
         by = TRTA,
         label = label,
