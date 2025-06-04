@@ -34,6 +34,8 @@
 #'   A vector of grades to omit individual rows for when printing the table. These grades will still be used when
 #'   computing overall totals and grade group totals. For example, to avoid duplication, if a grade group is defined as
 #'   `"5" ~ "Grade 5"`, the individual rows corresponding to grade 5 can be excluded by setting `grades_exclude = "5"`.
+#' @param x (`tbl_ae_rates_by_grade`)\cr
+#'   A gtsummary table of class `'tbl_ae_rates_by_grade'`.
 #'
 #' @details
 #' When using the `filter` argument, all grade and grade group rows that meet the given filtering criteria will be kept.
@@ -46,7 +48,7 @@
 #'
 #' See the `filter` argument of [gtsummary::filter_hierarchical()] for more details and examples.
 #'
-#' @returns a gtsummary table of class `"tbl_hierarchical"`.
+#' @returns a gtsummary table of class `"tbl_ae_rates_by_grade"`.
 #' @name tbl_ae_rates_by_grade
 #'
 #' @examples
@@ -370,15 +372,11 @@ tbl_ae_rates_by_grade <- function(data,
     ) |>
     # update header label
     gtsummary::modify_header(
-      label = paste0(
-        "**", label[[soc]], "**  \n",
-        paste0(rep("\U00A0", 4L), collapse = ""),
-        "**", label[[ae]], "**"
-      ),
+      label = paste0("**", label[[soc]], "**  \n", paste0(rep("\U00A0", 4L), collapse = ""), "**", label[[ae]], "**"),
       label_grade = paste0("\U00A0  \n**", label[[grade]], "**")
     )
 
-  # further indent grade level labels within grade groups
+  # indent grade level labels within grade groups
   if (!is_empty(grade_groups)) {
     tbl_final <- tbl_final |>
       gtsummary::modify_indent(
@@ -388,6 +386,13 @@ tbl_ae_rates_by_grade <- function(data,
 
   # return final table ---------------------------------------------------------
   tbl_final$call_list <- list(tbl_ae_rates_by_grade = match.call())
+  tbl_final$cards <- list(tbl_ae_rates_by_grade = list(tbl_hierarchical = tbl_final$cards$tbl_hierarchical))
+  tbl_final$inputs <- tbl_ae_rates_by_grade_inputs
 
-  tbl_final
+  tbl_final |>
+    structure(class = c("tbl_ae_rates_by_grade", "gtsummary"))
 }
+
+#' @rdname tbl_ae_rates_by_grade
+#' @export
+add_overall.tbl_ae_rates_by_grade <- asNamespace("gtsummary")[["add_overall.tbl_hierarchical"]]

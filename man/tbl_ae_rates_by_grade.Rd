@@ -2,6 +2,7 @@
 % Please edit documentation in R/tbl_ae_rates_by_grade.R
 \name{tbl_ae_rates_by_grade}
 \alias{tbl_ae_rates_by_grade}
+\alias{add_overall.tbl_ae_rates_by_grade}
 \title{AE Rates by Highest Toxicity Grade}
 \usage{
 tbl_ae_rates_by_grade(
@@ -20,6 +21,15 @@ tbl_ae_rates_by_grade(
   filter = NULL,
   grade_groups = list(),
   grades_exclude = NULL
+)
+
+\method{add_overall}{tbl_ae_rates_by_grade}(
+  x,
+  last = FALSE,
+  col_label = "**Overall**  \\nN = {style_number(N)}",
+  statistic = NULL,
+  digits = NULL,
+  ...
 )
 }
 \arguments{
@@ -93,9 +103,12 @@ on the right-hand side, e.g. \code{c("1", "2") ~ "Grade 1-2"}.}
 A vector of grades to omit individual rows for when printing the table. These grades will still be used when
 computing overall totals and grade group totals. For example, to avoid duplication, if a grade group is defined as
 \code{"5" ~ "Grade 5"}, the individual rows corresponding to grade 5 can be excluded by setting \code{grades_exclude = "5"}.}
+
+\item{x}{(\code{tbl_ae_rates_by_grade})\cr
+A gtsummary table of class \code{'tbl_ae_rates_by_grade'}.}
 }
 \value{
-a gtsummary table of class \code{"tbl_hierarchical"}.
+a gtsummary table of class \code{"tbl_ae_rates_by_grade"}.
 }
 \description{
 A wrapper function for \code{\link[gtsummary:tbl_hierarchical]{gtsummary::tbl_hierarchical()}} to calculate rates of highest toxicity grades with the options
