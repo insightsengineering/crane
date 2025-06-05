@@ -87,12 +87,14 @@ tbl_hierarchical_rate_and_count <- function(data,
     if (length(variables) == 1L) {
       cli::cli_abort(
         c(msg_pt1,
-          i = "For a single variable summary, use {.code gtsummary::hierarchical(variables={.val {variables}})}")
+          i = "For a single variable summary, use {.code gtsummary::hierarchical(variables={.val {variables}})}"
+        )
       )
     }
     cli::cli_abort(
       c(msg_pt1,
-        i = "Columns select are typically {.code c(AEBODSYS, AEDECOD)} or {.code c(AEBODSYS, AEHLT, AEDECOD)}")
+        i = "Columns select are typically {.code c(AEBODSYS, AEDECOD)} or {.code c(AEBODSYS, AEHLT, AEDECOD)}"
+      )
     )
   }
   check_scalar(by, allow_empty = TRUE)
