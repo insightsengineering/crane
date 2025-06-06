@@ -12,15 +12,10 @@ navbar:
 
 reference:
   - title: "Standard Summary Tables"
-    desc: >
-      Functions for standard tables
     contents:
       - tbl_demographics
-      - roche_pvalue
 
   - title: "Hierarchical Summary Tables"
-    desc: >
-      Functions for nested Hierarchical Tables.
     contents:
       - tbl_hierarchical_rate_and_count
       - add_hierarchical_count_row
@@ -35,3 +30,4 @@ reference:
       - strip_md
       - add_blank_row
       - theme_gtsummary_roche
+      - roche_pvalue
