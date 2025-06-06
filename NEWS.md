@@ -2,7 +2,7 @@
 
 * Adding the `strip_md_bold()` and `strip_md_italic()` functions to remove bold and italic markdown syntax from a character vector. (#53)
 
-* Adding `tbl_ae_rate_and_count()` to summarize adverse rates and counts. (#36)
+* Adding `tbl_hierarchical_rate_and_count()` and associated S3 method `add_overall()` to summarize hierarchical event rates and counts. (#36)
 
 * Adding `tbl_survfit_times()` and `add_overall.tbl_survfit_times()`
 

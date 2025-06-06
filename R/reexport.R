@@ -10,6 +10,14 @@ dplyr::`%>%`
 gtsummary::add_overall
 
 #' @export
+#' @importFrom gtsummary filter_hierarchical
+gtsummary::filter_hierarchical
+
+#' @export
+#' @importFrom gtsummary sort_hierarchical
+gtsummary::sort_hierarchical
+
+#' @export
 #' @importFrom gtsummary all_continuous
 gtsummary::all_continuous
 
