@@ -10,3 +10,28 @@ navbar:
       icon: fa-github
       href: https://github.com/insightsengineering/crane
 
+reference:
+  - title: "Standard Summary Tables"
+    desc: >
+      Functions for standard tables
+    contents:
+      - tbl_demographics
+      - roche_pvalue
+
+  - title: "Hierarchical Summary Tables"
+    desc: >
+      Functions for nested Hierarchical Tables.
+    contents:
+      - tbl_hierarchical_rate_and_count
+      - add_hierarchical_count_row
+
+  - title: "Survival Analysis Tables"
+    contents:
+      - tbl_survfit_quantiles
+      - tbl_survfit_times
+
+  - title: "Styling"
+    contents:
+      - strip_md
+      - add_blank_row
+      - theme_gtsummary_roche
