@@ -67,7 +67,7 @@ The default for each variable is the column label attribute, \code{attr(., 'labe
 If no label has been set, the column name is used.}
 
 \item{digits}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
-Specifies how summary statistics are rounded. Values may be either integer(s) or function(s). If not specified,
+specifies how summary statistics are rounded. Values may be either integer(s) or function(s). If not specified,
 default formatting is assigned via \code{label_style_number()} for statistics \code{n} and \code{N}, and
 \code{label_style_percent(digits=1)} for statistic \code{p}.}
 
