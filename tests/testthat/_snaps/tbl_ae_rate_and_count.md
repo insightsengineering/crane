@@ -1,4 +1,4 @@
-# tbl_ae_rate_and_count() works
+# tbl_hierarchical_rate_and_count() works
 
     Code
       as.data.frame(tbl)
@@ -17,7 +17,7 @@
       11                                         APPLICATION SITE PRURITUS              1 (1.2%)                           2 (2.4%)                                 0               3 (1.2%)
       12                                                           FATIGUE                     0                           1 (1.2%)                                 0               1 (0.4%)
 
-# tbl_ae_rate_and_count(hlt)
+---
 
     Code
       as.data.frame(tbl)
