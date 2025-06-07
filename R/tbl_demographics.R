@@ -47,7 +47,7 @@ tbl_demographics <- function(data,
                              percent = c("column", "row", "cell"),
                              include = everything()) {
   set_cli_abort_call()
-  percent <- arg_match(percent, error_call = get_cli_abort_call())
+  if (is.character(percent)) percent <- arg_match(percent, error_call = get_cli_abort_call())
   nonmissing <- arg_match(nonmissing, error_call = get_cli_abort_call())
 
   # execute `tbl_summary()` code with theme/defaults ---------------------------
