@@ -80,4 +80,3 @@ test_that("tbl_demographics() recode counts for all NA column", {
     "0"
   )
 })
-
