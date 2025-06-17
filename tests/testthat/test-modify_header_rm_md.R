@@ -27,4 +27,3 @@ test_that("strip_md_bold() works with gtsummary table", {
       any()
   )
 })
-

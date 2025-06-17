@@ -20,7 +20,7 @@ Must be one or more of \code{'star'} and \code{'underscore'}. Default is \code{'
 gtsummary table
 }
 \description{
-Remove markdown syntax (e.g. double star for bold, underscore fo italic, etc)
+Remove markdown syntax (e.g. double star for bold, underscore for italic, etc)
 from the headers and spanning headers of a gtsummary table.
 }
 \examples{

@@ -1,6 +1,6 @@
 #' Remove Markdown Syntax from Header
 #'
-#' Remove markdown syntax (e.g. double star for bold, underscore fo italic, etc)
+#' Remove markdown syntax (e.g. double star for bold, underscore for italic, etc)
 #' from the headers and spanning headers of a gtsummary table.
 #'
 #' @param x (`gtsummary`)\cr
