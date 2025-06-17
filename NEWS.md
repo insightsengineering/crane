@@ -1,4 +1,4 @@
-# crane 0.1.0.9022
+# crane 0.1.0.9023
 
 * Adding the `strip_md_bold()` and `strip_md_italic()` functions to remove bold and italic markdown syntax from a character vector. (#53)
 
@@ -19,6 +19,8 @@
 * Loading gtsummary, cards, and cardx along with crane. (#29)
 
 * Added `{flextable}` specs for `theme_gtsummary_roche()`. Mainly border line width (0.5) and footer font size (`font_size` - 1).
+
+* Fix in `tbl_demographics()` when a variable is all `NA` within a stratum. The zero count was displayed as `"0 (NA%)"` instead of `"0"`. (#60)
 
 # crane 0.1.0
 

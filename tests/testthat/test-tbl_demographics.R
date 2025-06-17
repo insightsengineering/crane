@@ -63,3 +63,20 @@ test_that("tbl_demographics() |> add_overall() works", {
     "0"
   )
 })
+
+# addresses issue #60, when all NA column was tabulated it was returned as
+#   "0 (NA%)" instead of "0"
+test_that("tbl_demographics() recode counts for all NA column", {
+  expect_equal(
+    cards::ADSL |>
+      dplyr::mutate(DTHCAT = ifelse(dplyr::row_number() == 1L, "ADVERSE EVENT", NA)) |>
+      tbl_demographics(
+        by = "ARM",
+        include = "DTHCAT"
+      ) |>
+      as.data.frame(col_labels = FALSE) |>
+      dplyr::pull(stat_3) |>
+      dplyr::last(),
+    "0"
+  )
+})
