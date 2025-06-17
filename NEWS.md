@@ -1,4 +1,4 @@
-# crane 0.1.0.9023
+# crane 0.1.0.9024
 
 * Adding the `modify_header_rm_md()` function to remove bold and italic markdown syntax from the headers of a gtsummary table. (#53)
 
