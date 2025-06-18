@@ -228,7 +228,7 @@ tbl_survfit_quantiles <- function(data,
       )
     ) |>
     gtsummary::modify_header(
-      all_stat_cols() ~ "**{level}**  \nN = {n}",
+      all_stat_cols() ~ "{level}  \nN = {n}",
       label = ""
     ) |>
     gtsummary::modify_table_body(
@@ -276,7 +276,7 @@ tbl_survfit_quantiles <- function(data,
 #' @rdname tbl_survfit_quantiles
 add_overall.tbl_survfit_quantiles <- function(x,
                                               last = FALSE,
-                                              col_label = "**Overall**  \nN = {gtsummary::style_number(N)}",
+                                              col_label = "All Participants  \nN = {gtsummary::style_number(N)}",
                                               ...) {
   set_cli_abort_call()
   rlang::check_dots_empty(call = get_cli_abort_call())

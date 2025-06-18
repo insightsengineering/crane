@@ -2,11 +2,11 @@
 #'
 #' @description
 #' A gtsummary theme for Roche tables
-#' - Calls the [`gtsummary::theme_gtsummary_compact()`] theme.
+#' - flextable- and gt-printed tables are styled with reduced padding and font size.
 #' - Uses `label_roche_pvalue()` as the default formatting function for all p-values.
-#' - Defaults to a mono-spaced font for gt tables.
 #' - Font size defaults are 8 points for all the table by the footers that are 7 points.
 #' - Border defaults to `flextable::fp_border_default(width = 0.5)`.
+#' - The `add_overall(col_label)` default value has been updated.
 #'
 #' @inheritParams gtsummary::theme_gtsummary_compact
 #'
@@ -51,6 +51,7 @@ theme_gtsummary_roche <- function(set_theme = TRUE) {
       list(
         "tbl_summary-fn:percent_fun" = gtsummary::label_style_number(digits = 1, scale = 100),
         "pkgwide-fn:pvalue_fun" = label_roche_pvalue(),
+        "add_overall.tbl_summary-arg:col_label" = "All Participants \nN = {gtsummary::style_number(N)}",
         "pkgwide-str:print_engine" = "flextable"
       )
     )

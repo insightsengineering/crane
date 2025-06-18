@@ -80,8 +80,11 @@ tbl_demographics <- function(data,
     ) |>
     # remove default footnote
     gtsummary::remove_footnote_header(columns = everything()) |>
-    # remove the default "Characteristic" header
-    gtsummary::modify_header(label = "") |>
+    # remove the default "Characteristic" header, remove bold from stat headers
+    gtsummary::modify_header(
+      label = "",
+      gtsummary::all_stat_cols() ~ "{level}  \nN = {n}"
+    ) |>
     # convert "0 (0.0%)" to "0"
     modify_zero_recode() |>
     # sort the missing row to just below the header row

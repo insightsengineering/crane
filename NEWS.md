@@ -20,7 +20,7 @@
 
 * Loading gtsummary, cards, and cardx along with crane. (#29)
 
-* Added `{flextable}` specs for `theme_gtsummary_roche()`. Mainly border line width (0.5) and footer font size (`font_size` - 1).
+* Added {flextable} specs for `theme_gtsummary_roche()`. Mainly border line width (0.5) and footer font size (`font_size` - 1).
 
 * Fix in `tbl_demographics()` when a variable is all `NA` within a stratum. The zero count was displayed as `"0 (NA%)"` instead of `"0"`. (#60)
 

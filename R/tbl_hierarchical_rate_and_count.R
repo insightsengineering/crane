@@ -245,12 +245,13 @@ tbl_hierarchical_rate_and_count <- function(data,
   tbl_final$inputs <- tbl_hierarchical_rate_and_count_inputs
 
   tbl_final |>
-    structure(class = c("tbl_hierarchical_rate_and_count", "gtsummary"))
+    structure(class = c("tbl_hierarchical_rate_and_count", "gtsummary")) |>
+    modify_header_rm_md()
 }
 
 #' @rdname tbl_hierarchical_rate_and_count
 #' @export
-add_overall.tbl_hierarchical_rate_and_count <- function(x, last = FALSE, col_label = "**Overall**  \nN = {style_number(N)}", ...) {
+add_overall.tbl_hierarchical_rate_and_count <- function(x, last = FALSE, col_label = "All Participants  \nN = {style_number(N)}", ...) {
   do.call(
     what = asNamespace("gtsummary")[["add_overall.tbl_hierarchical"]],
     args = list(x = x, last = last, col_label = col_label)
