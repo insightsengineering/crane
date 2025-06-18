@@ -83,10 +83,7 @@ tbl_demographics <- function(data,
     # remove the default "Characteristic" header
     gtsummary::modify_header(label = "") |>
     # convert "0 (0.0%)" to "0"
-    gtsummary::modify_post_fmt_fun(
-      fmt_fun = ~ ifelse(. %in% c("0 (0.0%)", "0 (NA%)"), "0", .),
-      columns = all_stat_cols()
-    ) |>
+    modify_zero_recode() |>
     # sort the missing row to just below the header row
     gtsummary::modify_table_body(
       function(.x) {
