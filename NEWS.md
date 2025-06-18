@@ -1,4 +1,6 @@
-# crane 0.1.0.9024
+# crane 0.1.0.9025
+
+* Adding the `modify_zero_recode()` function that recodes `"0 (0.0%)"` to `"0"` in summary tables.
 
 * Adding the `modify_zero_recode()` function that recodes `"0 (0.0%)"` to `"0"` in summary tables.
 
