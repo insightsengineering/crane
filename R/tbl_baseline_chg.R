@@ -13,7 +13,6 @@
 NULL
 #' @export
 tbl_baseline_chg <- function(data,
-                             variables,
                              denominator,
                              by = NULL,
                              id = "USUBJID",
@@ -28,12 +27,10 @@ tbl_baseline_chg <- function(data,
   # check inputs ---------------------------------------------------------------
   set_cli_abort_call()
   check_not_missing(data)
-  check_not_missing(variables)
   check_not_missing(denominator)
   check_data_frame(data)
   cards::process_selectors(
     data,
-    variables = {{ variables }},
     by = {{ by }},
     id = {{ id }}
   )
@@ -45,13 +42,13 @@ tbl_baseline_chg <- function(data,
     # filter lab results data
     data |>
     # keeping the first LAB within USUBJID and VISIT and removing LAB tests not included in summary
-    arrange(id, visit, analysis_date) |>
-    filter(
+    dplyr::arrange(id, visit, analysis_date) |>
+    dplyr::filter(
       .by = c(id, visit),
-      .data[[test_code]] == test_subset, row_number() == 1L, grepl("SCREENING|WEEK", .data[[visit]])
+      .data[[test_code]] == test_subset, dplyr::row_number() == 1L, grepl("SCREENING|WEEK", .data[[visit]])
     ) |>
     dplyr::mutate(
-      VISIT_fct = fct_reorder(.data[[visit]], .data[[visit_seq]])
+      VISIT_fct = forcats::fct_reorder(.data[[visit]], .data[[visit_seq]])
     ) |>
     tidyr::pivot_wider(
       id_cols = c(id, test_code,  any_of(by)),
@@ -60,8 +57,8 @@ tbl_baseline_chg <- function(data,
       names_sort = TRUE
     ) |>
     # add in ADSL for the header Ns
-    right_join(
-      select(denominator, c(id, any_of(by))),
+    dplyr::right_join(
+      dplyr::select(denominator, c(id, any_of(by))),
       relationship = "many-to-one"
     )
 
@@ -69,8 +66,8 @@ tbl_baseline_chg <- function(data,
   # Summary of AVAL for this lab test
   tbl_aval <-
     df |>
-    select(any_of(by), starts_with("AVAL_")) |>
-    rename_with(~ str_remove(., "^AVAL_")) %>%
+    dplyr::select(any_of(by), starts_with("AVAL_")) |>
+    dplyr::rename_with(~ str_remove(., "^AVAL_")) %>%
     # after reshape all column labels are the same, so changing them to the variable name
     labelled::remove_var_label() |>
     tbl_demographics(
@@ -87,8 +84,8 @@ tbl_baseline_chg <- function(data,
   # Building a table change values at each visit
   tbl_chg <-
     df |>
-    select(any_of(by), starts_with("CHG_")) |>
-    rename_with(~ str_remove(., "^CHG_")) %>%
+    dplyr::select(any_of(by), starts_with("CHG_")) |>
+    dplyr::rename_with(~ str_remove(., "^CHG_")) %>%
     # after reshape all column labels are the same, so changing them to the variable name
     labelled::remove_var_label() |>
     # using `tbl_demographics()` as the default continuous variable summary matches our spec
@@ -102,24 +99,24 @@ tbl_baseline_chg <- function(data,
             min = 1, max = 1
           )
         ),
-      include = -"SCREENING 1" # Remove the baseline visit from summary
+      include = -(2) # Remove the baseline visit from summary (second column)
     )
 
   # combine into single table ---------------------------------
   tbl_final <-
     list(tbl_aval, tbl_chg) |>
-    tbl_merge(tab_spanner = FALSE) |>
+    gtsummary::tbl_merge(tab_spanner = FALSE) |>
     # add spanning header with treatment labels
-    modify_spanning_header(all_stat_cols() ~ "{level}  \n(N = {n})") |>
-    modify_header(
+    gtsummary::modify_spanning_header(all_stat_cols() ~ "{level}  \n(N = {n})") |>
+    gtsummary::modify_header(
       all_stat_cols() & ends_with("_1") ~ "Value at Visit", # after the merge, values from the first table end with `_1`
       all_stat_cols() & ends_with("_2") ~ "Change from Baseline", # after the merge, values from the first table end with `_2`
       label = ""
     ) |>
     # sort the stat columns together within treatment group
-    modify_table_body(
+    gtsummary::modify_table_body(
       \(.x) {
-        stat_cols <- select(.x, all_stat_cols()) |>
+        stat_cols <- dplyr::select(.x, all_stat_cols()) |>
           names() |>
           sort()
         dplyr::relocate(.x, all_of(stat_cols), .after = "label")
