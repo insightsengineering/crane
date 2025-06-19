@@ -51,7 +51,7 @@ theme_gtsummary_roche <- function(set_theme = TRUE) {
       list(
         "tbl_summary-fn:percent_fun" = gtsummary::label_style_number(digits = 1, scale = 100),
         "pkgwide-fn:pvalue_fun" = label_roche_pvalue(),
-        "add_overall.tbl_summary-arg:col_label" = "All Participants \nN = {gtsummary::style_number(N)}",
+        "add_overall.tbl_summary-arg:col_label" = "All Participants  \nN = {gtsummary::style_number(N)}",
         "pkgwide-str:print_engine" = "flextable"
       )
     )
