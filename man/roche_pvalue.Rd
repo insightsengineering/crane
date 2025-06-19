@@ -3,6 +3,8 @@
 \name{roche_pvalue}
 \alias{roche_pvalue}
 \alias{label_roche_pvalue}
+\alias{roche_percent}
+\alias{label_roche_percent}
 \title{Round p-values}
 \usage{
 roche_pvalue(
@@ -13,6 +15,19 @@ roche_pvalue(
 )
 
 label_roche_pvalue(
+  big.mark = ifelse(decimal.mark == ",", " ", ","),
+  decimal.mark = getOption("OutDec"),
+  ...
+)
+
+roche_percent(
+  x,
+  big.mark = ifelse(decimal.mark == ",", " ", ","),
+  decimal.mark = getOption("OutDec"),
+  ...
+)
+
+label_roche_percent(
   big.mark = ifelse(decimal.mark == ",", " ", ","),
   decimal.mark = getOption("OutDec"),
   ...
@@ -40,7 +55,7 @@ A character vector of rounded p-values
 Round p-values
 }
 \examples{
-x <- c(0.0000001, 0.123456)
+x <- c(0.0008, 0.9998)
 
 roche_pvalue(x)
 label_roche_pvalue()(x)
