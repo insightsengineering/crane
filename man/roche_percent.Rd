@@ -2,7 +2,36 @@
 % Please edit documentation in R/label_roche.R
 \name{roche_percent}
 \alias{roche_percent}
+\alias{label_roche_percent}
 \title{Round percentages}
+\usage{
+roche_percent(
+  x,
+  big.mark = ifelse(decimal.mark == ",", " ", ","),
+  decimal.mark = getOption("OutDec"),
+  ...
+)
+
+label_roche_percent(
+  big.mark = ifelse(decimal.mark == ",", " ", ","),
+  decimal.mark = getOption("OutDec"),
+  ...
+)
+}
+\arguments{
+\item{x}{numeric vector of percentages}
+
+\item{big.mark}{(\code{string})\cr
+Character used between every 3 digits to separate
+hundreds/thousands/millions/etc.
+Default is \code{","}, except when \code{decimal.mark = ","} when the default is a space.}
+
+\item{decimal.mark}{(\code{string})\cr
+The character to be used to indicate the numeric decimal point.
+Default is \code{"."}  or \code{getOption("OutDec")}}
+
+\item{...}{Arguments passed on to \code{base::format()}}
+}
 \value{
 A character vector of rounded percent values
 }

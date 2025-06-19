@@ -38,6 +38,7 @@ label_roche_pvalue <- function(big.mark = ifelse(decimal.mark == ",", " ", ","),
 
 #' Round percentages
 #'
+#'@inheritParams gtsummary::style_percent
 #'
 #' @return A character vector of rounded percent values
 #' @name roche_percent
@@ -50,7 +51,7 @@ label_roche_pvalue <- function(big.mark = ifelse(decimal.mark == ",", " ", ","),
 NULL
 
 #' @export
-#' @rdname roche_pvalue
+#' @rdname roche_percent
 roche_percent <- function(x,
                           big.mark = ifelse(decimal.mark == ",", " ", ","),
                           decimal.mark = getOption("OutDec"),
@@ -74,7 +75,7 @@ roche_percent <- function(x,
 }
 
 #' @export
-#' @rdname roche_pvalue
+#' @rdname roche_percent
 label_roche_percent <- function(big.mark = ifelse(decimal.mark == ",", " ", ","),
                                decimal.mark = getOption("OutDec"),
                                ...) {
