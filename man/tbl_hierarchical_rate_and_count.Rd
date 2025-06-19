@@ -23,7 +23,7 @@ tbl_hierarchical_rate_and_count(
 \method{add_overall}{tbl_hierarchical_rate_and_count}(
   x,
   last = FALSE,
-  col_label = "**Overall**  \\nN = {style_number(N)}",
+  col_label = "All Participants  \\nN = {style_number(N)}",
   ...
 )
 }

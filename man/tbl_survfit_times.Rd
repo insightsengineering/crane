@@ -19,7 +19,7 @@ tbl_survfit_times(
 \method{add_overall}{tbl_survfit_times}(
   x,
   last = FALSE,
-  col_label = "**Overall**  \\nN = {gtsummary::style_number(N)}",
+  col_label = "All Participants  \\nN = {gtsummary::style_number(N)}",
   ...
 )
 }

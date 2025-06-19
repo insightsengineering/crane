@@ -1,4 +1,8 @@
-# crane 0.1.0.9024
+# crane 0.1.0.9028
+
+* Adding the `modify_zero_recode()` function that recodes `"0 (0.0%)"` to `"0"` in summary tables.
+
+* Adding the `modify_zero_recode()` function that recodes `"0 (0.0%)"` to `"0"` in summary tables.
 
 * Adding the `modify_header_rm_md()` function to remove bold and italic markdown syntax from the headers of a gtsummary table. (#53)
 
@@ -18,7 +22,7 @@
 
 * Loading gtsummary, cards, and cardx along with crane. (#29)
 
-* Added `{flextable}` specs for `theme_gtsummary_roche()`. Mainly border line width (0.5) and footer font size (`font_size` - 1).
+* Added {flextable} specs for `theme_gtsummary_roche()`. Mainly border line width (0.5) and footer font size (`font_size` - 1).
 
 * Fix in `tbl_demographics()` when a variable is all `NA` within a stratum. The zero count was displayed as `"0 (NA%)"` instead of `"0"`. (#60)
 
