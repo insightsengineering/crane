@@ -26,13 +26,13 @@
 #'  `label_style_number(digits=1, scale=100)` for the `p` statistic.
 #' @param label_overall_rate (`string`)\cr
 #'  String for the overall rate summary. Default is
-#'  `"Total number of patients with at least one adverse event"`.
+#'  `"Total number of participants with at least one adverse event"`.
 #' @param label_overall_count (`string`)\cr
 #'  String for the overall count summary. Default is
 #'  `"Overall total number of events"`.
 #' @param label_rate (`string`)\cr
 #'  String for the rate summary. Default is `"Overall total number of events"`.
-#'  `"Total number of patients with at least one adverse event"`.
+#'  `"Total number of participants with at least one adverse event"`.
 #' @param label_count (`string`)\cr
 #'  String for the overall count summary. Default is `"Total number of events"`.
 #' @param sort
@@ -66,9 +66,9 @@ tbl_hierarchical_rate_and_count <- function(data,
                                               p = label_style_number(digits = 1, scale = 100)
                                             ),
                                             sort = NULL,
-                                            label_overall_rate = "Total number of patients with at least one adverse event",
+                                            label_overall_rate = "Total number of participants with at least one adverse event",
                                             label_overall_count = "Overall total number of events",
-                                            label_rate = "Total number of patients with at least one adverse event",
+                                            label_rate = "Total number of participants with at least one adverse event",
                                             label_count = "Total number of events") {
   # check inputs ---------------------------------------------------------------
   set_cli_abort_call()
