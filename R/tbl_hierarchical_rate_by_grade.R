@@ -142,7 +142,6 @@ tbl_hierarchical_rate_by_grade <- function(data,
   }
   if (!is_empty(grade_groups)) {
     gp_nms <- names(grade_groups) # get names of grade groups
-    # gps <- lapply(seq_along(grade_groups), \(x) (grade_groups[[x]][[2]] |> eval())) |> stats::setNames(gp_nms)
 
     if (length(unique(unlist(grade_groups))) < length(unlist(grade_groups))) {
       cli::cli_abort(
@@ -171,14 +170,28 @@ tbl_hierarchical_rate_by_grade <- function(data,
     cli::cli_inform("{.val {grade}} has been converted to an ordered {.cls factor} with levels: {.val {vec}}")
   }
 
+  # fill in unspecified statistics/labels/digits
+  cards::process_formula_selectors(data[variables], statistic = statistic, digits = digits, label = label)
+  cards::fill_formula_selectors(
+    data[variables],
+    statistic = eval(formals(gtsummary::tbl_hierarchical)[["statistic"]])
+  )
+  cards::fill_formula_selectors(
+    data[variables],
+    label = lapply(variables, \(x) attr(data[variables][[x]], "label") %||% x) |> stats::setNames(variables)
+  )
+  digits <-
+    assign_summary_digits(
+      data = data,
+      statistic = statistic,
+      type = rep_named(names(statistic), list("categorical")),
+      digits = digits
+    )
+  digits <- lapply(digits, FUN = \(x) x[intersect(names(x), c("n", "N", "p"))])
+
   lvls <- levels(data[[grade]]) # get levels of grade variable
   if (!is.ordered(data[[grade]])) data[[grade]] <- factor(data[[grade]], levels = lvls, ordered = TRUE)
   data_ungrouped <- data
-
-  # extract default labels
-  if (is.null(label)) {
-    label <- lapply(variables, \(x) attr(data[[x]], "label") %||% x) |> stats::setNames(variables)
-  }
 
   # ungrouped grades overall sections ------------------------------------------
   # overall section at SOC level (- Any adverse events -)
@@ -200,54 +213,72 @@ tbl_hierarchical_rate_by_grade <- function(data,
   }
   grades_no_gp <- setdiff(lvls, unlist(grade_groups))
 
+  browser()
   # ungrouped grades hierarchical summary --------------------------------------
   if (!is_empty(setdiff(lvls, grades_exclude))) {
-    tbl_ungrouped <-
-      gtsummary::tbl_hierarchical(
-        data = data_ungrouped,
-        variables = all_of(variables),
-        id = all_of(id),
-        denominator = denominator,
-        by = all_of(by),
-        statistic = {{ statistic }},
-        label = label,
-        digits = {{ digits }}
-      )
+    ard_ungrouped <-
+      .ard_rate_by_grade_ordered(data_ungrouped, variables, by, id, denominator)
+      # ard_stack_hierarchical(
+      #   data = data_ungrouped,
+      #   variables = all_of(variables),
+      #   by = all_of(by),
+      #   id = all_of(id),
+      #   denominator = denominator
+      # )
+      # gtsummary::tbl_hierarchical(
+      #   data = data_ungrouped,
+      #   variables = all_of(variables),
+      #   id = all_of(id),
+      #   denominator = denominator,
+      #   by = all_of(by),
+      #   statistic = {{ statistic }},
+      #   label = label,
+      #   digits = {{ digits }}
+      # )
   }
+  browser()
 
   # grouped grades hierarchical summary ----------------------------------------
   if (!is_empty(grade_groups)) {
     # generate grade groups table
-    tbl_grouped <-
-      .tbl_grade_groups(data_ungrouped, variables, denominator, by, id, statistic, label, digits, grade_groups, grades_exclude)
+    ard_grouped <-
+      .ard_rate_by_grade_ordered(data_ungrouped, variables, by, id, denominator, grade_groups)
 
     if (is_empty(setdiff(lvls, grades_exclude))) {
       # if all individual grades excluded, only grade groups included in final table
-      tbl_final <- tbl_grouped
+      ard_final <- ard_grouped
     } else {
-      tbl_list <- list(tbl_ungrouped, tbl_grouped)
+      ard_list <- list(ard_ungrouped, ard_grouped)
 
       # if both grouped and ungrouped grade rows exist, combine the two tables
-      tbl_final <- gtsummary::tbl_stack(tbl_list)
+      ard_final <- bind_ard(ard_list, .quiet = TRUE)
 
-      # set class to tbl_hierarchical for sorting/filtering
-      class(tbl_final) <- c("tbl_hierarchical", "gtsummary")
-
-      # build tbl$cards for sorting/filtering
-      tbl_final$cards <- list(
-        tbl_hierarchical = dplyr::bind_rows(lapply(tbl_list, \(x) x$cards$tbl_hierarchical)) |>
-          dplyr::distinct(dplyr::pick(-"fmt_fn"), .keep_all = TRUE)
-      )
+      # # set class to tbl_hierarchical for sorting/filtering
+      # class(tbl_final) <- c("tbl_hierarchical", "gtsummary")
+      #
+      # # build tbl$cards for sorting/filtering
+      # tbl_final$cards <- list(
+      #   tbl_hierarchical = dplyr::bind_rows(lapply(tbl_list, \(x) x$cards$tbl_hierarchical)) |>
+      #     dplyr::distinct(dplyr::pick(-"fmt_fn"), .keep_all = TRUE)
+      # )
     }
   } else {
     # if no grade groups, only individual grades included in final table
-    tbl_final <- tbl_ungrouped
+    ard_final <- ard_ungrouped
   }
 
   # format the final table -----------------------------------------------------
   # apply sorting/filtering, if specified
-  tbl_final <- tbl_final |> gtsummary::sort_hierarchical(sort)
-  if (!quo_is_null(filter)) tbl_final <- tbl_final |> gtsummary::filter_hierarchical(filter = !!filter)
+  ard_final <- ard_final |> sort_ard_hierarchical(sort)
+  if (!quo_is_null(filter)) ard_final <- ard_final |> filter_ard_hierarchical(filter = !!filter)
+
+  tbl_final <- gtsummary::tbl_ard_hierarchical(
+    cards = ard_final,
+    variables = variables,
+    by = by,
+    statistic = statistic,
+    label = label
+  )
 
   # arrange grade rows by level, with all groups prior to their first level
   tbl_final <- tbl_final |>
@@ -355,46 +386,113 @@ tbl_hierarchical_rate_by_grade <- function(data,
 
   # return final table ---------------------------------------------------------
   tbl_final$call_list <- list(tbl_hierarchical_rate_by_grade = match.call())
-  tbl_final$cards <- list(tbl_hierarchical_rate_by_grade = list(tbl_hierarchical = tbl_final$cards$tbl_hierarchical))
+  tbl_final$cards <- list(
+    tbl_hierarchical_rate_by_grade = list(tbl_hierarchical = tbl_final$cards$tbl_ard_hierarchical)
+  )
   tbl_final$inputs <- tbl_hierarchical_rate_by_grade_inputs
 
   tbl_final |>
     structure(class = c("tbl_hierarchical_rate_by_grade", "gtsummary"))
 }
 
-.tbl_grade_groups <- function(data,
-                              variables,
-                              denominator,
-                              by,
-                              id,
-                              statistic,
-                              label,
-                              digits,
-                              grade_groups) {
+# .tbl_grade_groups <- function(data,
+#                               variables,
+#                               denominator,
+#                               by,
+#                               id,
+#                               grade_groups) {
+#
+#   ard_stack_hierarchical(
+#     data = data,
+#     variables = all_of(variables),
+#     by = all_of(by),
+#     id = all_of(id),
+#     denominator = denominator
+#   )
+  # gtsummary::tbl_hierarchical(
+  #   data = data,
+  #   variables = all_of(variables),
+  #   id = all_of(id),
+  #   denominator = denominator,
+  #   by = all_of(by),
+  #   statistic = {{ statistic }},
+  #   label = label,
+  #   digits = {{ digits }}
+  # ) |>
+  #   suppressMessages()
+# }
+
+# this function calculates the rates of the events
+.ard_rate_by_grade_ordered <- function(data,
+                                       variables,
+                                       by,
+                                       id,
+                                       denominator,
+                                       grade_groups = NULL) {
+  # browser()
   grade <- dplyr::last(variables)
-  gp_nms <- names(grade_groups)
 
-  # replace grades with their grade groups
-  data[[grade]] <-
-    do.call(
-      forcats::fct_recode,
-      args = c(list(
-        .f = data[[grade]]),
-        setNames(unlist(grade_groups), rep(gp_nms, lengths(grade_groups)))
+  if (!is_empty(grade_groups)) {
+    gp_nms <- names(grade_groups)
+
+    # replace grades with their grade groups
+    data[[grade]] <-
+      do.call(
+        forcats::fct_recode,
+        args = c(list(
+          .f = data[[grade]]),
+          setNames(unlist(grade_groups), rep(gp_nms, lengths(grade_groups)))
+        )
       )
-    )
+  }
 
-  gtsummary::tbl_hierarchical(
+  # for ordered factor variable, move last hierarchy level to `by` to get rates by highest level
+  cards_ord <- cards::ard_stack_hierarchical(
     data = data,
-    variables = all_of(variables),
+    variables = all_of(setdiff(variables, grade)),
+    by = all_of(c(by, grade)),
     id = all_of(id),
     denominator = denominator,
-    by = all_of(by),
-    statistic = {{ statistic }},
-    label = label,
-    digits = {{ digits }}
-  ) |>
-    suppressMessages()
+    include = all_of(dplyr::nth(variables, -2)),
+    total_n = (is_empty(by) && length(variables) == 1)
+  )
+  attr(cards_ord, "args") <- list(by = by, variables = variables, include = variables)
+
+  # update structure to match results for non-ordered factor variables
+  which_var <- which(names(cards_ord) == "variable")
+  which_h <- which(names(cards_ord) == paste0("group", length(by) + 1))
+  names(cards_ord) <- names(cards_ord)[
+    c(0:(which_h - 1), which_var + 0:1, which_h:(which_var - 1), (which_var + 2):length(names(cards_ord)))
+  ]
+
+  # if no other statistics to calculate, format N data and return as is
+  # otherwise, bind to results for the remaining variables
+  variables <- setdiff(variables, grade)
+  if (is_empty(variables)) {
+    cards_ord[cards_ord[[which_var]] %in% by, which_h + 0:1] <-
+      cards_ord[cards_ord[[which_var]] %in% by, which_var + 0:1]
+    return(cards_ord)
+  } else if (!is_empty(by)) {
+    cards_ord <- cards_ord |>
+      dplyr::filter(.data$group1 == by[1] | .data$context == "total_n")
+  }
+
+  cards <- cards::ard_stack_hierarchical(
+    data = data,
+    variables = all_of(variables),
+    by = any_of(by),
+    id = all_of(id),
+    denominator = denominator,
+    total_n = is_empty(by)
+  )
+
+  # bind ARDs for ordered and non-ordered variable results, merge args attribute, and re-sort
+  if (!is_empty(cards_ord)) {
+    cards <- cards::bind_ard(cards_ord, cards) |>
+      cards::sort_ard_hierarchical("alphanumeric")
+  }
+
+  cards
 }
 
 #' @rdname tbl_hierarchical_rate_by_grade
