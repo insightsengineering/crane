@@ -14,9 +14,9 @@ tbl_hierarchical_rate_and_count(
   digits = everything() ~ list(n = label_style_number(), p = label_style_number(digits =
     1, scale = 100)),
   sort = NULL,
-  label_overall_rate = "Total number of patients with at least one adverse event",
+  label_overall_rate = "Total number of participants with at least one adverse event",
   label_overall_count = "Overall total number of events",
-  label_rate = "Total number of patients with at least one adverse event",
+  label_rate = "Total number of participants with at least one adverse event",
   label_count = "Total number of events"
 )
 
@@ -60,7 +60,7 @@ default formatting is assigned via \code{label_style_number()} for the \code{n} 
 
 \item{label_overall_rate}{(\code{string})\cr
 String for the overall rate summary. Default is
-\code{"Total number of patients with at least one adverse event"}.}
+\code{"Total number of participants with at least one adverse event"}.}
 
 \item{label_overall_count}{(\code{string})\cr
 String for the overall count summary. Default is
@@ -68,7 +68,7 @@ String for the overall count summary. Default is
 
 \item{label_rate}{(\code{string})\cr
 String for the rate summary. Default is \code{"Overall total number of events"}.
-\code{"Total number of patients with at least one adverse event"}.}
+\code{"Total number of participants with at least one adverse event"}.}
 
 \item{label_count}{(\code{string})\cr
 String for the overall count summary. Default is \code{"Total number of events"}.}
