@@ -198,6 +198,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
       dplyr::mutate(!!ae := "- Overall -") |>
       dplyr::bind_rows(data_ungrouped)
   }
+  grades_no_gp <- setdiff(lvls, unlist(grade_groups))
 
   # ungrouped grades hierarchical summary --------------------------------------
   if (!is_empty(setdiff(lvls, grades_exclude))) {
@@ -216,48 +217,21 @@ tbl_hierarchical_rate_by_grade <- function(data,
 
   # grouped grades hierarchical summary ----------------------------------------
   if (!is_empty(grade_groups)) {
-    data_grouped <- data_ungrouped
-
-    # replace grades with their grade groups
-    data_grouped[[grade]] <-
-      do.call(
-        forcats::fct_recode,
-        args = c(list(
-          .f = data_grouped[[grade]]),
-          setNames(unlist(grade_groups), rep(gp_nms, lengths(grade_groups)))
-        )
-      )
-
-    # remove grades not in a grade group
-    no_gp <- setdiff(lvls, unlist(grade_groups))
-    data_grouped <- data_grouped |> dplyr::filter(!.data[[grade]] %in% no_gp)
-
+    # generate grade groups table
     tbl_grouped <-
-      gtsummary::tbl_hierarchical(
-        data = data_grouped,
-        variables = all_of(variables),
-        id = all_of(id),
-        denominator = denominator,
-        by = all_of(by),
-        statistic = {{ statistic }},
-        label = label,
-        digits = {{ digits }}
-      ) |>
-      suppressMessages()
+      .tbl_grade_groups(data_ungrouped, variables, denominator, by, id, statistic, label, digits, grade_groups, grades_exclude)
 
     if (is_empty(setdiff(lvls, grades_exclude))) {
       # if all individual grades excluded, only grade groups included in final table
       tbl_final <- tbl_grouped
     } else {
-      # if both grouped and ungrouped grade rows exist, combine the two tables
       tbl_list <- list(tbl_ungrouped, tbl_grouped)
+
+      # if both grouped and ungrouped grade rows exist, combine the two tables
       tbl_final <- gtsummary::tbl_stack(tbl_list)
 
       # set class to tbl_hierarchical for sorting/filtering
       class(tbl_final) <- c("tbl_hierarchical", "gtsummary")
-
-      # # get original inputs
-      # tbl_final$inputs <- tbl_hierarchical_rate_by_grade_inputs
 
       # build tbl$cards for sorting/filtering
       tbl_final$cards <- list(
@@ -299,7 +273,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
                 dat$idx_lvl[unlist(dat$label) %in% gp_nms] <-
                   sapply(
                     dat$label[unlist(dat$label) %in% gp_nms],
-                    \(x) min(which(lvls %in% grade_groups[[unlist(x)]])) - 0.5 ## fix?
+                    \(x) min(which(lvls %in% grade_groups[[unlist(x)]])) - 0.5
                   )
               }
               dat |>
@@ -386,6 +360,41 @@ tbl_hierarchical_rate_by_grade <- function(data,
 
   tbl_final |>
     structure(class = c("tbl_hierarchical_rate_by_grade", "gtsummary"))
+}
+
+.tbl_grade_groups <- function(data,
+                              variables,
+                              denominator,
+                              by,
+                              id,
+                              statistic,
+                              label,
+                              digits,
+                              grade_groups) {
+  grade <- dplyr::last(variables)
+  gp_nms <- names(grade_groups)
+
+  # replace grades with their grade groups
+  data[[grade]] <-
+    do.call(
+      forcats::fct_recode,
+      args = c(list(
+        .f = data[[grade]]),
+        setNames(unlist(grade_groups), rep(gp_nms, lengths(grade_groups)))
+      )
+    )
+
+  gtsummary::tbl_hierarchical(
+    data = data,
+    variables = all_of(variables),
+    id = all_of(id),
+    denominator = denominator,
+    by = all_of(by),
+    statistic = {{ statistic }},
+    label = label,
+    digits = {{ digits }}
+  ) |>
+    suppressMessages()
 }
 
 #' @rdname tbl_hierarchical_rate_by_grade
