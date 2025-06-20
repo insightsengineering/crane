@@ -27,9 +27,9 @@ label <- list(
 )
 
 grade_groups <- list(
-  c("1", "2") ~ "Grade 1-2",
-  c("3", "4") ~ "Grade 3-4",
-  "5" ~ "Grade 5"
+  "Grade 1-2" = c("1", "2"),
+  "Grade 3-4" = c("3", "4"),
+  "Grade 5" = "5"
 )
 
 test_that("tbl_hierarchical_rate_by_grade() works", {
@@ -264,7 +264,7 @@ test_that("tbl_hierarchical_rate_by_grade(grade_groups) works with some grades n
           denominator = ADSL,
           by = TRTA,
           label = label,
-          grade_groups = list(c("3", "4") ~ "Grade 3-4")
+          grade_groups = list("Grade 3-4" = c("3", "4"))
         )
     )
   )
@@ -348,7 +348,7 @@ test_that("tbl_hierarchical_rate_by_grade() error messaging works", {
         denominator = ADSL,
         by = TRTA,
         label = label,
-        grade_groups = list("Grade 5" = "5")
+        grade_groups = list("Grade 5" ~ "5")
       ),
     error = TRUE
   )
@@ -361,7 +361,7 @@ test_that("tbl_hierarchical_rate_by_grade() error messaging works", {
         denominator = ADSL,
         by = TRTA,
         label = label,
-        grade_groups = list(c("3", "4") ~ "Grade 3-4", c("4", "5") ~ "Grade 4-5")
+        grade_groups = list("Grade 3-4" = c("3", "4"), "Grade 4-5" = c("4", "5"))
       ),
     error = TRUE
   )

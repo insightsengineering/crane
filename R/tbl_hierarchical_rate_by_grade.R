@@ -24,15 +24,15 @@
 #'   effect. The default is `everything()`.
 #' @param filter (`expression`)\cr
 #'   An expression that is used to filter rows of the table. See the Details section below for more information.
-#' @param grade_groups (`list`)\cr
-#'   A list of formulas each corresponding to a grade group for which rates should be calculated. Grade groups must be
-#'   mutually exclusive, i.e. each grade cannot be assigned to more than one grade group. To specify each grade group,
-#'   create a formula with a vector of grades included on the left-hand side of the formula and the name of the grade
-#'   on the right-hand side, e.g. `c("1", "2") ~ "Grade 1-2"`.
+#' @param grade_groups (`named list`)\cr
+#'   A named list of grade groups for which rates should be calculated. Grade groups must be mutually exclusive, i.e.
+#'   each grade cannot be assigned to more than one grade group. Each grade group must be specified in the list as a
+#'   character vector of the grades included in the grade group, named with the corresponding name of the grade group,
+#'   e.g. `"Grade 1-2" = c("1", "2")`.
 #' @param grades_exclude (`character`)\cr
 #'   A vector of grades to omit individual rows for when printing the table. These grades will still be used when
 #'   computing overall totals and grade group totals. For example, to avoid duplication, if a grade group is defined as
-#'   `"5" ~ "Grade 5"`, the individual rows corresponding to grade 5 can be excluded by setting `grades_exclude = "5"`.
+#'   `"Grade 5" = "5"`, the individual rows corresponding to grade 5 can be excluded by setting `grades_exclude = "5"`.
 #' @param x (`tbl_hierarchical_rate_by_grade`)\cr
 #'   A gtsummary table of class `'tbl_hierarchical_rate_by_grade'`.
 #'
@@ -73,9 +73,9 @@
 #'
 #' # Example 1 ----------------------------------
 #' grade_groups <- list(
-#'   c("1", "2") ~ "Grade 1-2",
-#'   c("3", "4") ~ "Grade 3-4",
-#'   "5" ~ "Grade 5"
+#'   "Grade 1-2" = c("1", "2"),
+#'   "Grade 3-4" = c("3", "4"),
+#'   "Grade 5" = "5"
 #' )
 #'
 #' tbl_hierarchical_rate_by_grade(
@@ -131,24 +131,24 @@ tbl_hierarchical_rate_by_grade <- function(data,
   grade <- variables[3]
   gp_nms <- NULL
 
-  if (!all(sapply(grade_groups, is_formula))) {
+  if (!is_empty(grade_groups) && !(is_named(grade_groups) && all(sapply(grade_groups, is_character)))) {
     cli::cli_abort(
       paste(
-        "Each grade group must be specified via a {.cls formula} where the left-hand side of the formula is a vector",
-        "of grades and the right-hand side is the name of the grade group.",
-        'For example, {.code c("3", "4") ~ "Grade 3-4"}.'
+        "Grade groups must be specified via a named list where each list element is a character vector of the",
+        "grades to include in the grade group and each name is the corresponding name of the grade group.",
+        'For example, {.code "Grade 3-4" = c("3", "4")}.'
       )
     )
   }
   if (!is_empty(grade_groups)) {
-    gp_nms <- sapply(seq_along(grade_groups), \(x) grade_groups[[x]][[3]]) # get names of grade groups
-    gps <- lapply(seq_along(grade_groups), \(x) (grade_groups[[x]][[2]] |> eval())) |> stats::setNames(gp_nms)
+    gp_nms <- names(grade_groups) # get names of grade groups
+    # gps <- lapply(seq_along(grade_groups), \(x) (grade_groups[[x]][[2]] |> eval())) |> stats::setNames(gp_nms)
 
-    if (length(unique(unlist(gps))) < length(unlist(gps))) {
+    if (length(unique(unlist(grade_groups))) < length(unlist(grade_groups))) {
       cli::cli_abort(
         paste(
           "Grade groups specified via {.arg grade_groups} cannot overlap.",
-          "Please ensure that each grade is included in only one grade group."
+          "Please ensure that each grade is included in at most one grade group."
         )
       )
     }
@@ -168,11 +168,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
       levels(data[[grade]]),
       style = list("vec-sep" = " < ", "vec-sep2" = " < ", "vec-last" = " < ", "vec-trunc" = 3)
     )
-    cli::cli_inform(
-      paste(
-        "{.val {grade}} has been converted to an ordered {.cls factor} with levels: {.val {vec}}"
-      )
-    )
+    cli::cli_inform("{.val {grade}} has been converted to an ordered {.cls factor} with levels: {.val {vec}}")
   }
 
   lvls <- levels(data[[grade]]) # get levels of grade variable
@@ -225,10 +221,16 @@ tbl_hierarchical_rate_by_grade <- function(data,
     # replace grades with their grade groups
     data_grouped[[grade]] <-
       do.call(
-        dplyr::case_match,
-        args = c(list(.x = data_grouped[[grade]]), grade_groups)
-      ) |>
-      factor(levels = gp_nms, ordered = TRUE)
+        forcats::fct_recode,
+        args = c(list(
+          .f = data_grouped[[grade]]),
+          setNames(unlist(grade_groups), rep(gp_nms, lengths(grade_groups)))
+        )
+      )
+
+    # remove grades not in a grade group
+    no_gp <- setdiff(lvls, unlist(grade_groups))
+    data_grouped <- data_grouped |> dplyr::filter(!.data[[grade]] %in% no_gp)
 
     tbl_grouped <-
       gtsummary::tbl_hierarchical(
@@ -297,7 +299,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
                 dat$idx_lvl[unlist(dat$label) %in% gp_nms] <-
                   sapply(
                     dat$label[unlist(dat$label) %in% gp_nms],
-                    \(x) min(which(lvls %in% gps[[unlist(x)]])) - 0.5
+                    \(x) min(which(lvls %in% grade_groups[[unlist(x)]])) - 0.5 ## fix?
                   )
               }
               dat |>
@@ -372,7 +374,8 @@ tbl_hierarchical_rate_by_grade <- function(data,
   if (!is_empty(grade_groups)) {
     tbl_final <- tbl_final |>
       gtsummary::modify_indent(
-        columns = "label_grade", rows = .data$variable == grade & .data$label_grade %in% unlist(gps), indent = 4L
+        columns = "label_grade", rows = .data$variable == grade & .data$label_grade %in% unlist(grade_groups),
+        indent = 4L
       )
   }
 

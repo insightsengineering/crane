@@ -87,16 +87,16 @@ Defaults to \code{"descending"}.}
 \item{filter}{(\code{expression})\cr
 An expression that is used to filter rows of the table. See the Details section below for more information.}
 
-\item{grade_groups}{(\code{list})\cr
-A list of formulas each corresponding to a grade group for which rates should be calculated. Grade groups must be
-mutually exclusive, i.e. each grade cannot be assigned to more than one grade group. To specify each grade group,
-create a formula with a vector of grades included on the left-hand side of the formula and the name of the grade
-on the right-hand side, e.g. \code{c("1", "2") ~ "Grade 1-2"}.}
+\item{grade_groups}{(\verb{named list})\cr
+A named list of grade groups for which rates should be calculated. Grade groups must be mutually exclusive, i.e.
+each grade cannot be assigned to more than one grade group. Each grade group must be specified in the list as a
+character vector of the grades included in the grade group, named with the corresponding name of the grade group,
+e.g. \code{"Grade 1-2" = c("1", "2")}.}
 
 \item{grades_exclude}{(\code{character})\cr
 A vector of grades to omit individual rows for when printing the table. These grades will still be used when
 computing overall totals and grade group totals. For example, to avoid duplication, if a grade group is defined as
-\code{"5" ~ "Grade 5"}, the individual rows corresponding to grade 5 can be excluded by setting \code{grades_exclude = "5"}.}
+\code{"Grade 5" = "5"}, the individual rows corresponding to grade 5 can be excluded by setting \code{grades_exclude = "5"}.}
 
 \item{x}{(\code{tbl_hierarchical_rate_by_grade})\cr
 A gtsummary table of class \code{'tbl_hierarchical_rate_by_grade'}.}
@@ -157,9 +157,9 @@ ADAE_subset <- ADAE_subset |>
 
 # Example 1 ----------------------------------
 grade_groups <- list(
-  c("1", "2") ~ "Grade 1-2",
-  c("3", "4") ~ "Grade 3-4",
-  "5" ~ "Grade 5"
+  "Grade 1-2" = c("1", "2"),
+  "Grade 3-4" = c("3", "4"),
+  "Grade 5" = "5"
 )
 
 tbl_hierarchical_rate_by_grade(
