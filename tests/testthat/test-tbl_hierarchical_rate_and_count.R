@@ -22,7 +22,7 @@ test_that("tbl_hierarchical_rate_and_count() works", {
   expect_equal(
     tbl$table_body$label[1:2],
     c(
-      "Total number of patients with at least one adverse event",
+      "Total number of participants with at least one adverse event",
       "Overall total number of events"
     )
   )
