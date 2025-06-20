@@ -128,7 +128,7 @@ tbl_survfit_times <- function(data,
           set_names(paste0("time", times))
     ) |>
     gtsummary::modify_header(
-      all_stat_cols() ~ "**{level}**  \nN = {n}",
+      all_stat_cols() ~ "{level}  \nN = {n}",
       label = ""
     ) |>
     gtsummary::modify_table_body(
