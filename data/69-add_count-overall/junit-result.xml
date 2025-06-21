@@ -1,91 +1,135 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="add_blank_row" timestamp="2025-06-21T00:10:36Z" hostname="42b406636592" tests="1" skipped="0" failures="0" errors="0" time="1.826">
-    <testcase time="1.826" classname="character(0)" name="add_blank_row_works"/>
+  <testsuite name="add_blank_row" timestamp="2025-06-21T00:10:43Z" hostname="f394cc65f9c2" tests="1" skipped="0" failures="0" errors="0" time="1.865">
+    <testcase time="1.865" classname="character(0)" name="add_blank_row_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-06-21T00:10:36Z" hostname="42b406636592" tests="1" skipped="1" failures="0" errors="0" time="0.05">
-    <testcase time="0.0499999999999998" classname="character(0)" name="add_blank_row_messaging">
-      <skipped message="Reason: On CRAN ('test-add_blank_row.R:15:3')"/>
+  <testsuite name="add_blank_row" timestamp="2025-06-21T00:10:43Z" hostname="f394cc65f9c2" tests="1" skipped="0" failures="0" errors="0" time="0.052">
+    <testcase time="0.052" classname="character(0)" name="add_blank_row_messaging"/>
+  </testsuite>
+  <testsuite name="add_hierarchical_count_row" timestamp="2025-06-21T00:10:45Z" hostname="f394cc65f9c2" tests="3" skipped="0" failures="1" errors="0" time="2.015">
+    <testcase time="2.004" classname="character(0)" name="add_hierarchical_count_row_works">
+      <failure type="failure" message="Snapshot of code has changed: ('test-add_hierarchical_count_row.R:14:3')">Snapshot of code has changed:
+old[1:7] vs new[1:5]
+  Code
+-   dplyr::slice(as.data.frame(add_hierarchical_count_row(tbl_hierarchical(dplyr::slice(
+-     cards::ADAE, 1:10), by = "TRTA", variables = AEDECOD, denominator = dplyr::rename(
+-     cards::ADSL, TRTA = TRT01A), id = "USUBJID", overall_row = TRUE), .after = 1L),
++   dplyr::slice(as.data.frame(add_hierarchical_count_row(tbl, .after = 1L),
+    col_label = FALSE), 2)
+  Output
+                               label stat_1 stat_2
+
+* Run `testthat::snapshot_accept('add_hierarchical_count_row')` to accept the change.
+* Run `testthat::snapshot_review('add_hierarchical_count_row')` to interactively review the change.</failure>
     </testcase>
+    <testcase time="0.0100000000000007" classname="character(0)" name="add_hierarchical_count_row_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="add_hierarchical_count_row_works"/>
   </testsuite>
-  <testsuite name="add_hierarchical_count_row" timestamp="2025-06-21T00:10:36Z" hostname="42b406636592" tests="1" skipped="1" failures="0" errors="0" time="0.364">
-    <testcase time="0.364" classname="character(0)" name="add_hierarchical_count_row_works">
-      <skipped message="Reason: On CRAN ('test-add_hierarchical_count_row.R:14:3')"/>
-    </testcase>
+  <testsuite name="roche_pvalue" timestamp="2025-06-21T00:10:45Z" hostname="f394cc65f9c2" tests="1" skipped="0" failures="0" errors="0" time="0.044">
+    <testcase time="0.0440000000000005" classname="character(0)" name="roche_pvalue_works"/>
   </testsuite>
-  <testsuite name="roche_pvalue" timestamp="2025-06-21T00:10:36Z" hostname="42b406636592" tests="1" skipped="0" failures="0" errors="0" time="0.065">
-    <testcase time="0.0649999999999999" classname="character(0)" name="roche_pvalue_works"/>
+  <testsuite name="modify_header_rm_md" timestamp="2025-06-21T00:10:45Z" hostname="f394cc65f9c2" tests="2" skipped="0" failures="0" errors="0" time="0.258">
+    <testcase time="0.257" classname="character(0)" name="strip_md_bold_works_with_gtsummary_table"/>
+    <testcase time="0.00100000000000033" classname="character(0)" name="strip_md_bold_works_with_gtsummary_table"/>
   </testsuite>
-  <testsuite name="modify_header_rm_md" timestamp="2025-06-21T00:10:38Z" hostname="42b406636592" tests="2" skipped="0" failures="0" errors="0" time="1.933">
-    <testcase time="1.933" classname="character(0)" name="strip_md_bold_works_with_gtsummary_table"/>
-    <testcase time="0" classname="character(0)" name="strip_md_bold_works_with_gtsummary_table"/>
-    <testcase time="0.0359999999999996" classname="character(0)" name="_unnamed_">
-      <skipped message="Reason: On CRAN ('test-tbl_hierarchical_rate_and_count.R:1:1')"/>
-    </testcase>
+  <testsuite name="tbl_demographics" timestamp="2025-06-21T00:10:51Z" hostname="f394cc65f9c2" tests="1" skipped="0" failures="0" errors="0" time="6.376">
+    <testcase time="6.376" classname="character(0)" name="tbl_demographics_works"/>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-06-21T00:10:42Z" hostname="42b406636592" tests="2" skipped="1" failures="0" errors="0" time="3.324">
-    <testcase time="3.288" classname="character(0)" name="tbl_demographics_works"/>
-  </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-06-21T00:10:42Z" hostname="42b406636592" tests="2" skipped="1" failures="0" errors="0" time="0.004">
-    <testcase time="0.00299999999999834" classname="character(0)" name="tbl_demographics_add_overall_works"/>
+  <testsuite name="tbl_demographics" timestamp="2025-06-21T00:10:51Z" hostname="f394cc65f9c2" tests="3" skipped="0" failures="1" errors="0" time="0.028">
+    <testcase time="0.00300000000000011" classname="character(0)" name="tbl_demographics_add_overall_works"/>
     <testcase time="0.00100000000000122" classname="character(0)" name="tbl_demographics_add_overall_works">
-      <skipped message="Reason: On CRAN ('test-tbl_demographics.R:41:3')"/>
+      <failure type="failure" message="Snapshot of code has changed: ('test-tbl_demographics.R:41:3')">Snapshot of code has changed:
+old vs new
+  Code
+    as.data.frame(add_overall(tbl_demographics(trial, by = trt, digits = list(grade = list(p = 1)), include = c(age, grade))))
+  Output
+-                All Participants \nN = 200 Drug A  \nN = 98 Drug B  \nN = 102
++                All Participants  \nN = 200 Drug A  \nN = 98 Drug B  \nN = 102
+-   1        Age                       &lt;NA&gt;             &lt;NA&gt;              &lt;NA&gt;
++   1        Age                        &lt;NA&gt;             &lt;NA&gt;              &lt;NA&gt;
+-   2          n                        189               91                98
++   2          n                         189               91                98
+-   3  Mean (SD)                    47 (14)          47 (15)           47 (14)
++   3  Mean (SD)                     47 (14)          47 (15)           47 (14)
+-   4     Median                         47               46                48
++   4     Median                          47               46                48
+-   5  Min - Max                     6 - 83           6 - 78            9 - 83
++   5  Min - Max                      6 - 83           6 - 78            9 - 83
+-   6      Grade                       &lt;NA&gt;             &lt;NA&gt;              &lt;NA&gt;
++   6      Grade                        &lt;NA&gt;             &lt;NA&gt;              &lt;NA&gt;
+-   7          n                        200               98               102
++   7          n                         200               98               102
+-   8          I                 68 (34.0%)       35 (35.7%)        33 (32.4%)
++   8          I                  68 (34.0%)       35 (35.7%)        33 (32.4%)
+-   9         II                 68 (34.0%)       32 (32.7%)        36 (35.3%)
++   9         II                  68 (34.0%)       32 (32.7%)        36 (35.3%)
+-   10       III                 64 (32.0%)       31 (31.6%)        33 (32.4%)
++   10       III                  64 (32.0%)       31 (31.6%)        33 (32.4%)
+
+* Run `testthat::snapshot_accept('tbl_demographics')` to accept the change.
+* Run `testthat::snapshot_review('tbl_demographics')` to interactively review the change.</failure>
     </testcase>
+    <testcase time="0.0239999999999991" classname="character(0)" name="tbl_demographics_add_overall_works"/>
   </testsuite>
-  <testsuite name="tbl_demographics" timestamp="2025-06-21T00:10:42Z" hostname="42b406636592" tests="1" skipped="0" failures="0" errors="0" time="0.015">
-    <testcase time="0.0149999999999988" classname="character(0)" name="tbl_demographics_recode_counts_for_all_NA_column"/>
+  <testsuite name="tbl_demographics" timestamp="2025-06-21T00:10:51Z" hostname="f394cc65f9c2" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00200000000000067" classname="character(0)" name="tbl_demographics_recode_counts_for_all_NA_column"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-06-21T00:10:43Z" hostname="42b406636592" tests="2" skipped="1" failures="0" errors="0" time="0.876">
-    <testcase time="0.875" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_quantiles_works">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:13:3')"/>
-    </testcase>
+  <testsuite name="tbl_hierarchical_rate_and_count" timestamp="2025-06-21T00:10:54Z" hostname="f394cc65f9c2" tests="5" skipped="0" failures="0" errors="0" time="2.889">
+    <testcase time="2.885" classname="character(0)" name="tbl_hierarchical_rate_and_count_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_hierarchical_rate_and_count_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_hierarchical_rate_and_count_works"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_hierarchical_rate_and_count_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_hierarchical_rate_and_count_works"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-06-21T00:10:43Z" hostname="42b406636592" tests="1" skipped="1" failures="0" errors="0" time="0.013">
-    <testcase time="0.0129999999999999" classname="character(0)" name="tbl_survfit_quantiles_by_messaging">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:55:3')"/>
-    </testcase>
+  <testsuite name="tbl_hierarchical_rate_and_count" timestamp="2025-06-21T00:10:54Z" hostname="f394cc65f9c2" tests="2" skipped="0" failures="0" errors="0" time="0.004">
+    <testcase time="0.00300000000000011" classname="character(0)" name="tbl_hierarchical_rate_and_count_sort_"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_hierarchical_rate_and_count_sort_"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-06-21T00:10:43Z" hostname="42b406636592" tests="1" skipped="1" failures="0" errors="0" time="0.023">
-    <testcase time="0.0229999999999997" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:75:3')"/>
-    </testcase>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-06-21T00:10:58Z" hostname="f394cc65f9c2" tests="7" skipped="0" failures="0" errors="0" time="3.436">
+    <testcase time="3.431" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.000999999999997669" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.000999999999997669" classname="character(0)" name="tbl_survfit_quantiles_works"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-06-21T00:10:43Z" hostname="42b406636592" tests="1" skipped="0" failures="0" errors="0" time="0.01">
-    <testcase time="0.00999999999999979" classname="character(0)" name="tbl_survfit_quantiles_method.args_"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-06-21T00:10:58Z" hostname="f394cc65f9c2" tests="2" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-06-21T00:10:43Z" hostname="42b406636592" tests="1" skipped="1" failures="0" errors="0" time="0.002">
-    <testcase time="0.00200000000000067" classname="character(0)" name="add_overall.tbl_survfit_quantiles_works">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:111:3')"/>
-    </testcase>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-06-21T00:10:58Z" hostname="f394cc65f9c2" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999889" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_"/>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-06-21T00:10:44Z" hostname="42b406636592" tests="1" skipped="1" failures="0" errors="0" time="1.107">
-    <testcase time="1.107" classname="character(0)" name="theme_gtsummary_roche_works">
-      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:3:3')"/>
-    </testcase>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-06-21T00:10:58Z" hostname="f394cc65f9c2" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999889" classname="character(0)" name="tbl_survfit_quantiles_method.args_"/>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-06-21T00:10:44Z" hostname="42b406636592" tests="1" skipped="1" failures="0" errors="0" time="0.011">
-    <testcase time="0.011000000000001" classname="character(0)" name="theme_gtsummary_roche_adds_relevant_flextable_directives">
-      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:17:3')"/>
-    </testcase>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-06-21T00:10:58Z" hostname="f394cc65f9c2" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00200000000000244" classname="character(0)" name="add_overall.tbl_survfit_quantiles_works"/>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-06-21T00:10:44Z" hostname="42b406636592" tests="1" skipped="0" failures="0" errors="0" time="0.01">
-    <testcase time="0.00999999999999979" classname="character(0)" name="theme_gtsummary_roche_no_errors_with_a_gt_print"/>
+  <testsuite name="tbl_survfit_times" timestamp="2025-06-21T00:10:59Z" hostname="f394cc65f9c2" tests="7" skipped="0" failures="0" errors="0" time="0.905">
+    <testcase time="0.899999999999999" classname="character(0)" name="tbl_survfit_times_works"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_times_works"/>
+    <testcase time="0.000999999999997669" classname="character(0)" name="tbl_survfit_times_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_times_works"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_times_works"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_times_works"/>
+    <testcase time="0.000999999999997669" classname="character(0)" name="tbl_survfit_times_works"/>
   </testsuite>
-  <testsuite name="tbl_survfit_times" timestamp="2025-06-21T00:10:44Z" hostname="42b406636592" tests="2" skipped="1" failures="0" errors="0" time="0.441">
-    <testcase time="0.44" classname="character(0)" name="tbl_survfit_times_works"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_times_works">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_times.R:14:3')"/>
-    </testcase>
+  <testsuite name="tbl_survfit_times" timestamp="2025-06-21T00:10:59Z" hostname="f394cc65f9c2" tests="2" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00200000000000244" classname="character(0)" name="tbl_survfit_times_by_messaging"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_times_by_messaging"/>
   </testsuite>
-  <testsuite name="tbl_survfit_times" timestamp="2025-06-21T00:10:44Z" hostname="42b406636592" tests="1" skipped="1" failures="0" errors="0" time="0.01">
-    <testcase time="0.00999999999999979" classname="character(0)" name="tbl_survfit_times_by_messaging">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_times.R:59:3')"/>
-    </testcase>
+  <testsuite name="tbl_survfit_times" timestamp="2025-06-21T00:10:59Z" hostname="f394cc65f9c2" tests="1" skipped="0" failures="0" errors="0" time="0.005">
+    <testcase time="0.00499999999999901" classname="character(0)" name="add_overall.tbl_survfit_times_works"/>
   </testsuite>
-  <testsuite name="tbl_survfit_times" timestamp="2025-06-21T00:10:44Z" hostname="42b406636592" tests="1" skipped="1" failures="0" errors="0" time="0.01">
-    <testcase time="0.0100000000000016" classname="character(0)" name="add_overall.tbl_survfit_times_works">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_times.R:81:3')"/>
-    </testcase>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-06-21T00:10:59Z" hostname="f394cc65f9c2" tests="1" skipped="0" failures="0" errors="0" time="0.298">
+    <testcase time="0.297999999999998" classname="character(0)" name="theme_gtsummary_roche_works"/>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-06-21T00:10:59Z" hostname="f394cc65f9c2" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.00100000000000122" classname="character(0)" name="theme_gtsummary_roche_adds_relevant_flextable_directives"/>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-06-21T00:10:59Z" hostname="f394cc65f9c2" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999889" classname="character(0)" name="theme_gtsummary_roche_no_errors_with_a_gt_print"/>
   </testsuite>
 </testsuites>
