@@ -47,6 +47,11 @@ add_hierarchical_count_row <- function(x, label = "Overall total number of event
       label = list(...row_count... = label)
     )
 
+  # add overall ----------------------------------------------------------------
+  if ("add_overall" %in% names(x$call_list)) {
+    tbl_count_one <- add_overall(tbl_count_one)
+  }
+
   # add row to primary table ---------------------------------------------------
   x$table_body <-
     x$table_body |>
