@@ -61,6 +61,13 @@ add_hierarchical_count_row <- function(x, label = "Overall total number of event
       .after = .after
     )
 
+  # add count row ard and call -------------------------------------------------
+  x$cards$add_hierarchical_count_row <-
+    gtsummary::gather_ard(tbl_count_one) |>
+    dplyr::bind_rows() |>
+    dplyr::filter(.data$stat_name == "sum")
+  x$call_list$add_hierarchical_count_row <- match.call()
+
   # return table ---------------------------------------------------------------
   x
 }
