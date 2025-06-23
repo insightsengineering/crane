@@ -64,7 +64,7 @@ roche_percent <- function(x,
   percent <- x * 100
   dplyr::case_when(
     is.na(percent) ~ NA_character_,
-    abs(percent - 100) < sqrt(.Machine$double.eps) ~ gtsummary::style_number(100, digits = digits-1, big.mark = big.mark, decimal.mark = decimal.mark, suffix = suffix, ...),
+    abs(percent - 100) < sqrt(.Machine$double.eps) ~ gtsummary::style_number(100, digits = digits - 1, big.mark = big.mark, decimal.mark = decimal.mark, suffix = suffix, ...),
     percent > 99.9 & percent < 100 ~ gtsummary::style_number(99.9, digits = digits, big.mark = big.mark, decimal.mark = decimal.mark, prefix = ">", suffix = suffix, ...),
     percent < 0.1 & percent > 0 ~ gtsummary::style_number(0.1, digits = digits, big.mark = big.mark, decimal.mark = decimal.mark, prefix = "<", suffix = suffix, ...),
     abs(percent - 0) < sqrt(.Machine$double.eps) ~ gtsummary::style_number(0.0, digits = digits, big.mark = big.mark, decimal.mark = decimal.mark, suffix = suffix, ...),
@@ -77,8 +77,8 @@ roche_percent <- function(x,
       suffix = suffix,
       prefix = prefix,
       ...
-    ))
-
+    )
+  )
 }
 
 #' @export
