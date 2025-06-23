@@ -40,7 +40,7 @@ A character vector of rounded p-values
 Round p-values
 }
 \examples{
-x <- c(0.0008, 0.9998)
+x <- c(0.0000001, 0.123456)
 
 roche_pvalue(x)
 label_roche_pvalue()(x)

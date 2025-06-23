@@ -7,6 +7,9 @@
 \usage{
 roche_percent(
   x,
+  prefix = "",
+  suffix = "",
+  digits = 1,
   big.mark = ifelse(decimal.mark == ",", " ", ","),
   decimal.mark = getOption("OutDec"),
   ...
@@ -14,12 +17,24 @@ roche_percent(
 
 label_roche_percent(
   big.mark = ifelse(decimal.mark == ",", " ", ","),
+  suffix = "",
+  digits = 1,
   decimal.mark = getOption("OutDec"),
   ...
 )
 }
 \arguments{
 \item{x}{numeric vector of percentages}
+
+\item{prefix}{(\code{string})\cr
+Additional text to display before the number.}
+
+\item{suffix}{(\code{string})\cr
+Additional text to display after the number.}
+
+\item{digits}{number of digits to round large percentages (i.e. greater than 10\%).
+Smaller percentages are rounded to \code{digits + 1} places.
+Default is \code{0}}
 
 \item{big.mark}{(\code{string})\cr
 Character used between every 3 digits to separate
@@ -36,10 +51,10 @@ Default is \code{"."}  or \code{getOption("OutDec")}}
 A character vector of rounded percent values
 }
 \description{
-Round percentages
+This function only formats percentages between 0 and 1.
 }
 \examples{
-x <- c(0.0000001, 0.123456)
+x <- c(0.0008, 0.9998)
 
 roche_percent(x)
 label_roche_percent()(x)
