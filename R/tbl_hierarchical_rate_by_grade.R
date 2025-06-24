@@ -218,6 +218,10 @@ tbl_hierarchical_rate_by_grade <- function(data,
   # ungrouped grades hierarchical summary --------------------------------------
   if (!is_empty(setdiff(lvls, grades_exclude))) {
     ard_ungrouped <- .ard_rate_by_grade_ordered(data_ungrouped, variables, by, id, denominator)
+    if (!is_empty(grade_groups)) {
+      ard_ungrouped <- ard_ungrouped |>
+        dplyr::filter(!.data[["variable_level"]] %in% setdiff(lvls, unlist(grade_groups)))
+    }
   }
 
   # grouped grades hierarchical summary ----------------------------------------
@@ -225,6 +229,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
     # generate grade groups ARD
     ard_grouped <- .ard_rate_by_grade_ordered(data_ungrouped, variables, by, id, denominator, grade_groups) |>
       suppressMessages()
+    ard_args <- attr(ard_grouped, "args")
 
     if (is_empty(setdiff(lvls, grades_exclude))) {
       # if all individual grades excluded, only grade groups included in final ARD
@@ -236,6 +241,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
   } else {
     # if no grade groups, only individual grades included in final ARD
     ard_final <- ard_ungrouped
+    ard_args <- attr(ard_ungrouped, "args")
   }
 
   # format the final ARD -------------------------------------------------------
@@ -257,7 +263,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
   # apply sorting/filtering ----------------------------------------------------
   names(tbl_final$cards) <- "tbl_hierarchical"
   attr(tbl_final, "class") <- c("tbl_hierarchical", "gtsummary")
-  attr(tbl_final$cards$tbl_hierarchical, "args") <- attr(ard_ungrouped, "args")
+  attr(tbl_final$cards$tbl_hierarchical, "args") <- ard_args
   tbl_final <- tbl_final |> sort_hierarchical(sort)
   if (!quo_is_null(filter)) tbl_final <- tbl_final |> filter_hierarchical(filter = !!filter)
 
@@ -377,6 +383,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
     structure(class = c("tbl_hierarchical_rate_by_grade", "gtsummary"))
 }
 
+# function to generate the hierarchical ARD(s)
 .ard_rate_by_grade_ordered <- function(data,
                                        variables,
                                        by,
@@ -384,7 +391,6 @@ tbl_hierarchical_rate_by_grade <- function(data,
                                        denominator,
                                        grade_groups = NULL) {
   grade <- dplyr::last(variables)
-
   if (!is_empty(grade_groups)) {
     gp_nms <- names(grade_groups)
 

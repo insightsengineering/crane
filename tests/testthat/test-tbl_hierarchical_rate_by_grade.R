@@ -141,7 +141,7 @@ test_that("tbl_hierarchical_rate_by_grade() works with add_overall()", {
     tbl$table_styling$header |>
       dplyr::filter(column == "stat_0") |>
       dplyr::pull(label),
-    "**Overall**  \nN = 254"
+    "All Participants  \nN = 254"
   )
 })
 
@@ -321,8 +321,45 @@ test_that("tbl_hierarchical_rate_by_grade(grades_exclude) works", {
   expect_identical(
     tbl_excl$table_body,
     tbl_no_excl$table_body |>
-      dplyr::select(-tbl_id1) |>
       dplyr::filter(!label_grade %in% as.character(1:5))
+  )
+})
+
+test_that("tbl_hierarchical_rate_by_grade(keep_zero_rows) works", {
+  # remove zero rows
+  expect_message(
+    tbl_no_keep <-
+      tbl_hierarchical_rate_by_grade(
+        ADAE_subset,
+        variables = c(AEBODSYS, AEDECOD, AETOXGR),
+        denominator = ADSL,
+        by = TRTA,
+        label = label,
+        grade_groups = grade_groups
+      )
+  )
+
+  # keep zero rows
+  expect_silent(
+    expect_message(
+      tbl_keep <-
+        tbl_hierarchical_rate_by_grade(
+          ADAE_subset,
+          variables = c(AEBODSYS, AEDECOD, AETOXGR),
+          denominator = ADSL,
+          by = TRTA,
+          label = label,
+          grade_groups = grade_groups,
+          keep_zero_rows = TRUE
+        )
+    )
+  )
+
+  expect_true(nrow(tbl_no_keep$table_body) < nrow(tbl_keep$table_body))
+  expect_identical(
+    tbl_no_keep$cards$tbl_hierarchical_rate_by_grade$tbl_hierarchical,
+    tbl_keep$cards$tbl_hierarchical_rate_by_grade$tbl_hierarchical |>
+      filter_ard_hierarchical(sum(n) > 0)
   )
 })
 
