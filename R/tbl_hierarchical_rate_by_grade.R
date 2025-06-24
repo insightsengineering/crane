@@ -244,6 +244,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
   # format the final ARD -------------------------------------------------------
   # if `keep_zero_rows` is FALSE, filter all-zero rows out
   if (!keep_zero_rows) {
+    n <- NULL # fix warning for undefined variable
     ard_final <- ard_final |> cards::filter_ard_hierarchical(filter = sum(n) > 0)
   }
 
@@ -419,10 +420,10 @@ tbl_hierarchical_rate_by_grade <- function(data,
     # if any grade groups present, replace grades with their grade groups
     data[[grade]] <-
       do.call(
-        forcats::fct_recode, ## can we add this to our forcats imports?
+        forcats::fct_collapse,
         args = c(
           list(.f = data[[grade]]),
-          stats::setNames(unlist(grade_groups), rep(names(grade_groups), lengths(grade_groups)))
+          grade_groups
         )
       )
   }
