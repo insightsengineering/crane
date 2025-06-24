@@ -62,6 +62,14 @@
       24                                                                     Grade 3-4              1 (1.2%)                         12 (14.3%)                          8 (9.5%)
       25                                                                             3                     0                           8 (9.5%)                          4 (4.8%)
 
+---
+
+    Code
+      as.data.frame(tbl)[1, ]
+    Output
+        **MedDRA System Organ Class**  \n    **MedDRA Preferred Term**    \n**Grade** **Placebo**  \nN = 86 **Xanomeline High Dose**  \nN = 84 **Xanomeline Low Dose**  \nN = 84
+      1                                         - Any adverse events -  - Any Grade -      26,0/86, 30.233%                   42,0/84, 50.000%                  40,0/84, 47.619%
+
 # tbl_hierarchical_rate_by_grade(include_overall) works
 
     Code

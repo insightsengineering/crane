@@ -128,11 +128,9 @@ tbl_hierarchical_rate_by_grade <- function(data,
 
   # save function inputs
   tbl_hierarchical_rate_by_grade_inputs <- as.list(environment())
-
   soc <- variables[1]
   ae <- variables[2]
   grade <- variables[3]
-  gp_nms <- NULL
 
   if (!is_empty(grade_groups) && !(is_named(grade_groups) && all(sapply(grade_groups, is_character)))) {
     cli::cli_abort(
@@ -144,8 +142,6 @@ tbl_hierarchical_rate_by_grade <- function(data,
     )
   }
   if (!is_empty(grade_groups)) {
-    gp_nms <- names(grade_groups) # get names of grade groups
-
     if (length(unique(unlist(grade_groups))) < length(unlist(grade_groups))) {
       cli::cli_abort(
         paste(
@@ -250,6 +246,21 @@ tbl_hierarchical_rate_by_grade <- function(data,
     ard_final <- ard_final |> filter_ard_hierarchical(filter = sum(n) > 0)
   }
 
+  # apply digits
+  ard_final <-
+    ard_final |>
+    dplyr::rows_update(
+      imap(
+        digits,
+        ~ enframe(.x, "stat_name", "fmt_fn") |>
+          dplyr::mutate(variable = .y)
+      ) |>
+        dplyr::bind_rows(),
+      by = c("variable", "stat_name"),
+      unmatched = "ignore"
+    ) |>
+    cards::apply_fmt_fn()
+
   # generate table from the final ARD ------------------------------------------
   tbl_final <-
     gtsummary::tbl_ard_hierarchical(
@@ -282,16 +293,16 @@ tbl_hierarchical_rate_by_grade <- function(data,
             } else {
               dat$idx_lvl <- NA
               if (any(unlist(dat$label) %in% lvls)) {
-                dat$idx_lvl[is.na(dat$idx_lvl) & !unlist(dat$label) %in% gp_nms] <-
+                dat$idx_lvl[is.na(dat$idx_lvl) & !unlist(dat$label) %in% names(grade_groups)] <-
                   sapply(
-                    dat$label[is.na(dat$idx_lvl) & !unlist(dat$label) %in% gp_nms],
+                    dat$label[is.na(dat$idx_lvl) & !unlist(dat$label) %in% names(grade_groups)],
                     \(x) which(lvls == unlist(x))
                   )
               }
-              if (any(unlist(dat$label) %in% gp_nms)) {
-                dat$idx_lvl[unlist(dat$label) %in% gp_nms] <-
+              if (any(unlist(dat$label) %in% names(grade_groups))) {
+                dat$idx_lvl[unlist(dat$label) %in% names(grade_groups)] <-
                   sapply(
-                    dat$label[unlist(dat$label) %in% gp_nms],
+                    dat$label[unlist(dat$label) %in% names(grade_groups)],
                     \(x) min(which(lvls %in% grade_groups[[unlist(x)]])) - 0.5
                   )
               }
@@ -335,7 +346,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
               all_stat_cols(),
               ~ if (
                 .data$variable %in% c(ae, "..ard_hierarchical_overall..") |
-                .data$label_grade %in% c(lvls, gp_nms) |
+                .data$label_grade %in% c(lvls, names(grade_groups)) |
                 .data$label == "- Any adverse events -"
               ) {
                 .
@@ -392,15 +403,13 @@ tbl_hierarchical_rate_by_grade <- function(data,
                                        grade_groups = NULL) {
   grade <- dplyr::last(variables)
   if (!is_empty(grade_groups)) {
-    gp_nms <- names(grade_groups)
-
     # replace grades with their grade groups
     data[[grade]] <-
       do.call(
         forcats::fct_recode,
         args = c(list(
           .f = data[[grade]]),
-          setNames(unlist(grade_groups), rep(gp_nms, lengths(grade_groups)))
+          setNames(unlist(grade_groups), rep(names(grade_groups), lengths(grade_groups)))
         )
       )
   }

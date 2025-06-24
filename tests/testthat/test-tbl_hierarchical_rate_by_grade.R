@@ -33,7 +33,7 @@ grade_groups <- list(
 )
 
 test_that("tbl_hierarchical_rate_by_grade() works", {
-  withr::local_options(width = 300)
+  withr::local_options(width = 350)
 
   # no grade groups
   expect_silent(
@@ -77,6 +77,23 @@ test_that("tbl_hierarchical_rate_by_grade() works", {
         )
     )
   )
+
+  # custom statistic/digits
+  expect_silent(
+    expect_message(
+      tbl <-
+        tbl_hierarchical_rate_by_grade(
+          ADAE_subset,
+          variables = c(AEBODSYS, AEDECOD, AETOXGR),
+          denominator = ADSL,
+          by = TRTA,
+          label = label,
+          statistic = everything() ~ "{n}/{N}, {p}%",
+          digits = everything() ~ list(n = label_style_number(digits = 1, decimal.mark = ","), p = 3)
+        )
+    )
+  )
+  expect_snapshot(as.data.frame(tbl)[1, ])
 })
 
 test_that("tbl_hierarchical_rate_by_grade(include_overall) works", {
