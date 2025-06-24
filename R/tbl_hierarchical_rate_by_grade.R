@@ -161,12 +161,12 @@ tbl_hierarchical_rate_by_grade <- function(data,
     )
   }
   if (!is.factor(data[[grade]])) {
-    data[[grade]] <- factor(data[[grade]], ordered = TRUE)
+    data[[grade]] <- factor(data[[grade]])
     vec <- cli::cli_vec(
       levels(data[[grade]]),
       style = list("vec-sep" = " < ", "vec-sep2" = " < ", "vec-last" = " < ", "vec-trunc" = 3)
     )
-    cli::cli_inform("{.val {grade}} has been converted to an ordered {.cls factor} with levels: {.val {vec}}")
+    cli::cli_inform("{.var {grade}}: {.val {vec}}")
   }
 
   # fill in unspecified statistics/labels/digits
@@ -189,7 +189,6 @@ tbl_hierarchical_rate_by_grade <- function(data,
   digits <- lapply(digits, FUN = \(x) x[intersect(names(x), c("n", "N", "p"))])
 
   lvls <- levels(data[[grade]]) # get levels of grade variable
-  if (!is.ordered(data[[grade]])) data[[grade]] <- factor(data[[grade]], levels = lvls, ordered = TRUE)
   data_ungrouped <- data
 
   # ungrouped grades overall sections ------------------------------------------
@@ -346,8 +345,8 @@ tbl_hierarchical_rate_by_grade <- function(data,
               all_stat_cols(),
               ~ if (
                 .data$variable %in% c(ae, "..ard_hierarchical_overall..") |
-                .data$label_grade %in% c(lvls, names(grade_groups)) |
-                .data$label == "- Any adverse events -"
+                  .data$label_grade %in% c(lvls, names(grade_groups)) |
+                  .data$label == "- Any adverse events -"
               ) {
                 .
               } else {
@@ -407,8 +406,8 @@ tbl_hierarchical_rate_by_grade <- function(data,
     data[[grade]] <-
       do.call(
         forcats::fct_recode,
-        args = c(list(
-          .f = data[[grade]]),
+        args = c(
+          list(.f = data[[grade]]),
           setNames(unlist(grade_groups), rep(names(grade_groups), lengths(grade_groups)))
         )
       )

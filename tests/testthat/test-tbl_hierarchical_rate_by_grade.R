@@ -264,7 +264,7 @@ test_that("tbl_hierarchical_rate_by_grade() works with non-factor `grade` variab
           label = label,
           grade_groups = grade_groups
         ),
-      '"AETOXGR" has been converted'
+      '`AETOXGR`:'
     )
   )
 })
