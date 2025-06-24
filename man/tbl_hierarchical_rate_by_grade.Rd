@@ -100,7 +100,8 @@ computing overall totals and grade group totals. For example, to avoid duplicati
 \code{"Grade 5" = "5"}, the individual rows corresponding to grade 5 can be excluded by setting \code{grades_exclude = "5"}.}
 
 \item{keep_zero_rows}{(\code{logical})\cr
-Whether rows containing zero rates across all columns should be kept. Defaults to \code{FALSE}.}
+Whether rows containing zero rates across all columns should be kept. If \code{FALSE}, this filter will be applied
+prior to any filters specified via the \code{filter} argument. Defaults to \code{FALSE}.}
 
 \item{x}{(\code{tbl_hierarchical_rate_by_grade})\cr
 A gtsummary table of class \code{'tbl_hierarchical_rate_by_grade'}.}

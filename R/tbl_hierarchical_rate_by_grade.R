@@ -34,7 +34,8 @@
 #'   computing overall totals and grade group totals. For example, to avoid duplication, if a grade group is defined as
 #'   `"Grade 5" = "5"`, the individual rows corresponding to grade 5 can be excluded by setting `grades_exclude = "5"`.
 #' @param keep_zero_rows (`logical`)\cr
-#'   Whether rows containing zero rates across all columns should be kept. Defaults to `FALSE`.
+#'   Whether rows containing zero rates across all columns should be kept. If `FALSE`, this filter will be applied
+#'   prior to any filters specified via the `filter` argument. Defaults to `FALSE`.
 #' @param x (`tbl_hierarchical_rate_by_grade`)\cr
 #'   A gtsummary table of class `'tbl_hierarchical_rate_by_grade'`.
 #'
@@ -188,32 +189,33 @@ tbl_hierarchical_rate_by_grade <- function(data,
     )
   digits <- lapply(digits, FUN = \(x) x[intersect(names(x), c("n", "N", "p"))])
 
-  lvls <- levels(data[[grade]]) # get levels of grade variable
-  data_ungrouped <- data
+  # get levels of grade variable
+  lvls <- levels(data[[grade]])
 
-  # ungrouped grades overall sections ------------------------------------------
+  # add overall sections -------------------------------------------------------
   # overall section at SOC level (- Any adverse events -)
   if (soc %in% include_overall) {
-    data_ungrouped <-
+    data <-
       dplyr::bind_rows(
-        data_ungrouped |>
-          dplyr::mutate(across(all_of(c(soc, ae)), ~ factor("- Any adverse events -"))),
-        data_ungrouped
+        data |> dplyr::mutate(across(all_of(c(soc, ae)), ~ factor("- Any adverse events -"))),
+        data
       )
   }
 
   # overall section for AE term level (- Overall -)
   if (ae %in% include_overall) {
-    data_ungrouped <- data_ungrouped |>
+    data <- data |>
       dplyr::filter(.data[[soc]] != "- Any adverse events -") |>
       dplyr::mutate(!!ae := "- Overall -") |>
-      dplyr::bind_rows(data_ungrouped)
+      dplyr::bind_rows(data)
   }
 
   # ungrouped grades hierarchical summary --------------------------------------
   if (!is_empty(setdiff(lvls, grades_exclude))) {
-    ard_ungrouped <- .ard_rate_by_grade_ordered(data_ungrouped, variables, by, id, denominator)
-    if (!is_empty(grade_groups)) {
+    ard_ungrouped <- .ard_rate_by_grade_ordered(data, variables, by, id, denominator)
+
+    # remove grades not part of any grade groups - these will be duplicated in ard_grouped
+    if (!is_empty(grade_groups) && !is_empty(setdiff(lvls, unlist(grade_groups)))) {
       ard_ungrouped <- ard_ungrouped |>
         dplyr::filter(!.data[["variable_level"]] %in% setdiff(lvls, unlist(grade_groups)))
     }
@@ -222,9 +224,9 @@ tbl_hierarchical_rate_by_grade <- function(data,
   # grouped grades hierarchical summary ----------------------------------------
   if (!is_empty(grade_groups)) {
     # generate grade groups ARD
-    ard_grouped <- .ard_rate_by_grade_ordered(data_ungrouped, variables, by, id, denominator, grade_groups) |>
+    ard_grouped <- .ard_rate_by_grade_ordered(data, variables, by, id, denominator, grade_groups) |>
       suppressMessages()
-    ard_args <- attr(ard_grouped, "args")
+    ard_args <- attr(ard_grouped, "args") # needed for sorting/filtering
 
     if (is_empty(setdiff(lvls, grades_exclude))) {
       # if all individual grades excluded, only grade groups included in final ARD
@@ -236,11 +238,11 @@ tbl_hierarchical_rate_by_grade <- function(data,
   } else {
     # if no grade groups, only individual grades included in final ARD
     ard_final <- ard_ungrouped
-    ard_args <- attr(ard_ungrouped, "args")
+    ard_args <- attr(ard_ungrouped, "args") # needed for sorting/filtering
   }
 
   # format the final ARD -------------------------------------------------------
-  # if keep_zero_rows is FALSE, filter zero rows out
+  # if `keep_zero_rows` is FALSE, filter all-zero rows out
   if (!keep_zero_rows) {
     ard_final <- ard_final |> filter_ard_hierarchical(filter = sum(n) > 0)
   }
@@ -271,9 +273,11 @@ tbl_hierarchical_rate_by_grade <- function(data,
     )
 
   # apply sorting/filtering ----------------------------------------------------
+  # restructure `tbl_final` as a `tbl_hierarchical` object to use sorting/filtering
   names(tbl_final$cards) <- "tbl_hierarchical"
   attr(tbl_final, "class") <- c("tbl_hierarchical", "gtsummary")
   attr(tbl_final$cards$tbl_hierarchical, "args") <- ard_args
+
   tbl_final <- tbl_final |> sort_hierarchical(sort)
   if (!quo_is_null(filter)) tbl_final <- tbl_final |> filter_hierarchical(filter = !!filter)
 
@@ -283,35 +287,43 @@ tbl_hierarchical_rate_by_grade <- function(data,
     gtsummary::modify_table_body(
       function(table_body) {
         table_body |>
+          # save original row indices to keep outer hierarchy sections in the same order
           dplyr::mutate(idx = dplyr::row_number()) |>
           dplyr::group_by(dplyr::pick(cards::all_ard_groups(), "variable")) |>
           dplyr::group_split() |>
           map(function(dat) {
+            # only rearrange at the grade/grade group level
             if (dat$variable[1] != grade) {
               dat
             } else {
-              dat$idx_lvl <- NA
+              dat$idx_grade <- NA # initialize variable to track new order of grade row indices
               if (any(unlist(dat$label) %in% lvls)) {
-                dat$idx_lvl[is.na(dat$idx_lvl) & !unlist(dat$label) %in% names(grade_groups)] <-
+                # if individual grade levels present, arrange them in their original order (unsorted)
+                dat$idx_grade[is.na(dat$idx_grade) & !unlist(dat$label) %in% names(grade_groups)] <-
                   sapply(
-                    dat$label[is.na(dat$idx_lvl) & !unlist(dat$label) %in% names(grade_groups)],
+                    dat$label[is.na(dat$idx_grade) & !unlist(dat$label) %in% names(grade_groups)],
                     \(x) which(lvls == unlist(x))
                   )
               }
               if (any(unlist(dat$label) %in% names(grade_groups))) {
-                dat$idx_lvl[unlist(dat$label) %in% names(grade_groups)] <-
+                # if grade groups present, arrange so each grade group row
+                # appears directly above the first grade in the group
+                dat$idx_grade[unlist(dat$label) %in% names(grade_groups)] <-
                   sapply(
                     dat$label[unlist(dat$label) %in% names(grade_groups)],
                     \(x) min(which(lvls %in% grade_groups[[unlist(x)]])) - 0.5
                   )
               }
+              # arrange rows at grade level using new order, soc/ae levels using their original (sorted) order
               dat |>
-                dplyr::arrange(.data$idx_lvl, .data$idx) |>
+                dplyr::arrange(.data$idx_grade, .data$idx) |>
+                # save new ordering
                 dplyr::mutate(idx = sort(dat$idx)) |>
-                dplyr::select(-"idx_lvl")
+                dplyr::select(-"idx_grade")
             }
           }) |>
           dplyr::bind_rows() |>
+          # apply new ordering
           dplyr::arrange(.data$idx) |>
           dplyr::select(-"idx")
       }
@@ -393,16 +405,18 @@ tbl_hierarchical_rate_by_grade <- function(data,
     structure(class = c("tbl_hierarchical_rate_by_grade", "gtsummary"))
 }
 
-# function to generate the hierarchical ARD(s)
+# function to generate the hierarchical ARD(s) by highest grade
 .ard_rate_by_grade_ordered <- function(data,
                                        variables,
                                        by,
                                        id,
                                        denominator,
                                        grade_groups = NULL) {
+  # get name of grade variable
   grade <- dplyr::last(variables)
+
   if (!is_empty(grade_groups)) {
-    # replace grades with their grade groups
+    # if any grade groups present, replace grades with their grade groups
     data[[grade]] <-
       do.call(
         forcats::fct_recode,
@@ -413,7 +427,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
       )
   }
 
-  # for ordered factor variable, move last hierarchy level to `by` to get rates by highest level
+  # move grade variable to `by` to get rates by highest grade
   cards_ord <- cards::ard_stack_hierarchical(
     data = data,
     variables = all_of(setdiff(variables, grade)),
@@ -425,25 +439,22 @@ tbl_hierarchical_rate_by_grade <- function(data,
   )
   attr(cards_ord, "args") <- list(by = by, variables = variables, include = variables)
 
-  # update structure to match results for non-ordered factor variables
+  # update structure to match results for the soc/ae variables
   which_var <- which(names(cards_ord) == "variable")
   which_h <- which(names(cards_ord) == paste0("group", length(by) + 1))
   names(cards_ord) <- names(cards_ord)[
     c(0:(which_h - 1), which_var + 0:1, which_h:(which_var - 1), (which_var + 2):length(names(cards_ord)))
   ]
 
-  # if no other statistics to calculate, format N data and return as is
-  # otherwise, bind to results for the remaining variables
+  # bind `cards_ord` to results for the soc/ae variables
   variables <- setdiff(variables, grade)
-  if (is_empty(variables)) {
-    cards_ord[cards_ord[[which_var]] %in% by, which_h + 0:1] <-
-      cards_ord[cards_ord[[which_var]] %in% by, which_var + 0:1]
-    return(cards_ord)
-  } else if (!is_empty(by)) {
+  if (!is_empty(by)) {
+    # remove summary rows that will be duplicated in the following ARD
     cards_ord <- cards_ord |>
       dplyr::filter(.data$group1 == by[1] | .data$context == "total_n")
   }
 
+  # get remaining rates for soc/ae variables
   cards <- cards::ard_stack_hierarchical(
     data = data,
     variables = all_of(variables),
@@ -454,13 +465,8 @@ tbl_hierarchical_rate_by_grade <- function(data,
   ) |>
     suppressMessages()
 
-  # bind ARDs for ordered and non-ordered variable results, merge args attribute, and re-sort
-  if (!is_empty(cards_ord)) {
-    cards <- cards::bind_ard(cards_ord, cards) |>
-      cards::sort_ard_hierarchical("alphanumeric")
-  }
-
-  cards
+  # bind ARDs for ordered and non-ordered results and return
+  cards::bind_ard(cards_ord, cards, .quiet = TRUE)
 }
 
 #' @rdname tbl_hierarchical_rate_by_grade
