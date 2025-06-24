@@ -18,7 +18,8 @@ tbl_hierarchical_rate_by_grade(
   sort = "descending",
   filter = NULL,
   grade_groups = list(),
-  grades_exclude = NULL
+  grades_exclude = NULL,
+  keep_zero_rows = FALSE
 )
 
 \method{add_overall}{tbl_hierarchical_rate_by_grade}(
@@ -97,6 +98,9 @@ e.g. \code{"Grade 1-2" = c("1", "2")}.}
 A vector of grades to omit individual rows for when printing the table. These grades will still be used when
 computing overall totals and grade group totals. For example, to avoid duplication, if a grade group is defined as
 \code{"Grade 5" = "5"}, the individual rows corresponding to grade 5 can be excluded by setting \code{grades_exclude = "5"}.}
+
+\item{keep_zero_rows}{(\code{logical})\cr
+Whether rows containing zero rates across all columns should be kept. Defaults to \code{FALSE}.}
 
 \item{x}{(\code{tbl_hierarchical_rate_by_grade})\cr
 A gtsummary table of class \code{'tbl_hierarchical_rate_by_grade'}.}

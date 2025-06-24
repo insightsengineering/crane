@@ -33,6 +33,8 @@
 #'   A vector of grades to omit individual rows for when printing the table. These grades will still be used when
 #'   computing overall totals and grade group totals. For example, to avoid duplication, if a grade group is defined as
 #'   `"Grade 5" = "5"`, the individual rows corresponding to grade 5 can be excluded by setting `grades_exclude = "5"`.
+#' @param keep_zero_rows (`logical`)\cr
+#'   Whether rows containing zero rates across all columns should be kept. Defaults to `FALSE`.
 #' @param x (`tbl_hierarchical_rate_by_grade`)\cr
 #'   A gtsummary table of class `'tbl_hierarchical_rate_by_grade'`.
 #'
@@ -242,53 +244,6 @@ tbl_hierarchical_rate_by_grade <- function(data,
     ard_final <- ard_final |> filter_ard_hierarchical(filter = sum(n) > 0)
   }
 
-  # apply sorting/filtering, if specified
-  ard_final <- ard_final |> sort_ard_hierarchical(sort) ## does this work?
-  if (!quo_is_null(filter)) ard_final <- ard_final |> filter_ard_hierarchical(filter = !!filter)
-
-  # arrange with groups prior to their first level
-  by_cols <- if (!is_empty(by)) c("group1", "group1_level") else NULL
-  ard_final <- ard_final |>
-    mutate(idx = dplyr::row_number()) |>
-    dplyr::group_by(pick(all_ard_groups(), "variable", -all_of(by_cols))) |>
-    dplyr::group_split() |>
-    map(function(dat) {
-      if (dat$variable[1] != grade) {
-        dat
-      } else {
-        dat$idx_lvl <- NA
-        dat$idx_lvl[unlist(dat$variable_level) == "- Any Grade -"] <- 0
-        if (any(unlist(dat$variable_level) %in% lvls)) {
-          dat$idx_lvl[is.na(dat$idx_lvl) & !unlist(dat$variable_level) %in% gp_nms] <-
-            sapply(
-              dat$variable_level[is.na(dat$idx_lvl) & !unlist(dat$variable_level) %in% gp_nms],
-              \(x) which(lvls == unlist(x))
-            )
-        }
-        if (any(unlist(dat$variable_level) %in% gp_nms)) {
-          dat$idx_lvl[unlist(dat$variable_level) %in% gp_nms] <-
-            sapply(
-              dat$variable_level[unlist(dat$variable_level) %in% gp_nms],
-              \(x) min(which(lvls %in% grade_groups[[unlist(x)]])) - 0.5
-            )
-        }
-        dat |>
-          dplyr::arrange(idx_lvl, idx) |>
-          mutate(idx = seq(min(idx), max(idx))) |>
-          select(-idx_lvl)
-      }
-    }) |>
-    dplyr::bind_rows() |>
-    dplyr::arrange(idx) |>
-    select(-idx) |>
-    as_card()
-
-  ard_final <- ard_final |>
-    # remove duplicate Any AE label row
-    dplyr::filter(!(.data$variable_level == "- Any adverse events -" & .data$variable != soc)) |>
-    # remove rows for grades in grades_exclude
-    dplyr::filter(!.data$variable_level %in% grades_exclude)
-
   # generate table from the final ARD ------------------------------------------
   tbl_final <-
     gtsummary::tbl_ard_hierarchical(
@@ -298,15 +253,64 @@ tbl_hierarchical_rate_by_grade <- function(data,
       statistic = statistic,
       label = label
     )
-  attr(tbl_final$cards$tbl_ard_hierarchical, "args") <- attr(ard_ungrouped, "args")
+
+  # apply sorting/filtering ----------------------------------------------------
+  names(tbl_final$cards) <- "tbl_hierarchical"
+  attr(tbl_final, "class") <- c("tbl_hierarchical", "gtsummary")
+  attr(tbl_final$cards$tbl_hierarchical, "args") <- attr(ard_ungrouped, "args")
+  tbl_final <- tbl_final |> sort_hierarchical(sort)
+  if (!quo_is_null(filter)) tbl_final <- tbl_final |> filter_hierarchical(filter = !!filter)
 
   # format the final table -----------------------------------------------------
+  # arrange grade rows by level, with all groups prior to their first level
+  tbl_final <- tbl_final |>
+    gtsummary::modify_table_body(
+      function(table_body) {
+        table_body |>
+          dplyr::mutate(idx = dplyr::row_number()) |>
+          dplyr::group_by(dplyr::pick(cards::all_ard_groups(), "variable")) |>
+          dplyr::group_split() |>
+          map(function(dat) {
+            if (dat$variable[1] != grade) {
+              dat
+            } else {
+              dat$idx_lvl <- NA
+              if (any(unlist(dat$label) %in% lvls)) {
+                dat$idx_lvl[is.na(dat$idx_lvl) & !unlist(dat$label) %in% gp_nms] <-
+                  sapply(
+                    dat$label[is.na(dat$idx_lvl) & !unlist(dat$label) %in% gp_nms],
+                    \(x) which(lvls == unlist(x))
+                  )
+              }
+              if (any(unlist(dat$label) %in% gp_nms)) {
+                dat$idx_lvl[unlist(dat$label) %in% gp_nms] <-
+                  sapply(
+                    dat$label[unlist(dat$label) %in% gp_nms],
+                    \(x) min(which(lvls %in% grade_groups[[unlist(x)]])) - 0.5
+                  )
+              }
+              dat |>
+                dplyr::arrange(.data$idx_lvl, .data$idx) |>
+                dplyr::mutate(idx = sort(dat$idx)) |>
+                dplyr::select(-"idx_lvl")
+            }
+          }) |>
+          dplyr::bind_rows() |>
+          dplyr::arrange(.data$idx) |>
+          dplyr::select(-"idx")
+      }
+    )
+
   tbl_final <- tbl_final |>
     gtsummary::modify_table_body(
       \(table_body) {
         table_body |>
+          # remove duplicate Any AE label row
+          dplyr::filter(!(.data$label == "- Any adverse events -" & .data$variable != soc)) |>
           # remove soc summary rows if all sub-rows filtered out
           dplyr::filter(!(.data$variable == soc & dplyr::lead(.data$variable) %in% c(soc, NA))) |>
+          # remove rows for grades in grades_exclude
+          dplyr::filter(!.data$label %in% grades_exclude) |>
           dplyr::rowwise() |>
           # add label_grade column to display grade labels
           dplyr::mutate(
@@ -325,8 +329,8 @@ tbl_hierarchical_rate_by_grade <- function(data,
               all_stat_cols(),
               ~ if (
                 .data$variable %in% c(ae, "..ard_hierarchical_overall..") |
-                  .data$label_grade %in% c(lvls, gp_nms) |
-                  .data$label == "- Any adverse events -"
+                .data$label_grade %in% c(lvls, gp_nms) |
+                .data$label == "- Any adverse events -"
               ) {
                 .
               } else {
@@ -365,7 +369,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
   # return final table ---------------------------------------------------------
   tbl_final$call_list <- list(tbl_hierarchical_rate_by_grade = match.call())
   tbl_final$cards <- list(
-    tbl_hierarchical_rate_by_grade = list(tbl_hierarchical = tbl_final$cards$tbl_ard_hierarchical)
+    tbl_hierarchical_rate_by_grade = list(tbl_hierarchical = tbl_final$cards$tbl_hierarchical)
   )
   tbl_final$inputs <- tbl_hierarchical_rate_by_grade_inputs
 
