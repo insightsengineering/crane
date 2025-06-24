@@ -140,7 +140,7 @@ exclude the records corresponding to these rows from being included in rate calc
 See the \code{filter} argument of \code{\link[gtsummary:filter_hierarchical]{gtsummary::filter_hierarchical()}} for more details and examples.
 }
 \examples{
-ADSL <- cards::ADSL |> dplyr::mutate(TRTA = ARM)
+ADSL <- cards::ADSL
 ADAE_subset <- cards::ADAE |>
   dplyr::filter(
     AESOC \%in\% unique(cards::ADAE$AESOC)[1:5],

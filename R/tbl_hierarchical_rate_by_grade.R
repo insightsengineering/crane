@@ -54,7 +54,7 @@
 #' @name tbl_hierarchical_rate_by_grade
 #'
 #' @examples
-#' ADSL <- cards::ADSL |> dplyr::mutate(TRTA = ARM)
+#' ADSL <- cards::ADSL
 #' ADAE_subset <- cards::ADAE |>
 #'   dplyr::filter(
 #'     AESOC %in% unique(cards::ADAE$AESOC)[1:5],

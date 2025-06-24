@@ -1,6 +1,6 @@
 skip_on_cran()
 
-ADSL <- cards::ADSL |> mutate(TRTA = ARM)
+ADSL <- cards::ADSL
 ADAE_subset <- cards::ADAE |>
   dplyr::filter(
     AESOC %in% unique(cards::ADAE$AESOC)[1:5],
