@@ -54,7 +54,7 @@
 #' @name tbl_hierarchical_rate_by_grade
 #'
 #' @examples
-#' ADSL <- cards::ADSL |> mutate(TRTA = ARM)
+#' ADSL <- cards::ADSL |> dplyr::mutate(TRTA = ARM)
 #' ADAE_subset <- cards::ADAE |>
 #'   dplyr::filter(
 #'     AESOC %in% unique(cards::ADAE$AESOC)[1:5],
@@ -65,7 +65,7 @@
 #' set.seed(1)
 #' ADAE_subset <- ADAE_subset |>
 #'   dplyr::rowwise() |>
-#'   mutate(
+#'   dplyr::mutate(
 #'     AETOXGR = dplyr::case_when(
 #'       AESEV == "MILD" ~ sample(1:2, 1),
 #'       AESEV == "MODERATE" ~ sample(3:4, 1),
@@ -181,7 +181,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
     label = lapply(variables, \(x) attr(data[variables][[x]], "label") %||% x) |> stats::setNames(variables)
   )
   digits <-
-    assign_summary_digits(
+    gtsummary::assign_summary_digits(
       data = data,
       statistic = statistic,
       type = rep_named(names(statistic), list("categorical")),
@@ -233,7 +233,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
       ard_final <- ard_grouped
     } else {
       # if both grouped and ungrouped grade rows exist, combine the two ARDs
-      ard_final <- bind_ard(list(ard_ungrouped, ard_grouped), .quiet = TRUE)
+      ard_final <- cards::bind_ard(list(ard_ungrouped, ard_grouped), .quiet = TRUE)
     }
   } else {
     # if no grade groups, only individual grades included in final ARD
@@ -244,7 +244,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
   # format the final ARD -------------------------------------------------------
   # if `keep_zero_rows` is FALSE, filter all-zero rows out
   if (!keep_zero_rows) {
-    ard_final <- ard_final |> filter_ard_hierarchical(filter = sum(n) > 0)
+    ard_final <- ard_final |> cards::filter_ard_hierarchical(filter = sum(n) > 0)
   }
 
   # apply digits
@@ -278,8 +278,8 @@ tbl_hierarchical_rate_by_grade <- function(data,
   attr(tbl_final, "class") <- c("tbl_hierarchical", "gtsummary")
   attr(tbl_final$cards$tbl_hierarchical, "args") <- ard_args
 
-  tbl_final <- tbl_final |> sort_hierarchical(sort)
-  if (!quo_is_null(filter)) tbl_final <- tbl_final |> filter_hierarchical(filter = !!filter)
+  tbl_final <- tbl_final |> gtsummary::sort_hierarchical(sort)
+  if (!quo_is_null(filter)) tbl_final <- tbl_final |> gtsummary::filter_hierarchical(filter = !!filter)
 
   # format the final table -----------------------------------------------------
   # arrange grade rows by level, with all groups prior to their first level
@@ -419,10 +419,10 @@ tbl_hierarchical_rate_by_grade <- function(data,
     # if any grade groups present, replace grades with their grade groups
     data[[grade]] <-
       do.call(
-        forcats::fct_recode,
+        forcats::fct_recode, ## can we add this to our forcats imports?
         args = c(
           list(.f = data[[grade]]),
-          setNames(unlist(grade_groups), rep(names(grade_groups), lengths(grade_groups)))
+          stats::setNames(unlist(grade_groups), rep(names(grade_groups), lengths(grade_groups)))
         )
       )
   }

@@ -140,7 +140,7 @@ exclude the records corresponding to these rows from being included in rate calc
 See the \code{filter} argument of \code{\link[gtsummary:filter_hierarchical]{gtsummary::filter_hierarchical()}} for more details and examples.
 }
 \examples{
-ADSL <- cards::ADSL |> mutate(TRTA = ARM)
+ADSL <- cards::ADSL |> dplyr::mutate(TRTA = ARM)
 ADAE_subset <- cards::ADAE |>
   dplyr::filter(
     AESOC \%in\% unique(cards::ADAE$AESOC)[1:5],
@@ -151,7 +151,7 @@ ADAE_subset <- cards::ADAE |>
 set.seed(1)
 ADAE_subset <- ADAE_subset |>
   dplyr::rowwise() |>
-  mutate(
+  dplyr::mutate(
     AETOXGR = dplyr::case_when(
       AESEV == "MILD" ~ sample(1:2, 1),
       AESEV == "MODERATE" ~ sample(3:4, 1),
