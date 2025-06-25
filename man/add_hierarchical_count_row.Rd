@@ -36,7 +36,7 @@ cards::ADAE |>
   tbl_hierarchical(
     by = "TRTA",
     variables = AEDECOD,
-    denominator = cards::ADSL |> dplyr::rename(TRTA = TRT01A),
+    denominator = cards::ADSL,
     id = "USUBJID",
     overall_row = TRUE
   ) |>

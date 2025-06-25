@@ -105,7 +105,7 @@ When creating a filtered summary, use \code{gtsummary::tbl_hierarchical()} or
 cards::ADAE[c(1, 2, 3, 8, 16), ] |>
   tbl_hierarchical_rate_and_count(
     variables = c(AEBODSYS, AEDECOD),
-    denominator = cards::ADSL |> dplyr::rename(TRTA = TRT01A),
+    denominator = cards::ADSL,
     by = TRTA
   ) |>
   add_overall(last = TRUE)
