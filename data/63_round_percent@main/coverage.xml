@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0.954666666666667" branch-rate="0" lines-covered="716" lines-valid="750" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2025-06-25 21:30:45.462414">
+<coverage line-rate="0.954666666666667" branch-rate="0" lines-covered="716" lines-valid="750" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2025-06-25 21:56:11.667667">
   <sources>
     <source>/__w/crane/crane/crane</source>
   </sources>
@@ -489,8 +489,6 @@
             </method>
             <method name="roche_percent" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
-                <line number="63" hits="319" branch="false"/>
-                <line number="64" hits="319" branch="false"/>
                 <line number="65" hits="319" branch="false"/>
                 <line number="66" hits="319" branch="false"/>
                 <line number="67" hits="319" branch="false"/>
@@ -507,11 +505,13 @@
                 <line number="78" hits="319" branch="false"/>
                 <line number="79" hits="319" branch="false"/>
                 <line number="80" hits="319" branch="false"/>
+                <line number="81" hits="319" branch="false"/>
+                <line number="82" hits="319" branch="false"/>
               </lines>
             </method>
             <method name="label_roche_percent" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
-                <line number="91" hits="15" branch="false"/>
+                <line number="93" hits="15" branch="false"/>
               </lines>
             </method>
           </methods>
@@ -524,8 +524,6 @@
             <line number="27" hits="1" branch="false"/>
             <line number="28" hits="1" branch="false"/>
             <line number="36" hits="9" branch="false"/>
-            <line number="63" hits="319" branch="false"/>
-            <line number="64" hits="319" branch="false"/>
             <line number="65" hits="319" branch="false"/>
             <line number="66" hits="319" branch="false"/>
             <line number="67" hits="319" branch="false"/>
@@ -542,7 +540,9 @@
             <line number="78" hits="319" branch="false"/>
             <line number="79" hits="319" branch="false"/>
             <line number="80" hits="319" branch="false"/>
-            <line number="91" hits="15" branch="false"/>
+            <line number="81" hits="319" branch="false"/>
+            <line number="82" hits="319" branch="false"/>
+            <line number="93" hits="15" branch="false"/>
           </lines>
         </class>
         <class name="modify_header_rm_md.R" filename="R/modify_header_rm_md.R" line-rate="0.888888888888889" branch-rate="0" complexity="0">
