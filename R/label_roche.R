@@ -3,7 +3,7 @@
 #' @inheritParams gtsummary::style_pvalue
 #'
 #' @return A character vector of rounded p-values
-#' @name roche_pvalue
+#' @name label_roche
 #'
 #' @examples
 #' x <- c(0.0000001, 0.123456)
@@ -13,7 +13,7 @@
 NULL
 
 #' @export
-#' @rdname roche_pvalue
+#' @rdname label_roche
 roche_pvalue <- function(x,
                          big.mark = ifelse(decimal.mark == ",", " ", ","),
                          decimal.mark = getOption("OutDec"),
@@ -29,7 +29,7 @@ roche_pvalue <- function(x,
 }
 
 #' @export
-#' @rdname roche_pvalue
+#' @rdname label_roche
 label_roche_pvalue <- function(big.mark = ifelse(decimal.mark == ",", " ", ","),
                                decimal.mark = getOption("OutDec"),
                                ...) {
@@ -40,10 +40,8 @@ label_roche_pvalue <- function(big.mark = ifelse(decimal.mark == ",", " ", ","),
 #' @description
 #' This function only formats percentages between 0 and 1.
 #'
-#' @inheritParams gtsummary::style_percent
-#'
 #' @return A character vector of rounded percent values
-#' @name roche_percent
+#' @name label_roche
 #'
 #' @examples
 #' x <- c(0.0008, 0.9998)
@@ -53,24 +51,25 @@ label_roche_pvalue <- function(big.mark = ifelse(decimal.mark == ",", " ", ","),
 NULL
 
 #' @export
-#' @rdname roche_percent
+#' @rdname label_roche
 roche_percent <- function(x,
                           prefix = "",
                           suffix = "",
                           digits = 1,
+                          scale = 100,
                           big.mark = ifelse(decimal.mark == ",", " ", ","),
                           decimal.mark = getOption("OutDec"),
                           ...) {
-  percent <- x * 100
   dplyr::case_when(
-    is.na(percent) ~ NA_character_,
-    abs(percent - 100) < sqrt(.Machine$double.eps) ~ gtsummary::style_number(100, digits = digits - 1, big.mark = big.mark, decimal.mark = decimal.mark, suffix = suffix, ...),
-    percent > 99.9 & percent < 100 ~ gtsummary::style_number(99.9, digits = digits, big.mark = big.mark, decimal.mark = decimal.mark, prefix = ">", suffix = suffix, ...),
-    percent < 0.1 & percent > 0 ~ gtsummary::style_number(0.1, digits = digits, big.mark = big.mark, decimal.mark = decimal.mark, prefix = "<", suffix = suffix, ...),
-    abs(percent - 0) < sqrt(.Machine$double.eps) ~ gtsummary::style_number(0.0, digits = digits, big.mark = big.mark, decimal.mark = decimal.mark, suffix = suffix, ...),
-    percent < 0 | percent > 100 ~ NA_character_,
+    is.na(x) ~ NA_character_,
+    abs(x - 1) < sqrt(.Machine$double.eps) ~ gtsummary::style_number(1, scale = 100, digits = digits - 1, big.mark = big.mark, decimal.mark = decimal.mark, suffix = suffix, ...),
+    x > 0.999 & x < 1 ~ gtsummary::style_number(0.999, scale = 100, digits = digits, big.mark = big.mark, decimal.mark = decimal.mark, prefix = ">", suffix = suffix, ...),
+    x < 0.001 & x > 0 ~ gtsummary::style_number(0.001, scale = 100, digits = digits, big.mark = big.mark, decimal.mark = decimal.mark, prefix = "<", suffix = suffix, ...),
+    abs(x - 0) < sqrt(.Machine$double.eps) ~ gtsummary::style_number(0.0, scale = 100, digits = digits, big.mark = big.mark, decimal.mark = decimal.mark, suffix = suffix, ...),
+    x < 0 | x > 1 ~ NA_character_,
     TRUE ~ gtsummary::style_number(
-      percent,
+      x,
+      scale = 100,
       digits = digits,
       big.mark = big.mark,
       decimal.mark = decimal.mark,
@@ -82,9 +81,10 @@ roche_percent <- function(x,
 }
 
 #' @export
-#' @rdname roche_percent
+#' @rdname label_roche
 label_roche_percent <- function(big.mark = ifelse(decimal.mark == ",", " ", ","),
                                 suffix = "",
+                                scale = 100,
                                 digits = 1,
                                 decimal.mark = getOption("OutDec"),
                                 ...) {
