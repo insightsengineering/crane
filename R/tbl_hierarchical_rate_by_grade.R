@@ -254,14 +254,14 @@ tbl_hierarchical_rate_by_grade <- function(data,
     dplyr::rows_update(
       imap(
         digits,
-        ~ enframe(.x, "stat_name", "fmt_fn") |>
+        ~ enframe(.x, "stat_name", "fmt_fun") |>
           dplyr::mutate(variable = .y)
       ) |>
         dplyr::bind_rows(),
       by = c("variable", "stat_name"),
       unmatched = "ignore"
     ) |>
-    cards::apply_fmt_fn()
+    cards::apply_fmt_fun()
 
   # generate table from the final ARD ------------------------------------------
   tbl_final <-
