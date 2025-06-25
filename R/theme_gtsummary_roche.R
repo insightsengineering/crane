@@ -49,7 +49,7 @@ theme_gtsummary_roche <- function(set_theme = TRUE) {
   lst_theme <- lst_theme |>
     append(
       list(
-        "tbl_summary-fn:percent_fun" =label_roche_percent(),
+        "tbl_summary-fn:percent_fun" = label_roche_percent(),
         "pkgwide-fn:pvalue_fun" = label_roche_pvalue(),
         "add_overall.tbl_summary-arg:col_label" = "All Participants  \nN = {gtsummary::style_number(N)}",
         "pkgwide-str:print_engine" = "flextable"

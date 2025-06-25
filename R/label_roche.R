@@ -40,6 +40,8 @@ label_roche_pvalue <- function(big.mark = ifelse(decimal.mark == ",", " ", ","),
 #' @description
 #' This function only formats percentages between 0 and 1.
 #'
+#' @inheritParams gtsummary::style_number
+#'
 #' @return A character vector of rounded percent values
 #' @name label_roche
 #'

@@ -56,9 +56,18 @@ Default is \code{"."}  or \code{getOption("OutDec")}}
 
 \item{...}{Arguments passed on to \code{base::format()}}
 
+\item{prefix}{(\code{string})\cr
+Additional text to display before the number.}
+
+\item{suffix}{(\code{string})\cr
+Additional text to display after the number.}
+
 \item{digits}{(\code{integer})\cr
 Number of digits large p-values are rounded. Must be 1, 2, or 3.
 Default is 1.}
+
+\item{scale}{(scalar \code{numeric})\cr
+A scaling factor: \code{x} will be multiplied by scale before formatting.}
 }
 \value{
 A character vector of rounded p-values
