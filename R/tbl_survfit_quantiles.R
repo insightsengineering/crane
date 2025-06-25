@@ -162,9 +162,9 @@ tbl_survfit_quantiles <- function(data,
       probs = c(0.25, 0.50, 0.75),
       method.args = !!method.args
     ) |>
-    cards::update_ard_fmt_fn(
+    cards::update_ard_fmt_fun(
       stat_names = c("estimate", "conf.low", "conf.high"),
-      fmt_fn = estimate_fun
+      fmt_fun = estimate_fun
     )
 
   # calculate range of followup times ------------------------------------------
@@ -183,9 +183,9 @@ tbl_survfit_quantiles <- function(data,
       by = any_of(by),
       statistic = everything() ~ cards::continuous_summary_fns(c("min", "max"))
     ) |>
-    cards::update_ard_fmt_fn(
+    cards::update_ard_fmt_fun(
       stat_names = c("min", "max"),
-      fmt_fn = estimate_fun
+      fmt_fun = estimate_fun
     )
 
   # calculate ARD for by vars

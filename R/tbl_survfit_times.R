@@ -84,13 +84,13 @@ tbl_survfit_times <- function(data,
       times = times,
       method.args = !!method.args
     ) |>
-    cards::update_ard_fmt_fn(
+    cards::update_ard_fmt_fun(
       stat_names = c("estimate", "conf.low", "conf.high"),
-      fmt_fn = estimate_fun
+      fmt_fun = estimate_fun
     ) |>
-    cards::update_ard_fmt_fn(
+    cards::update_ard_fmt_fun(
       stat_names = c("n.risk", "n.censor", "cum.risk", "cum.censor"),
-      fmt_fn = gtsummary::label_style_number()
+      fmt_fun = gtsummary::label_style_number()
     )
 
   # calculate ARD for by vars
