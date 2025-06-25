@@ -418,14 +418,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
 
   if (!is_empty(grade_groups)) {
     # if any grade groups present, replace grades with their grade groups
-    data[[grade]] <-
-      do.call(
-        forcats::fct_collapse,
-        args = c(
-          list(.f = data[[grade]]),
-          grade_groups
-        )
-      )
+    data[[grade]] <- do.call(fct_collapse, args = c(list(f = data[[grade]]), grade_groups))
   }
 
   # move grade variable to `by` to get rates by highest grade
