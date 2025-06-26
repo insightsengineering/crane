@@ -1,15 +1,22 @@
-#' Round p-values
+#' Formatting percent and p-values
 #'
-#' @inheritParams gtsummary::style_pvalue
+#' @description
+#' - `label_roche_pvalue()` returns formatted pvalues.
+#' - `label_roche_percent()` returns formatted percent values. This function only formats percentages between 0 and 1.
 #'
 #' @return A character vector of rounded p-values
-#' @name label_roche
-#'
+#' @inheritParams gtsummary::style_pvalue
 #' @examples
 #' x <- c(0.0000001, 0.123456)
 #'
 #' roche_pvalue(x)
 #' label_roche_pvalue()(x)
+#'
+#' x <- c(0.0008, 0.9998)
+#'
+#' roche_percent(x)
+#' label_roche_percent()(x)
+#' @name label_roche
 NULL
 
 #' @export
@@ -35,22 +42,6 @@ label_roche_pvalue <- function(big.mark = ifelse(decimal.mark == ",", " ", ","),
                                ...) {
   function(x) roche_pvalue(x, big.mark = big.mark, decimal.mark = decimal.mark, ...)
 }
-
-#' Round percentages
-#' @description
-#' This function only formats percentages between 0 and 1.
-#'
-#' @inheritParams gtsummary::style_number
-#'
-#' @return A character vector of rounded percent values
-#' @name label_roche
-#'
-#' @examples
-#' x <- c(0.0008, 0.9998)
-#'
-#' roche_percent(x)
-#' label_roche_percent()(x)
-NULL
 
 #' @export
 #' @rdname label_roche

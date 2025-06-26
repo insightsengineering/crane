@@ -6,7 +6,7 @@
 \alias{label_roche_pvalue}
 \alias{roche_percent}
 \alias{label_roche_percent}
-\title{Round p-values}
+\title{Formatting percent and p-values}
 \usage{
 roche_pvalue(
   x,
@@ -56,32 +56,25 @@ Default is \code{"."}  or \code{getOption("OutDec")}}
 
 \item{...}{Arguments passed on to \code{base::format()}}
 
-\item{prefix}{(\code{string})\cr
-Additional text to display before the number.}
-
-\item{suffix}{(\code{string})\cr
-Additional text to display after the number.}
-
 \item{digits}{(\code{integer})\cr
 Number of digits large p-values are rounded. Must be 1, 2, or 3.
 Default is 1.}
-
-\item{scale}{(scalar \code{numeric})\cr
-A scaling factor: \code{x} will be multiplied by scale before formatting.}
 }
 \value{
 A character vector of rounded p-values
-
-A character vector of rounded percent values
 }
 \description{
-This function only formats percentages between 0 and 1.
+\itemize{
+\item \code{label_roche_pvalue()} returns formatted pvalues.
+\item \code{label_roche_percent()} returns formatted percent values. This function only formats percentages between 0 and 1.
+}
 }
 \examples{
 x <- c(0.0000001, 0.123456)
 
 roche_pvalue(x)
 label_roche_pvalue()(x)
+
 x <- c(0.0008, 0.9998)
 
 roche_percent(x)
