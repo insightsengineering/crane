@@ -29,14 +29,12 @@ This is a basic example which shows you how to solve a common problem:
 
 ``` r
 library(crane)
-#> ── Attaching packages ──────────────────────────────────────────────────────────
-#> ✔ crane     0.1.0.9026     ✔ cards     0.6.0.9007
-#> ✔ gtsummary 2.2.0.9020     ✔ cardx     0.2.4.9004
-#> 
-#> ▶ Setting Roche gtsummary theme. See `?crane::theme_gtsummary_roche()` for details.
+#> Loading required package: gtsummary
+theme_gtsummary_roche()
+#> Setting theme "Roche"
 
 tbl <- trial |>
-  tbl_demographics(by = trt, include = c(age, grade)) |>
+  tbl_roche_summary(by = trt, include = c(age, grade), nonmissing = "always") |>
   add_blank_row()
 ```
 

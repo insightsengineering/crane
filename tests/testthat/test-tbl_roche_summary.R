@@ -1,21 +1,21 @@
 skip_if_not(is_pkg_installed("withr"))
 
-test_that("tbl_demographics() works", {
+test_that("tbl_roche_summary() works", {
   expect_silent(
     tbl <-
       gtsummary::trial |>
-      tbl_demographics(
+      tbl_roche_summary(
         by = trt,
         include = c(age, grade)
       )
   )
 })
 
-test_that("tbl_demographics() |> add_overall() works", {
+test_that("tbl_roche_summary() |> add_overall() works", {
   withr::local_options(list(width = 300))
   expect_equal(
-    tbl_demographics(
-      trial,
+    tbl_roche_summary(
+      gtsummary::trial,
       by = trt,
       include = c(age, grade),
       digits = list(grade = list(p = 1)),
@@ -23,8 +23,8 @@ test_that("tbl_demographics() |> add_overall() works", {
     ) |>
       add_overall() |>
       as.data.frame(),
-    tbl_summary(
-      trial,
+    gtsummary::tbl_summary(
+      gtsummary::trial,
       by = trt,
       include = c(age, grade),
       type = list(age = "continuous2"),
@@ -33,17 +33,18 @@ test_that("tbl_demographics() |> add_overall() works", {
       missing = "no"
     ) |>
       add_overall() |>
-      modify_header(label = "") |>
+      gtsummary::modify_header(label = "") |>
       modify_header_rm_md() |>
       as.data.frame()
   )
 
   expect_snapshot(
-    tbl_demographics(
-      trial,
+    tbl_roche_summary(
+      gtsummary::trial,
       by = trt,
       digits = list(grade = list(p = 1)),
-      include = c(age, grade)
+      include = c(age, grade),
+      nonmissing = "always"
     ) |>
       add_overall() |>
       as.data.frame()
@@ -51,9 +52,9 @@ test_that("tbl_demographics() |> add_overall() works", {
 
   # addresses issue #41
   expect_equal(
-    trial |>
+    gtsummary::trial |>
       dplyr::mutate(grade = fct_expand(grade, "other")) |>
-      tbl_demographics(
+      tbl_roche_summary(
         by = trt,
         include = grade
       ) |>
@@ -67,11 +68,11 @@ test_that("tbl_demographics() |> add_overall() works", {
 
 # addresses issue #60, when all NA column was tabulated it was returned as
 #   "0 (NA%)" instead of "0"
-test_that("tbl_demographics() recode counts for all NA column", {
+test_that("tbl_roche_summary() recode counts for all NA column", {
   expect_equal(
     cards::ADSL |>
       dplyr::mutate(DTHCAT = ifelse(dplyr::row_number() == 1L, "ADVERSE EVENT", NA)) |>
-      tbl_demographics(
+      tbl_roche_summary(
         by = "ARM",
         include = "DTHCAT"
       ) |>

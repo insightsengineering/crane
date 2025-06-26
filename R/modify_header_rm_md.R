@@ -14,10 +14,11 @@
 #' @export
 #'
 #' @examples
-#' tbl_demographics(
+#' tbl_roche_summary(
 #'   data = cards::ADSL,
 #'   include = AGE,
-#'   by = ARM
+#'   by = ARM,
+#'   nonmissing = "always"
 #' ) |>
 #'   modify_header_rm_md()
 modify_header_rm_md <- function(x, md = "bold", type = "star") {
