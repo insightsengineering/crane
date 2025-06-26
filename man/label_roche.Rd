@@ -70,7 +70,6 @@ A character vector of rounded p-values
 }
 }
 \examples{
-
 p-value formatting
 x <- c(0.0000001, 0.123456)
 

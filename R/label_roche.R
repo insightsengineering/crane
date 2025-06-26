@@ -7,7 +7,6 @@
 #' @return A character vector of rounded p-values
 #' @inheritParams gtsummary::style_pvalue
 #' @examples
-#'
 #' p-value formatting
 #' x <- c(0.0000001, 0.123456)
 #'
