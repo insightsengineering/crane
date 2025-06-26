@@ -7,11 +7,14 @@
 #' @return A character vector of rounded p-values
 #' @inheritParams gtsummary::style_pvalue
 #' @examples
+#'
+#' p-value formatting
 #' x <- c(0.0000001, 0.123456)
 #'
 #' roche_pvalue(x)
 #' label_roche_pvalue()(x)
 #'
+#' percent formatting
 #' x <- c(0.0008, 0.9998)
 #'
 #' roche_percent(x)
