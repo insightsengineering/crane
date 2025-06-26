@@ -128,12 +128,12 @@ tbl_survfit_times <- function(data,
           set_names(paste0("time", times))
     ) |>
     gtsummary::modify_header(
-      all_stat_cols() ~ "{level}  \nN = {n}",
+      gtsummary::all_stat_cols() ~ "{level}  \nN = {n}",
       label = ""
     ) |>
     gtsummary::modify_table_body(
       ~ .x |>
-        mutate(
+        dplyr::mutate(
           label = dplyr::case_when(
             .data$label == "Number of Subjects at Risk" ~ "Patients remaining at risk",
             .data$label == "Survival Probability%" ~ "Event Free Rate (%)",

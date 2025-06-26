@@ -187,7 +187,7 @@ tbl_hierarchical_rate_and_count <- function(data,
       \(table_body) {
         dplyr::bind_rows(
           # these are the blank rows with the SOC/HLT label
-          dplyr::select(table_body, -all_stat_cols()) |>
+          dplyr::select(table_body, -gtsummary::all_stat_cols()) |>
             dplyr::filter(.data$variable %in% rev(.env$variables)[-1]),
           # these are the rows with all the AE rates on them.
           #    the first row below the SOC/HLT header is renamed to `label_rate`
@@ -229,7 +229,7 @@ tbl_hierarchical_rate_and_count <- function(data,
     # convert "0 (0.0%)" to "0"
     gtsummary::modify_post_fmt_fun(
       fmt_fun = ~ ifelse(. == "0 (0.0%)", "0", .),
-      columns = all_stat_cols()
+      columns = gtsummary::all_stat_cols()
     )
 
   # return final table ---------------------------------------------------------

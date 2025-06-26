@@ -3,7 +3,7 @@ test_that("add_hierarchical_count_row() works", {
     cards::ADAE |>
     # subset the data for a shorter example table
     dplyr::slice(1:10) |>
-    tbl_hierarchical(
+    gtsummary::tbl_hierarchical(
       by = "TRTA",
       variables = AEDECOD,
       denominator = cards::ADSL,

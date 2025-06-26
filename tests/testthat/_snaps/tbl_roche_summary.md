@@ -1,7 +1,7 @@
-# tbl_demographics() |> add_overall() works
+# tbl_roche_summary() |> add_overall() works
 
     Code
-      as.data.frame(add_overall(tbl_demographics(trial, by = trt, digits = list(grade = list(p = 1)), include = c(age, grade))))
+      as.data.frame(add_overall(tbl_roche_summary(gtsummary::trial, by = trt, digits = list(grade = list(p = 1)), include = c(age, grade), nonmissing = "always")))
     Output
                    All Participants  \nN = 200 Drug A  \nN = 98 Drug B  \nN = 102
       1        Age                        <NA>             <NA>              <NA>

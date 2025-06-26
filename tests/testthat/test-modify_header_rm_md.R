@@ -1,9 +1,9 @@
 test_that("strip_md_bold() works with gtsummary table", {
   expect_false(
-    tbl_strata(
-      trial,
+    gtsummary::tbl_strata(
+      gtsummary::trial,
       strata = "grade",
-      ~ tbl_summary(.x, include = age)
+      ~ gtsummary::tbl_summary(.x, include = age)
     ) |>
       modify_header_rm_md(md = "bold") |>
       as.data.frame() |>
@@ -13,10 +13,10 @@ test_that("strip_md_bold() works with gtsummary table", {
   )
 
   expect_false(
-    tbl_strata(
-      trial,
+    gtsummary::tbl_strata(
+      gtsummary::trial,
       strata = "grade",
-      ~ tbl_summary(.x, include = age),
+      ~ gtsummary::tbl_summary(.x, include = age),
       .header = "_{strata}_"
     ) |>
       modify_header_rm_md(md = "italic", type = "underscore") |>

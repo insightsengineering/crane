@@ -24,6 +24,7 @@ When the crane package is loaded into your R session, a couple of things occur.
 
 ```{r}
 library(crane)
+theme_gtsummary_roche()
 ```
 
 #### When should I add a new function to  {crane}?
@@ -32,23 +33,24 @@ While all Roche tables can be created using {gtsummary}, for some tables the cod
 In these cases, adding a new function to {crane} is warranted.
 
 For example, our standard demographics table can be created with `gtsummary::tbl_summary()`.
-But for such a common table, the code is somewhat long, and we therefore created `crane::tbl_demographics()`.
+But for such a common table, the code is somewhat long, and we therefore created `crane::tbl_roche_summary()`.
 
 To create the Roche standard demographics table, we simple call:
 
 ```{r}
-ADSL |>
-  tbl_demographics(
+cards::ADSL |>
+  tbl_roche_summary(
     by = ARM,
-    include = c(AGE, RACE)
+    include = c(AGE, RACE),
+    nonmissing = "always"
   )
 ```
 
 To create this table with `gtsummary::tbl_summary()`, we'd need the following code.
-As some of these steps are not the most straightforward, we created the `tbl_demographics()` wrapper.
+As some of these steps are not the most straightforward, we created the `tbl_roche_summary()` wrapper.
 
 ```r
-ADSL |> 
+cards::ADSL |> 
   tbl_summary(
     by = ARM, 
     include = c(AGE, RACE),

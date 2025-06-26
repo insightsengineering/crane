@@ -10,7 +10,7 @@ test_that("theme_gtsummary_roche() adds relevant {flextable} directives", {
   cmds <-
     gtsummary::with_gtsummary_theme(
       theme_gtsummary_roche(),
-      as_flex_table(tbl_summary(data.frame(1)), return_calls = TRUE)
+      as_flex_table(gtsummary::tbl_summary(data.frame(1)), return_calls = TRUE)
     )
 
   added_cmds_roche_specific <- cmds[grepl("user_added[0-9]", names(cmds))]
