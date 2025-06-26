@@ -139,22 +139,31 @@ tbl_hierarchical_rate_by_grade <- function(data,
       )
     }
   }
-  if (!is_empty(grades_exclude) & !is_empty(setdiff(grades_exclude, unique(data[[grade]])))) {
-    not_a_grade <- setdiff(grades_exclude, unique(data[[grade]]))
+  if (!is.factor(data[[grade]])) {
+    if (!is_empty(grade_groups) && length(unlist(grade_groups)) >= length(unique(data[[grade]]))) {
+      # if all grades are in a grade group, use the defined grade group order to order factor levels
+      data[[grade]] <- factor(data[[grade]], levels = unlist(grade_groups))
+    } else {
+      # otherwise, use the default order and append any expected (grouped) grades that do not appear
+      data[[grade]] <- factor(data[[grade]])
+      if (!is_empty(setdiff(unlist(grade_groups), levels(data[[grade]])))) {
+        levels(data[[grade]]) <- union(levels(data[[grade]]), unlist(grade_groups))
+      }
+    }
+    vec <- cli::cli_vec(
+      levels(data[[grade]]),
+      style = list("vec-sep" = " < ", "vec-sep2" = " < ", "vec-last" = " < ", "vec-trunc" = 3)
+    )
+    cli::cli_inform("{.var {grade}}: {.val {vec}}")
+  }
+  if (!is_empty(grades_exclude) & !is_empty(setdiff(grades_exclude, levels(data[[grade]])))) {
+    not_a_grade <- setdiff(grades_exclude, levels(data[[grade]]))
     cli::cli_abort(
       paste(
         "Grade(s) {.val {not_a_grade}} supplied to {.arg grades_exclude} {?is/are} invalid.",
         "All grades specified via {.arg grades_exclude} must be levels of {.val {grade}}."
       )
     )
-  }
-  if (!is.factor(data[[grade]])) {
-    data[[grade]] <- factor(data[[grade]])
-    vec <- cli::cli_vec(
-      levels(data[[grade]]),
-      style = list("vec-sep" = " < ", "vec-sep2" = " < ", "vec-last" = " < ", "vec-trunc" = 3)
-    )
-    cli::cli_inform("{.var {grade}}: {.val {vec}}")
   }
 
   # fill in unspecified statistics/labels/digits
@@ -369,8 +378,9 @@ tbl_hierarchical_rate_by_grade <- function(data,
     ) |>
     # update header label
     gtsummary::modify_header(
-      label = paste0("**", label[[soc]], "**  \n", paste0(rep("\U00A0", 4L), collapse = ""), "**", label[[ae]], "**"),
-      label_grade = paste0("\U00A0  \n**", label[[grade]], "**")
+      label ~ paste0(label[[soc]], "  \n", paste0(rep("\U00A0", 4L), collapse = ""), label[[ae]]),
+      label_grade ~ label[[grade]],
+      all_stat_cols() ~ "{level}  \nN = {n}"
     )
 
   # indent grade level labels within grade groups
@@ -417,7 +427,10 @@ tbl_hierarchical_rate_by_grade <- function(data,
     denominator = denominator,
     include = all_of(dplyr::nth(variables, -2)),
     total_n = (is_empty(by) && length(variables) == 1)
-  )
+  ) |>
+    suppressMessages()
+
+  # retain original input args
   attr(cards_ord, "args") <- list(by = by, variables = variables, include = variables)
 
   # update structure to match results for the soc/ae variables

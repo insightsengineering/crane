@@ -24,105 +24,19 @@ test_that("tbl_hierarchical_rate_by_grade() works", {
 
   # no grade groups
   expect_silent(
-    expect_message(
-      tbl <-
-        tbl_hierarchical_rate_by_grade(
-          ADAE_subset,
-          variables = c(AEBODSYS, AEDECOD, AETOXGR),
-          denominator = ADSL,
-          by = TRTA,
-          label = label
-        )
-    )
+    tbl <-
+      tbl_hierarchical_rate_by_grade(
+        ADAE_subset,
+        variables = c(AEBODSYS, AEDECOD, AETOXGR),
+        denominator = ADSL,
+        by = TRTA,
+        label = label
+      )
   )
   expect_snapshot(as.data.frame(tbl)[1:25, ])
 
   # with grade groups
   expect_silent(
-    expect_message(
-      tbl <-
-        tbl_hierarchical_rate_by_grade(
-          ADAE_subset,
-          variables = c(AEBODSYS, AEDECOD, AETOXGR),
-          denominator = ADSL,
-          by = TRTA,
-          label = label,
-          grade_groups = grade_groups
-        )
-    )
-  )
-  expect_snapshot(as.data.frame(tbl)[1:25, ])
-
-  # no by, no label
-  expect_silent(
-    expect_message(
-      tbl <-
-        tbl_hierarchical_rate_by_grade(
-          ADAE_subset,
-          variables = c(AEBODSYS, AEDECOD, AETOXGR),
-          denominator = ADSL
-        )
-    )
-  )
-
-  # custom statistic/digits
-  expect_silent(
-    expect_message(
-      tbl <-
-        tbl_hierarchical_rate_by_grade(
-          ADAE_subset,
-          variables = c(AEBODSYS, AEDECOD, AETOXGR),
-          denominator = ADSL,
-          by = TRTA,
-          label = label,
-          statistic = everything() ~ "{n}/{N}, {p}%",
-          digits = everything() ~ list(n = label_style_number(digits = 1, decimal.mark = ","), p = 3)
-        )
-    )
-  )
-  expect_snapshot(as.data.frame(tbl)[1, ])
-})
-
-test_that("tbl_hierarchical_rate_by_grade(include_overall) works", {
-  withr::local_options(width = 300)
-
-  # all overall sections added
-  expect_silent(
-    expect_message(
-      tbl <-
-        tbl_hierarchical_rate_by_grade(
-          ADAE_subset,
-          variables = c(AEBODSYS, AEDECOD, AETOXGR),
-          denominator = ADSL,
-          by = TRTA,
-          label = label,
-          grade_groups = grade_groups,
-          include_overall = everything()
-        )
-    )
-  )
-  expect_snapshot(as.data.frame(tbl)[1:25, ])
-
-  # all overall sections removed
-  expect_silent(
-    expect_message(
-      tbl <-
-        tbl_hierarchical_rate_by_grade(
-          ADAE_subset,
-          variables = c(AEBODSYS, AEDECOD, AETOXGR),
-          denominator = ADSL,
-          by = TRTA,
-          label = label,
-          grade_groups = grade_groups,
-          include_overall = everything()
-        )
-    )
-  )
-  expect_snapshot(as.data.frame(tbl)[1:25, ])
-})
-
-test_that("tbl_hierarchical_rate_by_grade() works with add_overall()", {
-  expect_message(
     tbl <-
       tbl_hierarchical_rate_by_grade(
         ADAE_subset,
@@ -133,11 +47,82 @@ test_that("tbl_hierarchical_rate_by_grade() works with add_overall()", {
         grade_groups = grade_groups
       )
   )
+  expect_snapshot(as.data.frame(tbl)[1:25, ])
+
+  # no by, no label
+  expect_silent(
+    tbl <-
+      tbl_hierarchical_rate_by_grade(
+        ADAE_subset,
+        variables = c(AEBODSYS, AEDECOD, AETOXGR),
+        denominator = ADSL
+      )
+  )
+
+  # custom statistic/digits
+  expect_silent(
+    tbl <-
+      tbl_hierarchical_rate_by_grade(
+        ADAE_subset,
+        variables = c(AEBODSYS, AEDECOD, AETOXGR),
+        denominator = ADSL,
+        by = TRTA,
+        label = label,
+        statistic = everything() ~ "{n}/{N}, {p}%",
+        digits = everything() ~ list(n = label_style_number(digits = 1, decimal.mark = ","), p = 3)
+      )
+  )
+  expect_snapshot(as.data.frame(tbl)[1, ])
+})
+
+test_that("tbl_hierarchical_rate_by_grade(include_overall) works", {
+  withr::local_options(width = 300)
+
+  # all overall sections added
+  expect_silent(
+    tbl <-
+      tbl_hierarchical_rate_by_grade(
+        ADAE_subset,
+        variables = c(AEBODSYS, AEDECOD, AETOXGR),
+        denominator = ADSL,
+        by = TRTA,
+        label = label,
+        grade_groups = grade_groups,
+        include_overall = everything()
+      )
+  )
+  expect_snapshot(as.data.frame(tbl)[1:25, ])
+
+  # all overall sections removed
+  expect_silent(
+    tbl <-
+      tbl_hierarchical_rate_by_grade(
+        ADAE_subset,
+        variables = c(AEBODSYS, AEDECOD, AETOXGR),
+        denominator = ADSL,
+        by = TRTA,
+        label = label,
+        grade_groups = grade_groups,
+        include_overall = everything()
+      )
+  )
+  expect_snapshot(as.data.frame(tbl)[1:25, ])
+})
+
+test_that("tbl_hierarchical_rate_by_grade() works with add_overall()", {
+  tbl <-
+    tbl_hierarchical_rate_by_grade(
+      ADAE_subset,
+      variables = c(AEBODSYS, AEDECOD, AETOXGR),
+      denominator = ADSL,
+      by = TRTA,
+      label = label,
+      grade_groups = grade_groups
+    )
+
 
   expect_silent(
-    expect_message(
-      tbl <- tbl |> add_overall(last = TRUE)
-    )
+    tbl <- tbl |> add_overall(last = TRUE)
   )
 
   # overall column is added with correct label
@@ -152,17 +137,15 @@ test_that("tbl_hierarchical_rate_by_grade() works with add_overall()", {
 test_that("tbl_hierarchical_rate_by_grade(sort) works", {
   # default "descending" sort
   expect_silent(
-    expect_message(
-      tbl <-
-        tbl_hierarchical_rate_by_grade(
-          ADAE_subset,
-          variables = c(AEBODSYS, AEDECOD, AETOXGR),
-          denominator = ADSL,
-          by = TRTA,
-          label = label,
-          grade_groups = grade_groups
-        )
-    )
+    tbl <-
+      tbl_hierarchical_rate_by_grade(
+        ADAE_subset,
+        variables = c(AEBODSYS, AEDECOD, AETOXGR),
+        denominator = ADSL,
+        by = TRTA,
+        label = label,
+        grade_groups = grade_groups
+      )
   )
   # check order is correct
   expect_equal(
@@ -178,18 +161,16 @@ test_that("tbl_hierarchical_rate_by_grade(sort) works", {
 
   # "alphanumeric" sort works
   expect_silent(
-    expect_message(
-      tbl_alphanum <-
-        tbl_hierarchical_rate_by_grade(
-          ADAE_subset,
-          variables = c(AEBODSYS, AEDECOD, AETOXGR),
-          denominator = ADSL,
-          by = TRTA,
-          label = label,
-          grade_groups = grade_groups,
-          sort = "alphanumeric"
-        )
-    )
+    tbl_alphanum <-
+      tbl_hierarchical_rate_by_grade(
+        ADAE_subset,
+        variables = c(AEBODSYS, AEDECOD, AETOXGR),
+        denominator = ADSL,
+        by = TRTA,
+        label = label,
+        grade_groups = grade_groups,
+        sort = "alphanumeric"
+      )
   )
   expect_equal(nrow(tbl), nrow(tbl_alphanum))
   # check order is correct
@@ -207,21 +188,17 @@ test_that("tbl_hierarchical_rate_by_grade(sort) works", {
 
 test_that("tbl_hierarchical_rate_by_grade(filter) works", {
   expect_silent(
-    expect_message(
-      expect_message(
-        tbl <-
-          tbl_hierarchical_rate_by_grade(
-            ADAE_subset,
-            variables = c(AEBODSYS, AEDECOD, AETOXGR),
-            denominator = ADSL,
-            by = TRTA,
-            label = label,
-            filter = sum(n) / sum(N) > 0.07,
-            grade_groups = grade_groups
-          ) |>
-          add_overall()
-      )
-    )
+    tbl <-
+      tbl_hierarchical_rate_by_grade(
+        ADAE_subset,
+        variables = c(AEBODSYS, AEDECOD, AETOXGR),
+        denominator = ADSL,
+        by = TRTA,
+        label = label,
+        filter = sum(n) / sum(N) > 0.07,
+        grade_groups = grade_groups
+      ) |>
+      add_overall()
   )
 
   # check that all rows have a percent larger than 7.5%
@@ -238,46 +215,10 @@ test_that("tbl_hierarchical_rate_by_grade(filter) works", {
   )
 })
 
-test_that("tbl_hierarchical_rate_by_grade() works with non-factor `grade` variables", {
+test_that("tbl_hierarchical_rate_by_grade() works with non-factor grade variables", {
   ADAE_subset$AETOXGR <- as.character(ADAE_subset$AETOXGR)
   expect_message(
-    expect_message(
-      tbl <-
-        tbl_hierarchical_rate_by_grade(
-          ADAE_subset,
-          variables = c(AEBODSYS, AEDECOD, AETOXGR),
-          denominator = ADSL,
-          by = TRTA,
-          label = label,
-          grade_groups = grade_groups
-        ),
-      "`AETOXGR`:"
-    )
-  )
-})
-
-test_that("tbl_hierarchical_rate_by_grade(grade_groups) works with some grades not in groups", {
-  withr::local_options(width = 200)
-
-  expect_silent(
-    expect_message(
-      tbl <-
-        tbl_hierarchical_rate_by_grade(
-          ADAE_subset,
-          variables = c(AEBODSYS, AEDECOD, AETOXGR),
-          denominator = ADSL,
-          by = TRTA,
-          label = label,
-          grade_groups = list("Grade 3-4" = c("3", "4"))
-        )
-    )
-  )
-})
-
-test_that("tbl_hierarchical_rate_by_grade(grades_exclude) works", {
-  # no grades excluded
-  expect_message(
-    tbl_no_excl <-
+    tbl <-
       tbl_hierarchical_rate_by_grade(
         ADAE_subset,
         variables = c(AEBODSYS, AEDECOD, AETOXGR),
@@ -285,23 +226,52 @@ test_that("tbl_hierarchical_rate_by_grade(grades_exclude) works", {
         by = TRTA,
         label = label,
         grade_groups = grade_groups
+      ),
+    "`AETOXGR`:"
+  )
+})
+
+test_that("tbl_hierarchical_rate_by_grade(grade_groups) works with some grades not in groups", {
+  withr::local_options(width = 200)
+
+  expect_silent(
+    tbl <-
+      tbl_hierarchical_rate_by_grade(
+        ADAE_subset,
+        variables = c(AEBODSYS, AEDECOD, AETOXGR),
+        denominator = ADSL,
+        by = TRTA,
+        label = label,
+        grade_groups = list("Grade 3-4" = c("3", "4"))
       )
   )
+})
+
+test_that("tbl_hierarchical_rate_by_grade(grades_exclude) works", {
+  # no grades excluded
+  tbl_no_excl <-
+    tbl_hierarchical_rate_by_grade(
+      ADAE_subset,
+      variables = c(AEBODSYS, AEDECOD, AETOXGR),
+      denominator = ADSL,
+      by = TRTA,
+      label = label,
+      grade_groups = grade_groups
+    )
+
 
   # one grade excluded
   expect_silent(
-    expect_message(
-      tbl_excl <-
-        tbl_hierarchical_rate_by_grade(
-          ADAE_subset,
-          variables = c(AEBODSYS, AEDECOD, AETOXGR),
-          denominator = ADSL,
-          by = TRTA,
-          label = label,
-          grade_groups = grade_groups,
-          grades_exclude = "5"
-        )
-    )
+    tbl_excl <-
+      tbl_hierarchical_rate_by_grade(
+        ADAE_subset,
+        variables = c(AEBODSYS, AEDECOD, AETOXGR),
+        denominator = ADSL,
+        by = TRTA,
+        label = label,
+        grade_groups = grade_groups,
+        grades_exclude = "5"
+      )
   )
   expect_identical(
     tbl_excl$table_body,
@@ -331,32 +301,29 @@ test_that("tbl_hierarchical_rate_by_grade(grades_exclude) works", {
 
 test_that("tbl_hierarchical_rate_by_grade(keep_zero_rows) works", {
   # remove zero rows
-  expect_message(
-    tbl_no_keep <-
+  tbl_no_keep <-
+    tbl_hierarchical_rate_by_grade(
+      ADAE_subset,
+      variables = c(AEBODSYS, AEDECOD, AETOXGR),
+      denominator = ADSL,
+      by = TRTA,
+      label = label,
+      grade_groups = grade_groups
+    )
+
+
+  # keep zero rows
+  expect_silent(
+    tbl_keep <-
       tbl_hierarchical_rate_by_grade(
         ADAE_subset,
         variables = c(AEBODSYS, AEDECOD, AETOXGR),
         denominator = ADSL,
         by = TRTA,
         label = label,
-        grade_groups = grade_groups
+        grade_groups = grade_groups,
+        keep_zero_rows = TRUE
       )
-  )
-
-  # keep zero rows
-  expect_silent(
-    expect_message(
-      tbl_keep <-
-        tbl_hierarchical_rate_by_grade(
-          ADAE_subset,
-          variables = c(AEBODSYS, AEDECOD, AETOXGR),
-          denominator = ADSL,
-          by = TRTA,
-          label = label,
-          grade_groups = grade_groups,
-          keep_zero_rows = TRUE
-        )
-    )
   )
 
   expect_true(nrow(tbl_no_keep$table_body) < nrow(tbl_keep$table_body))
