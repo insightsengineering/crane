@@ -7,19 +7,6 @@ ADAE_subset <- cards::ADAE |>
     AETERM %in% unique(cards::ADAE$AETERM)[1:5]
   )
 
-## Add AETOXGR variable to example dataset
-set.seed(1)
-ADAE_subset <- ADAE_subset |>
-  dplyr::rowwise() |>
-  mutate(
-    AETOXGR = dplyr::case_when(
-      AESEV == "MILD" ~ sample(1:2, 1),
-      AESEV == "MODERATE" ~ sample(3:4, 1),
-      AESEV == "SEVERE" ~ 5,
-    ) |> factor(levels = 1:5)
-  ) |>
-  dplyr::ungroup()
-
 label <- list(
   AEBODSYS = "MedDRA System Organ Class",
   AEDECOD = "MedDRA Preferred Term",
@@ -376,7 +363,7 @@ test_that("tbl_hierarchical_rate_by_grade(keep_zero_rows) works", {
   expect_identical(
     tbl_no_keep$cards$tbl_hierarchical_rate_by_grade$tbl_hierarchical,
     tbl_keep$cards$tbl_hierarchical_rate_by_grade$tbl_hierarchical |>
-      filter_ard_hierarchical(sum(n) > 0)
+      cards::filter_ard_hierarchical(sum(n) > 0)
   )
 })
 

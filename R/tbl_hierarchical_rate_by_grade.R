@@ -61,19 +61,6 @@
 #'     AETERM %in% unique(cards::ADAE$AETERM)[1:10]
 #'   )
 #'
-#' ## Add AETOXGR variable to example dataset
-#' set.seed(1)
-#' ADAE_subset <- ADAE_subset |>
-#'   dplyr::rowwise() |>
-#'   dplyr::mutate(
-#'     AETOXGR = dplyr::case_when(
-#'       AESEV == "MILD" ~ sample(1:2, 1),
-#'       AESEV == "MODERATE" ~ sample(3:4, 1),
-#'       AESEV == "SEVERE" ~ 5,
-#'     ) |> factor(levels = 1:5)
-#'   ) |>
-#'   dplyr::ungroup()
-#'
 #' # Example 1 ----------------------------------
 #' grade_groups <- list(
 #'   "Grade 1-2" = c("1", "2"),
