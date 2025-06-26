@@ -140,6 +140,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
     }
   }
   if (!is.factor(data[[grade]])) {
+    label_grade <- attr(data[[grade]], "label")
     if (!is_empty(grade_groups) && length(unlist(grade_groups)) >= length(unique(data[[grade]]))) {
       # if all grades are in a grade group, use the defined grade group order to order factor levels
       data[[grade]] <- factor(data[[grade]], levels = unlist(grade_groups))
@@ -150,6 +151,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
         levels(data[[grade]]) <- union(levels(data[[grade]]), unlist(grade_groups))
       }
     }
+    attr(data[[grade]], "label") <- label_grade
     vec <- cli::cli_vec(
       levels(data[[grade]]),
       style = list("vec-sep" = " < ", "vec-sep2" = " < ", "vec-last" = " < ", "vec-trunc" = 3)
@@ -373,7 +375,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
     gtsummary::remove_footnote_header(columns = everything()) |>
     # convert "0 (0.0%)" to "0"
     gtsummary::modify_post_fmt_fun(
-      fmt_fun = ~ ifelse(. == "0 (0.0%)", "0", .),
+      fmt_fun = ~ ifelse(. %in% c("0 (0.0%)", "0 (NA%)"), "0", .),
       columns = all_stat_cols()
     ) |>
     # update header label
