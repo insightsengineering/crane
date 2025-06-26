@@ -17,7 +17,12 @@
 #' @examples
 #' theme_gtsummary_roche()
 #'
-#' tbl_demographics(trial, by = trt, include = c(age, grade))
+#' tbl_roche_summary(
+#'   trial,
+#'   by = trt,
+#'   include = c(age, grade),
+#'   nonmissing = "always"
+#' )
 #'
 #' reset_gtsummary_theme()
 theme_gtsummary_roche <- function(set_theme = TRUE) {

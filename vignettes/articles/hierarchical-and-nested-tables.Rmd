@@ -261,9 +261,10 @@ tbl_strata_nested_stack(
   ADLB_subset,
   strata = c(PARAM, AVISIT),
   .tbl_fun = ~ .x |>
-    crane::tbl_demographics(
+    crane::tbl_roche_summary(
       include = AVAL,
       by = TRT01A,
+      nonmissing = "always",
       type = list(AVAL = "continuous2"),
       statistic = list(AVAL = c("{mean} ({sd})", "{median}", "{min} - {max}"))
     ) |>

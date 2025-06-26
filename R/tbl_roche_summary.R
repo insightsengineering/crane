@@ -1,12 +1,12 @@
-#' Demographics Table
+#' Roche Summary Table
 #'
 #' @description
 #' This is a thin wrapper of [`gtsummary::tbl_summary()`] with the following differences:
 #' - Default summary type for continuous variables is `'continuous2'`.
-#' - Number of non-missing observations is added for each variable by default
-#'   and placed on the row under the header.
+#' - Number of non-missing observations, when requested, is added for each variable
+#'   and placed on the row under the variable label/header.
 #' - The `tbl_summary(missing*)` arguments have been renamed to
-#'   `tbl_demographics(nonmissing*)` with updated default values.
+#'   `tbl_roche_summary(nonmissing*)` with updated default values.
 #' - The default footnotes from `tbl_summary()` are removed.
 #' - Cells with `"0 (0.0%)"` are converted to `"0"` with `modify_post_fmt_fun()`.
 #'
@@ -24,28 +24,29 @@
 #' @examples
 #' # Example 1 ----------------------------------
 #' trial |>
-#'   tbl_demographics(
+#'   tbl_roche_summary(
 #'     by = trt,
-#'     include = c(age, grade)
+#'     include = c(age, grade),
+#'     nonmissing = "always"
 #'   ) |>
 #'   add_overall()
-tbl_demographics <- function(data,
-                             by = NULL,
-                             label = NULL,
-                             statistic =
-                               list(
-                                 all_continuous() ~ c("{mean} ({sd})", "{median}", "{min} - {max}"),
-                                 all_categorical() ~ "{n} ({p}%)"
-                               ),
-                             digits = NULL,
-                             type = NULL,
-                             value = NULL,
-                             nonmissing = c("always", "ifany", "no"),
-                             nonmissing_text = "n",
-                             nonmissing_stat = "{N_nonmiss}",
-                             sort = all_categorical(FALSE) ~ "alphanumeric",
-                             percent = c("column", "row", "cell"),
-                             include = everything()) {
+tbl_roche_summary <- function(data,
+                              by = NULL,
+                              label = NULL,
+                              statistic =
+                                list(
+                                  all_continuous() ~ c("{mean} ({sd})", "{median}", "{min} - {max}"),
+                                  all_categorical() ~ "{n} ({p}%)"
+                                ),
+                              digits = NULL,
+                              type = NULL,
+                              value = NULL,
+                              nonmissing = c("no", "always", "ifany"),
+                              nonmissing_text = "n",
+                              nonmissing_stat = "{N_nonmiss}",
+                              sort = all_categorical(FALSE) ~ "alphanumeric",
+                              percent = c("column", "row", "cell"),
+                              include = everything()) {
   set_cli_abort_call()
   if (is.character(percent)) percent <- arg_match(percent, error_call = get_cli_abort_call())
   nonmissing <- arg_match(nonmissing, error_call = get_cli_abort_call())
@@ -53,7 +54,7 @@ tbl_demographics <- function(data,
   # execute `tbl_summary()` code with theme/defaults ---------------------------
   x <-
     gtsummary::with_gtsummary_theme(
-      x = tbl_demographics_theme,
+      x = tbl_roche_summary_theme,
       expr =
         gtsummary::tbl_summary(
           data = data,
@@ -73,7 +74,7 @@ tbl_demographics <- function(data,
       msg_ignored_elements =
         paste(
           "Theme element(s) {.val {elements}} utilized internally",
-          "by {.code tbl_demographics()} and cannot be modified.\n",
+          "by {.code tbl_roche_summary()} and cannot be modified.\n",
           "Use {.code gtsummary::tbl_summary()} if you",
           "wish to modify these theme elements."
         )
@@ -98,7 +99,7 @@ tbl_demographics <- function(data,
       }
     ) |>
     # assign class
-    structure(class = c("tbl_demographics", "tbl_summary", "gtsummary"))
+    structure(class = c("tbl_roche_summary", "tbl_summary", "gtsummary"))
 
   # return table ---------------------------------------------------------------
   x$inputs$missing <- NULL
@@ -113,9 +114,9 @@ tbl_demographics <- function(data,
         nonmissing_text = nonmissing_text
       )
     )
-  x$call_list <- list(tbl_demographics = match.call())
+  x$call_list <- list(tbl_roche_summary = match.call())
   x
 }
 
-# creating theme for tbl_demographic summaries ---------------------------------
-tbl_demographics_theme <- list("tbl_summary-str:default_con_type" = "continuous2")
+# creating theme for tbl_roche_summary summaries -------------------------------
+tbl_roche_summary_theme <- list("tbl_summary-str:default_con_type" = "continuous2")
