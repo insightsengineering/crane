@@ -4,6 +4,7 @@
 #' A gtsummary theme for Roche tables
 #' - flextable- and gt-printed tables are styled with reduced padding and font size.
 #' - Uses `label_roche_pvalue()` as the default formatting function for all p-values.
+#' - Uses `label_roche_percent()` as the default formatting function for all percent values.
 #' - Font size defaults are 8 points for all the table by the footers that are 7 points.
 #' - Border defaults to `flextable::fp_border_default(width = 0.5)`.
 #' - The `add_overall(col_label)` default value has been updated.
