@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">crane</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9030</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9032</small>
 
     <div style="width: 140px; margin-left: 0.5rem;"> <small class="nav-text text-muted me-auto">part of</small> <img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/nest.png?raw=true" alt="NEST" style="height: 30px;"><a href="https://pharmaverse.org/" class="external-link"><img src="https://github.com/insightsengineering/hex-stickers/blob/main/PNG/pharmaverse.png?raw=true" alt="pharmaverse" style="height: 28px;"></a> </div>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -38,20 +38,22 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.1.0.9030" id="crane-0109030">crane 0.1.0.9030<a class="anchor" aria-label="anchor" href="#crane-0109030"></a></h2>
-<ul><li><p>Adding the <code><a href="../reference/modify_zero_recode.html">modify_zero_recode()</a></code> function that recodes <code>"0 (0.0%)"</code> to <code>"0"</code> in summary tables.</p></li>
+<h2 class="pkg-version" data-toc-text="0.1.0.9032" id="crane-0109032">crane 0.1.0.9032<a class="anchor" aria-label="anchor" href="#crane-0109032"></a></h2>
+<ul><li><p>The {gtsummary} is now loaded with {crane}.</p></li>
+<li>
+<p>The <code><a href="../reference/deprecated.html">tbl_demographics()</a></code> function has been renamed to <code><a href="../reference/tbl_roche_summary.html">tbl_roche_summary()</a></code> with the following updates. (<a href="https://github.com/insightsengineering/crane/issues/73" class="external-link">#73</a>).</p>
+<ul><li><p>Updated <code><a href="../reference/tbl_roche_summary.html">tbl_roche_summary()</a></code> to convert cells with <code>"0 (0.0%)"</code> to <code>"0"</code>.</p></li>
+<li><p>Update the <code><a href="../reference/tbl_roche_summary.html">tbl_roche_summary()</a></code> returned <code>inputs</code> list to match the <code><a href="../reference/tbl_roche_summary.html">tbl_roche_summary()</a></code> argument inputs, whereas it previously returned the <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html" class="external-link">tbl_summary()</a></code> inputs. (<a href="https://github.com/insightsengineering/crane/issues/31" class="external-link">#31</a>)</p></li>
+<li><p>Changed the default header in <code><a href="../reference/tbl_roche_summary.html">tbl_roche_summary()</a></code> tables from <code>**Characteristic**</code> to an empty string.</p></li>
+<li><p>Fix in <code><a href="../reference/tbl_roche_summary.html">tbl_roche_summary()</a></code> when a variable is all <code>NA</code> within a stratum. The zero count was displayed as <code>"0 (NA%)"</code> instead of <code>"0"</code>. (<a href="https://github.com/insightsengineering/crane/issues/60" class="external-link">#60</a>)</p></li>
+</ul></li>
 <li><p>Adding the <code><a href="../reference/modify_zero_recode.html">modify_zero_recode()</a></code> function that recodes <code>"0 (0.0%)"</code> to <code>"0"</code> in summary tables.</p></li>
 <li><p>Adding the <code><a href="../reference/modify_header_rm_md.html">modify_header_rm_md()</a></code> function to remove bold and italic markdown syntax from the headers of a gtsummary table. (<a href="https://github.com/insightsengineering/crane/issues/53" class="external-link">#53</a>)</p></li>
 <li><p>Adding <code><a href="../reference/tbl_hierarchical_rate_and_count.html">tbl_hierarchical_rate_and_count()</a></code> and associated S3 method <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_overall.html" class="external-link">add_overall()</a></code> to summarize hierarchical event rates and counts. (<a href="https://github.com/insightsengineering/crane/issues/36" class="external-link">#36</a>)</p></li>
 <li><p>Adding <code><a href="../reference/tbl_survfit_times.html">tbl_survfit_times()</a></code> and <code><a href="../reference/tbl_survfit_times.html">add_overall.tbl_survfit_times()</a></code></p></li>
 <li><p>Added an article giving an overview of the {crane} package. (<a href="https://github.com/insightsengineering/crane/issues/37" class="external-link">#37</a>)</p></li>
-<li><p>Updated <code><a href="../reference/tbl_demographics.html">tbl_demographics()</a></code> to convert cells with <code>"0 (0.0%)"</code> to <code>"0"</code>.</p></li>
 <li><p>Added <code><a href="../reference/tbl_survfit_quantiles.html">tbl_survfit_quantiles()</a></code> and <code><a href="../reference/tbl_survfit_quantiles.html">add_overall.tbl_survfit_quantiles()</a></code> to create a table of survival quantiles. (<a href="https://github.com/insightsengineering/crane/issues/19" class="external-link">#19</a>)</p></li>
-<li><p>Changed the default header in <code><a href="../reference/tbl_demographics.html">tbl_demographics()</a></code> tables from <code>**Characteristic**</code> to an empty string.</p></li>
-<li><p>Update the <code><a href="../reference/tbl_demographics.html">tbl_demographics()</a></code> returned <code>inputs</code> list to match the <code><a href="../reference/tbl_demographics.html">tbl_demographics()</a></code> argument inputs, whereas it previously returned the <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html" class="external-link">tbl_summary()</a></code> inputs. (<a href="https://github.com/insightsengineering/crane/issues/31" class="external-link">#31</a>)</p></li>
-<li><p>Loading gtsummary, cards, and cardx along with crane. (<a href="https://github.com/insightsengineering/crane/issues/29" class="external-link">#29</a>)</p></li>
 <li><p>Added {flextable} specs for <code><a href="../reference/theme_gtsummary_roche.html">theme_gtsummary_roche()</a></code>. Mainly border line width (0.5) and footer font size (<code>font_size</code> - 1).</p></li>
-<li><p>Fix in <code><a href="../reference/tbl_demographics.html">tbl_demographics()</a></code> when a variable is all <code>NA</code> within a stratum. The zero count was displayed as <code>"0 (NA%)"</code> instead of <code>"0"</code>. (<a href="https://github.com/insightsengineering/crane/issues/60" class="external-link">#60</a>)</p></li>
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.0" id="crane-010">crane 0.1.0<a class="anchor" aria-label="anchor" href="#crane-010"></a></h2><p class="text-muted">CRAN release: 2025-02-24</p>
