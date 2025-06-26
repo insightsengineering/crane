@@ -31,22 +31,22 @@
 #'   ) |>
 #'   add_overall()
 tbl_roche_summary <- function(data,
-                             by = NULL,
-                             label = NULL,
-                             statistic =
-                               list(
-                                 all_continuous() ~ c("{mean} ({sd})", "{median}", "{min} - {max}"),
-                                 all_categorical() ~ "{n} ({p}%)"
-                               ),
-                             digits = NULL,
-                             type = NULL,
-                             value = NULL,
-                             nonmissing = c("no", "always", "ifany"),
-                             nonmissing_text = "n",
-                             nonmissing_stat = "{N_nonmiss}",
-                             sort = all_categorical(FALSE) ~ "alphanumeric",
-                             percent = c("column", "row", "cell"),
-                             include = everything()) {
+                              by = NULL,
+                              label = NULL,
+                              statistic =
+                                list(
+                                  all_continuous() ~ c("{mean} ({sd})", "{median}", "{min} - {max}"),
+                                  all_categorical() ~ "{n} ({p}%)"
+                                ),
+                              digits = NULL,
+                              type = NULL,
+                              value = NULL,
+                              nonmissing = c("no", "always", "ifany"),
+                              nonmissing_text = "n",
+                              nonmissing_stat = "{N_nonmiss}",
+                              sort = all_categorical(FALSE) ~ "alphanumeric",
+                              percent = c("column", "row", "cell"),
+                              include = everything()) {
   set_cli_abort_call()
   if (is.character(percent)) percent <- arg_match(percent, error_call = get_cli_abort_call())
   nonmissing <- arg_match(nonmissing, error_call = get_cli_abort_call())
