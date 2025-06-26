@@ -89,7 +89,7 @@
 #'   # directly modify the labels in the table to match spec
 #'   modify_table_body(
 #'     ~ .x |>
-#'       mutate(
+#'       dplyr::mutate(
 #'         label = dplyr::case_when(
 #'           .data$label == "Survival Probability" ~ "Median",
 #'           .data$label == "(CI Lower Bound, CI Upper Bound)" ~ "95% CI",
@@ -228,12 +228,12 @@ tbl_survfit_quantiles <- function(data,
       )
     ) |>
     gtsummary::modify_header(
-      all_stat_cols() ~ "{level}  \nN = {n}",
+      gtsummary::all_stat_cols() ~ "{level}  \nN = {n}",
       label = ""
     ) |>
     gtsummary::modify_table_body(
       ~ .x |>
-        mutate(
+        dplyr::mutate(
           label = dplyr::case_when(
             .data$label == "Survival Probability" ~ "Median",
             .data$label == "(CI Lower Bound, CI Upper Bound)" ~ glue("{gtsummary::style_number(conf.level, scale = 100)}% CI"),
@@ -252,7 +252,7 @@ tbl_survfit_quantiles <- function(data,
       rows = .data$label == "Range",
       indent = 4L
     ) |>
-    gtsummary::remove_footnote_header(columns = all_stat_cols())
+    gtsummary::remove_footnote_header(columns = gtsummary::all_stat_cols())
 
   # return tbl -----------------------------------------------------------------
   res$cards <-

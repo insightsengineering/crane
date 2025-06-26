@@ -17,9 +17,10 @@
 #'
 #' @examples
 #' trial |>
-#'   tbl_demographics(
+#'   tbl_roche_summary(
 #'     by = trt,
-#'     include = c(age, marker, grade)
+#'     include = c(age, marker, grade),
+#'     nonmissing = "always"
 #'   ) |>
 #'   add_blank_row()
 add_blank_row <- function(x) {

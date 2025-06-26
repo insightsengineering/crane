@@ -128,7 +128,7 @@ cards::bind_ard(
   # directly modify the labels in the table to match spec
   modify_table_body(
     ~ .x |>
-      mutate(
+      dplyr::mutate(
         label = dplyr::case_when(
           .data$label == "Survival Probability" ~ "Median",
           .data$label == "(CI Lower Bound, CI Upper Bound)" ~ "95\% CI",

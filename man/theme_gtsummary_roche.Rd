@@ -27,7 +27,12 @@ A gtsummary theme for Roche tables
 \examples{
 theme_gtsummary_roche()
 
-tbl_demographics(trial, by = trt, include = c(age, grade))
+tbl_roche_summary(
+  trial,
+  by = trt,
+  include = c(age, grade),
+  nonmissing = "always"
+)
 
 reset_gtsummary_theme()
 }

@@ -24,10 +24,11 @@ Remove markdown syntax (e.g. double star for bold, underscore for italic, etc)
 from the headers and spanning headers of a gtsummary table.
 }
 \examples{
-tbl_demographics(
+tbl_roche_summary(
   data = cards::ADSL,
   include = AGE,
-  by = ARM
+  by = ARM,
+  nonmissing = "always"
 ) |>
   modify_header_rm_md()
 }

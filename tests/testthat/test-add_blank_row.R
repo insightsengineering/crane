@@ -2,7 +2,7 @@ test_that("add_blank_row() works", {
   expect_silent(
     tbl <-
       gtsummary::trial |>
-      tbl_demographics(
+      tbl_roche_summary(
         by = trt,
         include = c(age, grade)
       ) |>
