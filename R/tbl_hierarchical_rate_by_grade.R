@@ -35,7 +35,7 @@
 #'   `"Grade 5" = "5"`, the individual rows corresponding to grade 5 can be excluded by setting `grades_exclude = "5"`.
 #' @param keep_zero_rows (`logical`)\cr
 #'   Whether rows containing zero rates across all columns should be kept. If `FALSE`, this filter will be applied
-#'   prior to any filters specified via the `filter` argument. Defaults to `FALSE`.
+#'   prior to any filters specified via the `filter` argument which may still remove these rows. Defaults to `FALSE`.
 #' @param x (`tbl_hierarchical_rate_by_grade`)\cr
 #'   A gtsummary table of class `'tbl_hierarchical_rate_by_grade'`.
 #'
@@ -61,13 +61,13 @@
 #'     AETERM %in% unique(cards::ADAE$AETERM)[1:10]
 #'   )
 #'
-#' # Example 1 ----------------------------------
 #' grade_groups <- list(
 #'   "Grade 1-2" = c("1", "2"),
 #'   "Grade 3-4" = c("3", "4"),
 #'   "Grade 5" = "5"
 #' )
 #'
+#' # Example 1 ----------------------------------
 #' tbl_hierarchical_rate_by_grade(
 #'   ADAE_subset,
 #'   variables = c(AEBODSYS, AEDECOD, AETOXGR),
@@ -81,6 +81,18 @@
 #'   grade_groups = grade_groups,
 #'   grades_exclude = "5"
 #' )
+#'
+#' # Example 2 ----------------------------------
+#' # Filter: Keep rows for AE grades with an overall prevalence of greater than 5%
+#' tbl_hierarchical_rate_by_grade(
+#'   ADAE_subset,
+#'   variables = c(AEBODSYS, AEDECOD, AETOXGR),
+#'   denominator = ADSL,
+#'   by = TRTA,
+#'   grade_groups = list("Grades 1-2" = c("1", "2"), "Grades 3-5" = c("3", "4", "5")),
+#'   filter = sum(n) / sum(N) > 0.05
+#' ) |>
+#'   add_overall(last = TRUE)
 NULL
 
 #' @export

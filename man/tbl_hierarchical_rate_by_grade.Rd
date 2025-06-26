@@ -101,7 +101,7 @@ computing overall totals and grade group totals. For example, to avoid duplicati
 
 \item{keep_zero_rows}{(\code{logical})\cr
 Whether rows containing zero rates across all columns should be kept. If \code{FALSE}, this filter will be applied
-prior to any filters specified via the \code{filter} argument. Defaults to \code{FALSE}.}
+prior to any filters specified via the \code{filter} argument which may still remove these rows. Defaults to \code{FALSE}.}
 
 \item{x}{(\code{tbl_hierarchical_rate_by_grade})\cr
 A gtsummary table of class \code{'tbl_hierarchical_rate_by_grade'}.}
@@ -147,13 +147,13 @@ ADAE_subset <- cards::ADAE |>
     AETERM \%in\% unique(cards::ADAE$AETERM)[1:10]
   )
 
-# Example 1 ----------------------------------
 grade_groups <- list(
   "Grade 1-2" = c("1", "2"),
   "Grade 3-4" = c("3", "4"),
   "Grade 5" = "5"
 )
 
+# Example 1 ----------------------------------
 tbl_hierarchical_rate_by_grade(
   ADAE_subset,
   variables = c(AEBODSYS, AEDECOD, AETOXGR),
@@ -167,4 +167,16 @@ tbl_hierarchical_rate_by_grade(
   grade_groups = grade_groups,
   grades_exclude = "5"
 )
+
+# Example 2 ----------------------------------
+# Filter: Keep rows for AE grades with an overall prevalence of greater than 5\%
+tbl_hierarchical_rate_by_grade(
+  ADAE_subset,
+  variables = c(AEBODSYS, AEDECOD, AETOXGR),
+  denominator = ADSL,
+  by = TRTA,
+  grade_groups = list("Grades 1-2" = c("1", "2"), "Grades 3-5" = c("3", "4", "5")),
+  filter = sum(n) / sum(N) > 0.05
+) |>
+  add_overall(last = TRUE)
 }
