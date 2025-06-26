@@ -26,8 +26,8 @@ It's a simple wrapper for \code{gtsummary::modify_post_fmt_fun()}.
 }\if{html}{\out{</div>}}
 }
 \examples{
-gtsummary::trial |>
+trial |>
   dplyr::mutate(trt = factor(trt, levels = c("Drug A", "Drug B", "Drug C"))) |>
-  gtsummary::tbl_summary(include = trt) |>
+  tbl_summary(include = trt) |>
   modify_zero_recode()
 }

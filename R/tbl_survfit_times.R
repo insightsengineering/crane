@@ -84,13 +84,13 @@ tbl_survfit_times <- function(data,
       times = times,
       method.args = !!method.args
     ) |>
-    cards::update_ard_fmt_fn(
+    cards::update_ard_fmt_fun(
       stat_names = c("estimate", "conf.low", "conf.high"),
-      fmt_fn = estimate_fun
+      fmt_fun = estimate_fun
     ) |>
-    cards::update_ard_fmt_fn(
+    cards::update_ard_fmt_fun(
       stat_names = c("n.risk", "n.censor", "cum.risk", "cum.censor"),
-      fmt_fn = gtsummary::label_style_number()
+      fmt_fun = gtsummary::label_style_number()
     )
 
   # calculate ARD for by vars
@@ -128,12 +128,12 @@ tbl_survfit_times <- function(data,
           set_names(paste0("time", times))
     ) |>
     gtsummary::modify_header(
-      all_stat_cols() ~ "{level}  \nN = {n}",
+      gtsummary::all_stat_cols() ~ "{level}  \nN = {n}",
       label = ""
     ) |>
     gtsummary::modify_table_body(
       ~ .x |>
-        mutate(
+        dplyr::mutate(
           label = dplyr::case_when(
             .data$label == "Number of Subjects at Risk" ~ "Patients remaining at risk",
             .data$label == "Survival Probability%" ~ "Event Free Rate (%)",

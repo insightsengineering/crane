@@ -46,11 +46,11 @@ test_that("tbl_survfit_times() works", {
       gtsummary::gather_ard() |>
       getElement("tbl_survfit_times") |>
       dplyr::filter(variable == "time") |>
-      dplyr::select(-fmt_fn),
+      dplyr::select(-fmt_fun),
     survival::survfit(survival::Surv(time = AVAL, event = 1 - CNSR) ~ 1, data = cards::ADTTE, id = SEX) |>
       cardx::ard_survival_survfit(times = c(30, 60)) |>
       dplyr::filter(variable == "time") |>
-      dplyr::select(-fmt_fn)
+      dplyr::select(-fmt_fun)
   )
 })
 

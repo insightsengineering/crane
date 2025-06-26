@@ -11,7 +11,7 @@ test_that("tbl_hierarchical_rate_and_count() works", {
     tbl <-
       ADAE_subset |>
       tbl_hierarchical_rate_and_count(
-        denominator = cards::ADSL |> dplyr::rename(TRTA = TRT01A),
+        denominator = cards::ADSL,
         by = TRTA,
         variables = c(AEBODSYS, AEDECOD)
       ) |>
@@ -35,7 +35,7 @@ test_that("tbl_hierarchical_rate_and_count() works", {
     tbl <-
       ADAE_subset |>
       tbl_hierarchical_rate_and_count(
-        denominator = cards::ADSL |> dplyr::rename(TRTA = TRT01A),
+        denominator = cards::ADSL,
         by = TRTA,
         variables = c(AEBODSYS, AEHLT, AEDECOD)
       ) |>
@@ -50,7 +50,7 @@ test_that("tbl_hierarchical_rate_and_count(sort)", {
     tbl <-
       ADAE_subset |>
       tbl_hierarchical_rate_and_count(
-        denominator = cards::ADSL |> dplyr::rename(TRTA = TRT01A),
+        denominator = cards::ADSL,
         by = TRTA,
         variables = c(AEBODSYS, AEDECOD),
         sort = "descending"
