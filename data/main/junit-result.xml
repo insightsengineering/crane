@@ -1,91 +1,96 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="add_blank_row" timestamp="2025-06-26T04:54:55Z" hostname="d907b2c8886d" tests="1" skipped="0" failures="0" errors="0" time="1.952">
-    <testcase time="1.952" classname="character(0)" name="add_blank_row_works"/>
+  <testsuite name="add_blank_row" timestamp="2025-06-27T03:50:36Z" hostname="f7fd9acf4ca9" tests="1" skipped="0" failures="0" errors="0" time="1.843">
+    <testcase time="1.843" classname="character(0)" name="add_blank_row_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-06-26T04:54:55Z" hostname="d907b2c8886d" tests="1" skipped="1" failures="0" errors="0" time="0.022">
-    <testcase time="0.0219999999999998" classname="character(0)" name="add_blank_row_messaging">
+  <testsuite name="add_blank_row" timestamp="2025-06-27T03:50:36Z" hostname="f7fd9acf4ca9" tests="1" skipped="1" failures="0" errors="0" time="0.023">
+    <testcase time="0.0230000000000001" classname="character(0)" name="add_blank_row_messaging">
       <skipped message="Reason: On CRAN ('test-add_blank_row.R:15:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="add_hierarchical_count_row" timestamp="2025-06-26T04:54:55Z" hostname="d907b2c8886d" tests="3" skipped="1" failures="0" errors="0" time="0.571">
-    <testcase time="0.569" classname="character(0)" name="add_hierarchical_count_row_works"/>
-    <testcase time="0.00100000000000033" classname="character(0)" name="add_hierarchical_count_row_works"/>
+  <testsuite name="add_hierarchical_count_row" timestamp="2025-06-27T03:50:37Z" hostname="f7fd9acf4ca9" tests="3" skipped="1" failures="0" errors="0" time="0.464">
+    <testcase time="0.463" classname="character(0)" name="add_hierarchical_count_row_works"/>
+    <testcase time="0" classname="character(0)" name="add_hierarchical_count_row_works"/>
     <testcase time="0.00099999999999989" classname="character(0)" name="add_hierarchical_count_row_works">
       <skipped message="Reason: On CRAN ('test-add_hierarchical_count_row.R:21:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="roche_pvalue" timestamp="2025-06-26T04:54:55Z" hostname="d907b2c8886d" tests="1" skipped="0" failures="0" errors="0" time="0.059">
-    <testcase time="0.0590000000000002" classname="character(0)" name="roche_pvalue_works"/>
-    <testcase time="0.036" classname="character(0)" name="_unnamed_">
+  <testsuite name="roche_pvalue" timestamp="2025-06-27T03:50:37Z" hostname="f7fd9acf4ca9" tests="1" skipped="0" failures="0" errors="0" time="0.073">
+    <testcase time="0.073" classname="character(0)" name="roche_pvalue_works"/>
+  </testsuite>
+  <testsuite name="roche_pvalue" timestamp="2025-06-27T03:50:37Z" hostname="f7fd9acf4ca9" tests="3" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00099999999999989" classname="character(0)" name="roche_percent_works"/>
+    <testcase time="0.00099999999999989" classname="character(0)" name="roche_percent_works"/>
+    <testcase time="0.00100000000000033" classname="character(0)" name="roche_percent_works"/>
+    <testcase time="0.0349999999999997" classname="character(0)" name="_unnamed_">
       <skipped message="Reason: On CRAN ('test-tbl_hierarchical_rate_and_count.R:1:1')"/>
     </testcase>
   </testsuite>
-  <testsuite name="modify_header_rm_md" timestamp="2025-06-26T04:54:57Z" hostname="d907b2c8886d" tests="3" skipped="1" failures="0" errors="0" time="2.032">
-    <testcase time="1.995" classname="character(0)" name="strip_md_bold_works_with_gtsummary_table"/>
+  <testsuite name="modify_header_rm_md" timestamp="2025-06-27T03:50:39Z" hostname="f7fd9acf4ca9" tests="3" skipped="1" failures="0" errors="0" time="1.909">
+    <testcase time="1.873" classname="character(0)" name="strip_md_bold_works_with_gtsummary_table"/>
     <testcase time="0.00100000000000033" classname="character(0)" name="strip_md_bold_works_with_gtsummary_table"/>
   </testsuite>
-  <testsuite name="tbl_roche_summary" timestamp="2025-06-26T04:55:01Z" hostname="d907b2c8886d" tests="1" skipped="0" failures="0" errors="0" time="4.024">
-    <testcase time="4.024" classname="character(0)" name="tbl_roche_summary_works"/>
+  <testsuite name="tbl_roche_summary" timestamp="2025-06-27T03:50:42Z" hostname="f7fd9acf4ca9" tests="1" skipped="0" failures="0" errors="0" time="3.518">
+    <testcase time="3.518" classname="character(0)" name="tbl_roche_summary_works"/>
   </testsuite>
-  <testsuite name="tbl_roche_summary" timestamp="2025-06-26T04:55:01Z" hostname="d907b2c8886d" tests="2" skipped="1" failures="0" errors="0" time="0.004">
-    <testcase time="0.00300000000000011" classname="character(0)" name="tbl_roche_summary_add_overall_works"/>
+  <testsuite name="tbl_roche_summary" timestamp="2025-06-27T03:50:42Z" hostname="f7fd9acf4ca9" tests="2" skipped="1" failures="0" errors="0" time="0.002">
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_roche_summary_add_overall_works"/>
     <testcase time="0.000999999999999446" classname="character(0)" name="tbl_roche_summary_add_overall_works">
       <skipped message="Reason: On CRAN ('test-tbl_roche_summary.R:41:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="tbl_roche_summary" timestamp="2025-06-26T04:55:01Z" hostname="d907b2c8886d" tests="1" skipped="0" failures="0" errors="0" time="0.017">
-    <testcase time="0.0169999999999995" classname="character(0)" name="tbl_roche_summary_recode_counts_for_all_NA_column"/>
+  <testsuite name="tbl_roche_summary" timestamp="2025-06-27T03:50:42Z" hostname="f7fd9acf4ca9" tests="1" skipped="0" failures="0" errors="0" time="0.011">
+    <testcase time="0.0109999999999992" classname="character(0)" name="tbl_roche_summary_recode_counts_for_all_NA_column"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-06-26T04:55:02Z" hostname="d907b2c8886d" tests="2" skipped="1" failures="0" errors="0" time="0.739">
-    <testcase time="0.738000000000001" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-06-27T03:50:43Z" hostname="f7fd9acf4ca9" tests="2" skipped="1" failures="0" errors="0" time="0.768">
+    <testcase time="0.767000000000001" classname="character(0)" name="tbl_survfit_quantiles_works"/>
     <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_quantiles_works">
       <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:13:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-06-26T04:55:02Z" hostname="d907b2c8886d" tests="1" skipped="1" failures="0" errors="0" time="0.017">
-    <testcase time="0.0169999999999995" classname="character(0)" name="tbl_survfit_quantiles_by_messaging">
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-06-27T03:50:43Z" hostname="f7fd9acf4ca9" tests="1" skipped="1" failures="0" errors="0" time="0.016">
+    <testcase time="0.016" classname="character(0)" name="tbl_survfit_quantiles_by_messaging">
       <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:55:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-06-26T04:55:02Z" hostname="d907b2c8886d" tests="1" skipped="1" failures="0" errors="0" time="0.022">
-    <testcase time="0.0220000000000002" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_">
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-06-27T03:50:43Z" hostname="f7fd9acf4ca9" tests="1" skipped="1" failures="0" errors="0" time="0.018">
+    <testcase time="0.0180000000000007" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_">
       <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:75:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-06-26T04:55:02Z" hostname="d907b2c8886d" tests="1" skipped="0" failures="0" errors="0" time="0.011">
-    <testcase time="0.011000000000001" classname="character(0)" name="tbl_survfit_quantiles_method.args_"/>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-06-27T03:50:43Z" hostname="f7fd9acf4ca9" tests="1" skipped="0" failures="0" errors="0" time="0.011">
+    <testcase time="0.0109999999999992" classname="character(0)" name="tbl_survfit_quantiles_method.args_"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-06-26T04:55:02Z" hostname="d907b2c8886d" tests="1" skipped="1" failures="0" errors="0" time="0.002">
-    <testcase time="0.00199999999999889" classname="character(0)" name="add_overall.tbl_survfit_quantiles_works">
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-06-27T03:50:43Z" hostname="f7fd9acf4ca9" tests="1" skipped="1" failures="0" errors="0" time="0.001">
+    <testcase time="0.000999999999999446" classname="character(0)" name="add_overall.tbl_survfit_quantiles_works">
       <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:111:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-06-26T04:55:04Z" hostname="d907b2c8886d" tests="1" skipped="1" failures="0" errors="0" time="1.427">
-    <testcase time="1.427" classname="character(0)" name="theme_gtsummary_roche_works">
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-06-27T03:50:45Z" hostname="f7fd9acf4ca9" tests="1" skipped="1" failures="0" errors="0" time="1.333">
+    <testcase time="1.333" classname="character(0)" name="theme_gtsummary_roche_works">
       <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:3:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-06-26T04:55:04Z" hostname="d907b2c8886d" tests="1" skipped="1" failures="0" errors="0" time="0.012">
-    <testcase time="0.0119999999999987" classname="character(0)" name="theme_gtsummary_roche_adds_relevant_flextable_directives">
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-06-27T03:50:45Z" hostname="f7fd9acf4ca9" tests="1" skipped="1" failures="0" errors="0" time="0.014">
+    <testcase time="0.0140000000000011" classname="character(0)" name="theme_gtsummary_roche_adds_relevant_flextable_directives">
       <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:17:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-06-26T04:55:04Z" hostname="d907b2c8886d" tests="1" skipped="0" failures="0" errors="0" time="0.011">
-    <testcase time="0.011000000000001" classname="character(0)" name="theme_gtsummary_roche_no_errors_with_a_gt_print"/>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-06-27T03:50:45Z" hostname="f7fd9acf4ca9" tests="1" skipped="0" failures="0" errors="0" time="0.011">
+    <testcase time="0.0109999999999992" classname="character(0)" name="theme_gtsummary_roche_no_errors_with_a_gt_print"/>
   </testsuite>
-  <testsuite name="tbl_survfit_times" timestamp="2025-06-26T04:55:04Z" hostname="d907b2c8886d" tests="2" skipped="1" failures="0" errors="0" time="0.528">
-    <testcase time="0.527999999999999" classname="character(0)" name="tbl_survfit_times_works"/>
+  <testsuite name="tbl_survfit_times" timestamp="2025-06-27T03:50:45Z" hostname="f7fd9acf4ca9" tests="2" skipped="1" failures="0" errors="0" time="0.39">
+    <testcase time="0.390000000000001" classname="character(0)" name="tbl_survfit_times_works"/>
     <testcase time="0" classname="character(0)" name="tbl_survfit_times_works">
       <skipped message="Reason: On CRAN ('test-tbl_survfit_times.R:14:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="tbl_survfit_times" timestamp="2025-06-26T04:55:04Z" hostname="d907b2c8886d" tests="1" skipped="1" failures="0" errors="0" time="0.012">
-    <testcase time="0.0120000000000005" classname="character(0)" name="tbl_survfit_times_by_messaging">
+  <testsuite name="tbl_survfit_times" timestamp="2025-06-27T03:50:45Z" hostname="f7fd9acf4ca9" tests="1" skipped="1" failures="0" errors="0" time="0.011">
+    <testcase time="0.0109999999999992" classname="character(0)" name="tbl_survfit_times_by_messaging">
       <skipped message="Reason: On CRAN ('test-tbl_survfit_times.R:59:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="tbl_survfit_times" timestamp="2025-06-26T04:55:04Z" hostname="d907b2c8886d" tests="1" skipped="1" failures="0" errors="0" time="0.013">
+  <testsuite name="tbl_survfit_times" timestamp="2025-06-27T03:50:45Z" hostname="f7fd9acf4ca9" tests="1" skipped="1" failures="0" errors="0" time="0.013">
     <testcase time="0.0129999999999999" classname="character(0)" name="add_overall.tbl_survfit_times_works">
       <skipped message="Reason: On CRAN ('test-tbl_survfit_times.R:81:3')"/>
     </testcase>
