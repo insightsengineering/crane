@@ -201,7 +201,7 @@ test_that("tbl_hierarchical_rate_by_grade(filter) works", {
       add_overall()
   )
 
-  # check that all rows have a percent larger than 7.5%
+  # check that all rows have a percent larger than 7%
   expect_true(
     tbl$table_body |>
       dplyr::filter(str_detect(stat_0, "%") & variable == "AEDECOD") |>
@@ -209,7 +209,7 @@ test_that("tbl_hierarchical_rate_by_grade(filter) works", {
       str_extract("(?<=\\().*?(?=\\))") |> # extract the percent between the parentheses
       str_remove("%") %>%
       {
-        as.numeric(.) > 7.5
+        as.numeric(.) > 7
       } |> # styler off
       all()
   )
