@@ -365,7 +365,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
           # remove statistics from summary rows if not an overall row
           dplyr::mutate(
             across(
-              all_stat_cols(),
+              gtsummary::all_stat_cols(),
               ~ if (
                 .data$variable %in% c(ae, "..ard_hierarchical_overall..") |
                   .data$label_grade %in% c(lvls, names(grade_groups)) |
@@ -388,13 +388,13 @@ tbl_hierarchical_rate_by_grade <- function(data,
     # convert "0 (0.0%)" to "0"
     gtsummary::modify_post_fmt_fun(
       fmt_fun = ~ ifelse(. %in% c("0 (0.0%)", "0 (NA%)"), "0", .),
-      columns = all_stat_cols()
+      columns = gtsummary::all_stat_cols()
     ) |>
     # update header label
     gtsummary::modify_header(
       label ~ paste0(label[[soc]], "  \n", paste0(rep("\U00A0", 4L), collapse = ""), label[[ae]]),
       label_grade ~ label[[grade]],
-      all_stat_cols() ~ "{level}  \nN = {n}"
+      gtsummary::all_stat_cols() ~ "{level}  \nN = {n}"
     )
 
   # indent grade level labels within grade groups
