@@ -69,7 +69,7 @@ add_blank_row <- function(x, variables = NULL, row_numbers = NULL) {
     )
     # if variables and row_number is NULL, use everything()
     if (is_empty(variables) && is_empty(row_numbers)) {
-      variables <- everything()
+      variables <- unique(x$table_body$variable) # Same as everything()?
       cards::process_selectors(
         data = scope_table_body(x$table_body),
         variables = {{ variables }}
