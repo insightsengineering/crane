@@ -65,21 +65,22 @@ test_that("add_blank_row(grade) is last row, then table identical", {
   )
 })
 
-test_that("add_blank_row() messaging", {
-  expect_snapshot(
-    error = TRUE,
-    gtsummary::as_gtsummary(gtsummary::trial[1:5, 1:2]) |>
-      add_blank_row()
-  )
-})
-
 test_that("add_blank_row(row_numbers) error", {
   expect_silent(
     out <- gtsummary::as_gtsummary(gtsummary::trial[1:3, 1:2]) |>
       add_blank_row(row_numbers = c(1, 2))
   )
 
-  # expect_equal(
-  #   out$table_body[, 1],
-  # )
+  expect_equal(
+    out$table_body[, 1] |> dplyr::pull(trt),
+    c("Drug A", NA, "Drug B", NA, "Drug A")
+  )
+})
+
+test_that("add_blank_row() errors when no variable", {
+  expect_snapshot(
+    error = TRUE,
+    gtsummary::as_gtsummary(gtsummary::trial[1:5, 1:2]) |>
+      add_blank_row()
+  )
 })

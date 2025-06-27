@@ -113,13 +113,13 @@ add_blank_row <- function(x, variables = NULL, row_numbers = NULL) {
     row_indices <- c(row_indices, "row_sep" = row_numbers + seq(0, length(row_numbers) - 1))
   }
 
-  # don't add a blank row to the bottom of the table
-  if (nrow(x$table_body) %in% row_indices) {
-    row_indices <- row_indices[row_indices != nrow(x$table_body)]
-  }
 
   # cycle through the row indices and add a blank row after each
   for (i in seq_along(row_indices)) {
+    # don't add a blank row to the bottom of the table
+    if (row_indices[i] == nrow(x$table_body)) next
+
+    # if the table has a 'variable' column, add a blank row after the specified row_indices
     if ("variable" %in% names(x$table_body)) {
       x <- x |>
         gtsummary::modify_table_body(
