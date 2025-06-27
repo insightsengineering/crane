@@ -1,5 +1,9 @@
 # crane 0.1.0.9033
 
+* Added `roche_percent()` and `label_roche_percent()` functions.
+
+* Updated Roche theme to use `roche_percent()` as the default function to format percentages.
+
 * The {gtsummary} is now loaded with {crane}.
 
 * The `tbl_demographics()` function has been renamed to `tbl_roche_summary()` with the following updates. (#73).
