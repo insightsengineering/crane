@@ -1,4 +1,4 @@
-# crane 0.1.0.9034
+# crane 0.1.0.9035
 
 * Updated `theme_gtsummary_roche()` to further style results from `gtsummary::tbl_hierarchical*()` functions.
 
