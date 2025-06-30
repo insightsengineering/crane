@@ -1,4 +1,4 @@
-# crane 0.1.0.9034
+# crane 0.1.0.9035
 
 * Added `theme_gtsummary_roche(font_size, print_egine)` arguments to control the default font size and the print engine.
 
