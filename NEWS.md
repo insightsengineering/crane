@@ -1,5 +1,7 @@
 # crane 0.1.0.9034
 
+* Added `theme_gtsummary_roche(font_size, print_egine)` arguments to control the default font size and the print engine.
+
 * Added `roche_percent()` and `label_roche_percent()` functions.
 
 * Updated Roche theme to use `roche_percent()` as the default function to format percentages.
