@@ -4,9 +4,20 @@
 \alias{theme_gtsummary_roche}
 \title{Roche Theme}
 \usage{
-theme_gtsummary_roche(set_theme = TRUE)
+theme_gtsummary_roche(
+  font_size = NULL,
+  print_engine = c("flextable", "gt", "kable", "kable_extra", "huxtable", "tibble"),
+  set_theme = TRUE
+)
 }
 \arguments{
+\item{font_size}{(scalar \code{numeric})\cr
+Numeric font size for compact theme.
+Default is 13 for gt tables, and 8 for all other output types}
+
+\item{print_engine}{String indicating the print method. Must be one of
+\code{"gt"}, \code{"kable"}, \code{"kable_extra"}, \code{"flextable"}, \code{"tibble"}}
+
 \item{set_theme}{(scalar \code{logical})\cr
 Logical indicating whether to set the theme. Default is \code{TRUE}.
 When \code{FALSE} the named list of theme elements is returned invisibly}

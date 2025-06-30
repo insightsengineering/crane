@@ -9,6 +9,7 @@
 #' - Border defaults to `flextable::fp_border_default(width = 0.5)`.
 #' - The `add_overall(col_label)` default value has been updated.
 #'
+#' @inheritParams gtsummary::theme_gtsummary_printer
 #' @inheritParams gtsummary::theme_gtsummary_compact
 #'
 #' @return theme list
@@ -25,10 +26,13 @@
 #' )
 #'
 #' reset_gtsummary_theme()
-theme_gtsummary_roche <- function(set_theme = TRUE) {
+theme_gtsummary_roche <- function(font_size = NULL,
+                                  print_engine = c("flextable", "gt", "kable", "kable_extra", "huxtable", "tibble"),
+                                  set_theme = TRUE) {
+  print_engine <- arg_match(print_engine)
+  check_scalar_logical(set_theme)
+
   # {crane} defaults
-  font_size <- 8
-  font_size_gt <- 13 # gt counts size points differently
   border <- flextable::fp_border_default(width = 0.5)
 
   # Initialization with compact gt options -------------------------------------
@@ -39,7 +43,7 @@ theme_gtsummary_roche <- function(set_theme = TRUE) {
       "as_gt-lst:addl_cmds" = list(
         tab_spanner = rlang::expr(
           gt::tab_options(
-            table.font.size = !!font_size_gt,
+            table.font.size = !!(font_size %||% 13),
             data_row.padding = gt::px(1),
             summary_row.padding = gt::px(1),
             grand_summary_row.padding = gt::px(1),
@@ -58,7 +62,7 @@ theme_gtsummary_roche <- function(set_theme = TRUE) {
         "tbl_summary-fn:percent_fun" = label_roche_percent(),
         "pkgwide-fn:pvalue_fun" = label_roche_pvalue(),
         "add_overall.tbl_summary-arg:col_label" = "All Participants  \nN = {gtsummary::style_number(N)}",
-        "pkgwide-str:print_engine" = "flextable"
+        "pkgwide-str:print_engine" = print_engine
       )
     )
 
@@ -69,8 +73,8 @@ theme_gtsummary_roche <- function(set_theme = TRUE) {
       list(
         fontsize =
           list(
-            rlang::expr(flextable::fontsize(size = !!font_size, part = "all")),
-            rlang::expr(flextable::fontsize(size = !!(font_size - 1), part = "footer"))
+            rlang::expr(flextable::fontsize(size = !!(font_size %||% 8), part = "all")),
+            rlang::expr(flextable::fontsize(size = !!((font_size %||% 8) - 1), part = "footer"))
           ),
         border = list(
           rlang::expr(flextable::border_outer(part = "body", border = !!border)),
