@@ -34,6 +34,9 @@ A gtsummary theme for Roche tables
 \item Font size defaults are 8 points for all the table by the footers that are 7 points.
 \item Border defaults to \code{flextable::fp_border_default(width = 0.5)}.
 \item The \code{add_overall(col_label)} default value has been updated.
+\item The results from \code{gtsummary::tbl_hierachrical()} and \code{gtsummary::tbl_hierachrical_count()}
+are now post-processed with \code{gtsummary::remove_footnote_header()},
+\code{crane::modify_zero_recode()}, and \code{crane::modify_header_rm_md()}.
 }
 }
 \examples{
