@@ -1,4 +1,8 @@
-# crane 0.1.0.9034
+# crane 0.1.0.9036
+
+* Updated `theme_gtsummary_roche()` to further style results from `gtsummary::tbl_hierarchical*()` functions.
+
+* Added `theme_gtsummary_roche(font_size, print_egine)` arguments to control the default font size and the print engine.
 
 * Added `roche_percent()` and `label_roche_percent()` functions.
 

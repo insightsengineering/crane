@@ -27,3 +27,70 @@ test_that("theme_gtsummary_roche() no errors with a gt print", {
     )
   )
 })
+
+test_that("theme_gtsummary_roche() styles `tbl_hierarchical*()` results", {
+  expect_silent(
+    tbl <-
+      with_gtsummary_theme(
+        x = theme_gtsummary_roche(),
+        cards::ADAE |>
+          dplyr::slice(.by = "TRTA", 1L) |>
+          tbl_hierarchical(
+            variables = c(AESOC, AETERM),
+            by = TRTA,
+            denominator = cards::ADSL |> mutate(TRTA = ARM),
+            id = USUBJID
+          )
+      )
+  )
+
+  # check no bold syntax in header
+  expect_equal(
+    tbl$table_styling$header$label,
+    modify_header_rm_md(tbl)$table_styling$header$label
+  )
+
+  # check zero recode
+  expect_equal(
+    as.data.frame(tbl),
+    modify_zero_recode(tbl) |> as.data.frame()
+  )
+
+  # check there is no footnote
+  expect_equal(
+    tbl |>
+      as_gt() |>
+      getElement("_footnotes") |>
+      nrow(),
+    0L
+  )
+
+
+  expect_silent(
+    tbl <-
+      with_gtsummary_theme(
+        x = theme_gtsummary_roche(),
+        cards::ADAE |>
+          dplyr::slice(.by = "TRTA", 1L) |>
+          tbl_hierarchical_count(
+            variables = c(AESOC, AETERM, AESEV),
+            by = TRTA
+          )
+      )
+  )
+
+  # check no bold syntax in header
+  expect_equal(
+    tbl$table_styling$header$label,
+    modify_header_rm_md(tbl)$table_styling$header$label
+  )
+
+  # check there is no footnote
+  expect_equal(
+    tbl |>
+      as_gt() |>
+      getElement("_footnotes") |>
+      nrow(),
+    0L
+  )
+})
