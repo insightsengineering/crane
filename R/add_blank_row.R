@@ -64,14 +64,14 @@ add_blank_row <- function(x, variables = NULL, row_numbers = NULL) {
   # process inputs -------------------------------------------------------------
   if ("variable" %in% names(x$table_body)) {
     cards::process_selectors(
-      data = scope_table_body(x$table_body),
+      data = gtsummary::scope_table_body(x$table_body),
       variables = {{ variables }}
     )
     # if variables and row_number is NULL, use everything()
     if (is_empty(variables) && is_empty(row_numbers)) {
       variables <- unique(x$table_body$variable) # Same as everything()?
       cards::process_selectors(
-        data = scope_table_body(x$table_body),
+        data = gtsummary::scope_table_body(x$table_body),
         variables = {{ variables }}
       )
     }
