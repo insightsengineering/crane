@@ -44,7 +44,7 @@ trial |>
     include = c(age, marker, grade),
     nonmissing = "always"
   ) |>
-  add_blank_row(variable = age)
+  add_blank_row(variables = age)
 
 # Example 3 ----------------------------------
 trial |>
