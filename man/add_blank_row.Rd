@@ -4,25 +4,31 @@
 \alias{add_blank_row}
 \title{Add Blank Row}
 \usage{
-add_blank_row(x)
+add_blank_row(x, variables = NULL, row_numbers = NULL)
 }
 \arguments{
 \item{x}{(\code{gtsummary})\cr
 a 'gtsummary' table. The table must include a column named \code{'variable'}
 in \code{x$table_body}.}
+
+\item{variables, row_numbers}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}} or \code{integer})\cr
+variables or row numbers at which a blank row needs to be added. If none is selected,
+\code{variables = everything()} is used, which adds a blank row after every variable.}
 }
 \value{
-updated 'gtsummary' table
+updated 'gtsummary' table.
 }
 \description{
-Add a blank row below each variable group.
-A blank row will not be added to the bottom of the table.
+Add a blank row below each variable group defined by \code{variables} or below each
+specified \code{row_numbers}. A blank row will not be added to the bottom of the table.
 
 \emph{NOTE}: For HTML flextable output (which includes the RStudio IDE Viewer),
 the blank rows do not render. But they will appear when the
 table is rendered to Word.
 }
 \examples{
+# Example 1 ----------------------------------
+# Default to every variable used
 trial |>
   tbl_roche_summary(
     by = trt,
@@ -30,4 +36,23 @@ trial |>
     nonmissing = "always"
   ) |>
   add_blank_row()
+
+# Example 2 ----------------------------------
+trial |>
+  tbl_roche_summary(
+    by = trt,
+    include = c(age, marker, grade),
+    nonmissing = "always"
+  ) |>
+  add_blank_row(variables = age)
+
+# Example 3 ----------------------------------
+trial |>
+  tbl_roche_summary(
+    by = trt, statistic = age ~ "{mean}",
+    include = c(age, grade),
+    nonmissing = "no"
+  ) |>
+  add_blank_row(age, row_numbers = c(1, 1)) # can add multiple blank lines
+
 }
