@@ -97,7 +97,6 @@ add_blank_row <- function(x, variables = NULL, row_numbers = NULL) {
   # add blank row --------------------------------------------------------------
   # get row indices where to add blank row
   if (!is_empty(variables)) {
-    browser()
     row_indices <-
       x$table_body["variable"] |>
       dplyr::mutate(row_number = dplyr::row_number()) |>
