@@ -68,6 +68,7 @@ test_that("tbl_hierarchical_rate_and_count(sort)", {
 })
 
 test_that("tbl_hierarchical_rate_and_count() digits styling defaults to gtsummary", {
+theme_gtsummary_roche()
   expect_equal(
       ADAE_subset |>
       tbl_hierarchical_rate_and_count(
