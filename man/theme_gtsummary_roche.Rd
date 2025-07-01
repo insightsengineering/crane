@@ -4,9 +4,20 @@
 \alias{theme_gtsummary_roche}
 \title{Roche Theme}
 \usage{
-theme_gtsummary_roche(set_theme = TRUE)
+theme_gtsummary_roche(
+  font_size = NULL,
+  print_engine = c("flextable", "gt", "kable", "kable_extra", "huxtable", "tibble"),
+  set_theme = TRUE
+)
 }
 \arguments{
+\item{font_size}{(scalar \code{numeric})\cr
+Numeric font size for compact theme.
+Default is 13 for gt tables, and 8 for all other output types}
+
+\item{print_engine}{String indicating the print method. Must be one of
+\code{"gt"}, \code{"kable"}, \code{"kable_extra"}, \code{"flextable"}, \code{"tibble"}}
+
 \item{set_theme}{(scalar \code{logical})\cr
 Logical indicating whether to set the theme. Default is \code{TRUE}.
 When \code{FALSE} the named list of theme elements is returned invisibly}
@@ -23,6 +34,9 @@ A gtsummary theme for Roche tables
 \item Font size defaults are 8 points for all the table by the footers that are 7 points.
 \item Border defaults to \code{flextable::fp_border_default(width = 0.5)}.
 \item The \code{add_overall(col_label)} default value has been updated.
+\item The results from \code{gtsummary::tbl_hierachrical()} and \code{gtsummary::tbl_hierachrical_count()}
+are now post-processed with \code{gtsummary::remove_footnote_header()},
+\code{crane::modify_zero_recode()}, and \code{crane::modify_header_rm_md()}.
 }
 }
 \examples{
