@@ -61,10 +61,7 @@ tbl_hierarchical_rate_and_count <- function(data,
                                             denominator,
                                             by = NULL,
                                             id = "USUBJID",
-                                            digits = everything() ~ list(
-                                              n = label_style_number(),
-                                              p = label_roche_percent(digits = 1)
-                                            ),
+                                            digits = NULL,
                                             sort = NULL,
                                             label_overall_rate = "Total number of participants with at least one adverse event",
                                             label_overall_count = "Overall total number of events",
