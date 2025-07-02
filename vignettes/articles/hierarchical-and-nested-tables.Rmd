@@ -34,7 +34,7 @@ tbl <-
     data = ADAE_subset,
     variables = c(AEBODSYS, AEDECOD),
     by = TRTA,
-    denominator = cards::ADSL |> mutate(TRTA = ARM),
+    denominator = cards::ADSL,
     id = USUBJID,
     overall_row = TRUE
   )
@@ -73,7 +73,7 @@ tbl <-
     data = ADAE_subset,
     variables = c(AEBODSYS, AEDECOD),
     by = TRTA,
-    denominator = cards::ADSL |> mutate(TRTA = ARM),
+    denominator = cards::ADSL,
     id = USUBJID,
     include = AEDECOD,
     digits = everything() ~ list(p = 0),
@@ -104,7 +104,7 @@ tbl <-
     data = ADAE_subset,
     variables = c(AEBODSYS, AEDECOD),
     by = TRTA,
-    denominator = cards::ADSL |> mutate(TRTA = ARM),
+    denominator = cards::ADSL,
     overall_row = TRUE
   )
 
@@ -157,7 +157,7 @@ ard <-
     data = ADAE_subset,
     variables = c(AESOC, AETERM),
     by = TRTA,
-    denominator = cards::ADSL |> mutate(TRTA = ARM),
+    denominator = cards::ADSL,
     id = USUBJID
   )
 
@@ -230,7 +230,7 @@ tbl <-
     data = ADAE_subset,
     variables = c(AEBODSYS, AEDECOD),
     by = TRTA,
-    denominator = cards::ADSL |> mutate(TRTA = ARM),
+    denominator = cards::ADSL,
     id = USUBJID,
     overall_row = TRUE
   ) |>
