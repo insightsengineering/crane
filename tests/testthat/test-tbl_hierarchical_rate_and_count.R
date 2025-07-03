@@ -70,14 +70,14 @@ test_that("tbl_hierarchical_rate_and_count(sort)", {
 test_that("tbl_hierarchical_rate_and_count() digits styling defaults to gtsummary", {
 theme_gtsummary_roche()
   expect_equal(
-      ADAE_subset |>
+      cards::ADAE |>
       tbl_hierarchical_rate_and_count(
         denominator = cards::ADSL,
         by = TRTA,
         variables = c(AEBODSYS, AEDECOD)
       ) |>
       add_overall(last = TRUE) |> as.data.frame(),
-      ADAE_subset |>
+      cards::ADAE |>
       tbl_hierarchical_rate_and_count(
         denominator = cards::ADSL,
         by = TRTA,
