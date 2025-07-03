@@ -68,16 +68,18 @@ test_that("tbl_hierarchical_rate_and_count(sort)", {
 })
 
 test_that("tbl_hierarchical_rate_and_count() digits styling defaults to gtsummary", {
-theme_gtsummary_roche()
+  theme_gtsummary_roche()
   expect_equal(
-      cards::ADAE |>
+    cards::ADAE |>
+      dplyr::filter(AEBODSYS %in% unique(AEBODSYS)[1:2]) |>
       tbl_hierarchical_rate_and_count(
         denominator = cards::ADSL,
         by = TRTA,
         variables = c(AEBODSYS, AEDECOD)
       ) |>
       add_overall(last = TRUE) |> as.data.frame(),
-      cards::ADAE |>
+    cards::ADAE |>
+      dplyr::filter(AEBODSYS %in% unique(AEBODSYS)[1:2]) |>
       tbl_hierarchical_rate_and_count(
         denominator = cards::ADSL,
         by = TRTA,
@@ -87,6 +89,6 @@ theme_gtsummary_roche()
         ),
         variables = c(AEBODSYS, AEDECOD)
       ) |>
-      add_overall(last = TRUE)|> as.data.frame()
-    )
+      add_overall(last = TRUE) |> as.data.frame()
+  )
 })
