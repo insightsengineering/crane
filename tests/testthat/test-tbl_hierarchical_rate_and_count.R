@@ -66,3 +66,29 @@ test_that("tbl_hierarchical_rate_and_count(sort)", {
     c("GENERAL DISORDERS AND ADMINISTRATION SITE CONDITIONS", "GASTROINTESTINAL DISORDERS")
   )
 })
+
+test_that("tbl_hierarchical_rate_and_count() digits styling defaults to gtsummary", {
+  theme_gtsummary_roche()
+  expect_equal(
+    cards::ADAE |>
+      dplyr::filter(AEBODSYS %in% unique(AEBODSYS)[1:2]) |>
+      tbl_hierarchical_rate_and_count(
+        denominator = cards::ADSL,
+        by = TRTA,
+        variables = c(AEBODSYS, AEDECOD)
+      ) |>
+      add_overall(last = TRUE) |> as.data.frame(),
+    cards::ADAE |>
+      dplyr::filter(AEBODSYS %in% unique(AEBODSYS)[1:2]) |>
+      tbl_hierarchical_rate_and_count(
+        denominator = cards::ADSL,
+        by = TRTA,
+        digits = everything() ~ list(
+          n = label_style_number(),
+          p = label_roche_percent(digits = 1)
+        ),
+        variables = c(AEBODSYS, AEDECOD)
+      ) |>
+      add_overall(last = TRUE) |> as.data.frame()
+  )
+})
