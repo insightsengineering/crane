@@ -20,7 +20,7 @@ grade_groups <- list(
 )
 
 test_that("tbl_hierarchical_rate_by_grade() works", {
-  withr::local_options(width = 350)
+  withr::local_options(width = 400)
 
   # no grade groups
   expect_silent(
@@ -201,7 +201,7 @@ test_that("tbl_hierarchical_rate_by_grade(filter) works", {
       add_overall()
   )
 
-  # check that all rows have a percent larger than 7%
+  # check that all AE rows have a percent larger than 7%
   expect_true(
     tbl$table_body |>
       dplyr::filter(str_detect(stat_0, "%") & variable == "AEDECOD") |>
@@ -310,7 +310,6 @@ test_that("tbl_hierarchical_rate_by_grade(keep_zero_rows) works", {
       label = label,
       grade_groups = grade_groups
     )
-
 
   # keep zero rows
   expect_silent(

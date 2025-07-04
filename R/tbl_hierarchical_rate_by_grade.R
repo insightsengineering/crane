@@ -44,7 +44,9 @@
 #' When using the `filter` argument, the filter will be applied to the second variable from `variables`, i.e. the
 #' adverse event terms variable. If an AE does not meet the filtering criteria, the AE overall row as well as all grade
 #' and grade group rows within an AE section will be excluded from the table. Filtering out AEs does not exclude the
-#' records corresponding to these filtered out rows from being included in rate calculations for overall sections.
+#' records corresponding to these filtered out rows from being included in rate calculations for overall sections. If
+#' all AEs for a given SOC have been filtered out, the SOC will be excluded from the table. If all AEs are filtered out
+#' and the SOC variable is included in `include_overall` the `- Any adverse events -` section will still be kept.
 #'
 #' See [gtsummary::filter_hierarchical()] for more details and examples.
 #'
@@ -81,14 +83,14 @@
 #' )
 #'
 #' # Example 2 ----------------------------------
-#' # Filter: Keep rows for AE grades with an overall prevalence of greater than 5%
+#' # Filter: Keep AEs with an overall prevalence of greater than 10%
 #' tbl_hierarchical_rate_by_grade(
 #'   ADAE_subset,
 #'   variables = c(AEBODSYS, AEDECOD, AETOXGR),
 #'   denominator = ADSL,
 #'   by = TRTA,
 #'   grade_groups = list("Grades 1-2" = c("1", "2"), "Grades 3-5" = c("3", "4", "5")),
-#'   filter = sum(n) / sum(N) > 0.05
+#'   filter = sum(n) / sum(N) > 0.10
 #' ) |>
 #'   add_overall(last = TRUE)
 NULL
@@ -256,6 +258,12 @@ tbl_hierarchical_rate_by_grade <- function(data,
     ard_final <- ard_final |> cards::filter_ard_hierarchical(filter = sum(n) > 0)
   }
 
+  # apply filtering
+  if (!quo_is_null(filter)) {
+    ard_final <- ard_final |>
+      cards::filter_ard_hierarchical(filter = !!filter, var = all_of(ae))
+  }
+
   # apply digits
   ard_final <-
     ard_final |>
@@ -281,14 +289,8 @@ tbl_hierarchical_rate_by_grade <- function(data,
       label = label
     )
 
-  # apply sorting/filtering ----------------------------------------------------
-  # restructure `tbl_final` as a `tbl_hierarchical` object to use sorting/filtering
-  names(tbl_final$cards) <- "tbl_hierarchical"
-  attr(tbl_final, "class") <- c("tbl_hierarchical", "gtsummary")
-  attr(tbl_final$cards$tbl_hierarchical, "args") <- ard_args
-
+  # apply sorting
   tbl_final <- tbl_final |> gtsummary::sort_hierarchical(sort)
-  if (!quo_is_null(filter)) tbl_final <- tbl_final |> gtsummary::filter_hierarchical(filter = !!filter, var = ae)
 
   # format the final table -----------------------------------------------------
   # arrange grade rows by level, with all groups prior to their first level
@@ -407,7 +409,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
   # return final table ---------------------------------------------------------
   tbl_final$call_list <- list(tbl_hierarchical_rate_by_grade = match.call())
   tbl_final$cards <- list(
-    tbl_hierarchical_rate_by_grade = list(tbl_hierarchical = tbl_final$cards$tbl_hierarchical)
+    tbl_hierarchical_rate_by_grade = list(tbl_hierarchical = tbl_final$cards$tbl_ard_hierarchical)
   )
   tbl_final$inputs <- tbl_hierarchical_rate_by_grade_inputs
 

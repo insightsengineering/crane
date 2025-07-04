@@ -133,7 +133,9 @@ first level in its group.
 When using the \code{filter} argument, the filter will be applied to the second variable from \code{variables}, i.e. the
 adverse event terms variable. If an AE does not meet the filtering criteria, the AE overall row as well as all grade
 and grade group rows within an AE section will be excluded from the table. Filtering out AEs does not exclude the
-records corresponding to these filtered out rows from being included in rate calculations for overall sections.
+records corresponding to these filtered out rows from being included in rate calculations for overall sections. If
+all AEs for a given SOC have been filtered out, the SOC will be excluded from the table. If all AEs are filtered out
+and the SOC variable is included in \code{include_overall} the \verb{- Any adverse events -} section will still be kept.
 
 See \code{\link[gtsummary:filter_hierarchical]{gtsummary::filter_hierarchical()}} for more details and examples.
 }
@@ -167,14 +169,14 @@ tbl_hierarchical_rate_by_grade(
 )
 
 # Example 2 ----------------------------------
-# Filter: Keep rows for AE grades with an overall prevalence of greater than 5\%
+# Filter: Keep AEs with an overall prevalence of greater than 10\%
 tbl_hierarchical_rate_by_grade(
   ADAE_subset,
   variables = c(AEBODSYS, AEDECOD, AETOXGR),
   denominator = ADSL,
   by = TRTA,
   grade_groups = list("Grades 1-2" = c("1", "2"), "Grades 3-5" = c("3", "4", "5")),
-  filter = sum(n) / sum(N) > 0.05
+  filter = sum(n) / sum(N) > 0.10
 ) |>
   add_overall(last = TRUE)
 }
