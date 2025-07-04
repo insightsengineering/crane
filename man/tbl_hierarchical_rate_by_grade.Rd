@@ -86,7 +86,8 @@ all variables, an error will occur.
 Defaults to \code{"descending"}.}
 
 \item{filter}{(\code{expression})\cr
-An expression that is used to filter rows of the table. See the Details section below for more information.}
+An expression that is used to filter rows of the table. Filter will be applied to the second variable (adverse
+event terms) specified via \code{variables}. See the Details section below for more information.}
 
 \item{grade_groups}{(\verb{named list})\cr
 A named list of grade groups for which rates should be calculated. Grade groups must be mutually exclusive, i.e.
@@ -129,15 +130,12 @@ Grades will appear in rows in the order of the factor levels given, with each gr
 first level in its group.
 }
 \details{
-When using the \code{filter} argument, all grade and grade group rows that meet the given filtering criteria will be kept.
-If a grade group row meets the filter criteria but the individual grade rows within the group do not, the grade group
-row will still be kept. If all rows in a given table hierarchy section have been filtered out, the summary row of
-that section will also be excluded. For example, if the SOC variable is \code{AESOC} and no grade or grade group rows in
-the section corresponding to \code{AESOC = "CARDIAC DISORDERS"} meet the filtering criteria, the \code{"CARDIAC DISORDERS"}
-summary row and all subsequent rows in this section will be removed from the table. Filtering out rows does not
-exclude the records corresponding to these rows from being included in rate calculations for overall sections.
+When using the \code{filter} argument, the filter will be applied to the second variable from \code{variables}, i.e. the
+adverse event terms variable. If an AE does not meet the filtering criteria, the AE overall row as well as all grade
+and grade group rows within an AE section will be excluded from the table. Filtering out AEs does not exclude the
+records corresponding to these filtered out rows from being included in rate calculations for overall sections.
 
-See the \code{filter} argument of \code{\link[gtsummary:filter_hierarchical]{gtsummary::filter_hierarchical()}} for more details and examples.
+See \code{\link[gtsummary:filter_hierarchical]{gtsummary::filter_hierarchical()}} for more details and examples.
 }
 \examples{
 ADSL <- cards::ADSL

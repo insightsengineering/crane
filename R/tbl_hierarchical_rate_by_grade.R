@@ -23,7 +23,8 @@
 #'   the AE term variable level will have label `"- Overall -"`. If the grade level variable is included it has no
 #'   effect. The default is `everything()`.
 #' @param filter (`expression`)\cr
-#'   An expression that is used to filter rows of the table. See the Details section below for more information.
+#'   An expression that is used to filter rows of the table. Filter will be applied to the second variable (adverse
+#'   event terms) specified via `variables`. See the Details section below for more information.
 #' @param grade_groups (`named list`)\cr
 #'   A named list of grade groups for which rates should be calculated. Grade groups must be mutually exclusive, i.e.
 #'   each grade cannot be assigned to more than one grade group. Each grade group must be specified in the list as a
@@ -40,15 +41,12 @@
 #'   A gtsummary table of class `'tbl_hierarchical_rate_by_grade'`.
 #'
 #' @details
-#' When using the `filter` argument, all grade and grade group rows that meet the given filtering criteria will be kept.
-#' If a grade group row meets the filter criteria but the individual grade rows within the group do not, the grade group
-#' row will still be kept. If all rows in a given table hierarchy section have been filtered out, the summary row of
-#' that section will also be excluded. For example, if the SOC variable is `AESOC` and no grade or grade group rows in
-#' the section corresponding to `AESOC = "CARDIAC DISORDERS"` meet the filtering criteria, the `"CARDIAC DISORDERS"`
-#' summary row and all subsequent rows in this section will be removed from the table. Filtering out rows does not
-#' exclude the records corresponding to these rows from being included in rate calculations for overall sections.
+#' When using the `filter` argument, the filter will be applied to the second variable from `variables`, i.e. the
+#' adverse event terms variable. If an AE does not meet the filtering criteria, the AE overall row as well as all grade
+#' and grade group rows within an AE section will be excluded from the table. Filtering out AEs does not exclude the
+#' records corresponding to these filtered out rows from being included in rate calculations for overall sections.
 #'
-#' See the `filter` argument of [gtsummary::filter_hierarchical()] for more details and examples.
+#' See [gtsummary::filter_hierarchical()] for more details and examples.
 #'
 #' @returns a gtsummary table of class `"tbl_hierarchical_rate_by_grade"`.
 #' @name tbl_hierarchical_rate_by_grade
@@ -290,7 +288,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
   attr(tbl_final$cards$tbl_hierarchical, "args") <- ard_args
 
   tbl_final <- tbl_final |> gtsummary::sort_hierarchical(sort)
-  if (!quo_is_null(filter)) tbl_final <- tbl_final |> gtsummary::filter_hierarchical(filter = !!filter)
+  if (!quo_is_null(filter)) tbl_final <- tbl_final |> gtsummary::filter_hierarchical(filter = !!filter, var = ae)
 
   # format the final table -----------------------------------------------------
   # arrange grade rows by level, with all groups prior to their first level
