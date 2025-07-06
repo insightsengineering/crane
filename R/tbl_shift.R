@@ -1,7 +1,7 @@
 #' Shift Table
 #'
-#' Typical use is tabulating post-baseline toxicity grade stratified by the
-#' baseline grade.
+#' Typical use is tabulating post-baseline measurement stratified by the
+#' baseline measurement.
 #'
 #' @inheritParams tbl_roche_summary
 #' @param strata ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
@@ -24,7 +24,7 @@
 #'   `{n}` is also available to insert.
 #' @param header (`string`)\cr
 #'   String that is passed to `gtsummary::modify_header(all_stat_cols() ~ header)`.
-#' @param label ([`formula-list-selector`][syntax])\cr
+#' @param label ([`formula-list-selector`][gtsummary::syntax])\cr
 #'   Used to specify the labels for the `strata` and `variable` columns.
 #'   Default is to use the column label attribute.
 #' @param nonmissing,nonmissing_text,... Argument passed to `tbl_roche_summary()`

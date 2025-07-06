@@ -49,7 +49,7 @@ A glue-string that inserts stratum level. Default is \code{'{strata}'}, and
 \item{header}{(\code{string})\cr
 String that is passed to \code{gtsummary::modify_header(all_stat_cols() ~ header)}.}
 
-\item{label}{(\code{\link[=syntax]{formula-list-selector}})\cr
+\item{label}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
 Used to specify the labels for the \code{strata} and \code{variable} columns.
 Default is to use the column label attribute.}
 
@@ -59,8 +59,8 @@ Default is to use the column label attribute.}
 a 'gtsummary' table
 }
 \description{
-Typical use is tabulating post-baseline toxicity grade stratified by the
-baseline grade.
+Typical use is tabulating post-baseline measurement stratified by the
+baseline measurement.
 }
 \details{
 Broadly, this function is a wrapper for chunk below with some additional
@@ -131,5 +131,5 @@ adlb |>
     percent = "cell",
     nonmissing = "no"
   ) |>
-  gtsummary::modify_spanning_header(all_stat_cols() ~ "Worst Post-baseline NCI-CTCAE Grade")
+  modify_spanning_header(all_stat_cols() ~ "Worst Post-baseline NCI-CTCAE Grade")
 }
