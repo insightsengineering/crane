@@ -27,7 +27,8 @@
 #' @param label ([`formula-list-selector`][gtsummary::syntax])\cr
 #'   Used to specify the labels for the `strata` and `variable` columns.
 #'   Default is to use the column label attribute.
-#' @param nonmissing,nonmissing_text,... Argument passed to `tbl_roche_summary()`
+#' @param nonmissing,nonmissing_text,... Argument passed to `tbl_roche_summary()`.
+#'   See details below for call details to `tbl_roche_summary()`.
 #'
 #' @returns a 'gtsummary' table
 #' @export

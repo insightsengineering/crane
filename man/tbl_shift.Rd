@@ -53,7 +53,8 @@ String that is passed to \code{gtsummary::modify_header(all_stat_cols() ~ header
 Used to specify the labels for the \code{strata} and \code{variable} columns.
 Default is to use the column label attribute.}
 
-\item{nonmissing, nonmissing_text, ...}{Argument passed to \code{tbl_roche_summary()}}
+\item{nonmissing, nonmissing_text, ...}{Argument passed to \code{tbl_roche_summary()}.
+See details below for call details to \code{tbl_roche_summary()}.}
 }
 \value{
 a 'gtsummary' table
