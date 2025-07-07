@@ -76,7 +76,7 @@ headers, indentation, column alignment, etc.
 }\if{html}{\out{</div>}}
 }
 \examples{
-library(dplyr)
+library(dplyr, warn.conflicts = FALSE)
 
 # subsetting ADLB on one PARAM, and the highest grade
 adlb <- pharmaverseadam::adlb[c("USUBJID", "TRT01A", "PARAMCD", "ATOXGRH", "BTOXGRH", "VISITNUM")]|>
