@@ -10,6 +10,12 @@
 #'
 #' @examples
 #' # Example 1 ----------------------------------
+#' adlb <- syntheticadam::adlb
+#' adsl <- syntheticadam::adsl
+#' tbl_baseline_chg(
+#' data=adlb,
+#' denominator=adsl,
+#' by="TRT01A")
 NULL
 #' @export
 tbl_baseline_chg <- function(data,
