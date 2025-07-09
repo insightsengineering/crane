@@ -1,5 +1,7 @@
 # crane 0.1.0.9036
 
+* Added `variables` and `row_numbers` arguments to the `add_blank_rows()` function. (#45)
+
 * Updated `theme_gtsummary_roche()` to further style results from `gtsummary::tbl_hierarchical*()` functions.
 
 * Added `theme_gtsummary_roche(font_size, print_egine)` arguments to control the default font size and the print engine.
