@@ -1,121 +1,119 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="add_hierarchical_count_row" timestamp="2025-07-09T23:06:45Z" hostname="4cc67d6f7332" tests="3" skipped="1" failures="0" errors="0" time="2.329">
-    <testcase time="2.304" classname="character(0)" name="add_hierarchical_count_row_works"/>
-    <testcase time="0.0180000000000002" classname="character(0)" name="add_hierarchical_count_row_works"/>
-    <testcase time="0.00700000000000012" classname="character(0)" name="add_hierarchical_count_row_works">
-      <skipped message="Reason: On CRAN ('test-add_hierarchical_count_row.R:21:3')"/>
-    </testcase>
+  <testsuite name="add_hierarchical_count_row" timestamp="2025-07-09T23:06:53Z" hostname="eb2d5ca722c4" tests="4" skipped="0" failures="0" errors="0" time="3.864">
+    <testcase time="3.838" classname="character(0)" name="add_hierarchical_count_row_works"/>
+    <testcase time="0.0190000000000001" classname="character(0)" name="add_hierarchical_count_row_works"/>
+    <testcase time="0.00600000000000023" classname="character(0)" name="add_hierarchical_count_row_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="add_hierarchical_count_row_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-07-09T23:06:47Z" hostname="4cc67d6f7332" tests="1" skipped="0" failures="0" errors="0" time="2.129">
-    <testcase time="2.129" classname="character(0)" name="add_blank_row_works"/>
+  <testsuite name="add_blank_row" timestamp="2025-07-09T23:06:54Z" hostname="eb2d5ca722c4" tests="1" skipped="0" failures="0" errors="0" time="0.715">
+    <testcase time="0.715" classname="character(0)" name="add_blank_row_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-07-09T23:06:47Z" hostname="4cc67d6f7332" tests="2" skipped="0" failures="0" errors="0" time="0.008">
-    <testcase time="0.00800000000000001" classname="character(0)" name="add_blank_row_age_works"/>
+  <testsuite name="add_blank_row" timestamp="2025-07-09T23:06:54Z" hostname="eb2d5ca722c4" tests="2" skipped="0" failures="0" errors="0" time="0.009">
+    <testcase time="0.00900000000000034" classname="character(0)" name="add_blank_row_age_works"/>
     <testcase time="0" classname="character(0)" name="add_blank_row_age_works"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-07-09T23:06:47Z" hostname="4cc67d6f7332" tests="1" skipped="0" failures="0" errors="0" time="0.002">
-    <testcase time="0.00200000000000067" classname="character(0)" name="add_blank_row_grade_is_last_row_then_table_identical"/>
+  <testsuite name="add_blank_row" timestamp="2025-07-09T23:06:54Z" hostname="eb2d5ca722c4" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999978" classname="character(0)" name="add_blank_row_grade_is_last_row_then_table_identical"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-07-09T23:06:47Z" hostname="4cc67d6f7332" tests="1" skipped="0" failures="0" errors="0" time="0.001">
-    <testcase time="0.000999999999999446" classname="character(0)" name="add_blank_row_grade_is_last_row_then_table_identical"/>
+  <testsuite name="add_blank_row" timestamp="2025-07-09T23:06:54Z" hostname="eb2d5ca722c4" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.00100000000000033" classname="character(0)" name="add_blank_row_grade_is_last_row_then_table_identical"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-07-09T23:06:47Z" hostname="4cc67d6f7332" tests="2" skipped="0" failures="0" errors="0" time="0.002">
-    <testcase time="0.00100000000000033" classname="character(0)" name="add_blank_row_row_numbers_error"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="add_blank_row_row_numbers_error"/>
+  <testsuite name="add_blank_row" timestamp="2025-07-09T23:06:54Z" hostname="eb2d5ca722c4" tests="2" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999978" classname="character(0)" name="add_blank_row_row_numbers_error"/>
+    <testcase time="0" classname="character(0)" name="add_blank_row_row_numbers_error"/>
   </testsuite>
-  <testsuite name="add_blank_row" timestamp="2025-07-09T23:06:47Z" hostname="4cc67d6f7332" tests="1" skipped="1" failures="0" errors="0" time="0.001">
-    <testcase time="0.00100000000000033" classname="character(0)" name="add_blank_row_errors_when_no_variable">
-      <skipped message="Reason: On CRAN ('test-add_blank_row.R:81:3')"/>
-    </testcase>
+  <testsuite name="add_blank_row" timestamp="2025-07-09T23:06:54Z" hostname="eb2d5ca722c4" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999978" classname="character(0)" name="add_blank_row_errors_when_no_variable"/>
   </testsuite>
-  <testsuite name="roche_pvalue" timestamp="2025-07-09T23:06:47Z" hostname="4cc67d6f7332" tests="1" skipped="0" failures="0" errors="0" time="0.072">
-    <testcase time="0.0720000000000001" classname="character(0)" name="roche_pvalue_works"/>
+  <testsuite name="roche_pvalue" timestamp="2025-07-09T23:06:54Z" hostname="eb2d5ca722c4" tests="1" skipped="0" failures="0" errors="0" time="0.066">
+    <testcase time="0.0660000000000007" classname="character(0)" name="roche_pvalue_works"/>
   </testsuite>
-  <testsuite name="roche_pvalue" timestamp="2025-07-09T23:06:47Z" hostname="4cc67d6f7332" tests="3" skipped="0" failures="0" errors="0" time="0.003">
+  <testsuite name="roche_pvalue" timestamp="2025-07-09T23:06:54Z" hostname="eb2d5ca722c4" tests="3" skipped="0" failures="0" errors="0" time="0.004">
     <testcase time="0.00199999999999978" classname="character(0)" name="roche_percent_works"/>
-    <testcase time="0" classname="character(0)" name="roche_percent_works"/>
     <testcase time="0.00100000000000033" classname="character(0)" name="roche_percent_works"/>
-    <testcase time="0.0350000000000001" classname="character(0)" name="_unnamed_">
-      <skipped message="Reason: On CRAN ('test-tbl_hierarchical_rate_and_count.R:1:1')"/>
-    </testcase>
+    <testcase time="0.000999999999999446" classname="character(0)" name="roche_percent_works"/>
   </testsuite>
-  <testsuite name="modify_header_rm_md" timestamp="2025-07-09T23:06:47Z" hostname="4cc67d6f7332" tests="3" skipped="1" failures="0" errors="0" time="0.197">
-    <testcase time="0.161" classname="character(0)" name="strip_md_bold_works_with_gtsummary_table"/>
+  <testsuite name="modify_header_rm_md" timestamp="2025-07-09T23:06:56Z" hostname="eb2d5ca722c4" tests="2" skipped="0" failures="0" errors="0" time="1.684">
+    <testcase time="1.683" classname="character(0)" name="strip_md_bold_works_with_gtsummary_table"/>
     <testcase time="0.00100000000000033" classname="character(0)" name="strip_md_bold_works_with_gtsummary_table"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-07-09T23:06:52Z" hostname="4cc67d6f7332" tests="2" skipped="1" failures="0" errors="0" time="4.406">
-    <testcase time="4.405" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_quantiles_works">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:13:3')"/>
-    </testcase>
+  <testsuite name="tbl_roche_summary" timestamp="2025-07-09T23:07:02Z" hostname="eb2d5ca722c4" tests="1" skipped="0" failures="0" errors="0" time="6.495">
+    <testcase time="6.495" classname="character(0)" name="tbl_roche_summary_works"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-07-09T23:06:52Z" hostname="4cc67d6f7332" tests="1" skipped="1" failures="0" errors="0" time="0.019">
-    <testcase time="0.0190000000000001" classname="character(0)" name="tbl_survfit_quantiles_by_messaging">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:55:3')"/>
-    </testcase>
+  <testsuite name="tbl_roche_summary" timestamp="2025-07-09T23:07:02Z" hostname="eb2d5ca722c4" tests="3" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00200000000000067" classname="character(0)" name="tbl_roche_summary_add_overall_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_roche_summary_add_overall_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_roche_summary_add_overall_works"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-07-09T23:06:52Z" hostname="4cc67d6f7332" tests="1" skipped="1" failures="0" errors="0" time="0.02">
-    <testcase time="0.0199999999999996" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:75:3')"/>
-    </testcase>
+  <testsuite name="tbl_roche_summary" timestamp="2025-07-09T23:07:02Z" hostname="eb2d5ca722c4" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_roche_summary_recode_counts_for_all_NA_column"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-07-09T23:06:52Z" hostname="4cc67d6f7332" tests="1" skipped="0" failures="0" errors="0" time="0.01">
-    <testcase time="0.00999999999999979" classname="character(0)" name="tbl_survfit_quantiles_method.args_"/>
+  <testsuite name="tbl_hierarchical_rate_and_count" timestamp="2025-07-09T23:07:04Z" hostname="eb2d5ca722c4" tests="5" skipped="0" failures="0" errors="0" time="1.323">
+    <testcase time="1.319" classname="character(0)" name="tbl_hierarchical_rate_and_count_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_hierarchical_rate_and_count_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_hierarchical_rate_and_count_works"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_hierarchical_rate_and_count_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_hierarchical_rate_and_count_works"/>
   </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2025-07-09T23:06:52Z" hostname="4cc67d6f7332" tests="1" skipped="1" failures="0" errors="0" time="0.002">
-    <testcase time="0.00200000000000067" classname="character(0)" name="add_overall.tbl_survfit_quantiles_works">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:111:3')"/>
-    </testcase>
+  <testsuite name="tbl_hierarchical_rate_and_count" timestamp="2025-07-09T23:07:04Z" hostname="eb2d5ca722c4" tests="2" skipped="0" failures="0" errors="0" time="0.004">
+    <testcase time="0.00300000000000011" classname="character(0)" name="tbl_hierarchical_rate_and_count_sort_"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_hierarchical_rate_and_count_sort_"/>
   </testsuite>
-  <testsuite name="tbl_roche_summary" timestamp="2025-07-09T23:06:52Z" hostname="4cc67d6f7332" tests="1" skipped="0" failures="0" errors="0" time="0.758">
-    <testcase time="0.757999999999999" classname="character(0)" name="tbl_roche_summary_works"/>
+  <testsuite name="tbl_survfit_times" timestamp="2025-07-09T23:07:08Z" hostname="eb2d5ca722c4" tests="7" skipped="0" failures="0" errors="0" time="4.277">
+    <testcase time="4.273" classname="character(0)" name="tbl_survfit_times_works"/>
+    <testcase time="0.000999999999997669" classname="character(0)" name="tbl_survfit_times_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_times_works"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_times_works"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_times_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_survfit_times_works"/>
+    <testcase time="0.000999999999997669" classname="character(0)" name="tbl_survfit_times_works"/>
   </testsuite>
-  <testsuite name="tbl_roche_summary" timestamp="2025-07-09T23:06:52Z" hostname="4cc67d6f7332" tests="2" skipped="1" failures="0" errors="0" time="0.006">
-    <testcase time="0.00500000000000078" classname="character(0)" name="tbl_roche_summary_add_overall_works"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_roche_summary_add_overall_works">
-      <skipped message="Reason: On CRAN ('test-tbl_roche_summary.R:41:3')"/>
-    </testcase>
+  <testsuite name="tbl_survfit_times" timestamp="2025-07-09T23:07:08Z" hostname="eb2d5ca722c4" tests="2" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_times_by_messaging"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_times_by_messaging"/>
   </testsuite>
-  <testsuite name="tbl_roche_summary" timestamp="2025-07-09T23:06:52Z" hostname="4cc67d6f7332" tests="1" skipped="0" failures="0" errors="0" time="0.014">
-    <testcase time="0.0139999999999993" classname="character(0)" name="tbl_roche_summary_recode_counts_for_all_NA_column"/>
+  <testsuite name="tbl_survfit_times" timestamp="2025-07-09T23:07:08Z" hostname="eb2d5ca722c4" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.000999999999997669" classname="character(0)" name="add_overall.tbl_survfit_times_works"/>
   </testsuite>
-  <testsuite name="tbl_survfit_times" timestamp="2025-07-09T23:06:53Z" hostname="4cc67d6f7332" tests="2" skipped="1" failures="0" errors="0" time="0.997">
-    <testcase time="0.996" classname="character(0)" name="tbl_survfit_times_works"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_survfit_times_works">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_times.R:14:3')"/>
-    </testcase>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-07-09T23:07:09Z" hostname="eb2d5ca722c4" tests="7" skipped="0" failures="0" errors="0" time="0.733">
+    <testcase time="0.727" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.000999999999997669" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.000999999999997669" classname="character(0)" name="tbl_survfit_quantiles_works"/>
   </testsuite>
-  <testsuite name="tbl_survfit_times" timestamp="2025-07-09T23:06:53Z" hostname="4cc67d6f7332" tests="1" skipped="1" failures="0" errors="0" time="0.013">
-    <testcase time="0.0129999999999999" classname="character(0)" name="tbl_survfit_times_by_messaging">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_times.R:59:3')"/>
-    </testcase>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-07-09T23:07:09Z" hostname="eb2d5ca722c4" tests="2" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00200000000000244" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
+    <testcase time="0.000999999999997669" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
   </testsuite>
-  <testsuite name="tbl_survfit_times" timestamp="2025-07-09T23:06:53Z" hostname="4cc67d6f7332" tests="1" skipped="1" failures="0" errors="0" time="0.011">
-    <testcase time="0.011000000000001" classname="character(0)" name="add_overall.tbl_survfit_times_works">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_times.R:81:3')"/>
-    </testcase>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-07-09T23:07:09Z" hostname="eb2d5ca722c4" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999889" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_"/>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-07-09T23:06:55Z" hostname="4cc67d6f7332" tests="1" skipped="1" failures="0" errors="0" time="1.912">
-    <testcase time="1.912" classname="character(0)" name="theme_gtsummary_roche_works">
-      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:3:3')"/>
-    </testcase>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-07-09T23:07:09Z" hostname="eb2d5ca722c4" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_survfit_quantiles_method.args_"/>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-07-09T23:06:55Z" hostname="4cc67d6f7332" tests="1" skipped="1" failures="0" errors="0" time="0.011">
-    <testcase time="0.011000000000001" classname="character(0)" name="theme_gtsummary_roche_adds_relevant_flextable_directives">
-      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:17:3')"/>
-    </testcase>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2025-07-09T23:07:09Z" hostname="eb2d5ca722c4" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999889" classname="character(0)" name="add_overall.tbl_survfit_quantiles_works"/>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-07-09T23:06:55Z" hostname="4cc67d6f7332" tests="1" skipped="0" failures="0" errors="0" time="0.01">
-    <testcase time="0.00999999999999979" classname="character(0)" name="theme_gtsummary_roche_no_errors_with_a_gt_print"/>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-07-09T23:07:11Z" hostname="eb2d5ca722c4" tests="1" skipped="0" failures="0" errors="0" time="2.243">
+    <testcase time="2.243" classname="character(0)" name="theme_gtsummary_roche_works"/>
   </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2025-07-09T23:06:55Z" hostname="4cc67d6f7332" tests="7" skipped="0" failures="0" errors="0" time="0.004">
-    <testcase time="0.000999999999999446" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-07-09T23:07:11Z" hostname="eb2d5ca722c4" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999889" classname="character(0)" name="theme_gtsummary_roche_adds_relevant_flextable_directives"/>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-07-09T23:07:11Z" hostname="eb2d5ca722c4" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.00100000000000122" classname="character(0)" name="theme_gtsummary_roche_no_errors_with_a_gt_print"/>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2025-07-09T23:07:11Z" hostname="eb2d5ca722c4" tests="7" skipped="0" failures="0" errors="0" time="0.007">
+    <testcase time="0.00199999999999889" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
+    <testcase time="0" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
     <testcase time="0.00100000000000122" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
     <testcase time="0" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
+    <testcase time="0.000999999999997669" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
     <testcase time="0" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
-    <testcase time="0" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
+    <testcase time="0.00300000000000011" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
   </testsuite>
 </testsuites>
