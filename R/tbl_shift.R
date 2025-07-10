@@ -52,7 +52,7 @@
 #' # subsetting ADLB on one PARAM, and the highest grade
 #' adlb <- pharmaverseadam::adlb[c("USUBJID", "TRT01A", "PARAMCD", "ATOXGRH", "BTOXGRH", "VISITNUM")]|>
 #'   mutate(TRT01A = factor(TRT01A)) |>
-#'   filter(PARAMCD == "CHOLES") |>
+#'   filter(PARAMCD %in% c("CHOLES", "GLUC")) |>
 #'   slice_max(by = c(USUBJID, PARAMCD), order_by = ATOXGRH, n = 1L, with_ties = FALSE) |>
 #'   labelled::set_variable_labels(
 #'     BTOXGRH = "Baseline  \nNCI-CTCAE Grade",
@@ -62,7 +62,7 @@
 #' # Example 1 ----------------------------------
 #' # tabulate baseline grade by worst grade
 #' tbl_shift(
-#'   data = adlb,
+#'   data = filter(adlb, PARAMCD %in% "CHOLES"),
 #'   strata = BTOXGRH,
 #'   variable = ATOXGRH,
 #'   by = TRT01A,
@@ -74,7 +74,7 @@
 #' # Example 2 ----------------------------------
 #' # same as Ex1, but with the stratifying variable levels in header rows
 #' tbl_shift(
-#'   data = adlb,
+#'   data = filter(adlb, PARAMCD %in% "CHOLES"),
 #'   strata = BTOXGRH,
 #'   variable = ATOXGRH,
 #'   strata_location = "header",
@@ -85,15 +85,37 @@
 #' )
 #'
 #' # Example 3 ----------------------------------
-#' # Include the treatment variable in a new column
+#' # same as Ex2, but with two labs
 #' adlb |>
+#'   tbl_strata_nested_stack(
+#'     strata = PARAM,
+#'     ~ .x |>
+#'       tbl_shift(
+#'         strata = BTOXGRH,
+#'         variable = ATOXGRH,
+#'         strata_location = "header",
+#'         by = TRT01A,
+#'         data_header =
+#'           pharmaverseadam::adsl[c("USUBJID", "TRT01A")] |>
+#'           filter(TRT01A != "Screen Failure")
+#'       )
+#'   ) |>
+#'   # Update header with Lab header and indentation
+#'   modify_header(
+#'     label = "Lab  \n\U00A0\U00A0\U00A0\U00A0
+#'              Baseline NCI-CTCAE Grade  \n\U00A0\U00A0\U00A0\U00A0\U00A0\U00A0\U00A0\U00A0
+#'              Post-baseline NCI-CTCAE Grade"
+#'   )
+#'
+#' # Example 4 ----------------------------------
+#' # Include the treatment variable in a new column
+#' filter(adlb, PARAMCD %in% "CHOLES") |>
 #'   right_join(
 #'     pharmaverseadam::adsl[c("USUBJID", "TRT01A")] |>
 #'       filter(TRT01A != "Screen Failure"),
 #'     by = c("USUBJID", "TRT01A")
 #'   ) |>
 #'   tbl_shift(
-#'     data = ,
 #'     strata = TRT01A,
 #'     variable = BTOXGRH,
 #'     by = ATOXGRH,
