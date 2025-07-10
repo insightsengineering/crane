@@ -1,10 +1,11 @@
 Package: crane
 Title: Supplements the 'gtsummary' Package for Pharmaceutical Reporting
-Version: 0.1.0.9036
+Version: 0.1.0.9037
 Authors@R: c(
     person("Daniel D.", "Sjoberg", , "danield.sjoberg@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-0862-2018")),
-    person("Emily", "de la Rua", , "emily.de_la_rua@contractors.roche.com", role = "aut"),
+    person("Emily", "de la Rua", , "emily.de_la_rua@contractors.roche.com", role = "aut",
+           comment = c(ORCID = "0009-0000-8738-5561")),
     person("Davide", "Garolini", , "davide.garolini@roche.com", role = "aut"),
     person("Abinaya", "Yogasekaram", , "abinaya.yogasekaram@contractors.roche.com", role = "aut"),
     person("F. Hoffmann-La Roche AG", role = c("cph", "fnd"))
@@ -19,12 +20,12 @@ URL: https://github.com/insightsengineering/crane,
     https://insightsengineering.github.io/crane/
 BugReports: https://github.com/insightsengineering/crane/issues
 Depends: 
-    gtsummary (>= 2.2.0.9023),
+    gtsummary (>= 2.3.0.9002),
     R (>= 4.2)
 Imports: 
     broom (>= 1.0.8),
-    cards (>= 0.6.0.9013),
-    cardx (>= 0.2.4.9007),
+    cards (>= 0.6.1.9007),
+    cardx (>= 0.2.5),
     cli (>= 3.6.4),
     dplyr (>= 1.1.4),
     flextable (>= 0.9.7),
@@ -39,9 +40,8 @@ Suggests:
     testthat (>= 3.0.0),
     withr (>= 3.0.1)
 Remotes: 
-    ddsjoberg/gtsummary@filter_hierarchical_cards_updates,
-    insightsengineering/cards@467-filter_hierarchical_vars,
-    insightsengineering/cardx
+    ddsjoberg/gtsummary,
+    insightsengineering/cards
 Config/Needs/check: hms
 Config/Needs/website: rmarkdown, yaml, insightsengineering/nesttemplate
 Config/testthat/edition: 3
