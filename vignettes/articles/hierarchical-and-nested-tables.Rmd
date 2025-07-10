@@ -238,7 +238,7 @@ tbl <-
 
 tbl |>
   sort_hierarchical("descending") |>
-  filter_hierarchical(sum(n) > 1)
+  filter_hierarchical(filter = sum(n) > 1)
 ```
 
 ## Tables with Stratified Nesting: `tbl_strata_nested_stack()`
