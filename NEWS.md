@@ -1,5 +1,7 @@
 # crane 0.1.0.9038
 
+* Added function `tbl_hierarchical_rate_by_grade()` to summarize adverse event rates by highest toxicity grade. (#46)
+
 * Added `variables` and `row_numbers` arguments to the `add_blank_rows()` function. (#45)
 
 * Updated `theme_gtsummary_roche()` to further style results from `gtsummary::tbl_hierarchical*()` functions.
