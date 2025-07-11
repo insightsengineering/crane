@@ -140,6 +140,7 @@ and the SOC variable is included in \code{include_overall} the \verb{- Any adver
 See \code{\link[gtsummary:filter_hierarchical]{gtsummary::filter_hierarchical()}} for more details and examples.
 }
 \examples{
+theme_gtsummary_roche()
 ADSL <- cards::ADSL
 ADAE_subset <- cards::ADAE |>
   dplyr::filter(

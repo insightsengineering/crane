@@ -54,6 +54,7 @@
 #' @name tbl_hierarchical_rate_by_grade
 #'
 #' @examples
+#' theme_gtsummary_roche()
 #' ADSL <- cards::ADSL
 #' ADAE_subset <- cards::ADAE |>
 #'   dplyr::filter(
