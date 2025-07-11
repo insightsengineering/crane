@@ -15,7 +15,7 @@ tbl_hierarchical_rate_by_grade(
   statistic = everything() ~ "{n} ({p}\%)",
   label = NULL,
   digits = NULL,
-  sort = "descending",
+  sort = "alphanumeric",
   filter = NULL,
   grade_groups = list(),
   grades_exclude = NULL,

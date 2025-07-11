@@ -135,7 +135,7 @@ test_that("tbl_hierarchical_rate_by_grade() works with add_overall()", {
 })
 
 test_that("tbl_hierarchical_rate_by_grade(sort) works", {
-  # default "descending" sort
+  # default "alphanumeric" sort
   expect_silent(
     tbl <-
       tbl_hierarchical_rate_by_grade(
@@ -153,15 +153,15 @@ test_that("tbl_hierarchical_rate_by_grade(sort) works", {
       dplyr::filter(variable == "AEBODSYS", !startsWith(label, "Total")) |>
       dplyr::pull("label"),
     c(
-      "- Any adverse events -", "GENERAL DISORDERS AND ADMINISTRATION SITE CONDITIONS",
-      "SKIN AND SUBCUTANEOUS TISSUE DISORDERS", "GASTROINTESTINAL DISORDERS",
-      "CARDIAC DISORDERS"
+      "- Any adverse events -", "CARDIAC DISORDERS", "GASTROINTESTINAL DISORDERS",
+      "GENERAL DISORDERS AND ADMINISTRATION SITE CONDITIONS",
+      "SKIN AND SUBCUTANEOUS TISSUE DISORDERS"
     )
   )
 
-  # "alphanumeric" sort works
+  # "descending" sort works
   expect_silent(
-    tbl_alphanum <-
+    tbl_desc <-
       tbl_hierarchical_rate_by_grade(
         ADAE_subset,
         variables = c(AEBODSYS, AEDECOD, AETOXGR),
@@ -169,19 +169,19 @@ test_that("tbl_hierarchical_rate_by_grade(sort) works", {
         by = TRTA,
         label = label,
         grade_groups = grade_groups,
-        sort = "alphanumeric"
+        sort = "descending"
       )
   )
-  expect_equal(nrow(tbl), nrow(tbl_alphanum))
+  expect_equal(nrow(tbl), nrow(tbl_desc))
   # check order is correct
   expect_equal(
-    tbl_alphanum$table_body |>
+    tbl_desc$table_body |>
       dplyr::filter(variable == "AEBODSYS", !startsWith(label, "Total")) |>
       dplyr::pull("label"),
     c(
-      "- Any adverse events -", "CARDIAC DISORDERS", "GASTROINTESTINAL DISORDERS",
-      "GENERAL DISORDERS AND ADMINISTRATION SITE CONDITIONS",
-      "SKIN AND SUBCUTANEOUS TISSUE DISORDERS"
+      "- Any adverse events -", "GENERAL DISORDERS AND ADMINISTRATION SITE CONDITIONS",
+      "SKIN AND SUBCUTANEOUS TISSUE DISORDERS", "GASTROINTESTINAL DISORDERS",
+      "CARDIAC DISORDERS"
     )
   )
 })
