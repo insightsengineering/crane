@@ -1,4 +1,4 @@
-# crane 0.1.0.9037
+# crane 0.1.0.9038
 
 * Added `variables` and `row_numbers` arguments to the `add_blank_rows()` function. (#45)
 
@@ -35,6 +35,8 @@
 * Added `tbl_survfit_quantiles()` and `add_overall.tbl_survfit_quantiles()` to create a table of survival quantiles. (#19)
 
 * Added {flextable} specs for `theme_gtsummary_roche()`. Mainly border line width (0.5) and footer font size (`font_size` - 1).
+
+* Set `digits` to `NULL` in `tbl_hierarchical_rate_and_count()`. (#72)
 
 # crane 0.1.0
 
