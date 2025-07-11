@@ -9,6 +9,8 @@
 ## usethis namespace: end
 NULL
 
+utils::globalVariables(c("."))
+
 # using pkgs to silence NOTE
 .silence <- function() {
   # broom is used in tbl_survfit_quantiles() via cardx::ard_survfit()

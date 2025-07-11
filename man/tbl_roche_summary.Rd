@@ -90,7 +90,7 @@ and placed on the row under the variable label/header.
 \item The \verb{tbl_summary(missing*)} arguments have been renamed to
 \verb{tbl_roche_summary(nonmissing*)} with updated default values.
 \item The default footnotes from \code{tbl_summary()} are removed.
-\item Cells with \code{"0 (0.0\%)"} are converted to \code{"0"} with \code{modify_post_fmt_fun()}.
+\item Cells with \code{"0 (0.0\%)"} are converted to \code{"0"} with \code{gtsummary::modify_post_fmt_fun()}.
 }
 }
 \examples{
