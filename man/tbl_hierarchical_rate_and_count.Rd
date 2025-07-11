@@ -11,8 +11,7 @@ tbl_hierarchical_rate_and_count(
   denominator,
   by = NULL,
   id = "USUBJID",
-  digits = everything() ~ list(n = label_style_number(), p = label_roche_percent(digits =
-    1)),
+  digits = NULL,
   sort = NULL,
   label_overall_rate = "Total number of participants with at least one adverse event",
   label_overall_count = "Overall total number of events",
@@ -52,9 +51,8 @@ argument used to subset \code{data} to identify rows in \code{data} to calculate
 event rates in \code{tbl_hierarchical()}.}
 
 \item{digits}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
-Specifies how summary statistics are rounded. Values may be either integer(s) or function(s). If not specified,
-default formatting is assigned via \code{label_style_number()} for the \code{n} statistic and
-\code{label_roche_percent(digits=1)} for the \code{p} statistic.}
+Specifies how summary statistics are rounded. Values may be either integer(s) or function(s).
+If a theme is applied, the \code{digits} specifications of the theme is applied.}
 
 \item{sort}{\emph{Optional} arguments passed to \code{gtsummary::sort_hierarchical(sort)}.}
 
