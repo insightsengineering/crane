@@ -213,6 +213,22 @@ test_that("tbl_hierarchical_rate_by_grade(filter) works", {
       } |> # styler off
       all()
   )
+
+  # if only the SOC overall section is kept by the filter the SOC is removed
+  expect_silent(
+    tbl <-
+      tbl_hierarchical_rate_by_grade(
+        ADAE_subset,
+        variables = c(AEBODSYS, AEDECOD, AETOXGR),
+        denominator = ADSL,
+        by = TRTA,
+        label = label,
+        filter = sum(n) > 18,
+        grade_groups = grade_groups
+      ) |>
+      add_overall()
+  )
+  expect_equal(nrow(tbl$table_body), 42)
 })
 
 test_that("tbl_hierarchical_rate_by_grade() works with non-factor grade variables", {
