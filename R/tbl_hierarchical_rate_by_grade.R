@@ -274,17 +274,17 @@ tbl_hierarchical_rate_by_grade <- function(data,
     # if all AEs in a SOC are removed by the filter, remove the SOC overall section too
     socs_keep <- ard_final |>
       dplyr::filter(.data[[paste0("group", length(by) + 2)]] == ae) |>
-      select(cards::all_ard_group_n(1 + length(by))) |>
+      dplyr::select(cards::all_ard_group_n(1 + length(by))) |>
       dplyr::distinct()
 
     # add remaining SOC overall sections back
     ard_final <- ard_final |>
       dplyr::bind_rows(
-      ard_aes_overall |>
-        dplyr::inner_join(
-          socs_keep,
-          by = names(socs_keep)
-        )
+        ard_aes_overall |>
+          dplyr::inner_join(
+            socs_keep,
+            by = names(socs_keep)
+          )
       )
   }
 
