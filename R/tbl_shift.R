@@ -4,6 +4,7 @@
 #' baseline measurement.
 #'
 #' @inheritParams tbl_roche_summary
+#' @inheritParams gtsummary::add_overall
 #' @param strata ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   Stratifying variable. Typically the baseline grade.
 #' @param variable ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
@@ -29,7 +30,10 @@
 #'   Default is to use the column label attribute.
 #' @param nonmissing,nonmissing_text,... Argument passed to `tbl_roche_summary()`.
 #'   See details below for call details to `tbl_roche_summary()`.
-#'
+#' @param x (`tbl_shift`)\cr
+#'   Object of class `'tbl_shift'`.
+#' @param col_label (`string`)\cr
+#'   String indicating the column label. Default is "All Participants \nN = {gtsummary::style_number(n)}"
 #' @returns a 'gtsummary' table
 #' @name tbl_shift
 #'
@@ -50,7 +54,8 @@
 #' library(dplyr, warn.conflicts = FALSE)
 #'
 #' # subsetting ADLB on one PARAM, and the highest grade
-#' adlb <- pharmaverseadam::adlb[c("USUBJID", "TRT01A", "PARAMCD", "ATOXGRH", "BTOXGRH", "VISITNUM")]|>
+#' adlb <- pharmaverseadam::adlb |>
+#'   select("USUBJID", "TRT01A", "PARAM", "PARAMCD", "ATOXGRH", "BTOXGRH", "VISITNUM") |>
 #'   mutate(TRT01A = factor(TRT01A)) |>
 #'   filter(PARAMCD %in% c("CHOLES", "GLUC")) |>
 #'   slice_max(by = c(USUBJID, PARAMCD), order_by = ATOXGRH, n = 1L, with_ties = FALSE) |>
@@ -58,6 +63,8 @@
 #'     BTOXGRH = "Baseline  \nNCI-CTCAE Grade",
 #'     ATOXGRH = "Post-baseline  \nNCI-CTCAE Grade"
 #'   )
+#' adsl <- pharmaverseadam::adsl[c("USUBJID", "TRT01A")] |>
+#'     filter(TRT01A != "Screen Failure")
 #'
 #' # Example 1 ----------------------------------
 #' # tabulate baseline grade by worst grade
@@ -66,9 +73,7 @@
 #'   strata = BTOXGRH,
 #'   variable = ATOXGRH,
 #'   by = TRT01A,
-#'   data_header =
-#'     pharmaverseadam::adsl[c("USUBJID", "TRT01A")] |>
-#'     filter(TRT01A != "Screen Failure")
+#'   data_header = adsl
 #' )
 #'
 #' # Example 2 ----------------------------------
@@ -79,9 +84,7 @@
 #'   variable = ATOXGRH,
 #'   strata_location = "header",
 #'   by = TRT01A,
-#'   data_header =
-#'     pharmaverseadam::adsl[c("USUBJID", "TRT01A")] |>
-#'     filter(TRT01A != "Screen Failure")
+#'   data_header = adsl
 #' )
 #'
 #' # Example 3 ----------------------------------
@@ -95,9 +98,7 @@
 #'         variable = ATOXGRH,
 #'         strata_location = "header",
 #'         by = TRT01A,
-#'         data_header =
-#'           pharmaverseadam::adsl[c("USUBJID", "TRT01A")] |>
-#'           filter(TRT01A != "Screen Failure")
+#'         data_header = adsl
 #'       )
 #'   ) |>
 #'   # Update header with Lab header and indentation (the '\U00A0' character adds whitespace)
@@ -251,9 +252,12 @@ tbl_shift <- function(data,
 
 #' @rdname tbl_shift
 #' @export
-add_overall.tbl_shift <- function(x, col_label = "All Participants  \nN = {n}", last = FALSE, ...) {
+add_overall.tbl_shift <- function(x,
+                                  col_label = "All Participants  \nN = {gtsummary::style_number(n)}",
+                                  last = FALSE, ...) {
   # check inputs ---------------------------------------------------------------
   set_cli_abort_call()
+  check_dots_empty(call = get_cli_abort_call())
   check_string(col_label)
   check_scalar_logical(last)
   if (is_empty(x$inputs$by)) {
@@ -267,7 +271,7 @@ add_overall.tbl_shift <- function(x, col_label = "All Participants  \nN = {n}", 
   # build overall table --------------------------------------------------------
   tbl_overall <-
     x$inputs |>
-    modifyList(list(by = NULL)) |>
+    utils::modifyList(list(by = NULL)) |>
     do.call("tbl_shift", args = _)
 
   # check the tbls have the same structure before merging

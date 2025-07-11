@@ -20,7 +20,12 @@ tbl_shift(
   ...
 )
 
-\method{add_overall}{tbl_shift}(x, col_label = "All Participants  \\nN = {n}", last = FALSE, ...)
+\method{add_overall}{tbl_shift}(
+  x,
+  col_label = "All Participants  \\nN = {gtsummary::style_number(n)}",
+  last = FALSE,
+  ...
+)
 }
 \arguments{
 \item{data}{(\code{data.frame})\cr A data frame.}
@@ -58,6 +63,16 @@ Default is to use the column label attribute.}
 
 \item{nonmissing, nonmissing_text, ...}{Argument passed to \code{tbl_roche_summary()}.
 See details below for call details to \code{tbl_roche_summary()}.}
+
+\item{x}{(\code{tbl_shift})\cr
+Object of class \code{'tbl_shift'}.}
+
+\item{col_label}{(\code{string})\cr
+String indicating the column label. Default is "All Participants \nN = {gtsummary::style_number(n)}"}
+
+\item{last}{(scalar \code{logical})\cr
+Logical indicator to display overall column last in table.
+Default is \code{FALSE}, which will display overall column first.}
 }
 \value{
 a 'gtsummary' table
@@ -82,7 +97,8 @@ headers, indentation, column alignment, etc.
 library(dplyr, warn.conflicts = FALSE)
 
 # subsetting ADLB on one PARAM, and the highest grade
-adlb <- pharmaverseadam::adlb[c("USUBJID", "TRT01A", "PARAMCD", "ATOXGRH", "BTOXGRH", "VISITNUM")]|>
+adlb <- pharmaverseadam::adlb |>
+  select("USUBJID", "TRT01A", "PARAM", "PARAMCD", "ATOXGRH", "BTOXGRH", "VISITNUM") |>
   mutate(TRT01A = factor(TRT01A)) |>
   filter(PARAMCD \%in\% c("CHOLES", "GLUC")) |>
   slice_max(by = c(USUBJID, PARAMCD), order_by = ATOXGRH, n = 1L, with_ties = FALSE) |>
@@ -90,6 +106,8 @@ adlb <- pharmaverseadam::adlb[c("USUBJID", "TRT01A", "PARAMCD", "ATOXGRH", "BTOX
     BTOXGRH = "Baseline  \nNCI-CTCAE Grade",
     ATOXGRH = "Post-baseline  \nNCI-CTCAE Grade"
   )
+adsl <- pharmaverseadam::adsl[c("USUBJID", "TRT01A")] |>
+    filter(TRT01A != "Screen Failure")
 
 # Example 1 ----------------------------------
 # tabulate baseline grade by worst grade
@@ -98,9 +116,7 @@ tbl_shift(
   strata = BTOXGRH,
   variable = ATOXGRH,
   by = TRT01A,
-  data_header =
-    pharmaverseadam::adsl[c("USUBJID", "TRT01A")] |>
-    filter(TRT01A != "Screen Failure")
+  data_header = adsl
 )
 
 # Example 2 ----------------------------------
@@ -111,9 +127,7 @@ tbl_shift(
   variable = ATOXGRH,
   strata_location = "header",
   by = TRT01A,
-  data_header =
-    pharmaverseadam::adsl[c("USUBJID", "TRT01A")] |>
-    filter(TRT01A != "Screen Failure")
+  data_header = adsl
 )
 
 # Example 3 ----------------------------------
@@ -127,9 +141,7 @@ adlb |>
         variable = ATOXGRH,
         strata_location = "header",
         by = TRT01A,
-        data_header =
-          pharmaverseadam::adsl[c("USUBJID", "TRT01A")] |>
-          filter(TRT01A != "Screen Failure")
+        data_header = adsl
       )
   ) |>
   # Update header with Lab header and indentation (the '\U00A0' character adds whitespace)
