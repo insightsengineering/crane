@@ -5,7 +5,22 @@
 #'  Specifies how summary statistics are rounded. Values may be either integer(s) or function(s). If not specified,
 #'  default formatting is assigned via `label_style_number()` for the `n` statistic and
 #'  `label_style_number(digits=1, scale=100)` for the `p` statistic.
-#' @returns a gtsummary table
+#' @param visit (`string`)\cr
+#'  String for the visit variable. Default is
+#'  `VISIT`.
+#' @param visit_seq (`string`)\cr
+#'  String identifying the visit sequence number. Default is
+#'  `VISITNUM`.
+#' @param label_rate (`string`)\cr
+#'  String for the rate summary. Default is `"Overall total number of events"`.
+#'  `"Total number of participants with at least one adverse event"`.
+#' @param label_count (`string`)\cr
+#'  String for the overall count summary. Default is `"Total number of events"`.
+#' @param sort
+#'   _Optional_ arguments passed to `gtsummary::sort_hierarchical(sort)`.
+#' @param x (`tbl_hierarchical_rate_and_count`)\cr
+#'   a stratified 'tbl_hierarchical_rate_and_count' table
+#' @return a gtsummary table
 #' @name tbl_baseline_chg
 #'
 #' @examples
