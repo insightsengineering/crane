@@ -68,7 +68,7 @@ See details below for call details to \code{tbl_roche_summary()}.}
 Object of class \code{'tbl_shift'}.}
 
 \item{col_label}{(\code{string})\cr
-String indicating the column label. Default is "All Participants \nN = {gtsummary::style_number(n)}"}
+String indicating the column label. Default is \code{"All Participants \\nN = {gtsummary::style_number(n)}"}}
 
 \item{last}{(scalar \code{logical})\cr
 Logical indicator to display overall column last in table.

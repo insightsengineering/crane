@@ -33,7 +33,7 @@
 #' @param x (`tbl_shift`)\cr
 #'   Object of class `'tbl_shift'`.
 #' @param col_label (`string`)\cr
-#'   String indicating the column label. Default is "All Participants \nN = {gtsummary::style_number(n)}"
+#'   String indicating the column label. Default is `"All Participants \nN = {gtsummary::style_number(n)}"`
 #' @returns a 'gtsummary' table
 #' @name tbl_shift
 #'
