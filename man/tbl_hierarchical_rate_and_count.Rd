@@ -51,7 +51,8 @@ argument used to subset \code{data} to identify rows in \code{data} to calculate
 event rates in \code{tbl_hierarchical()}.}
 
 \item{digits}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
-Specifies how summary statistics are rounded. Values may be either integer(s) or function(s).}
+Specifies how summary statistics are rounded. Values may be either integer(s) or function(s).
+If a theme is applied, the \code{digits} specifications of the theme is applied.}
 
 \item{sort}{\emph{Optional} arguments passed to \code{gtsummary::sort_hierarchical(sort)}.}
 

@@ -22,6 +22,7 @@
 #'   Variables must be specified in the nesting order.
 #' @param digits ([`formula-list-selector`][gtsummary::syntax])\cr
 #'  Specifies how summary statistics are rounded. Values may be either integer(s) or function(s).
+#'  If a theme is applied, the `digits` specifications of the theme is applied.
 #' @param label_overall_rate (`string`)\cr
 #'  String for the overall rate summary. Default is
 #'  `"Total number of participants with at least one adverse event"`.
