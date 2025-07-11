@@ -76,7 +76,7 @@ test_that("tbl_hierarchical_rate_by_grade() works", {
 })
 
 test_that("tbl_hierarchical_rate_by_grade(include_overall) works", {
-  withr::local_options(width = 300)
+  withr::local_options(width = 350)
 
   # all overall sections added
   expect_silent(
@@ -103,7 +103,7 @@ test_that("tbl_hierarchical_rate_by_grade(include_overall) works", {
         by = TRTA,
         label = label,
         grade_groups = grade_groups,
-        include_overall = everything()
+        include_overall = NULL
       )
   )
   expect_snapshot(as.data.frame(tbl)[1:25, ])

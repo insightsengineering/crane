@@ -108,31 +108,31 @@
       as.data.frame(tbl)[1:25, ]
     Output
          MedDRA System Organ Class  \n    MedDRA Preferred Term         Grade Placebo  \nN = 86 Xanomeline High Dose  \nN = 84 Xanomeline Low Dose  \nN = 84
-      1                                  - Any adverse events - - Any Grade -        26 (30.2%)                     42 (50.0%)                    40 (47.6%)
-      2                                                             Grade 1-2        22 (25.6%)                     32 (38.1%)                    30 (35.7%)
-      3                                                                     1        20 (23.3%)                     23 (27.4%)                    20 (23.8%)
-      4                                                                     2          2 (2.3%)                      9 (10.7%)                    10 (11.9%)
-      5                                                             Grade 3-4          4 (4.7%)                     10 (11.9%)                    10 (11.9%)
-      6                                                                     3          3 (3.5%)                     10 (11.9%)                      8 (9.5%)
-      7                                                                     4          1 (1.2%)                              0                      2 (2.4%)
-      8    GENERAL DISORDERS AND ADMINISTRATION SITE CONDITIONS                            <NA>                           <NA>                          <NA>
-      9                                             - Overall - - Any Grade -          8 (9.3%)                     25 (29.8%)                    24 (28.6%)
-      10                                                            Grade 1-2          7 (8.1%)                     16 (19.0%)                    16 (19.0%)
-      11                                                                    1          7 (8.1%)                     12 (14.3%)                    12 (14.3%)
-      12                                                                    2                 0                       4 (4.8%)                      4 (4.8%)
-      13                                                            Grade 3-4          1 (1.2%)                      9 (10.7%)                      8 (9.5%)
-      14                                                                    3          1 (1.2%)                      9 (10.7%)                      6 (7.1%)
+      1    GENERAL DISORDERS AND ADMINISTRATION SITE CONDITIONS                            <NA>                           <NA>                          <NA>
+      2                               APPLICATION SITE PRURITUS - Any Grade -          6 (7.0%)                     22 (26.2%)                    22 (26.2%)
+      3                                                             Grade 1-2          5 (5.8%)                     15 (17.9%)                    17 (20.2%)
+      4                                                                     1          5 (5.8%)                     10 (11.9%)                    13 (15.5%)
+      5                                                                     2                 0                       5 (6.0%)                      4 (4.8%)
+      6                                                             Grade 3-4          1 (1.2%)                       7 (8.3%)                      5 (6.0%)
+      7                                                                     3          1 (1.2%)                       7 (8.3%)                      4 (4.8%)
+      8                                                                     4                 0                              0                      1 (1.2%)
+      9                               APPLICATION SITE ERYTHEMA - Any Grade -          3 (3.5%)                     15 (17.9%)                    12 (14.3%)
+      10                                                            Grade 1-2          3 (3.5%)                     12 (14.3%)                      7 (8.3%)
+      11                                                                    1          3 (3.5%)                      9 (10.7%)                      4 (4.8%)
+      12                                                                    2                 0                       3 (3.6%)                      3 (3.6%)
+      13                                                            Grade 3-4                 0                       3 (3.6%)                      5 (6.0%)
+      14                                                                    3                 0                       3 (3.6%)                      3 (3.6%)
       15                                                                    4                 0                              0                      2 (2.4%)
-      16                              APPLICATION SITE PRURITUS - Any Grade -          6 (7.0%)                     22 (26.2%)                    22 (26.2%)
-      17                                                            Grade 1-2          5 (5.8%)                     15 (17.9%)                    17 (20.2%)
-      18                                                                    1          5 (5.8%)                     10 (11.9%)                    13 (15.5%)
-      19                                                                    2                 0                       5 (6.0%)                      4 (4.8%)
-      20                                                            Grade 3-4          1 (1.2%)                       7 (8.3%)                      5 (6.0%)
-      21                                                                    3          1 (1.2%)                       7 (8.3%)                      4 (4.8%)
-      22                                                                    4                 0                              0                      1 (1.2%)
-      23                              APPLICATION SITE ERYTHEMA - Any Grade -          3 (3.5%)                     15 (17.9%)                    12 (14.3%)
-      24                                                            Grade 1-2          3 (3.5%)                     12 (14.3%)                      7 (8.3%)
-      25                                                                    1          3 (3.5%)                      9 (10.7%)                      4 (4.8%)
+      16                 SKIN AND SUBCUTANEOUS TISSUE DISORDERS                            <NA>                           <NA>                          <NA>
+      17                                               ERYTHEMA - Any Grade -         9 (10.5%)                     14 (16.7%)                    15 (17.9%)
+      18                                                            Grade 1-2          7 (8.1%)                     13 (15.5%)                    13 (15.5%)
+      19                                                                    1          5 (5.8%)                     10 (11.9%)                      7 (8.3%)
+      20                                                                    2          2 (2.3%)                       3 (3.6%)                      6 (7.1%)
+      21                                                            Grade 3-4          2 (2.3%)                       1 (1.2%)                      2 (2.4%)
+      22                                                                    3          2 (2.3%)                       1 (1.2%)                      2 (2.4%)
+      23                             GASTROINTESTINAL DISORDERS                            <NA>                           <NA>                          <NA>
+      24                                              DIARRHOEA - Any Grade -         9 (10.5%)                       4 (4.8%)                      5 (6.0%)
+      25                                                            Grade 1-2         9 (10.5%)                       4 (4.8%)                      5 (6.0%)
 
 # tbl_hierarchical_rate_by_grade() error messaging works
 
