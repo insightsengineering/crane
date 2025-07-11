@@ -100,7 +100,7 @@
 #'           filter(TRT01A != "Screen Failure")
 #'       )
 #'   ) |>
-#'   # Update header with Lab header and indentation
+#'   # Update header with Lab header and indentation (the '\U00A0' character adds whitespace)
 #'   modify_header(
 #'     label = "Lab  \n\U00A0\U00A0\U00A0\U00A0
 #'              Baseline NCI-CTCAE Grade  \n\U00A0\U00A0\U00A0\U00A0\U00A0\U00A0\U00A0\U00A0
