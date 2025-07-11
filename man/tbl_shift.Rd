@@ -2,6 +2,7 @@
 % Please edit documentation in R/tbl_shift.R
 \name{tbl_shift}
 \alias{tbl_shift}
+\alias{add_overall.tbl_shift}
 \title{Shift Table}
 \usage{
 tbl_shift(
@@ -18,6 +19,8 @@ tbl_shift(
   nonmissing_text = "Total",
   ...
 )
+
+\method{add_overall}{tbl_shift}(x, col_label = "All Participants  \\nN = {n}", last = FALSE, ...)
 }
 \arguments{
 \item{data}{(\code{data.frame})\cr A data frame.}

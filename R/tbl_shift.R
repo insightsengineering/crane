@@ -31,7 +31,7 @@
 #'   See details below for call details to `tbl_roche_summary()`.
 #'
 #' @returns a 'gtsummary' table
-#' @export
+#' @name tbl_shift
 #'
 #' @details
 #' Broadly, this function is a wrapper for chunk below with some additional
@@ -126,6 +126,10 @@
 #'     nonmissing = "no"
 #'   ) |>
 #'   modify_spanning_header(all_stat_cols() ~ "Worst Post-baseline NCI-CTCAE Grade")
+NULL
+
+#' @rdname tbl_shift
+#' @export
 tbl_shift <- function(data,
                       strata,
                       variable,
@@ -138,7 +142,7 @@ tbl_shift <- function(data,
                       nonmissing = "always",
                       nonmissing_text = "Total",
                       ...
-                      ) {
+) {
   set_cli_abort_call()
   # check inputs ---------------------------------------------------------------
   check_not_missing(data)
@@ -164,74 +168,121 @@ tbl_shift <- function(data,
     )
   }
 
+  tbl_shift_inputs <- as.list(environment())
+
   # build stratified table -----------------------------------------------------
   # first get the label for the variable and the strata variable
   strata_var_label <- label[[strata]] %||% attr(data[[strata]], "label") %||% strata
   variable_var_label <- label[[variable]] %||% attr(data[[variable]], "label") %||% variable
 
   # if there is a `by` variable, make it a factor to ensure all levels appear in tbls
-  if (!is.factor(data[[by]])) {
+  if (!is_empty(by) && !is.factor(data[[by]])) {
     old_by_label <- attr(data[[by]], "label")
     data[[by]] <- factor(data[[by]])
     attr(data[[by]], "label") <- old_by_label
   }
 
-  gtsummary::tbl_strata2(
-    data = data,
-    strata = all_of(strata),
-    .tbl_fun =
-      \(data, stratum) {
-        # if `data_header` was passed, then merge it with the primary data
-        if (!is_empty(data_header)) {
-          data <-
-            dplyr::right_join(
-              data,
-              data_header,
-              by = names(data_header)
-            )
-        }
+  x <-
+    gtsummary::tbl_strata2(
+      data = data,
+      strata = all_of(strata),
+      .tbl_fun =
+        \(data, stratum) {
+          # if `data_header` was passed, then merge it with the primary data
+          if (!is_empty(data_header)) {
+            data <-
+              dplyr::right_join(
+                data,
+                data_header,
+                by = names(data_header)
+              )
+          }
 
-        # Glue the stratum level
-        stratum <- glue::glue_data(.x = list(strata = stratum, n = nrow(data)), strata_label)
+          # Glue the stratum level
+          stratum <- glue::glue_data(.x = list(strata = stratum, n = nrow(data)), strata_label)
 
-        # build cross table
-        tbl <-
-          tbl_roche_summary(
-            data = data,
-            by = any_of(by),
-            include = all_of(variable),
-            nonmissing = nonmissing,
-            nonmissing_text = nonmissing_text,
-            label = list(stratum) |> set_names(variable), # if we keep the ..., users may try to specify this arg which would cause an error
-            ...
-          ) |>
-          gtsummary::modify_header(all_stat_cols() ~ header)
-
-        # If new column, add the column, update indentation and alignment
-        if (strata_location == "new_column") {
-          tbl <- tbl |>
-            gtsummary::remove_row_type(type = "header") |>
-            gtsummary::modify_table_body(
-              ~ .x |>
-                mutate(
-                  .before = "label",
-                  label0 = ifelse(dplyr::row_number() == 1L, .env$stratum, NA_character_)
-                )
+          # build cross table
+          tbl <-
+            tbl_roche_summary(
+              data = data,
+              by = any_of(by),
+              include = all_of(variable),
+              nonmissing = nonmissing,
+              nonmissing_text = nonmissing_text,
+              label = list(stratum) |> set_names(variable), # if we keep the ..., users may try to specify this arg which would cause an error
+              ...
             ) |>
-            gtsummary::modify_column_alignment(columns = c("label", "label0"), align = "left") |>
-            gtsummary::modify_indent(columns = label, indent = 0L) |>
-            gtsummary::modify_header(label0 = strata_var_label, label = variable_var_label)
-        }
-        # If not new column, update column header
-        else if (strata_location == "header") {
-          tbl <- tbl  |>
-            gtsummary::modify_header(
-              label = paste(strata_var_label, variable_var_label, sep = "  \n\U00A0\U00A0\U00A0\U00A0")
-            )
-        }
-      },
-    .combine_with = "tbl_stack",
-    .combine_args = list(group_header = NULL)
-  ) %>%
+            gtsummary::modify_header(all_stat_cols() ~ header)
+
+          # If new column, add the column, update indentation and alignment
+          if (strata_location == "new_column") {
+            tbl <- tbl |>
+              gtsummary::remove_row_type(type = "header") |>
+              gtsummary::modify_table_body(
+                ~ .x |>
+                  mutate(
+                    .before = "label",
+                    label0 = ifelse(dplyr::row_number() == 1L, .env$stratum, NA_character_)
+                  )
+              ) |>
+              gtsummary::modify_column_alignment(columns = c("label", "label0"), align = "left") |>
+              gtsummary::modify_indent(columns = label, indent = 0L) |>
+              gtsummary::modify_header(label0 = strata_var_label, label = variable_var_label)
+          }
+          # If not new column, update column header
+          else if (strata_location == "header") {
+            tbl <- tbl  |>
+              gtsummary::modify_header(
+                label = paste(strata_var_label, variable_var_label, sep = "  \n\U00A0\U00A0\U00A0\U00A0")
+              )
+          }
+        },
+      .combine_with = "tbl_stack",
+      .combine_args = list(group_header = NULL)
+    )
+
+  # final prep of table --------------------------------------------------------
+  x$inputs <- tbl_shift_inputs
+  x$call_list <- list(tbl_shift = match.call())
+
+  x %>%
     structure(., class = c("tbl_shift", class(.)))
+}
+
+#' @rdname tbl_shift
+#' @export
+add_overall.tbl_shift <- function(x, col_label = "All Participants  \nN = {n}", last = FALSE, ...) {
+  # check inputs ---------------------------------------------------------------
+  set_cli_abort_call()
+  check_string(col_label)
+  check_scalar_logical(last)
+  if (is_empty(x$inputs$by)) {
+    cli::cli_inform(
+      c("Original table was not stratified, and overall column cannot be added.",
+        i = "Table has been returned unaltered.")
+    )
+    return(x)
+  }
+
+  # build overall table --------------------------------------------------------
+  tbl_overall <-
+    x$inputs |>
+    modifyList(list(by = NULL)) |>
+    do.call("tbl_shift", args = _)
+
+  # check the tbls have the same structure before merging
+  if (!identical(dplyr::select(x$table_body, any_of(c("label0", "label"))),
+                 dplyr::select(tbl_overall$table_body, any_of(c("label0", "label"))))) {
+    cli::cli_inform(
+      c("!" = "The structures of the original table and the overall table are not identical,
+         and the resulting table may be malformed.")
+    )
+  }
+
+  # merge tables ---------------------------------------------------------------
+  gtsummary::tbl_merge(
+    tbls = list(x, tbl_overall),
+    tab_spanner = FALSE,
+    merge_vars = any_of(c("variable", "row_type", "var_label", "label0", "label"))
+  )
 }
