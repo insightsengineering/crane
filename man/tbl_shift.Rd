@@ -121,18 +121,29 @@ tbl_shift(
 
 # Example 2 ----------------------------------
 # same as Ex1, but with the stratifying variable levels in header rows
-tbl_shift(
-  data = filter(adlb, PARAMCD \%in\% "CHOLES"),
-  strata = BTOXGRH,
-  variable = ATOXGRH,
-  strata_location = "header",
-  by = TRT01A,
-  data_header = adsl
-)
+adlb |>
+ filter(PARAMCD \%in\% "CHOLES") |>
+ labelled::set_variable_labels(
+   BTOXGRH = "Baseline NCI-CTCAE Grade",
+   ATOXGRH = "Post-baseline NCI-CTCAE Grade"
+ ) |>
+ tbl_shift(
+   data = ,
+   strata = BTOXGRH,
+   variable = ATOXGRH,
+   strata_location = "header",
+   by = TRT01A,
+   data_header = adsl
+ )
 
 # Example 3 ----------------------------------
 # same as Ex2, but with two labs
 adlb |>
+ filter(PARAMCD \%in\% "CHOLES") |>
+ labelled::set_variable_labels(
+   BTOXGRH = "Baseline NCI-CTCAE Grade",
+   ATOXGRH = "Post-baseline NCI-CTCAE Grade"
+ ) |>
   tbl_strata_nested_stack(
     strata = PARAM,
     ~ .x |>
