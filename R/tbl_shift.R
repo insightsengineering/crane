@@ -34,6 +34,7 @@
 #'   Object of class `'tbl_shift'`.
 #' @param col_label (`string`)\cr
 #'   String indicating the column label. Default is `"All Participants \nN = {gtsummary::style_number(n)}"`
+#'
 #' @returns a 'gtsummary' table
 #' @name tbl_shift
 #'
@@ -78,18 +79,29 @@
 #'
 #' # Example 2 ----------------------------------
 #' # same as Ex1, but with the stratifying variable levels in header rows
-#' tbl_shift(
-#'   data = filter(adlb, PARAMCD %in% "CHOLES"),
-#'   strata = BTOXGRH,
-#'   variable = ATOXGRH,
-#'   strata_location = "header",
-#'   by = TRT01A,
-#'   data_header = adsl
-#' )
+#' adlb |>
+#'  filter(PARAMCD %in% "CHOLES") |>
+#'  labelled::set_variable_labels(
+#'    BTOXGRH = "Baseline NCI-CTCAE Grade",
+#'    ATOXGRH = "Post-baseline NCI-CTCAE Grade"
+#'  ) |>
+#'  tbl_shift(
+#'    data = ,
+#'    strata = BTOXGRH,
+#'    variable = ATOXGRH,
+#'    strata_location = "header",
+#'    by = TRT01A,
+#'    data_header = adsl
+#'  )
 #'
 #' # Example 3 ----------------------------------
 #' # same as Ex2, but with two labs
 #' adlb |>
+#'  filter(PARAMCD %in% "CHOLES") |>
+#'  labelled::set_variable_labels(
+#'    BTOXGRH = "Baseline NCI-CTCAE Grade",
+#'    ATOXGRH = "Post-baseline NCI-CTCAE Grade"
+#'  ) |>
 #'   tbl_strata_nested_stack(
 #'     strata = PARAM,
 #'     ~ .x |>
@@ -163,8 +175,7 @@ tbl_shift <- function(data,
     cli::cli_abort(
       c("The data frame passed in the {.arg data_header} argument should only
         include columns that will be used to merge with {.arg data}.",
-        i = "Typcially, this means only including {.val {c('USUBJID', 'ARM')}}
-        (if {.val ARM} is the columns passed in the {.arg by} argument)."),
+        i = "Based on the other inputs, this likely means only including {.val {c('USUBJID', by)}}."),
       call = get_cli_abort_call()
     )
   }
@@ -178,6 +189,7 @@ tbl_shift <- function(data,
 
   # if there is a `by` variable, make it a factor to ensure all levels appear in tbls
   if (!is_empty(by) && !is.factor(data[[by]])) {
+    cli::cli_inform(c("i" = "Converting column {.val {by}} to a factor."))
     old_by_label <- attr(data[[by]], "label")
     data[[by]] <- factor(data[[by]])
     attr(data[[by]], "label") <- old_by_label
@@ -287,6 +299,6 @@ add_overall.tbl_shift <- function(x,
   gtsummary::tbl_merge(
     tbls = list(x, tbl_overall),
     tab_spanner = FALSE,
-    merge_vars = any_of(c("variable", "row_type", "var_label", "label0", "label"))
+    merge_vars = c("variable", "row_type", "var_label", "label0", "label")
   )
 }
