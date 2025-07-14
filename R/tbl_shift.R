@@ -65,7 +65,7 @@
 #'     ATOXGRH = "Post-baseline  \nNCI-CTCAE Grade"
 #'   )
 #' adsl <- pharmaverseadam::adsl[c("USUBJID", "TRT01A")] |>
-#'     filter(TRT01A != "Screen Failure")
+#'   filter(TRT01A != "Screen Failure")
 #'
 #' # Example 1 ----------------------------------
 #' # tabulate baseline grade by worst grade
@@ -80,28 +80,28 @@
 #' # Example 2 ----------------------------------
 #' # same as Ex1, but with the stratifying variable levels in header rows
 #' adlb |>
-#'  filter(PARAMCD %in% "CHOLES") |>
-#'  labelled::set_variable_labels(
-#'    BTOXGRH = "Baseline NCI-CTCAE Grade",
-#'    ATOXGRH = "Post-baseline NCI-CTCAE Grade"
-#'  ) |>
-#'  tbl_shift(
-#'    data = ,
-#'    strata = BTOXGRH,
-#'    variable = ATOXGRH,
-#'    strata_location = "header",
-#'    by = TRT01A,
-#'    data_header = adsl
-#'  )
+#'   filter(PARAMCD %in% "CHOLES") |>
+#'   labelled::set_variable_labels(
+#'     BTOXGRH = "Baseline NCI-CTCAE Grade",
+#'     ATOXGRH = "Post-baseline NCI-CTCAE Grade"
+#'   ) |>
+#'   tbl_shift(
+#'     data = ,
+#'     strata = BTOXGRH,
+#'     variable = ATOXGRH,
+#'     strata_location = "header",
+#'     by = TRT01A,
+#'     data_header = adsl
+#'   )
 #'
 #' # Example 3 ----------------------------------
 #' # same as Ex2, but with two labs
 #' adlb |>
-#'  filter(PARAMCD %in% "CHOLES") |>
-#'  labelled::set_variable_labels(
-#'    BTOXGRH = "Baseline NCI-CTCAE Grade",
-#'    ATOXGRH = "Post-baseline NCI-CTCAE Grade"
-#'  ) |>
+#'   filter(PARAMCD %in% "CHOLES") |>
+#'   labelled::set_variable_labels(
+#'     BTOXGRH = "Baseline NCI-CTCAE Grade",
+#'     ATOXGRH = "Post-baseline NCI-CTCAE Grade"
+#'   ) |>
 #'   tbl_strata_nested_stack(
 #'     strata = PARAM,
 #'     ~ .x |>
@@ -154,8 +154,7 @@ tbl_shift <- function(data,
                       label = NULL,
                       nonmissing = "always",
                       nonmissing_text = "Total",
-                      ...
-) {
+                      ...) {
   set_cli_abort_call()
   # check inputs ---------------------------------------------------------------
   check_not_missing(data)
@@ -175,7 +174,8 @@ tbl_shift <- function(data,
     cli::cli_abort(
       c("The data frame passed in the {.arg data_header} argument should only
         include columns that will be used to merge with {.arg data}.",
-        i = "Based on the other inputs, this likely means only including {.val {c('USUBJID', by)}}."),
+        i = "Based on the other inputs, this likely means only including {.val {c('USUBJID', by)}}."
+      ),
       call = get_cli_abort_call()
     )
   }
@@ -244,7 +244,7 @@ tbl_shift <- function(data,
           }
           # If not new column, update column header
           else if (strata_location == "header") {
-            tbl <- tbl  |>
+            tbl <- tbl |>
               gtsummary::modify_header(
                 label = paste(strata_var_label, variable_var_label, sep = "  \n\U00A0\U00A0\U00A0\U00A0")
               )
@@ -275,7 +275,8 @@ add_overall.tbl_shift <- function(x,
   if (is_empty(x$inputs$by)) {
     cli::cli_inform(
       c("Original table was not stratified, and overall column cannot be added.",
-        i = "Table has been returned unaltered.")
+        i = "Table has been returned unaltered."
+      )
     )
     return(x)
   }
@@ -287,8 +288,10 @@ add_overall.tbl_shift <- function(x,
     do.call("tbl_shift", args = _)
 
   # check the tbls have the same structure before merging
-  if (!identical(dplyr::select(x$table_body, any_of(c("label0", "label"))),
-                 dplyr::select(tbl_overall$table_body, any_of(c("label0", "label"))))) {
+  if (!identical(
+    dplyr::select(x$table_body, any_of(c("label0", "label"))),
+    dplyr::select(tbl_overall$table_body, any_of(c("label0", "label")))
+  )) {
     cli::cli_inform(
       c("!" = "The structures of the original table and the overall table are not identical,
          and the resulting table may be malformed.")
