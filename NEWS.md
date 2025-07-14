@@ -1,4 +1,4 @@
-# crane 0.1.0.9040
+# crane 0.1.0.9041
 
 * Added function `tbl_hierarchical_rate_by_grade()` to summarize adverse event rates by highest toxicity grade. (#46)
 
