@@ -1,4 +1,4 @@
-# crane 0.1.0.9041
+# crane 0.1.0.9042
 
 * Added function `tbl_shift()` for easing the creation of shift tables. (#83)
 
