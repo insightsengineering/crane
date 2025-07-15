@@ -1,5 +1,7 @@
 # crane 0.1.0.9041
 
+* Added function `tbl_shift()` for easing the creation of shift tables. (#83)
+
 * Added function `tbl_hierarchical_rate_by_grade()` to summarize adverse event rates by highest toxicity grade. (#46)
 
 * Added `variables` and `row_numbers` arguments to the `add_blank_rows()` function. (#45)
