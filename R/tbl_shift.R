@@ -97,7 +97,6 @@
 #' # Example 3 ----------------------------------
 #' # same as Ex2, but with two labs
 #' adlb |>
-#'   filter(PARAMCD %in% "CHOLES") |>
 #'   labelled::set_variable_labels(
 #'     BTOXGRH = "Baseline NCI-CTCAE Grade",
 #'     ATOXGRH = "Post-baseline NCI-CTCAE Grade"
