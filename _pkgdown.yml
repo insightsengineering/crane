@@ -1,6 +1,4 @@
 url: https://insightsengineering.github.io/crane/
-template:
-  package: nesttemplate
 
 navbar:
   structure:
@@ -14,10 +12,12 @@ reference:
   - title: "Standard Summary Tables"
     contents:
       - tbl_roche_summary
+      - tbl_shift
 
   - title: "Hierarchical Summary Tables"
     contents:
       - tbl_hierarchical_rate_and_count
+      - tbl_hierarchical_rate_by_grade
       - add_hierarchical_count_row
 
   - title: "Survival Analysis Tables"
