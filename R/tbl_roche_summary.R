@@ -84,7 +84,7 @@ tbl_roche_summary <- function(data,
     # remove the default "Characteristic" header, remove bold from stat headers
     gtsummary::modify_header(
       label = "",
-      gtsummary::all_stat_cols() ~ "{level}  \nN = {n}"
+      gtsummary::all_stat_cols() ~ "{level}  \n(N = {n})"
     ) |>
     # convert "0 (0.0%)" to "0"
     modify_zero_recode() |>

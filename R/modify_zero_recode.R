@@ -32,7 +32,13 @@ modify_zero_recode <- function(x) {
   # recode zero and percent to "0" ---------------------------------------------
   gtsummary::modify_post_fmt_fun(
     x,
-    fmt_fun = \(x) ifelse(x %in% c("0 (0.0%)", "0 (0%)", "0 (NA%)"), "0", x),
+    fmt_fun = \(x) {
+      dplyr::case_when(
+        x %in% c("0 (0.0%)", "0 (0%)", "0 (NA%)") ~ "0",
+        x %in% "0 / 0 (NA%)" ~ "0 / 0",
+        .default = x
+      )
+    },
     columns = gtsummary::all_stat_cols()
   )
 }

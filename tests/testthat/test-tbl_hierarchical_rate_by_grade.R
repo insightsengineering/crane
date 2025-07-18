@@ -130,7 +130,7 @@ test_that("tbl_hierarchical_rate_by_grade() works with add_overall()", {
     tbl$table_styling$header |>
       dplyr::filter(column == "stat_0") |>
       dplyr::pull(label),
-    "All Participants  \nN = 254"
+    "All Participants  \n(N = 254)"
   )
 })
 
