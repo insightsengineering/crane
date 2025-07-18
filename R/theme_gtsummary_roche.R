@@ -53,6 +53,9 @@ theme_gtsummary_roche <- function(font_size = NULL,
         "tbl_hierarchical-fn:addnl-fn-to-run" =
           \(x) {
             gtsummary::remove_footnote_header(x) |>
+              gtsummary::modify_header(
+                gtsummary::all_stat_cols() ~ "{level}  \n(N = {gtsummary::style_number(n)})"
+              ) |>
               modify_zero_recode() |>
               modify_header_rm_md()
           },
