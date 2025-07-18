@@ -1,5 +1,9 @@
 # crane 0.1.0.9042
 
+* Updated Roche theme to include parentheses around Ns in header, and updated function defaults to include the parentheses in crane functions.
+
+* Re-coding `0 / 0 (NA%)` to `0 / 0` in `modify_zero_recode()`. (#85)
+
 * Added function `tbl_shift()` for easing the creation of shift tables. (#83)
 
 * Added function `tbl_hierarchical_rate_by_grade()` to summarize adverse event rates by highest toxicity grade. (#46)
