@@ -3,7 +3,55 @@
 \name{tbl_baseline_chg}
 \alias{tbl_baseline_chg}
 \title{Change from Baseline}
+\usage{
+tbl_baseline_chg(
+  data,
+  analysis_variable = AVAL,
+  change_variable = CHG,
+  by = NULL,
+  id = USUBJID,
+  visit = VISIT,
+  test_variable,
+  test_cd,
+  analysis_date = VISITNUM,
+  baseline_level,
+  denominator,
+  header = "{level}  \\nN = {n}",
+  nonmissing = "always",
+  nonmissing_text = "Total",
+  ...
+)
+}
 \arguments{
+\item{analysis_variable}{(\code{string})\cr
+String identifying the analysis values. Default is \code{AVAL}.}
+
+\item{change_variable}{(\code{string})\cr
+String identifying the change from baseline values. Default is \code{CHG}.}
+
+\item{id}{(\code{string})\cr
+String identifying the unique subjects. Default is \code{USUBJID}.}
+
+\item{visit}{(\code{string})\cr
+String for the visit variable. Default is
+\code{VISIT}.}
+
+\item{test_variable}{(\code{string})\cr
+String identifying the column containing lab test codes.}
+
+\item{test_cd}{(\code{string})\cr
+String identifying the lab test code to compute the change from baseline. This must be a value contained in \code{test_variable}.}
+
+\item{analysis_date}{(\code{string})\cr
+String identifying the visit or analysis sequence number. Default is
+\code{VISITNUM}.}
+
+\item{baseline_level}{(\code{string})\cr
+String identifying baseline level in the \code{visit} variable.}
+
+\item{denominator}{(\code{string})\cr
+Data set used to compute the header counts (typically \code{ADSL}).}
+
 \item{digits}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
 Specifies how summary statistics are rounded. Values may be either integer(s) or function(s). If not specified,
 default formatting is assigned via \code{label_style_number()} for the \code{n} statistic and
@@ -16,11 +64,18 @@ a gtsummary table
 Computes Change from Baseline
 }
 \examples{
-# Example 1 ----------------------------------
-adlb <- syntheticadam::adlb
-adsl <- syntheticadam::adsl
+----------------------------------
+adlb <- cards::ADLB
+adsl <- cards::ADSL
+df <- adlb |>
+  dplyr::filter(!str_detect(VISIT, regex("unscheduled", ignore_case = TRUE)))
+
 tbl_baseline_chg(
-data=adlb,
-denominator=adsl,
-by="TRT01A")
+  data = df,
+  test_variable = "PARAMCD",
+  test_cd = "SODIUM",
+  baseline_level = "SCREENING 1",
+  by = "TRTA",
+  denominator = adsl
+)
 }
