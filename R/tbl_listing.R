@@ -69,7 +69,7 @@ tbl_listing <- function(df,
             } else {
               paste0("column", if (length(sort_cols) > 1) "s", " ", paste0("`", sort_cols, "`", collapse = ", "))
             },
-          i = "If you want to change the sorting, please sort the data frame before passing it to `tbl_listing()`."
+            i = "If you want to change the sorting, please sort the data frame before passing it to `tbl_listing()`."
           )
         ))
       }
@@ -113,7 +113,7 @@ tbl_listing <- function(df,
       interpret_label = "gt::md"
     ) |>
     dplyr::mutate(
-      label = map_chr(.data$column, ~attr(df[[.x]], "label") %||% .x),
+      label = map_chr(.data$column, ~ attr(df[[.x]], "label") %||% .x),
       align = ifelse(.data$column %in% "label", "left", .data$align)
     )
 
@@ -194,12 +194,12 @@ tbl_listing <- function(df,
 
   # return object with class and attributes ------------------------------------
   structure(
-      x,
-      class = c("tbl_listing", "gtsummary"),
-      tbl_args = list(
-        key_cols = key_cols,
-        sort_cols = sort_cols,
-        add_blank_key_duplicates = add_blank_key_duplicates
-      )
+    x,
+    class = c("tbl_listing", "gtsummary"),
+    tbl_args = list(
+      key_cols = key_cols,
+      sort_cols = sort_cols,
+      add_blank_key_duplicates = add_blank_key_duplicates
     )
+  )
 }
