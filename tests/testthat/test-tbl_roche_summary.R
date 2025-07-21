@@ -32,8 +32,8 @@ test_that("tbl_roche_summary() |> add_overall() works", {
       digits = list(grade = list(p = 1)),
       missing = "no"
     ) |>
-      add_overall() |>
-      gtsummary::modify_header(label = "") |>
+      add_overall(col_label = "All Participants  \n(N = {gtsummary::style_number(N)})") |>
+      gtsummary::modify_header(label = "", all_stat_cols(FALSE) ~ "{level}  \n(N = {n})") |>
       modify_header_rm_md() |>
       as.data.frame()
   )
