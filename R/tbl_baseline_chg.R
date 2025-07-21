@@ -109,7 +109,7 @@ tbl_baseline_chg <- function(data,
     ) |>
     # add in denominator for the header Ns
     suppressMessages(dplyr::right_join(
-      select(denominator, c(id, by)),
+      dplyr::select(denominator, c(id, by)),
       relationship = "many-to-one"
     ))
 
@@ -117,7 +117,7 @@ tbl_baseline_chg <- function(data,
   # Summary of AVAL
   tbl_aval <-
     df_change_baseline |>
-    select(by, starts_with(analysis_variable)) |>
+    dplyr::select(by, starts_with(analysis_variable)) |>
     dplyr::rename_with(~ str_remove(., paste0("^", analysis_variable, "_"))) %>%
     # after reshape all column labels are the same, so changing them to the variable name
     labelled::remove_var_label() |>
@@ -137,7 +137,7 @@ tbl_baseline_chg <- function(data,
   # Building a table change values at each visit
   tbl_chg <-
     df_change_baseline |>
-    select(by, starts_with(change_variable)) |>
+    dplyr::select(by, starts_with(change_variable)) |>
     dplyr::rename_with(~ str_remove(., paste0("^", change_variable, "_"))) %>%
     # after reshape all column labels are the same, so changing them to the variable name
     labelled::remove_var_label() |>
@@ -160,17 +160,17 @@ tbl_baseline_chg <- function(data,
   # Merge tables together
   baseline_chg_tbl <-
     list(tbl_aval, tbl_chg) |>
-    tbl_merge(tab_spanner = FALSE) |>
-    modify_spanning_header(all_stat_cols() ~ "{level}  \n(N = {n})") |>
-    modify_header(
+    gtsummary::tbl_merge(tab_spanner = FALSE) |>
+    gtsummary::modify_spanning_header(all_stat_cols() ~ "{level}  \n(N = {n})") |>
+    gtsummary::modify_header(
       all_stat_cols() & ends_with("_1") ~ "Value at Visit",
       all_stat_cols() & ends_with("_2") ~ "Change from Baseline",
       label = ""
     ) |>
     # sort the stat columns together within treatment group
-    modify_table_body(
+    gtsummary::modify_table_body(
       \(.x) {
-        stat_cols <- select(.x, all_stat_cols()) |>
+        stat_cols <- dplyr::select(.x, all_stat_cols()) |>
           names() |>
           sort()
         dplyr::relocate(.x, all_of(stat_cols), .after = "label")
