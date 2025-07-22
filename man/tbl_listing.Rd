@@ -2,30 +2,42 @@
 % Please edit documentation in R/tbl_listing.R
 \name{tbl_listing}
 \alias{tbl_listing}
+\alias{print.tbl_listing}
 \title{Create listings from a data frame}
 \usage{
 tbl_listing(
-  df,
-  key_cols = NULL,
-  sort_cols = NULL,
-  add_blank_key_duplicates = TRUE,
+  data,
+  keys = NULL,
+  order_by = keys,
+  do_not_print_duplicated_keys = TRUE
+)
+
+\method{print}{tbl_listing}(
+  x,
+  print_engine = c("gt", "flextable", "huxtable", "kable", "kable_extra", "tibble"),
   ...
 )
 }
 \arguments{
-\item{df}{(\code{data.frame})\cr
+\item{data}{(\code{data.frame})\cr
 a data frame containing the data to be displayed in the listing.}
 
-\item{key_cols}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-column names to be used as key columns in the listing.}
+\item{keys}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+columns to be highlighted on the left of the listing.}
 
-\item{sort_cols}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-column names to be used for sorting the data frame before creating the listing. It defaults to \code{key_cols}.}
+\item{order_by}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+columns to be sorted. It defaults to \code{keys}.}
 
-\item{add_blank_key_duplicates}{(\code{logical})\cr
+\item{do_not_print_duplicated_keys}{(\code{logical})\cr
 whether to add blank values where key columns have duplicate values. Defaults to \code{TRUE}.}
 
-\item{...}{other objects that will be added to the \code{{gtsummary}} object list.}
+\item{x}{(\code{tbl_listing})\cr
+a \code{tbl_listing} object to be printed.}
+
+\item{print_engine}{String indicating the print method. Must be one of
+\code{"gt"}, \code{"kable"}, \code{"kable_extra"}, \code{"flextable"}, \code{"tibble"}}
+
+\item{...}{Not used}
 }
 \description{
 Create listings from a data frame
@@ -35,11 +47,15 @@ This function converts a data frame into a listing format and it relies on the u
 to decide which column to show and select unique or non-unique rows. Also sorting depends on the user
 pre-processing.
 }
+\note{
+\code{NA} values are not printed by default in \code{{gtsummary}}. Please consider making them explicit if
+you want them to be displayed in the listing.
+}
 \examples{
 # Example 1 --------------------------------
-trial_df <- trial |>
+trial_data <- trial |>
   dplyr::select(trt, age, marker, stage)
 
-tbl_listing(trial_df, key_cols = c(trt, stage))
+tbl_listing(trial_data, keys = c(trt, stage))
 
 }
