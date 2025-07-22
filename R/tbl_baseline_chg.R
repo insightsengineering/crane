@@ -1,6 +1,7 @@
 #' Change from Baseline
 #'
 #' @description Computes Change from Baseline
+#' @inheritParams tbl_roche_summary
 #' @param analysis_variable (`string`)\cr
 #'  String identifying the analysis values. Default is `AVAL`.
 #' @param change_variable (`string`)\cr
@@ -15,10 +16,6 @@
 #'  String identifying baseline level in the `visit` variable.
 #' @param denominator (`string`)\cr
 #'  Data set used to compute the header counts (typically `ADSL`).
-#' @param digits ([`formula-list-selector`][gtsummary::syntax])\cr
-#'  Specifies how summary statistics are rounded. Values may be either integer(s) or function(s). If not specified,
-#'  default formatting is assigned via `label_style_number()` for the `n` statistic and
-#'  `label_style_number(digits=1, scale=100)` for the `p` statistic.
 #' @param visit (`string`)\cr
 #'  String for the visit variable. Default is
 #'  `VISIT`.
@@ -29,11 +26,9 @@
 #' @name tbl_baseline_chg
 #'
 #' @examples
-#' ----------------------------------
-#' adlb <- cards::ADLB
-#' adsl <- cards::ADSL
-#' df <- adlb |>
-#'   dplyr::filter(!str_detect(VISIT, regex("unscheduled", ignore_case = TRUE)))
+#' library(dplyr, warn.conflicts = FALSE)
+#' df <- cards::ADLB
+#' df <- df[!grepl("unscheduled", df$VISIT, ignore.case = TRUE), ]
 #'
 #' tbl_baseline_chg(
 #'   data = df,
@@ -41,27 +36,23 @@
 #'   test_cd = "SODIUM",
 #'   baseline_level = "SCREENING 1",
 #'   by = "TRTA",
-#'   denominator = adsl
+#'   denominator = cards::ADSL
 #' )
 NULL
 
 #' @rdname tbl_baseline_chg
 #' @export
 tbl_baseline_chg <- function(data,
-                             analysis_variable = AVAL,
-                             change_variable = CHG,
+                             analysis_variable = "AVAL",
+                             change_variable = "CHG",
                              by = NULL,
-                             id = USUBJID,
-                             visit = VISIT,
+                             id = "USUBJID",
+                             visit = "VISIT",
                              test_variable,
                              test_cd,
-                             analysis_date = VISITNUM,
+                             analysis_date = "VISITNUM",
                              baseline_level,
-                             denominator,
-                             header = "{level}  \nN = {n}",
-                             nonmissing = "always",
-                             nonmissing_text = "Total",
-                             ...) {
+                             denominator) {
   set_cli_abort_call()
 
   # check inputs ---------------------------------------------------------------
@@ -99,11 +90,11 @@ tbl_baseline_chg <- function(data,
       dplyr::row_number() == 1L
     ) |>
     dplyr::mutate(
-      VISIT_fct = forcats::fct_reorder(.data[[visit]], .data[[analysis_date]])
+      visit = forcats::fct_reorder(.data[[visit]], .data[[analysis_date]])
     ) |>
     tidyr::pivot_wider(
       id_cols = c(id, test_variable, by),
-      names_from = VISIT_fct,
+      names_from = visit,
       values_from = c(analysis_variable, change_variable),
       names_sort = TRUE
     ) |>
@@ -161,16 +152,16 @@ tbl_baseline_chg <- function(data,
   baseline_chg_tbl <-
     list(tbl_aval, tbl_chg) |>
     gtsummary::tbl_merge(tab_spanner = FALSE) |>
-    gtsummary::modify_spanning_header(all_stat_cols() ~ "{level}  \n(N = {n})") |>
+    gtsummary::modify_spanning_header(gtsummary::all_stat_cols() ~ "{level}  \n(N = {n})") |>
     gtsummary::modify_header(
-      all_stat_cols() & ends_with("_1") ~ "Value at Visit",
-      all_stat_cols() & ends_with("_2") ~ "Change from Baseline",
+      gtsummary::all_stat_cols() & ends_with("_1") ~ "Value at Visit",
+      gtsummary::all_stat_cols() & ends_with("_2") ~ "Change from Baseline",
       label = ""
     ) |>
     # sort the stat columns together within treatment group
     gtsummary::modify_table_body(
       \(.x) {
-        stat_cols <- dplyr::select(.x, all_stat_cols()) |>
+        stat_cols <- dplyr::select(.x, gtsummary::all_stat_cols()) |>
           names() |>
           sort()
         dplyr::relocate(.x, all_of(stat_cols), .after = "label")

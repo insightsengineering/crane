@@ -6,28 +6,30 @@
 \usage{
 tbl_baseline_chg(
   data,
-  analysis_variable = AVAL,
-  change_variable = CHG,
+  analysis_variable = "AVAL",
+  change_variable = "CHG",
   by = NULL,
-  id = USUBJID,
-  visit = VISIT,
+  id = "USUBJID",
+  visit = "VISIT",
   test_variable,
   test_cd,
-  analysis_date = VISITNUM,
+  analysis_date = "VISITNUM",
   baseline_level,
-  denominator,
-  header = "{level}  \\nN = {n}",
-  nonmissing = "always",
-  nonmissing_text = "Total",
-  ...
+  denominator
 )
 }
 \arguments{
+\item{data}{(\code{data.frame})\cr A data frame.}
+
 \item{analysis_variable}{(\code{string})\cr
 String identifying the analysis values. Default is \code{AVAL}.}
 
 \item{change_variable}{(\code{string})\cr
 String identifying the change from baseline values. Default is \code{CHG}.}
+
+\item{by}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+A single column from \code{data}. Summary statistics will be stratified by this variable.
+Default is \code{NULL}.}
 
 \item{id}{(\code{string})\cr
 String identifying the unique subjects. Default is \code{USUBJID}.}
@@ -51,11 +53,6 @@ String identifying baseline level in the \code{visit} variable.}
 
 \item{denominator}{(\code{string})\cr
 Data set used to compute the header counts (typically \code{ADSL}).}
-
-\item{digits}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
-Specifies how summary statistics are rounded. Values may be either integer(s) or function(s). If not specified,
-default formatting is assigned via \code{label_style_number()} for the \code{n} statistic and
-\code{label_style_number(digits=1, scale=100)} for the \code{p} statistic.}
 }
 \value{
 a gtsummary table
@@ -64,11 +61,9 @@ a gtsummary table
 Computes Change from Baseline
 }
 \examples{
-----------------------------------
-adlb <- cards::ADLB
-adsl <- cards::ADSL
-df <- adlb |>
-  dplyr::filter(!str_detect(VISIT, regex("unscheduled", ignore_case = TRUE)))
+library(dplyr, warn.conflicts = FALSE)
+df <- cards::ADLB
+df <- df[!grepl("unscheduled", df$VISIT, ignore.case = TRUE), ]
 
 tbl_baseline_chg(
   data = df,
@@ -76,6 +71,6 @@ tbl_baseline_chg(
   test_cd = "SODIUM",
   baseline_level = "SCREENING 1",
   by = "TRTA",
-  denominator = adsl
+  denominator = cards::ADSL
 )
 }
