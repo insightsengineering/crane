@@ -2,7 +2,6 @@
 % Please edit documentation in R/tbl_listing.R
 \name{tbl_listing}
 \alias{tbl_listing}
-\alias{print.tbl_listing}
 \title{Create listings from a data frame}
 \usage{
 tbl_listing(
@@ -10,12 +9,6 @@ tbl_listing(
   keys = NULL,
   order_by = keys,
   do_not_print_duplicated_keys = TRUE
-)
-
-\method{print}{tbl_listing}(
-  x,
-  print_engine = c("gt", "flextable", "huxtable", "kable", "kable_extra", "tibble"),
-  ...
 )
 }
 \arguments{
@@ -30,14 +23,6 @@ columns to be sorted. It defaults to \code{keys}.}
 
 \item{do_not_print_duplicated_keys}{(\code{logical})\cr
 whether to add blank values where key columns have duplicate values. Defaults to \code{TRUE}.}
-
-\item{x}{(\code{tbl_listing})\cr
-a \code{tbl_listing} object to be printed.}
-
-\item{print_engine}{String indicating the print method. Must be one of
-\code{"gt"}, \code{"kable"}, \code{"kable_extra"}, \code{"flextable"}, \code{"tibble"}}
-
-\item{...}{Not used}
 }
 \description{
 Create listings from a data frame

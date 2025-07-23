@@ -82,31 +82,70 @@ tbl_listing <- function(data,
   )
 }
 
-
-#' @param x (`tbl_listing`)\cr
-#'   a `tbl_listing` object to be printed.
-#' @inheritParams gtsummary::print.gtsummary
+#' `as_*()` overloading for `tbl_listing`
 #'
-#' @name tbl_listing
+#' @inheritParams gtsummary::as_gt
+#'
+#' @keywords internal
+#' @name tbl_listing_as_overloading
+NULL
+
+#' @rdname tbl_listing_as_overloading
+#' @export
+as_gt <- function(x, ...) {
+  UseMethod("as_gt")
+}
+
+#' @rdname tbl_listing_as_overloading
+#' @export
+as_flex_table <- function(x, ...) {
+  UseMethod("as_flex_table")
+}
+
+#' @rdname tbl_listing_as_overloading
 #' @exportS3Method
-print.tbl_listing <- function(x,
-                               print_engine = c("gt", "flextable", "huxtable", "kable", "kable_extra", "tibble"),
-                               ...) {
+as_gt.tbl_listing <- function(x, ...) {
   set_cli_abort_call()
 
   # Highlight keys if requested ---------------------------------------------
   if(x$inputs$do_not_print_duplicated_keys) {
     x$table_body <- .highlight_keys(x$table_body, x$inputs$keys)
   }
-  class(x) <- c("gtsummary")
 
-  # Print the gtsummary object ---------------------------------------------
-  print(
-    x,
-    print_engine = print_engine,
-    ...
-  )
+  gtsummary::as_gt(x, ...)
 }
+
+#' @rdname tbl_listing_as_overloading
+#' @exportS3Method
+as_flex_table.tbl_listing <- function(x, ...) {
+  set_cli_abort_call()
+
+  # Highlight keys if requested ---------------------------------------------
+  if(x$inputs$do_not_print_duplicated_keys) {
+    x$table_body <- .highlight_keys(x$table_body, x$inputs$keys)
+  }
+
+  gtsummary::as_flex_table(x, ...)
+}
+
+# print.tbl_listing <- function(x,
+#                                print_engine = c("gt", "flextable", "huxtable", "kable", "kable_extra", "tibble"),
+#                                ...) {
+#   set_cli_abort_call()
+#
+#   # Highlight keys if requested ---------------------------------------------
+#   if(x$inputs$do_not_print_duplicated_keys) {
+#     x$table_body <- .highlight_keys(x$table_body, x$inputs$keys)
+#   }
+#   class(x) <- c("gtsummary")
+#
+#   # Print the gtsummary object ---------------------------------------------
+#   print(
+#     x,
+#     print_engine = print_engine,
+#     ...
+#   )
+# }
 
 # Add blank values for key duplicates if requested -----------------------------
 .highlight_keys <- function(data, keys, blank_str = "") {
