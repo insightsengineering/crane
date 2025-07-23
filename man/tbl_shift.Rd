@@ -22,7 +22,7 @@ tbl_shift(
 
 \method{add_overall}{tbl_shift}(
   x,
-  col_label = "All Participants  \\nN = {gtsummary::style_number(n)}",
+  col_label = "All Participants  \\n(N = {gtsummary::style_number(n)})",
   last = FALSE,
   ...
 )
