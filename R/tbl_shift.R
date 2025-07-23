@@ -264,7 +264,7 @@ tbl_shift <- function(data,
 #' @rdname tbl_shift
 #' @export
 add_overall.tbl_shift <- function(x,
-                                  col_label = "All Participants  \nN = {gtsummary::style_number(n)}",
+                                  col_label = "All Participants  \n(N = {gtsummary::style_number(n)})",
                                   last = FALSE, ...) {
   # check inputs ---------------------------------------------------------------
   set_cli_abort_call()

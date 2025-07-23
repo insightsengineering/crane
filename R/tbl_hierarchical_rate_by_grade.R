@@ -419,7 +419,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
     gtsummary::modify_header(
       label ~ paste0(label[[soc]], "  \n", paste0(rep("\U00A0", 4L), collapse = ""), label[[ae]]),
       label_grade ~ label[[grade]],
-      gtsummary::all_stat_cols() ~ "{level}  \nN = {n}"
+      gtsummary::all_stat_cols() ~ "{level}  \n(N = {n})"
     )
 
   # indent grade level labels within grade groups
