@@ -48,6 +48,7 @@ See example 6.
 }
 }
 \examples{
+\dontshow{if (rlang::is_installed("labelled")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # Load the trial dataset
 trial_data <- trial |>
   dplyr::select(trt, age, marker, stage) |>
@@ -86,12 +87,12 @@ list_lst[[2]]
 # Example 6 --------------------------------
 # Split by columns
 column_groups <- list(
-   age = c("trt", "age"),
-   marker = c("trt", "marker")
-  )
+  age = c("trt", "age"),
+  marker = c("trt", "marker")
+)
 trial_data_split <- lapply(column_groups, function(cols) trial_data[, cols, drop = FALSE])
 list_lst <- lapply(trial_data_split, tbl_listing, keys = trt)
 # names(list_lst) # keeps names
 list_lst[[2]]
-
+\dontshow{\}) # examplesIf}
 }

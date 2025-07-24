@@ -27,7 +27,7 @@
 #'    See example 6.
 #'  * Split in post-processing is not suggested if `hide_duplicate_keys = TRUE`.
 #'
-#' @examples
+#' @examplesIf rlang::is_installed("labelled")
 #' # Load the trial dataset
 #' trial_data <- trial |>
 #'   dplyr::select(trt, age, marker, stage) |>
@@ -66,9 +66,9 @@
 #' # Example 6 --------------------------------
 #' # Split by columns
 #' column_groups <- list(
-#'    age = c("trt", "age"),
-#'    marker = c("trt", "marker")
-#'   )
+#'   age = c("trt", "age"),
+#'   marker = c("trt", "marker")
+#' )
 #' trial_data_split <- lapply(column_groups, function(cols) trial_data[, cols, drop = FALSE])
 #' list_lst <- lapply(trial_data_split, tbl_listing, keys = trt)
 #' # names(list_lst) # keeps names
@@ -99,23 +99,23 @@ tbl_listing <- function(data,
     data <- data |>
       dplyr::arrange(across(all_of(order_by)))
 
-      # Inform about happened sorting if interactive
-      if (interactive()) {
-        main_message <-
-          if (identical(order_by, keys)) {
-            "Sorting incoming data by key columns."
-          } else {
-            "Sorting incoming data by column{?s} {.val {order_by}}."
-          }
+    # Inform about happened sorting if interactive
+    if (interactive()) {
+      main_message <-
+        if (identical(order_by, keys)) {
+          "Sorting incoming data by key columns."
+        } else {
+          "Sorting incoming data by column{?s} {.val {order_by}}."
+        }
 
-        cli::cli_inform(
-          c(
-            "v" = main_message,
-            "i" = "If you want to change the sorting, please sort the data frame before passing it to `tbl_listing()`."
-          ),
+      cli::cli_inform(
+        c(
+          "v" = main_message,
+          "i" = "If you want to change the sorting, please sort the data frame before passing it to `tbl_listing()`."
+        ),
         call = get_cli_abort_call()
-        )
-      }
+      )
+    }
   }
 
   # Reorder the full set of cols to ensure key columns are first
@@ -150,20 +150,22 @@ tbl_listing <- function(data,
 
 # Add blank values for key duplicates if requested -----------------------------
 .highlight_keys <- function(x, blank_str = "") {
-    do_it_flag <- x$inputs$hide_duplicate_keys
-    keys <- x$inputs$keys
+  do_it_flag <- x$inputs$hide_duplicate_keys
+  keys <- x$inputs$keys
 
-    # Check if keys are unique
-    if (isTRUE(do_it_flag) && any(duplicated(x$table_body[keys]))) {
-      # Create a new data frame with blank values for duplicates
-      for (kcol in keys) {
-        kcol_vec <- labelled::to_character(x$table_body[[kcol]])
-        cur_key <- paste0("", kcol_vec) # used to force into a character vector
-        disp <- c(TRUE, tail(cur_key, -1) != head(cur_key, -1))
-        kcol_vec[!disp] <- blank_str
-        x$table_body[[kcol]] <- kcol_vec
-      }
+  # Check if keys are unique
+  if (isTRUE(do_it_flag) && any(duplicated(x$table_body[keys]))) {
+    # Create a new data frame with blank values for duplicates
+    for (kcol in keys) {
+      tmp_label_attr <- attr(x$table_body[[kcol]], "label") # not losing the label attribute
+      kcol_vec <- as.character(x$table_body[[kcol]])
+      attr(kcol_vec, "label") <- tmp_label_attr
+      cur_key <- paste0("", kcol_vec) # used to force into a character vector
+      disp <- c(TRUE, tail(cur_key, -1) != head(cur_key, -1))
+      kcol_vec[!disp] <- blank_str
+      x$table_body[[kcol]] <- kcol_vec
     }
+  }
 
   x
 }

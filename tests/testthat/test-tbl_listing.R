@@ -19,6 +19,18 @@ test_that("tbl_listing(keys, order_by) works with standard values", {
   expect_snapshot(
     head(out$table_body, n = 5) # highlight but no sorting
   )
+
+  # Checking column values
+  expect_setequal(
+    names(tld),
+    names(out$table_body)
+  )
+
+  # Checking printed labels
+  expect_setequal(
+    sapply(tld, attr, which = "label") |> unname(),
+    sapply(out$table_body, attr, which = "label") |> unname()
+  )
 })
 
 test_that("tbl_listing(hide_duplicate_keys = FALSE) works with standard values", {
@@ -49,4 +61,3 @@ test_that("tbl_listing(blank_rows_by) works with standard values", {
     head(out$table_body, n = 5)
   )
 })
-
