@@ -30,7 +30,9 @@ for more information. Defaults to \code{NULL}.}
 whether to add blank values where key columns have duplicate values. Defaults to \code{TRUE}.}
 }
 \description{
-Create listings from a data frame
+This function creates a listing from a data frame, highlighting key columns. Common uses
+rely on few pre-processing steps, such as ensuring unique values in key columns or split
+by rows or columns. They are described in the note section.
 }
 \note{
 Common pre-processing steps for the data frame that may be common:

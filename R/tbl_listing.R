@@ -1,5 +1,9 @@
 #' Create listings from a data frame
 #'
+#' This function creates a listing from a data frame, highlighting key columns. Common uses
+#' rely on few pre-processing steps, such as ensuring unique values in key columns or split
+#' by rows or columns. They are described in the note section.
+#'
 #' @param data (`data.frame`)\cr
 #'   a data frame containing the data to be displayed in the listing.
 #' @param keys ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
