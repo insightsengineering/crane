@@ -13,26 +13,26 @@
 #' @param blank_rows_by ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   columns where changing values is highlighted by a blank row. It depends substantially on the columns'
 #'   sorting. See [crane::add_blank_row()] for more information. Defaults to `NULL`.
-#' @param do_not_print_duplicated_keys (`logical`)\cr
+#' @param hide_duplicate_keys (`logical`)\cr
 #'   whether to add blank values where key columns have duplicate values. Defaults to `TRUE`.
 #'
 #' @note
 #' Common pre-processing steps for the data frame that may be common:
 #'  * Unique values - this should be enforced in pre-processing by users.
-#'  *`NA` values - they are not printed by default in `{gtsummary}`. You can make them explicit if
+#'  * `NA` values - they are not printed by default in `{gtsummary}`. You can make them explicit if
 #'    they need to be displayed in the listing. See example 3.
 #'  * Split by rows - you can split the data frame by rows and then apply `tbl_listing()` to each subset.
 #'    See example 5.
 #'  * Split by columns - you can split the data frame by columns and then apply `tbl_listing()` to each subset.
 #'    See example 6.
-#'  * Split in post-processing is not suggested if `do_not_print_duplicated_keys = TRUE`.
+#'  * Split in post-processing is not suggested if `hide_duplicate_keys = TRUE`.
 #'
 #' @examples
 #' # Load the trial dataset
 #' trial_data <- trial |>
 #'   dplyr::select(trt, age, marker, stage) |>
 #'   dplyr::filter(stage %in% c("T2", "T3")) |>
-#'   slice_head(n = 2, by = c(trt, stage)) # downsampling
+#'   dplyr::slice_head(n = 2, by = c(trt, stage)) # downsampling
 #'
 #' # Example 1 --------------------------------
 #' tbl_listing(trial_data, keys = c(trt, stage))
@@ -44,7 +44,7 @@
 #' # Example 3 --------------------------------
 #' # make NAs explicit
 #' trial_data_na <- trial_data |>
-#'   mutate(across(everything(), ~ tidyr::replace_na(as.character(.), "-")))
+#'   mutate(across(everything(), ~ tidyr::replace_na(labelled::to_character(.), "-")))
 #' tbl_listing(trial_data_na, keys = c(trt, stage))
 #'
 #' # Example 4 --------------------------------
@@ -53,8 +53,7 @@
 #' lst
 #'
 #' # Can add them also manually in post-processing
-#' lst |>
-#'   add_blank_row(row_numbers = seq(2))
+#' lst |> add_blank_row(row_numbers = seq(2))
 #'
 #' # Example 5 --------------------------------
 #' # Split by rows
@@ -80,13 +79,13 @@ tbl_listing <- function(data,
                         keys = NULL,
                         order_by = keys,
                         blank_rows_by = NULL,
-                        do_not_print_duplicated_keys = TRUE) {
+                        hide_duplicate_keys = TRUE) {
   set_cli_abort_call()
 
   # Checks -----------------------------------
   check_not_missing(data)
   check_data_frame(data)
-  check_scalar_logical(do_not_print_duplicated_keys)
+  check_scalar_logical(hide_duplicate_keys)
 
   # Process arguments ------------------------
   cards::process_selectors(data, keys = {{ keys }})
@@ -132,7 +131,7 @@ tbl_listing <- function(data,
     # Find where groups change in the specified columns
     grp_diffs <- data |>
       dplyr::group_by(across(all_of(blank_rows_by))) |>
-      group_indices() |>
+      dplyr::group_indices() |>
       diff()
 
     # Add a blank row where the group changes
@@ -151,14 +150,14 @@ tbl_listing <- function(data,
 
 # Add blank values for key duplicates if requested -----------------------------
 .highlight_keys <- function(x, blank_str = "") {
-    do_it_flag <- x$inputs$do_not_print_duplicated_keys
+    do_it_flag <- x$inputs$hide_duplicate_keys
     keys <- x$inputs$keys
 
     # Check if keys are unique
     if (isTRUE(do_it_flag) && any(duplicated(x$table_body[keys]))) {
       # Create a new data frame with blank values for duplicates
       for (kcol in keys) {
-        kcol_vec <- as.character(x$table_body[[kcol]])
+        kcol_vec <- labelled::to_character(x$table_body[[kcol]])
         cur_key <- paste0("", kcol_vec) # used to force into a character vector
         disp <- c(TRUE, tail(cur_key, -1) != head(cur_key, -1))
         kcol_vec[!disp] <- blank_str

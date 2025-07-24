@@ -9,7 +9,7 @@ tbl_listing(
   keys = NULL,
   order_by = keys,
   blank_rows_by = NULL,
-  do_not_print_duplicated_keys = TRUE
+  hide_duplicate_keys = TRUE
 )
 }
 \arguments{
@@ -26,7 +26,7 @@ columns to be sorted. It defaults to \code{keys}.}
 columns where changing values is highlighted by a blank row. It depends substantially on the columns'
 sorting. See \code{\link[=add_blank_row]{add_blank_row()}} for more information. Defaults to \code{NULL}.}
 
-\item{do_not_print_duplicated_keys}{(\code{logical})\cr
+\item{hide_duplicate_keys}{(\code{logical})\cr
 whether to add blank values where key columns have duplicate values. Defaults to \code{TRUE}.}
 }
 \description{
@@ -38,13 +38,13 @@ by rows or columns. They are described in the note section.
 Common pre-processing steps for the data frame that may be common:
 \itemize{
 \item Unique values - this should be enforced in pre-processing by users.
-*\code{NA} values - they are not printed by default in \code{{gtsummary}}. You can make them explicit if
+\item \code{NA} values - they are not printed by default in \code{{gtsummary}}. You can make them explicit if
 they need to be displayed in the listing. See example 3.
 \item Split by rows - you can split the data frame by rows and then apply \code{tbl_listing()} to each subset.
 See example 5.
 \item Split by columns - you can split the data frame by columns and then apply \code{tbl_listing()} to each subset.
 See example 6.
-\item Split in post-processing is not suggested if \code{do_not_print_duplicated_keys = TRUE}.
+\item Split in post-processing is not suggested if \code{hide_duplicate_keys = TRUE}.
 }
 }
 \examples{
@@ -52,7 +52,7 @@ See example 6.
 trial_data <- trial |>
   dplyr::select(trt, age, marker, stage) |>
   dplyr::filter(stage \%in\% c("T2", "T3")) |>
-  slice_head(n = 2, by = c(trt, stage)) # downsampling
+  dplyr::slice_head(n = 2, by = c(trt, stage)) # downsampling
 
 # Example 1 --------------------------------
 tbl_listing(trial_data, keys = c(trt, stage))
@@ -64,7 +64,7 @@ tbl_listing(trial_data, keys = c(trt, stage), order_by = c(trt, stage, marker))
 # Example 3 --------------------------------
 # make NAs explicit
 trial_data_na <- trial_data |>
-  mutate(across(everything(), ~ tidyr::replace_na(as.character(.), "-")))
+  mutate(across(everything(), ~ tidyr::replace_na(labelled::to_character(.), "-")))
 tbl_listing(trial_data_na, keys = c(trt, stage))
 
 # Example 4 --------------------------------
@@ -73,8 +73,7 @@ lst <- tbl_listing(trial_data_na, keys = c(trt, stage), blank_rows_by = trt)
 lst
 
 # Can add them also manually in post-processing
-lst |>
-  add_blank_row(row_numbers = seq(2))
+lst |> add_blank_row(row_numbers = seq(2))
 
 # Example 5 --------------------------------
 # Split by rows
