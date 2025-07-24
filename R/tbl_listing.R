@@ -6,29 +6,75 @@
 #'   columns to be highlighted on the left of the listing.
 #' @param order_by ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   columns to be sorted. It defaults to `keys`.
+#' @param blank_rows_by ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#'   columns where changing values is highlighted by a blank row. See [crane::add_blank_row()]
+#'   for more information. Defaults to `NULL`.
 #' @param do_not_print_duplicated_keys (`logical`)\cr
 #'   whether to add blank values where key columns have duplicate values. Defaults to `TRUE`.
 #'
-#' @details
-#' This function converts a data frame into a listing format and it relies on the user's pre-processing
-#' to decide which column to show and select unique or non-unique rows. Also sorting depends on the user
-#' pre-processing.
-#'
 #' @note
-#' `NA` values are not printed by default in `{gtsummary}`. Please consider making them explicit if
-#' you want them to be displayed in the listing.
+#' Common pre-processing steps for the data frame that may be common:
+#'  * Unique values - this should be enforced in pre-processing by users.
+#'  *`NA` values - they are not printed by default in `{gtsummary}`. You can make them explicit if
+#'    they need to be displayed in the listing. See example 3.
+#'  * Split by rows - you can split the data frame by rows and then apply `tbl_listing()` to each subset.
+#'    See example 5.
+#'  * Split by columns - you can split the data frame by columns and then apply `tbl_listing()` to each subset.
+#'    See example 6.
 #'
 #' @examples
-#' # Example 1 --------------------------------
+#' # Load the trial dataset
 #' trial_data <- trial |>
-#'   dplyr::select(trt, age, marker, stage)
+#'   dplyr::select(trt, age, marker, stage) |>
+#'   dplyr::filter(stage %in% c("T2", "T3")) |>
+#'   slice_head(n = 2, by = c(trt, stage)) # downsampling
 #'
+#' # Example 1 --------------------------------
 #' tbl_listing(trial_data, keys = c(trt, stage))
+#'
+#' # Example 2 --------------------------------
+#' # Sort by trt stage and marker
+#' tbl_listing(trial_data, keys = c(trt, stage), order_by = c(trt, stage, marker))
+#'
+#' # Example 3 --------------------------------
+#' # make NAs explicit
+#' trial_data_na <- trial_data |>
+#'   mutate(across(everything(), ~ tidyr::replace_na(as.character(.), "-")))
+#' tbl_listing(trial_data_na, keys = c(trt, stage))
+#'
+#' # Example 4 --------------------------------
+#' # Add blank rows for first key column
+#' lst <- tbl_listing(trial_data_na, keys = c(trt, stage), blank_rows_by = trt)
+#' lst
+#'
+#' # Can add them also manually in post-processing
+#' lst |>
+#'   add_blank_row(row_numbers = seq(2))
+#'
+#' # Example 5 --------------------------------
+#' # Split by rows
+#' trial_data_split <- trial_data |>
+#'   split(trial_data$trt)
+#' list_lst <- lapply(trial_data_split, tbl_listing, keys = c(trt, stage))
+#' # names(list_lst) # keeps names
+#' list_lst[[2]]
+#'
+#' # Example 6 --------------------------------
+#' # Split by columns
+#' column_groups <- list(
+#'    age = c("trt", "age"),
+#'    marker = c("trt", "marker")
+#'   )
+#' trial_data_split <- lapply(column_groups, function(cols) trial_data[, cols, drop = FALSE])
+#' list_lst <- lapply(trial_data_split, tbl_listing, keys = trt)
+#' # names(list_lst) # keeps names
+#' list_lst[[2]]
 #'
 #' @export
 tbl_listing <- function(data,
                         keys = NULL,
                         order_by = keys,
+                        blank_rows_by = NULL,
                         do_not_print_duplicated_keys = TRUE) {
   set_cli_abort_call()
 
@@ -40,6 +86,7 @@ tbl_listing <- function(data,
   # Process arguments ------------------------
   cards::process_selectors(data, keys = {{ keys }})
   cards::process_selectors(data, order_by = {{ order_by }})
+  cards::process_selectors(data, blank_rows_by = {{ blank_rows_by }})
 
   tbl_listing_inputs <- as.list(environment())
 
@@ -75,91 +122,44 @@ tbl_listing <- function(data,
   x <- gtsummary::as_gtsummary(data)
   x$inputs <- tbl_listing_inputs
 
-  # return with class and attributes -------------------------------------------
+  # Add blank rows by col ------------------------------------------------------
+  if (length(blank_rows_by) > 0) {
+    # Find where groups change in the specified columns
+    grp_diffs <- data |>
+      dplyr::group_by(across(all_of(blank_rows_by))) |>
+      group_indices() |>
+      diff()
+
+    # Add a blank row where the group changes
+    x <- add_blank_row(x, row_numbers = which(grp_diffs != 0))
+  }
+
+  # Highlight keys if requested ------------------------------------------------
+  x <- .highlight_keys(x)
+
+  # Return with class and attributes -------------------------------------------
   structure(
     x,
     class = c("tbl_listing", "gtsummary")
   )
 }
 
-#' `as_*()` overloading for `tbl_listing`
-#'
-#' @inheritParams gtsummary::as_gt
-#'
-#' @keywords internal
-#' @name tbl_listing_as_overloading
-NULL
-
-#' @rdname tbl_listing_as_overloading
-#' @export
-as_gt <- function(x, ...) {
-  UseMethod("as_gt")
-}
-
-#' @rdname tbl_listing_as_overloading
-#' @export
-as_flex_table <- function(x, ...) {
-  UseMethod("as_flex_table")
-}
-
-#' @rdname tbl_listing_as_overloading
-#' @exportS3Method
-as_gt.tbl_listing <- function(x, ...) {
-  set_cli_abort_call()
-
-  # Highlight keys if requested ---------------------------------------------
-  if(x$inputs$do_not_print_duplicated_keys) {
-    x$table_body <- .highlight_keys(x$table_body, x$inputs$keys)
-  }
-
-  gtsummary::as_gt(x, ...)
-}
-
-#' @rdname tbl_listing_as_overloading
-#' @exportS3Method
-as_flex_table.tbl_listing <- function(x, ...) {
-  set_cli_abort_call()
-
-  # Highlight keys if requested ---------------------------------------------
-  if(x$inputs$do_not_print_duplicated_keys) {
-    x$table_body <- .highlight_keys(x$table_body, x$inputs$keys)
-  }
-
-  gtsummary::as_flex_table(x, ...)
-}
-
-# print.tbl_listing <- function(x,
-#                                print_engine = c("gt", "flextable", "huxtable", "kable", "kable_extra", "tibble"),
-#                                ...) {
-#   set_cli_abort_call()
-#
-#   # Highlight keys if requested ---------------------------------------------
-#   if(x$inputs$do_not_print_duplicated_keys) {
-#     x$table_body <- .highlight_keys(x$table_body, x$inputs$keys)
-#   }
-#   class(x) <- c("gtsummary")
-#
-#   # Print the gtsummary object ---------------------------------------------
-#   print(
-#     x,
-#     print_engine = print_engine,
-#     ...
-#   )
-# }
-
 # Add blank values for key duplicates if requested -----------------------------
-.highlight_keys <- function(data, keys, blank_str = "") {
+.highlight_keys <- function(x, blank_str = "") {
+    do_it_flag <- x$inputs$do_not_print_duplicated_keys
+    keys <- x$inputs$keys
+
     # Check if keys are unique
-    if (any(duplicated(data[keys]))) {
+    if (isTRUE(do_it_flag) && any(duplicated(x$table_body[keys]))) {
       # Create a new data frame with blank values for duplicates
       for (kcol in keys) {
-        kcol_vec <- as.character(data[[kcol]])
+        kcol_vec <- as.character(x$table_body[[kcol]])
         cur_key <- paste0("", kcol_vec) # used to force into a character vector
         disp <- c(TRUE, tail(cur_key, -1) != head(cur_key, -1))
         kcol_vec[!disp] <- blank_str
-        data[[kcol]] <- kcol_vec
+        x$table_body[[kcol]] <- kcol_vec
       }
     }
 
-  data
+  x
 }
