@@ -11,8 +11,8 @@
 #' @param order_by ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   columns to be sorted. It defaults to `keys`.
 #' @param blank_rows_by ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
-#'   columns where changing values is highlighted by a blank row. See [crane::add_blank_row()]
-#'   for more information. Defaults to `NULL`.
+#'   columns where changing values is highlighted by a blank row. It depends substantially on the columns'
+#'   sorting. See [crane::add_blank_row()] for more information. Defaults to `NULL`.
 #' @param do_not_print_duplicated_keys (`logical`)\cr
 #'   whether to add blank values where key columns have duplicate values. Defaults to `TRUE`.
 #'
@@ -25,6 +25,7 @@
 #'    See example 5.
 #'  * Split by columns - you can split the data frame by columns and then apply `tbl_listing()` to each subset.
 #'    See example 6.
+#'  * Split in post-processing is not suggested if `do_not_print_duplicated_keys = TRUE`.
 #'
 #' @examples
 #' # Load the trial dataset

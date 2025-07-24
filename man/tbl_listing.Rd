@@ -23,8 +23,8 @@ columns to be highlighted on the left of the listing.}
 columns to be sorted. It defaults to \code{keys}.}
 
 \item{blank_rows_by}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-columns where changing values is highlighted by a blank row. See \code{\link[=add_blank_row]{add_blank_row()}}
-for more information. Defaults to \code{NULL}.}
+columns where changing values is highlighted by a blank row. It depends substantially on the columns'
+sorting. See \code{\link[=add_blank_row]{add_blank_row()}} for more information. Defaults to \code{NULL}.}
 
 \item{do_not_print_duplicated_keys}{(\code{logical})\cr
 whether to add blank values where key columns have duplicate values. Defaults to \code{TRUE}.}
@@ -44,6 +44,7 @@ they need to be displayed in the listing. See example 3.
 See example 5.
 \item Split by columns - you can split the data frame by columns and then apply \code{tbl_listing()} to each subset.
 See example 6.
+\item Split in post-processing is not suggested if \code{do_not_print_duplicated_keys = TRUE}.
 }
 }
 \examples{
