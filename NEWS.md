@@ -1,4 +1,8 @@
-# crane 0.1.0.9042
+# crane 0.1.0.9044
+
+* Updated Roche theme to include parentheses around Ns in header, and updated function defaults to include the parentheses in crane functions.
+
+* Re-coding `0 / 0 (NA%)` to `0 / 0` in `modify_zero_recode()`. (#85)
 
 * Added function `tbl_shift()` for easing the creation of shift tables. (#83)
 

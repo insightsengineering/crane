@@ -223,10 +223,7 @@ tbl_hierarchical_rate_and_count <- function(data,
       indent = 8L
     ) |>
     # convert "0 (0.0%)" to "0"
-    gtsummary::modify_post_fmt_fun(
-      fmt_fun = ~ ifelse(. == "0 (0.0%)", "0", .),
-      columns = gtsummary::all_stat_cols()
-    )
+    modify_zero_recode()
 
   # return final table ---------------------------------------------------------
   tbl_final$call_list <- list(tbl_hierarchical_rate_and_count = match.call())
@@ -247,7 +244,9 @@ tbl_hierarchical_rate_and_count <- function(data,
 
 #' @rdname tbl_hierarchical_rate_and_count
 #' @export
-add_overall.tbl_hierarchical_rate_and_count <- function(x, last = FALSE, col_label = "All Participants  \nN = {style_number(N)}", ...) {
+add_overall.tbl_hierarchical_rate_and_count <- function(x,
+                                                        last = FALSE,
+                                                        col_label = "All Participants  \n(N = {style_number(N)})", ...) {
   do.call(
     what = asNamespace("gtsummary")[["add_overall.tbl_hierarchical"]],
     args = list(x = x, last = last, col_label = col_label)
