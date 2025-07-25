@@ -34,13 +34,11 @@ test_that("tbl_listing(keys, order_by) works with standard values", {
 })
 
 test_that("tbl_listing(hide_duplicate_keys = FALSE) works with standard values", {
-  w_duplicated_keys <- tbl_listing(tld, keys = c(trt, stage), hide_duplicate_keys = TRUE)$table_body |>
-    head(n = 3)
-  wo_duplicated_keys <- tbl_listing(tld, keys = c(trt, stage), hide_duplicate_keys = FALSE)$table_body |>
-    head(n = 3)
+  w_duplicated_keys <- tbl_listing(tld, keys = c(trt, stage), hide_duplicate_keys = TRUE)$table_body
+  wo_duplicated_keys <- tbl_listing(tld, keys = c(trt, stage), hide_duplicate_keys = FALSE)$table_body
 
-  expect_snapshot(w_duplicated_keys)
-  expect_snapshot(wo_duplicated_keys)
+  expect_snapshot(w_duplicated_keys[seq(3), ])
+  expect_snapshot(wo_duplicated_keys[seq(3), ])
 })
 
 test_that("tbl_listing(blank_rows_by) works with standard values", {
