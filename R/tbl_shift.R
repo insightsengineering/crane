@@ -182,7 +182,7 @@ tbl_shift <- function(data,
 
   # replace strata colum with an overall if empty ------------------------------
   if (is_empty(strata)) {
-    strata <- paste0("..overall..", variable, by)
+    strata <- "...overall...strata..."
     data[[strata]] <- "All Participants"
     attr(data[[strata]], "label") <- "Cohort"
   }
