@@ -50,7 +50,7 @@ test_that("tbl_shift(by) messaging", {
       tbl_shift(
         data =
           dplyr::filter(adlb, PARAMCD %in% "CHOLES") |>
-            dplyr::mutate(TRT01A = as.character(TRT01A)),
+          dplyr::mutate(TRT01A = as.character(TRT01A)),
         strata = BTOXGRH,
         variable = ATOXGRH,
         by = TRT01A,
@@ -145,4 +145,25 @@ test_that("add_overall.tbl_shift() messaging", {
       ) |>
       add_overall()
   )
+})
+
+test_that("add_overall.tbl_shift(strata=NULL) messaging", {
+  withr::local_options(list(width = 190))
+
+  expect_no_warning(
+    tbl <-
+      dplyr::filter(adlb, PARAMCD %in% "CHOLES") |>
+      tbl_shift(
+        variable = BTOXGRH,
+        by = ATOXGRH,
+        header = "{level}",
+        strata_label = "{strata}, N={n}",
+        label = list(TRT01A = "Actual Treatment"),
+        percent = "cell",
+        nonmissing = "no"
+      ) |>
+      modify_spanning_header(all_stat_cols() ~ "Worst Post-baseline NCI-CTCAE Grade")
+  )
+
+  expect_snapshot(as.data.frame(tbl))
 })
