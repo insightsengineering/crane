@@ -7,7 +7,7 @@
 tbl_listing(
   data,
   keys = NULL,
-  order_by = keys,
+  order_by = all_of(keys),
   blank_rows_by = NULL,
   hide_duplicate_keys = TRUE
 )
