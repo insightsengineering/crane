@@ -2,17 +2,6 @@
 
     Code
       tbl_listing(tld)$table_body
-    Condition
-      Warning:
-      Using an external vector in selections was deprecated in tidyselect 1.1.0.
-      i Please use `all_of()` or `any_of()` instead.
-        # Was:
-        data %>% select(keys)
-      
-        # Now:
-        data %>% select(all_of(keys))
-      
-      See <https://tidyselect.r-lib.org/reference/faq-external-vector.html>.
     Output
       # A tibble: 8 x 4
         trt      age marker stage
