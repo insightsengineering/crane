@@ -97,3 +97,13 @@
       Original table was not stratified, and overall column cannot be added.
       i Table has been returned unaltered.
 
+# add_overall.tbl_shift(strata=NULL) messaging
+
+    Code
+      as.data.frame(tbl)
+    Output
+                         Cohort Baseline  \nNCI-CTCAE Grade           0        1        2
+      1 All Participants, N=254                           0 234 (92.1%) 7 (2.8%) 4 (1.6%)
+      2                    <NA>                           1           0 1 (0.4%)        0
+      3                    <NA>                           2           0        0 8 (3.1%)
+

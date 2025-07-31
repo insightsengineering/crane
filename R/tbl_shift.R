@@ -143,8 +143,8 @@ NULL
 #' @rdname tbl_shift
 #' @export
 tbl_shift <- function(data,
-                      strata,
                       variable,
+                      strata = NULL,
                       by = NULL,
                       data_header = NULL,
                       strata_location = c("new_column", "header"),
@@ -157,7 +157,6 @@ tbl_shift <- function(data,
   set_cli_abort_call()
   # check inputs ---------------------------------------------------------------
   check_not_missing(data)
-  check_not_missing(strata)
   check_not_missing(variable)
   check_data_frame(data)
   check_data_frame(data_header, allow_empty = TRUE)
@@ -165,7 +164,7 @@ tbl_shift <- function(data,
   check_string(header)
   check_string(strata_label)
   cards::process_selectors(data, strata = {{ strata }}, variable = {{ variable }}, by = {{ by }})
-  check_scalar(strata, message = "The {.arg strata} argument must select exactly one variable.")
+  check_scalar(strata, allow_empty = TRUE, message = "The {.arg strata} argument must select exactly one variable or none.")
   check_scalar(variable, message = "The {.arg variable} argument must select exactly one variable.")
   check_scalar(by, allow_empty = TRUE, message = "The {.arg by} argument must select exactly one variable or none.")
   cards::process_formula_selectors(data[c(strata, variable)], label = label)
@@ -180,6 +179,13 @@ tbl_shift <- function(data,
   }
 
   tbl_shift_inputs <- as.list(environment())
+
+  # replace strata colum with an overall if empty ------------------------------
+  if (is_empty(strata)) {
+    strata <- "...overall...strata..."
+    data[[strata]] <- "All Participants"
+    attr(data[[strata]], "label") <- "Cohort"
+  }
 
   # build stratified table -----------------------------------------------------
   # first get the label for the variable and the strata variable
@@ -264,7 +270,7 @@ tbl_shift <- function(data,
 #' @rdname tbl_shift
 #' @export
 add_overall.tbl_shift <- function(x,
-                                  col_label = "All Participants  \nN = {gtsummary::style_number(n)}",
+                                  col_label = "All Participants  \n(N = {gtsummary::style_number(n)})",
                                   last = FALSE, ...) {
   # check inputs ---------------------------------------------------------------
   set_cli_abort_call()

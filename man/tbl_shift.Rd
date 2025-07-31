@@ -7,8 +7,8 @@
 \usage{
 tbl_shift(
   data,
-  strata,
   variable,
+  strata = NULL,
   by = NULL,
   data_header = NULL,
   strata_location = c("new_column", "header"),
@@ -22,7 +22,7 @@ tbl_shift(
 
 \method{add_overall}{tbl_shift}(
   x,
-  col_label = "All Participants  \\nN = {gtsummary::style_number(n)}",
+  col_label = "All Participants  \\n(N = {gtsummary::style_number(n)})",
   last = FALSE,
   ...
 )
@@ -30,11 +30,11 @@ tbl_shift(
 \arguments{
 \item{data}{(\code{data.frame})\cr A data frame.}
 
-\item{strata}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-Stratifying variable. Typically the baseline grade.}
-
 \item{variable}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 Variable to tabulate. Typically the post-baseline grade.}
+
+\item{strata}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+Stratifying variable. Typically the baseline grade.}
 
 \item{by}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 Variable to report results by. Typical value is the treatment arm.}
