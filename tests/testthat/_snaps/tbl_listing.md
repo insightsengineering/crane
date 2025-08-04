@@ -18,7 +18,7 @@
 # tbl_listing(keys, order_by) works with standard values
 
     Code
-      head(out$table_body, n = 5)
+      dplyr::slice_head(out$table_body, n = 5)
     Output
       # A tibble: 5 x 4
         trt      stage   age marker
@@ -56,7 +56,7 @@
 # tbl_listing(blank_rows_by) works with standard values
 
     Code
-      head(out$table_body, n = 5)
+      dplyr::slice_head(out$table_body, n = 5)
     Output
       # A tibble: 5 x 4
         trt    stage   age marker
