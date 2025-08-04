@@ -17,7 +17,7 @@ test_that("tbl_listing(keys, order_by) works with standard values", {
   expect_s3_class(out, "tbl_listing")
 
   expect_snapshot(
-    head(out$table_body, n = 5) # highlight but no sorting
+    dplyr::slice_head(out$table_body, n = 5) # highlight but no sorting
   )
 
   # Checking column values
@@ -56,6 +56,6 @@ test_that("tbl_listing(blank_rows_by) works with standard values", {
   )
 
   expect_snapshot(
-    head(out$table_body, n = 5)
+    dplyr::slice_head(out$table_body, n = 5)
   )
 })

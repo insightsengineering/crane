@@ -161,7 +161,7 @@ tbl_listing <- function(data,
       kcol_vec <- as.character(x$table_body[[kcol]])
       attr(kcol_vec, "label") <- tmp_label_attr
       cur_key <- paste0("", kcol_vec) # used to force into a character vector
-      disp <- c(TRUE, tail(cur_key, -1) != head(cur_key, -1))
+      disp <- c(TRUE, utils::tail(cur_key, -1) != utils::head(cur_key, -1))
       kcol_vec[!disp] <- blank_str
       x$table_body[[kcol]] <- kcol_vec
     }
