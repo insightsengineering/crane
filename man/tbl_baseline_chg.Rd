@@ -2,6 +2,7 @@
 % Please edit documentation in R/tbl_baseline_chg.R
 \name{tbl_baseline_chg}
 \alias{tbl_baseline_chg}
+\alias{add_overall.tbl_baseline_chg}
 \title{Change from Baseline}
 \usage{
 tbl_baseline_chg(
@@ -14,8 +15,16 @@ tbl_baseline_chg(
   test_variable,
   test_cd,
   analysis_date = "VISITNUM",
+  header_label = "{level}  \\n(N = {n})",
   baseline_level,
   denominator
+)
+
+\method{add_overall}{tbl_baseline_chg}(
+  x,
+  col_label = "All Participants  \\n(N = {gtsummary::style_number(n)})",
+  last = FALSE,
+  ...
 )
 }
 \arguments{
@@ -49,16 +58,31 @@ String identifying the visit or analysis sequence number. Default is
 \code{VISITNUM}.}
 
 \item{baseline_level}{(\code{string})\cr
-String identifying baseline level in the \code{visit} variable.}
+String identifying baseline level in the \code{visit} variable.
+@param header_label (\code{string})\cr
+String identifying the column header.}
 
 \item{denominator}{(\code{string})\cr
 Data set used to compute the header counts (typically \code{ADSL}).}
+
+\item{x}{(\code{tbl_summary}, \code{tbl_svysummary}, \code{tbl_continuous}, \code{tbl_custom_summary})\cr
+A stratified 'gtsummary' table}
+
+\item{col_label}{(\code{string})\cr
+String indicating the column label. Default is \code{"**Overall**  \nN = {style_number(N)}"}}
+
+\item{last}{(scalar \code{logical})\cr
+Logical indicator to display overall column last in table.
+Default is \code{FALSE}, which will display overall column first.}
+
+\item{...}{These dots are for future extensions and must be empty.}
 }
 \value{
 a gtsummary table
 }
 \description{
-Computes Change from Baseline
+Typical use is tabulating changes from baseline
+measurement of an Analysis Variable.
 }
 \examples{
 library(dplyr, warn.conflicts = FALSE)

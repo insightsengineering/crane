@@ -1,7 +1,9 @@
 #' Change from Baseline
 #'
-#' @description Computes Change from Baseline
+#' Typical use is tabulating changes from baseline
+#' measurement of an Analysis Variable.
 #' @inheritParams tbl_roche_summary
+#' @inheritParams gtsummary::add_overall
 #' @param analysis_variable (`string`)\cr
 #'  String identifying the analysis values. Default is `AVAL`.
 #' @param change_variable (`string`)\cr
@@ -14,6 +16,8 @@
 #'  String identifying the lab test code to compute the change from baseline. This must be a value contained in `test_variable`.
 #' @param baseline_level (`string`)\cr
 #'  String identifying baseline level in the `visit` variable.
+#'  @param header_label (`string`)\cr
+#'  String identifying the column header.
 #' @param denominator (`string`)\cr
 #'  Data set used to compute the header counts (typically `ADSL`).
 #' @param visit (`string`)\cr
@@ -51,6 +55,7 @@ tbl_baseline_chg <- function(data,
                              test_variable,
                              test_cd,
                              analysis_date = "VISITNUM",
+                             header_label = "{level}  \n(N = {n})",
                              baseline_level,
                              denominator) {
   set_cli_abort_call()
@@ -59,6 +64,9 @@ tbl_baseline_chg <- function(data,
   check_not_missing(data)
   check_not_missing(analysis_variable)
   check_not_missing(change_variable)
+  check_not_missing(test_variable)
+  check_not_missing(test_cd)
+  check_not_missing(baseline_level)
   check_data_frame(data)
   cards::process_selectors(data,
     analysis_variable = {{ analysis_variable }}, by = {{ by }},
@@ -90,7 +98,7 @@ tbl_baseline_chg <- function(data,
       dplyr::row_number() == 1L
     ) |>
     dplyr::mutate(
-      visit = forcats::fct_reorder(.data[[visit]], .data[[analysis_date]])
+      visit = fct_reorder(.data[[visit]], .data[[analysis_date]])
     ) |>
     tidyr::pivot_wider(
       id_cols = c(id, test_variable, by),
@@ -152,7 +160,7 @@ tbl_baseline_chg <- function(data,
   baseline_chg_tbl <-
     list(tbl_aval, tbl_chg) |>
     gtsummary::tbl_merge(tab_spanner = FALSE) |>
-    gtsummary::modify_spanning_header(gtsummary::all_stat_cols() ~ "{level}  \n(N = {n})") |>
+    gtsummary::modify_spanning_header(gtsummary::all_stat_cols() ~ header_label) |>
     gtsummary::modify_header(
       gtsummary::all_stat_cols() & ends_with("_1") ~ "Value at Visit",
       gtsummary::all_stat_cols() & ends_with("_2") ~ "Change from Baseline",
@@ -168,6 +176,64 @@ tbl_baseline_chg <- function(data,
       }
     )
 
+  # return tbl -----------------------------------------------------------------
+  baseline_chg_tbl[["call_list"]] <- list(tbl_baseline_chg = match.call())
+  baseline_chg_tbl$inputs <- tbl_baseline_inputs
   baseline_chg_tbl |>
     structure(class = c("tbl_baseline_chg", "gtsummary"))
+}
+
+#' @rdname tbl_baseline_chg
+#' @export
+add_overall.tbl_baseline_chg <- function(x,
+                                  col_label = "All Participants  \n(N = {gtsummary::style_number(n)})",
+                                  last = FALSE, ...) {
+  # check inputs ---------------------------------------------------------------
+  set_cli_abort_call()
+  check_dots_empty(call = get_cli_abort_call())
+  check_string(col_label)
+  check_scalar_logical(last)
+  if (is_empty(x$inputs$by)) {
+    cli::cli_inform(
+      c("Original table was not stratified, and overall column cannot be added.",
+        i = "Table has been returned unaltered."
+      )
+    )
+    return(x)
+  }
+
+  # build overall table --------------------------------------------------------
+  tbl_overall <-
+    x$inputs |>
+    utils::modifyList(list(by = NULL)) |>
+    utils::modifyList(list(header_label = col_label)) |>
+    (\(args_list) do.call("tbl_baseline_chg", args = args_list))()
+
+  # check the tbls have the same structure before merging
+  if (!identical(
+    dplyr::select(x$table_body, any_of(c("label0", "label"))),
+    dplyr::select(tbl_overall$table_body, any_of(c("label0", "label")))
+  )) {
+    cli::cli_inform(
+      c("!" = "The structures of the original table and the overall table are not identical,
+         and the resulting table may be malformed.")
+    )
+  }
+
+  # merge tables ---------------------------------------------------------------
+  merged_tbl <- if (isTRUE(last)) {
+    gtsummary::tbl_merge(
+      tbls = list(x, tbl_overall),
+      tab_spanner = FALSE,
+      merge_vars = c("variable", "row_type", "var_label", "label0", "label")
+    )
+  } else {
+    gtsummary::tbl_merge(
+      tbls = list(tbl_overall, x),
+      tab_spanner = FALSE,
+      merge_vars = c("variable", "row_type", "var_label", "label0", "label")
+    )
+  }
+
+  return(merged_tbl)
 }

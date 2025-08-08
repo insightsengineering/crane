@@ -6,7 +6,7 @@
 # ---
 # repo: insightsengineering/standalone
 # file: standalone-forcats.R
-# last-updated: 2025-06-24
+# last-updated: 2025-07-25
 # license: https://unlicense.org
 # imports:
 # ---
@@ -16,6 +16,8 @@
 # of programming.
 #
 # ## Changelog
+# 2025-07-25
+#   - add `fct_reorder()` function.
 # 2025-06-24
 #   - add `fct_collapse()` function (and its internal helper functions).
 # 2025-05-03
@@ -154,6 +156,31 @@ fct_collapse <- function(f, ..., other_level = NULL) {
   if (!is.null(other_level)) out <- .lvls_other(out, levels(out) %in% new, other_level)
 
   out
+}
+
+fct_reorder <- function(.f, .x, .fun = median, ..., .na_rm = NULL, .default = Inf, .desc = FALSE) {
+  if (!inherits(.f, "factor")) .f <- factor(.f)
+  stopifnot(length(.f) == length(.x))
+  .fun <- as.function(.fun)
+
+  lvls <- levels(.f)
+
+  # Compute summary statistic per level
+  summary_vals <- vapply(lvls, function(lvl) {
+    vals <- .x[.f == lvl]
+    if (isTRUE(.na_rm)) {
+      vals <- vals[!is.na(vals)]
+    }
+    if (length(vals) == 0) {
+      return(.default)
+    }
+    .fun(vals, ...)
+  }, numeric(1))
+
+  # Reorder levels based on summary_vals
+  new_levels <- lvls[order(summary_vals, decreasing = .desc, na.last = TRUE)]
+
+  factor(.f, levels = new_levels)
 }
 
 # nocov end
