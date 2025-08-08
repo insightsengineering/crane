@@ -57,10 +57,11 @@ String identifying the lab test code to compute the change from baseline. This m
 String identifying the visit or analysis sequence number. Default is
 \code{VISITNUM}.}
 
-\item{baseline_level}{(\code{string})\cr
-String identifying baseline level in the \code{visit} variable.
-@param header_label (\code{string})\cr
+\item{header_label}{(\code{string})\cr
 String identifying the column header.}
+
+\item{baseline_level}{(\code{string})\cr
+String identifying baseline level in the \code{visit} variable.}
 
 \item{denominator}{(\code{string})\cr
 Data set used to compute the header counts (typically \code{ADSL}).}

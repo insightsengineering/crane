@@ -16,7 +16,7 @@
 #'  String identifying the lab test code to compute the change from baseline. This must be a value contained in `test_variable`.
 #' @param baseline_level (`string`)\cr
 #'  String identifying baseline level in the `visit` variable.
-#'  @param header_label (`string`)\cr
+#' @param header_label (`string`)\cr
 #'  String identifying the column header.
 #' @param denominator (`string`)\cr
 #'  Data set used to compute the header counts (typically `ADSL`).
@@ -67,15 +67,33 @@ tbl_baseline_chg <- function(data,
   check_not_missing(test_variable)
   check_not_missing(test_cd)
   check_not_missing(baseline_level)
+  check_not_missing(denominator)
+
+  # ---- Type and content checks ----
   check_data_frame(data)
-  cards::process_selectors(data,
-    analysis_variable = {{ analysis_variable }}, by = {{ by }},
-    change_variable = {{ change_variable }}, visit = {{ visit }}, analysis_date = {{ analysis_date }},
-    id = {{ id }}, test_variable = {{ test_variable }}
-  )
-  check_scalar(analysis_variable, message = "The {.arg analysis_variable} argument must select exactly one variable.")
-  check_scalar(change_variable, message = "The {.arg change_variable} argument must select exactly one variable.")
+  check_data_frame(denominator)
+  check_string(analysis_variable)
+  check_string(change_variable)
+  check_string(id)
+  check_string(visit)
+  check_string(test_variable)
+  check_string(test_cd)
+  check_string(analysis_date)
+  check_string(header_label)
+  check_scalar(baseline_level, message = "The {.arg baseline_level} must be a scalar (single value).")
+
+  # Allow `by` to be NULL or a string
   check_scalar(by, allow_empty = TRUE, message = "The {.arg by} argument must select exactly one variable or none.")
+
+  # Check that `by` exists in data if not NULL
+  if (!is.null(by) && !by %in% names(data)) {
+    cli::cli_abort("The variable {.val {by}} specified in {.arg by} is not found in {.arg data}.")
+  }
+
+  # Check that `baseline_level` is one of the visit values
+  if (!is.null(baseline_level) && !(baseline_level %in% data[[visit]])) {
+    cli::cli_warn("The {.arg baseline_level} {.val {baseline_level}} is not found in the {.val {visit}} variable.")
+  }
 
   tbl_baseline_inputs <- as.list(environment())
 
