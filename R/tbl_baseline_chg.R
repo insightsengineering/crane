@@ -30,6 +30,7 @@
 #' @name tbl_baseline_chg
 #'
 #' @examples
+#' theme_gtsummary_roche()
 #' library(dplyr, warn.conflicts = FALSE)
 #' df <- cards::ADLB
 #' df <- df[!grepl("unscheduled", df$VISIT, ignore.case = TRUE), ]
