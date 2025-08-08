@@ -30,21 +30,24 @@
       
       $user_added3
       $user_added3[[1]]
-      flextable::valign(valign = "top", part = "all")
+      flextable::bold(bold = TRUE, part = "header")
       
       $user_added3[[2]]
-      flextable::font(fontname = "Arial", part = "all")
+      flextable::valign(valign = "top", part = "all")
       
       $user_added3[[3]]
-      flextable::padding(padding.top = 0, part = "all")
+      flextable::font(fontname = "Arial", part = "all")
       
       $user_added3[[4]]
-      flextable::padding(padding.bottom = 0, part = "all")
+      flextable::padding(padding.top = 0, part = "all")
       
       $user_added3[[5]]
-      flextable::line_spacing(space = 1, part = "all")
+      flextable::padding(padding.bottom = 0, part = "all")
       
       $user_added3[[6]]
+      flextable::line_spacing(space = 1, part = "all")
+      
+      $user_added3[[7]]
       flextable::set_table_properties(layout = "autofit")
       
       
