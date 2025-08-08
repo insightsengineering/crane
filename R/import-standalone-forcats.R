@@ -158,7 +158,7 @@ fct_collapse <- function(f, ..., other_level = NULL) {
   out
 }
 
-fct_reorder <- function(.f, .x, .fun = median, ..., .na_rm = NULL, .default = Inf, .desc = FALSE) {
+fct_reorder <- function(.f, .x, .fun = stats::median, ..., .na_rm = NULL, .default = Inf, .desc = FALSE) {
   if (!inherits(.f, "factor")) .f <- factor(.f)
   stopifnot(length(.f) == length(.x))
   .fun <- as.function(.fun)
