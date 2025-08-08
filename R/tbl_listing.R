@@ -100,7 +100,7 @@ tbl_listing <- function(data,
       dplyr::arrange(across(all_of(order_by)))
 
     # Inform about happened sorting if interactive
-    if (interactive()) {
+    if (interactive()) { # nocov start
       main_message <-
         if (identical(order_by, keys)) {
           "Sorting incoming data by key columns."
@@ -115,7 +115,7 @@ tbl_listing <- function(data,
         ),
         call = get_cli_abort_call()
       )
-    }
+    } # nocov end
   }
 
   # Reorder the full set of cols to ensure key columns are first

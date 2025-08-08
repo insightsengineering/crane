@@ -5,7 +5,7 @@ tld <- trial |> # table_listing_data
 
 test_that("tbl_listing() works with default values", {
   expect_snapshot(
-    tbl_listing(tld)$table_body # no keys, no sorting, no highilight
+    tbl_listing(tld)$table_body # no keys, no sorting, no highlight
   )
 })
 
