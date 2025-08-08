@@ -73,8 +73,7 @@ theme_gtsummary_roche <- function(font_size = NULL,
     c(
       lst_theme$`as_flex_table-lst:addl_cmds`,
       list(
-        fontsize =
-          list(
+        fontsize = list(
             rlang::expr(flextable::fontsize(size = !!(font_size %||% 8), part = "all")),
             rlang::expr(flextable::fontsize(size = !!((font_size %||% 8) - 1), part = "footer"))
           ),
@@ -83,6 +82,7 @@ theme_gtsummary_roche <- function(font_size = NULL,
           rlang::expr(flextable::border_outer(part = "header", border = !!border))
         ),
         valign = list( # valign only because it will append to to last commands
+          rlang::expr(flextable::bold(bold = TRUE, part = "header")),
           rlang::expr(flextable::valign(valign = "top", part = "all")),
           rlang::expr(flextable::font(fontname = "Arial", part = "all")),
           rlang::expr(flextable::padding(padding.top = 0, part = "all")),
