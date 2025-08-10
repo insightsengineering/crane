@@ -95,7 +95,7 @@ tbl_baseline_chg <- function(data,
   if (!is.null(baseline_level) && !(baseline_level %in% data[[visit]])) {
     cli::cli_warn("The {.arg baseline_level} {.val {baseline_level}} is not found in the {.val {visit}} variable.")
   }
-
+  cards::process_selectors(data, visit = {{ visit }}, test_variable = {{ test_variable }}, analysis_variable = {{ analysis_variable }}, change_variable = {{ change_variable }}, by = {{ by }}, analysis_date = {{ analysis_date }})
   tbl_baseline_inputs <- as.list(environment())
 
   # build summary table -----------------------------------------------------
@@ -126,10 +126,10 @@ tbl_baseline_chg <- function(data,
       names_sort = TRUE
     ) |>
     # add in denominator for the header Ns
-    suppressMessages(dplyr::right_join(
-      dplyr::select(denominator, c(id, by)),
+    dplyr::right_join(
+      gtsummary::select(denominator, c(id, by)),
       relationship = "many-to-one"
-    ))
+    )
 
   # Build results tables ----------------------------------------------------
   # Summary of AVAL
@@ -183,7 +183,7 @@ tbl_baseline_chg <- function(data,
     gtsummary::modify_header(
       gtsummary::all_stat_cols() & ends_with("_1") ~ "Value at Visit",
       gtsummary::all_stat_cols() & ends_with("_2") ~ "Change from Baseline",
-      label = ""
+      label = "Visit"
     ) |>
     # sort the stat columns together within treatment group
     gtsummary::modify_table_body(
