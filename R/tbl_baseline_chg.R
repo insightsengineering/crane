@@ -128,6 +128,7 @@ tbl_baseline_chg <- function(data,
     # add in denominator for the header Ns
     dplyr::right_join(
       gtsummary::select(denominator, c(id, by)),
+      by = c(id, by),
       relationship = "many-to-one"
     )
 

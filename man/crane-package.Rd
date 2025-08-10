@@ -6,6 +6,8 @@
 \alias{crane-package}
 \title{crane: Supplements the 'gtsummary' Package for Pharmaceutical Reporting}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 Tables summarizing clinical trial results are often complex and require detailed tailoring prior to submission to a health authority. The 'crane' package supplements the functionality of the 'gtsummary' package for creating these often highly bespoke tables in the pharmaceutical industry.
 }
 \seealso{
