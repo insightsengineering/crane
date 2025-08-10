@@ -3,7 +3,7 @@
     Code
       as.data.frame(tbl)
     Output
-                     Value at Visit Change from Baseline Value at Visit Change from Baseline Value at Visit
+               Visit Value at Visit Change from Baseline Value at Visit Change from Baseline Value at Visit
       1  SCREENING 1           <NA>                 <NA>           <NA>                 <NA>           <NA>
       2            n              7                 <NA>              7                 <NA>              6
       3    Mean (SD)  141.14 (1.46)                 <NA>  139.14 (2.19)                 <NA>  139.50 (4.23)
@@ -111,7 +111,7 @@
     Code
       as.data.frame(tbl)
     Output
-                     Value at Visit Change from Baseline Value at Visit Change from Baseline Value at Visit Change from Baseline Value at Visit Change from Baseline
+               Visit Value at Visit Change from Baseline Value at Visit Change from Baseline Value at Visit Change from Baseline Value at Visit Change from Baseline
       1  SCREENING 1           <NA>                 <NA>           <NA>                 <NA>           <NA>                 <NA>           <NA>                 <NA>
       2            n              7                 <NA>              7                 <NA>              6                 <NA>             20                 <NA>
       3    Mean (SD)  141.14 (1.46)                 <NA>  139.14 (2.19)                 <NA>  139.50 (4.23)                 <NA>  139.95 (2.78)                 <NA>
