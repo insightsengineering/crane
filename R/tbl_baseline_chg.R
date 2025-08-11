@@ -136,7 +136,7 @@ tbl_baseline_chg <- function(data,
   # Summary of AVAL
   tbl_aval <-
     df_change_baseline |>
-    dplyr::select(by, starts_with(analysis_variable)) |>
+    dplyr::select(all_of(by), starts_with(analysis_variable)) |>
     dplyr::rename_with(~ str_remove(., paste0("^", analysis_variable, "_"))) %>%
     # after reshape all column labels are the same, so changing them to the variable name
     labelled::remove_var_label() |>
@@ -156,7 +156,7 @@ tbl_baseline_chg <- function(data,
   # Building a table change values at each visit
   tbl_chg <-
     df_change_baseline |>
-    dplyr::select(by, starts_with(change_variable)) |>
+    dplyr::select(all_of(by), starts_with(change_variable)) |>
     dplyr::rename_with(~ str_remove(., paste0("^", change_variable, "_"))) %>%
     # after reshape all column labels are the same, so changing them to the variable name
     labelled::remove_var_label() |>

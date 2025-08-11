@@ -75,7 +75,6 @@ test_that("add_overall.tbl_baseline_chg() messaging", {
 })
 
 test_that("tbl_baseline_chg() throws error when required arguments are missing", {
-
   # Missing test_variable
   expect_error(
     tbl_baseline_chg(
