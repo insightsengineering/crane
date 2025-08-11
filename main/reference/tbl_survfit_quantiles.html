@@ -19,7 +19,7 @@ see the Details section below for the full details."><meta property="og:image" c
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.9046</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.9047</span>
       </span>
     </div>
 
@@ -163,12 +163,12 @@ String indicating the column label. Default is <code>"**Overall**  \nN = {style_
 <p>This function is a helper for creating a common summary.
 But if you need to modify the appearance of this table, you may need to build
 it from ARDs.</p>
-<p>Here's the general outline for creating this table directly from ARDs.</p><ol><li><p>Create an ARD of survival quantiles using <code><a href="https://insightsengineering.github.io/cardx/latest-tag/reference/ard_survival_survfit.html" class="external-link">cardx::ard_survival_survfit()</a></code>.</p></li>
+<p>Here's the general outline for creating this table directly from ARDs.</p><ol><li><p>Create an ARD of survival quantiles using <code><a href="https://insightsengineering.github.io/cardx/main/reference/ard_survival_survfit.html" class="external-link">cardx::ard_survival_survfit()</a></code>.</p></li>
 <li><p>Construct an ARD of the minimum and maximum survival times using <code><a href="https://insightsengineering.github.io/cards/latest-tag/reference/ard_continuous.html" class="external-link">cards::ard_continuous()</a></code>.</p></li>
 <li><p>Combine the ARDs and build summary table with <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_ard_summary.html" class="external-link">gtsummary::tbl_ard_summary()</a></code>.</p></li>
 </ol><p></p><div class="sourceCode r"><pre><code><span><span class="co"># get the survival quantiles with 95% CI</span></span>
 <span><span class="va">ard_surv_quantiles</span> <span class="op">&lt;-</span></span>
-<span>  <span class="fu">cardx</span><span class="fu">::</span><span class="fu"><a href="https://insightsengineering.github.io/cardx/latest-tag/reference/ard_survival_survfit.html" class="external-link">ard_survival_survfit</a></span><span class="op">(</span></span>
+<span>  <span class="fu">cardx</span><span class="fu">::</span><span class="fu"><a href="https://insightsengineering.github.io/cardx/main/reference/ard_survival_survfit.html" class="external-link">ard_survival_survfit</a></span><span class="op">(</span></span>
 <span>    x <span class="op">=</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://insightsengineering.github.io/cards/latest-tag/reference/adam.html" class="external-link">ADTTE</a></span>,</span>
 <span>    y <span class="op">=</span> <span class="fu">survival</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span>time <span class="op">=</span> <span class="va">AVAL</span>, event <span class="op">=</span> <span class="fl">1</span> <span class="op">-</span> <span class="va">CNSR</span>, type <span class="op">=</span> <span class="st">'right'</span>, origin <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,</span>
 <span>    variables <span class="op">=</span> <span class="st">"TRTA"</span>,</span>

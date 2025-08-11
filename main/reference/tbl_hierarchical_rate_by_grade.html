@@ -22,7 +22,7 @@ first level in its group."><meta property="og:image" content="https://insightsen
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.9046</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.9047</span>
       </span>
     </div>
 
@@ -167,14 +167,18 @@ default formatting is assigned via <code><a href="https://www.danieldsjoberg.com
 
 
 <dt id="arg-sort">sort<a class="anchor" aria-label="anchor" href="#arg-sort"></a></dt>
-<dd><p>(<code>string</code>)<br>
-type of sorting to perform. Value must be one of:</p><ul><li><p><code>"alphanumeric"</code> - at each hierarchy level of the table, rows are ordered alphanumerically (i.e. A to Z)
-by label text.</p></li>
-<li><p><code>"descending"</code> - at each hierarchy level of the table, count sums are calculated for each row and rows are
-sorted in descending order by sum. If <code>sort = "descending"</code>, the <code>n</code> statistic is used to calculate row sums if
-included in <code>statistic</code> for all variables, otherwise <code>p</code> is used. If neither <code>n</code> nor <code>p</code> are present in <code>x</code> for
-all variables, an error will occur.</p></li>
-</ul><p>Defaults to <code>"descending"</code>.</p></dd>
+<dd><p>(<code><a href="https://www.danieldsjoberg.com/gtsummary/reference/syntax.html" class="external-link">formula-list-selector</a></code>, <code>string</code>)<br>
+a named list, a list of formulas, a single formula where the list element is a named list of functions
+(or the RHS of a formula), or a string specifying the types of sorting to perform at each hierarchy level.
+If the sort method for any variable is not specified then the method will default to <code>"descending"</code>. If a single
+unnamed string is supplied it is applied to all hierarchy levels. For each variable, the value specified must
+be one of:</p><ul><li><p><code>"alphanumeric"</code> - at the specified hierarchy level, groups are ordered alphanumerically (i.e. A to Z) by
+<code>variable_level</code> text.</p></li>
+<li><p><code>"descending"</code> - at the specified hierarchy level, count sums are calculated for each row and rows are sorted in
+descending order by sum. If <code>sort</code> is <code>"descending"</code> for a given variable and <code>n</code> is included in <code>statistic</code> for
+the variable then <code>n</code> is used to calculate row sums, otherwise <code>p</code> is used. If neither <code>n</code> nor <code>p</code> are present
+in <code>x</code> for the variable, an error will occur.</p></li>
+</ul><p>Defaults to <code>everything() ~ "descending"</code>.</p></dd>
 
 
 <dt id="arg-filter">filter<a class="anchor" aria-label="anchor" href="#arg-filter"></a></dt>
