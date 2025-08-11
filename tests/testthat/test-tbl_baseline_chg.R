@@ -1,10 +1,11 @@
+adlb <- cards::ADLB |>
+  dplyr::mutate(TRTA = as.factor(.data$TRTA))
+df <- adlb[!grepl("unscheduled", adlb$VISIT, ignore.case = TRUE), ]
+
 test_that("tbl_baseline_chg() works", {
   withr::local_options(list(width = 120))
-  # loading lab data
-  adlb <- cards::ADLB |>
-    dplyr::mutate(TRTA = as.factor(.data$TRTA))
-  df <- adlb[!grepl("unscheduled", adlb$VISIT, ignore.case = TRUE), ]
 
+  # loading lab data
   expect_silent(
     tbl <-
       tbl_baseline_chg(
@@ -22,9 +23,6 @@ test_that("tbl_baseline_chg() works", {
 test_that("add_overall.tbl_baseline_chg() works", {
   withr::local_options(list(width = 190))
 
-  adlb <- cards::ADLB |>
-    dplyr::mutate(TRTA = as.factor(.data$TRTA))
-  df <- adlb[!grepl("unscheduled", adlb$VISIT, ignore.case = TRUE), ]
   # test overall column
   expect_silent(
     tbl <-
@@ -41,10 +39,42 @@ test_that("add_overall.tbl_baseline_chg() works", {
   expect_snapshot(as.data.frame(tbl))
 })
 
+test_that("add_overall.tbl_baseline_chg() messaging", {
+  withr::local_options(list(width = 190))
+
+  # expect message about no by variable
+  expect_snapshot(
+    tbl <-
+      tbl_baseline_chg(
+        data = df,
+        test_variable = "PARAMCD",
+        test_cd = "SODIUM",
+        baseline_level = "SCREENING 1",
+        denominator = cards::ADSL
+      ) |>
+      add_overall()
+  )
+
+  # message about different structures before the merge
+  expect_snapshot(
+    tbl <-
+      tbl_baseline_chg(
+        data = df,
+        test_variable = "PARAMCD",
+        test_cd = "SODIUM",
+        by = "TRTA",
+        baseline_level = "SCREENING 1",
+        denominator = cards::ADSL
+      ) |>
+      modify_table_body(
+        ~ .x |>
+          dplyr::filter(dplyr::row_number() %in% 1:5)
+      ) |>
+      add_overall()
+  )
+})
+
 test_that("tbl_baseline_chg() throws error when required arguments are missing", {
-  adlb <- cards::ADLB |>
-    dplyr::mutate(TRTA = as.factor(.data$TRTA))
-  df <- adlb[!grepl("unscheduled", adlb$VISIT, ignore.case = TRUE), ]
 
   # Missing test_variable
   expect_error(
@@ -78,13 +108,7 @@ test_that("tbl_baseline_chg() throws error when required arguments are missing",
     ),
     "denominator"
   )
-})
-
-test_that("tbl_baseline_chg throws error if `by` is not found in data", {
-  adlb <- cards::ADLB |>
-    dplyr::mutate(TRTA = as.factor(.data$TRTA))
-  df <- adlb[!grepl("unscheduled", adlb$VISIT, ignore.case = TRUE), ]
-
+  # `by` is not found in data
   expect_error(
     tbl_baseline_chg(
       data = df,
@@ -94,5 +118,37 @@ test_that("tbl_baseline_chg throws error if `by` is not found in data", {
       by = "ARM",
       denominator = cards::ADSL
     )
+  )
+
+  # warning about baseline level not in the visit variable
+  expect_error(
+    expect_warning(
+      tbl <- tbl_baseline_chg(
+        data = df,
+        test_variable = "PARAMCD",
+        test_cd = "SODIUM",
+        baseline_level = "BASELINE",
+        by = "TRTA",
+        denominator = cards::ADSL
+      ),
+      "The `baseline_level` \"BASELINE\" is not found in the \"VISIT\" variable."
+    )
+  )
+})
+
+test_that("tbl_baseline_chg() messaging", {
+  withr::local_options(list(width = 190))
+
+  # expecting message about converting by variable to a factor
+  expect_snapshot(
+    tbl <-
+      tbl_baseline_chg(
+        data = df |> dplyr::mutate(TRTA = as.character(TRTA)),
+        test_variable = "PARAMCD",
+        test_cd = "SODIUM",
+        baseline_level = "SCREENING 1",
+        by = "TRTA",
+        denominator = cards::ADSL
+      )
   )
 })

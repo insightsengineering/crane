@@ -163,3 +163,26 @@
       49      Median         140.00                -1.00         138.00                -1.00         142.50                 3.50         140.00                -1.00
       50   Min - Max  139.0 - 145.0           -2.0 - 5.0  134.0 - 145.0           -4.0 - 3.0  141.0 - 144.0            0.0 - 7.0  134.0 - 145.0           -4.0 - 7.0
 
+# add_overall.tbl_baseline_chg() messaging
+
+    Code
+      tbl <- add_overall(tbl_baseline_chg(data = df, test_variable = "PARAMCD", test_cd = "SODIUM", baseline_level = "SCREENING 1", denominator = cards::ADSL))
+    Message
+      Original table was not stratified, and overall column cannot be added.
+      i Table has been returned unaltered.
+
+---
+
+    Code
+      tbl <- add_overall(modify_table_body(tbl_baseline_chg(data = df, test_variable = "PARAMCD", test_cd = "SODIUM", by = "TRTA", baseline_level = "SCREENING 1", denominator = cards::ADSL),
+      ~ dplyr::filter(.x, dplyr::row_number() %in% 1:5)))
+    Message
+      ! The structures of the original table and the overall table are not identical, and the resulting table may be malformed.
+
+# tbl_baseline_chg() messaging
+
+    Code
+      tbl <- tbl_baseline_chg(data = dplyr::mutate(df, TRTA = as.character(TRTA)), test_variable = "PARAMCD", test_cd = "SODIUM", baseline_level = "SCREENING 1", by = "TRTA", denominator = cards::ADSL)
+    Message
+      i Converting column "TRTA" to a factor.
+
