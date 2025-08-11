@@ -1,4 +1,6 @@
-# crane 0.1.0.9046
+# crane 0.1.0.9047
+
+* Making the header bold within `flextable` standard format.
 
 * Updated Roche theme to include parentheses around Ns in header, and updated function defaults to include the parentheses in crane functions.
 
