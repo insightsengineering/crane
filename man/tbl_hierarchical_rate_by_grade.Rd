@@ -72,18 +72,22 @@ specifies how summary statistics are rounded. Values may be either integer(s) or
 default formatting is assigned via \code{label_style_number()} for statistics \code{n} and \code{N}, and
 \code{label_style_percent(digits=1)} for statistic \code{p}.}
 
-\item{sort}{(\code{string})\cr
-type of sorting to perform. Value must be one of:
+\item{sort}{(\code{\link[gtsummary:syntax]{formula-list-selector}}, \code{string})\cr
+a named list, a list of formulas, a single formula where the list element is a named list of functions
+(or the RHS of a formula), or a string specifying the types of sorting to perform at each hierarchy level.
+If the sort method for any variable is not specified then the method will default to \code{"descending"}. If a single
+unnamed string is supplied it is applied to all hierarchy levels. For each variable, the value specified must
+be one of:
 \itemize{
-\item \code{"alphanumeric"} - at each hierarchy level of the table, rows are ordered alphanumerically (i.e. A to Z)
-by label text.
-\item \code{"descending"} - at each hierarchy level of the table, count sums are calculated for each row and rows are
-sorted in descending order by sum. If \code{sort = "descending"}, the \code{n} statistic is used to calculate row sums if
-included in \code{statistic} for all variables, otherwise \code{p} is used. If neither \code{n} nor \code{p} are present in \code{x} for
-all variables, an error will occur.
+\item \code{"alphanumeric"} - at the specified hierarchy level, groups are ordered alphanumerically (i.e. A to Z) by
+\code{variable_level} text.
+\item \code{"descending"} - at the specified hierarchy level, count sums are calculated for each row and rows are sorted in
+descending order by sum. If \code{sort} is \code{"descending"} for a given variable and \code{n} is included in \code{statistic} for
+the variable then \code{n} is used to calculate row sums, otherwise \code{p} is used. If neither \code{n} nor \code{p} are present
+in \code{x} for the variable, an error will occur.
 }
 
-Defaults to \code{"descending"}.}
+Defaults to \code{everything() ~ "descending"}.}
 
 \item{filter}{(\code{expression})\cr
 An expression that is used to filter rows of the table. Filter will be applied to the second variable (adverse
