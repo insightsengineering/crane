@@ -112,7 +112,7 @@ tbl_baseline_chg <- function(data,
     data |>
     dplyr::arrange(id, visit, analysis_date) |>
     dplyr::filter(
-      .by = c(id, visit),
+      .by = all_of(c(id, visit)),
       .data[[test_variable]] == test_cd,
       dplyr::row_number() == 1L
     ) |>
@@ -120,14 +120,14 @@ tbl_baseline_chg <- function(data,
       visit = fct_reorder(.data[[visit]], .data[[analysis_date]])
     ) |>
     tidyr::pivot_wider(
-      id_cols = c(id, test_variable, by),
+      id_cols = all_of(c(id, test_variable, by)),
       names_from = visit,
-      values_from = c(analysis_variable, change_variable),
+      values_from = all_of(c(analysis_variable, change_variable)),
       names_sort = TRUE
     ) |>
     # add in denominator for the header Ns
     dplyr::right_join(
-      gtsummary::select(denominator, c(id, by)),
+      gtsummary::select(denominator, all_of(c(id, by))),
       by = c(id, by),
       relationship = "many-to-one"
     )
@@ -141,7 +141,7 @@ tbl_baseline_chg <- function(data,
     # after reshape all column labels are the same, so changing them to the variable name
     labelled::remove_var_label() |>
     tbl_roche_summary(
-      by = by,
+      by = any_of(by),
       nonmissing = "always", # include the non-missing count in summary
       # round mean/sd/median/min/max,
       type = everything() ~ "continuous2",
@@ -162,7 +162,7 @@ tbl_baseline_chg <- function(data,
     labelled::remove_var_label() |>
     # using `tbl_roche_summary()` as the default continuous variable summary matches our spec
     tbl_roche_summary(
-      by = by,
+      by = any_of(by),
       nonmissing = "always", # include the non-missing count in summary
       # round mean/sd/median/min/max
       type = everything() ~ "continuous2",
@@ -173,7 +173,7 @@ tbl_baseline_chg <- function(data,
             min = 1, max = 1
           )
         ),
-      include = -baseline_level # Remove the baseline visit from summary
+      include = everything() & !all_of(baseline_level) # Remove the baseline visit from summary
     )
 
   # Merge tables together
