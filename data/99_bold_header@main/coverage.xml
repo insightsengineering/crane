@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0.975214489990467" branch-rate="0" lines-covered="1023" lines-valid="1049" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2025-08-08 14:32:54.057902">
+<coverage line-rate="0.975214489990467" branch-rate="0" lines-covered="1023" lines-valid="1049" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2025-08-11 08:49:55.800912">
   <sources>
     <source>/__w/crane/crane/crane</source>
   </sources>
@@ -2117,11 +2117,10 @@
           <methods>
             <method name="theme_gtsummary_roche" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
-                <line number="36" hits="8" branch="false"/>
                 <line number="37" hits="8" branch="false"/>
-                <line number="40" hits="8" branch="false"/>
-                <line number="43" hits="8" branch="false"/>
-                <line number="46" hits="8" branch="false"/>
+                <line number="38" hits="8" branch="false"/>
+                <line number="41" hits="8" branch="false"/>
+                <line number="44" hits="8" branch="false"/>
                 <line number="47" hits="8" branch="false"/>
                 <line number="48" hits="8" branch="false"/>
                 <line number="49" hits="8" branch="false"/>
@@ -2145,7 +2144,7 @@
                 <line number="67" hits="8" branch="false"/>
                 <line number="68" hits="8" branch="false"/>
                 <line number="69" hits="8" branch="false"/>
-                <line number="72" hits="8" branch="false"/>
+                <line number="70" hits="8" branch="false"/>
                 <line number="73" hits="8" branch="false"/>
                 <line number="74" hits="8" branch="false"/>
                 <line number="75" hits="8" branch="false"/>
@@ -2168,7 +2167,7 @@
                 <line number="92" hits="8" branch="false"/>
                 <line number="93" hits="8" branch="false"/>
                 <line number="94" hits="8" branch="false"/>
-                <line number="97" hits="8" branch="false"/>
+                <line number="95" hits="8" branch="false"/>
                 <line number="98" hits="8" branch="false"/>
                 <line number="99" hits="8" branch="false"/>
                 <line number="100" hits="8" branch="false"/>
@@ -2189,17 +2188,17 @@
                 <line number="115" hits="8" branch="false"/>
                 <line number="116" hits="8" branch="false"/>
                 <line number="117" hits="8" branch="false"/>
-                <line number="120" hits="7" branch="false"/>
-                <line number="121" hits="8" branch="false"/>
+                <line number="118" hits="8" branch="false"/>
+                <line number="121" hits="7" branch="false"/>
+                <line number="122" hits="8" branch="false"/>
               </lines>
             </method>
           </methods>
           <lines>
-            <line number="36" hits="8" branch="false"/>
             <line number="37" hits="8" branch="false"/>
-            <line number="40" hits="8" branch="false"/>
-            <line number="43" hits="8" branch="false"/>
-            <line number="46" hits="8" branch="false"/>
+            <line number="38" hits="8" branch="false"/>
+            <line number="41" hits="8" branch="false"/>
+            <line number="44" hits="8" branch="false"/>
             <line number="47" hits="8" branch="false"/>
             <line number="48" hits="8" branch="false"/>
             <line number="49" hits="8" branch="false"/>
@@ -2223,7 +2222,7 @@
             <line number="67" hits="8" branch="false"/>
             <line number="68" hits="8" branch="false"/>
             <line number="69" hits="8" branch="false"/>
-            <line number="72" hits="8" branch="false"/>
+            <line number="70" hits="8" branch="false"/>
             <line number="73" hits="8" branch="false"/>
             <line number="74" hits="8" branch="false"/>
             <line number="75" hits="8" branch="false"/>
@@ -2246,7 +2245,7 @@
             <line number="92" hits="8" branch="false"/>
             <line number="93" hits="8" branch="false"/>
             <line number="94" hits="8" branch="false"/>
-            <line number="97" hits="8" branch="false"/>
+            <line number="95" hits="8" branch="false"/>
             <line number="98" hits="8" branch="false"/>
             <line number="99" hits="8" branch="false"/>
             <line number="100" hits="8" branch="false"/>
@@ -2267,8 +2266,9 @@
             <line number="115" hits="8" branch="false"/>
             <line number="116" hits="8" branch="false"/>
             <line number="117" hits="8" branch="false"/>
-            <line number="120" hits="7" branch="false"/>
-            <line number="121" hits="8" branch="false"/>
+            <line number="118" hits="8" branch="false"/>
+            <line number="121" hits="7" branch="false"/>
+            <line number="122" hits="8" branch="false"/>
           </lines>
         </class>
         <class name="utils.R" filename="R/utils.R" line-rate="1" branch-rate="0" complexity="0">
