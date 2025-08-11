@@ -75,9 +75,9 @@ theme_gtsummary_roche <- function(font_size = NULL,
       lst_theme$`as_flex_table-lst:addl_cmds`,
       list(
         fontsize = list(
-            rlang::expr(flextable::fontsize(size = !!(font_size %||% 8), part = "all")),
-            rlang::expr(flextable::fontsize(size = !!((font_size %||% 8) - 1), part = "footer"))
-          ),
+          rlang::expr(flextable::fontsize(size = !!(font_size %||% 8), part = "all")),
+          rlang::expr(flextable::fontsize(size = !!((font_size %||% 8) - 1), part = "footer"))
+        ),
         border = list(
           rlang::expr(flextable::border_outer(part = "body", border = !!border)),
           rlang::expr(flextable::border_outer(part = "header", border = !!border))
