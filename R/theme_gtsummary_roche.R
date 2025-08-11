@@ -6,7 +6,7 @@
 #' - Uses `label_roche_pvalue()` as the default formatting function for all p-values.
 #' - Uses `label_roche_percent()` as the default formatting function for all percent values.
 #' - Font size defaults are 8 points for all the table by the footers that are 7 points.
-#' - If flextable, header text is always bold.
+#' - If flextable-printed, header text is always bold.
 #' - Border defaults to `flextable::fp_border_default(width = 0.5)`.
 #' - The `add_overall(col_label)` default value has been updated.
 #' - The results from `gtsummary::tbl_hierachrical()` and `gtsummary::tbl_hierachrical_count()`
