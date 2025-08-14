@@ -49,7 +49,7 @@ test_that("add_hierarchical_count_row(data_preprocess) works", {
 
   # in this example, the counts are doubled
   expect_silent(
-    tbl <- add_hierarchical_count_row(tbl0, .after = 1L, data_preprocess = ~dplyr::bind_rows(.x, .x))
+    tbl <- add_hierarchical_count_row(tbl0, .after = 1L, data_preprocess = ~ dplyr::bind_rows(.x, .x))
   )
 
   expect_snapshot(
