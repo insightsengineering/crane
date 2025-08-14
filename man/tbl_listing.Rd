@@ -13,8 +13,9 @@ tbl_listing(
 )
 }
 \arguments{
-\item{data}{(\code{data.frame})\cr
-a data frame containing the data to be displayed in the listing.}
+\item{data}{(\code{data.frame} or \code{list} of \code{data.frame})\cr
+a data frame containing the data to be displayed in the listing. If a list of data frames is provided,
+each data frame will be processed separately, and the results will be returned as a list of \code{tbl_listing} objects.}
 
 \item{keys}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 columns to be highlighted on the left of the listing.}

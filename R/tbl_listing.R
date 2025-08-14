@@ -4,8 +4,9 @@
 #' rely on few pre-processing steps, such as ensuring unique values in key columns or split
 #' by rows or columns. They are described in the note section.
 #'
-#' @param data (`data.frame`)\cr
-#'   a data frame containing the data to be displayed in the listing.
+#' @param data (`data.frame` or `list` of `data.frame`)\cr
+#'   a data frame containing the data to be displayed in the listing. If a list of data frames is provided,
+#'   each data frame will be processed separately, and the results will be returned as a list of `tbl_listing` objects.
 #' @param keys ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   columns to be highlighted on the left of the listing.
 #' @param order_by ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
@@ -60,6 +61,7 @@
 #' trial_data_split <- trial_data |>
 #'   split(trial_data$trt)
 #' list_lst <- lapply(trial_data_split, tbl_listing, keys = c(trt, stage))
+# list_lst <- tbl_listing(trial_data_split, keys = c(trt, stage)) # breaking!!
 #' # names(list_lst) # keeps names
 #' list_lst[[2]]
 #'
@@ -81,6 +83,34 @@ tbl_listing <- function(data,
                         blank_rows_by = NULL,
                         hide_duplicate_keys = TRUE) {
   set_cli_abort_call()
+
+  if (is.list(data) && !is.data.frame(data)) {
+    # If data is a list, apply tbl_listing to each element
+    return(
+      map(
+        seq_along(data),
+        function(ii, data, keys, order_by, blank_rows_by, hide_duplicate_keys) {
+          if (interactive()) {
+            cli::cli_h1(
+              "{.val {ii}}/{.val {length(data)}} Creating listing for {.val {names(data[ii])}} data frame."
+            )
+          }
+          tbl_listing(
+            data = data[[ii]],
+            keys = {{ keys }},
+            order_by = {{ order_by }},
+            blank_rows_by = {{ blank_rows_by }},
+            hide_duplicate_keys = hide_duplicate_keys
+          )
+        },
+        data = data,
+        keys = {{ keys }},
+        order_by = {{ order_by }},
+        blank_rows_by = {{ blank_rows_by }},
+        hide_duplicate_keys = hide_duplicate_keys
+      )
+    )
+  }
 
   # Checks -----------------------------------
   check_not_missing(data)
