@@ -9,6 +9,10 @@
 #'  label for the new row
 #' @param .before,.after (`integer`)\cr
 #'  Row index where to add the new row. Default is after last row.
+#' @param data_preprocess (`function` or `formula`)\cr
+#'  a function that is applied to `x$inputs$data` before the total row counts
+#'  are tabulated. Default is `identity`. Tidyverse formula shortcut notation
+#'  for the function is accepted. See `rlang::as_function()` for details.
 #'
 #' @returns gtsummary table
 #' @export
@@ -26,7 +30,11 @@
 #'     overall_row = TRUE
 #'   ) |>
 #'   add_hierarchical_count_row(.after = 1L)
-add_hierarchical_count_row <- function(x, label = "Overall total number of events", .before = NULL, .after = NULL) {
+add_hierarchical_count_row <- function(x,
+                                       label = "Overall total number of events",
+                                       .before = NULL,
+                                       .after = NULL,
+                                       data_preprocess = identity) {
   # check inputs ---------------------------------------------------------------
   set_cli_abort_call()
   check_class(x, "gtsummary")
@@ -34,9 +42,13 @@ add_hierarchical_count_row <- function(x, label = "Overall total number of event
   check_scalar_integerish(.before, allow_empty = TRUE)
   check_scalar_integerish(.after, allow_empty = TRUE)
 
+  # function to pre-process data frame
+  data_preprocess <- as_function(data_preprocess, call = get_cli_abort_call())
+
   # create one row summary table -----------------------------------------------
   tbl_count_one <-
     x$inputs$data |>
+    data_preprocess() |>
     dplyr::mutate(...row_count... = TRUE) |>
     gtsummary::tbl_summary(
       by = x$inputs$by,
