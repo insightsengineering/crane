@@ -43,7 +43,7 @@ add_hierarchical_count_row <- function(x,
   check_scalar_integerish(.after, allow_empty = TRUE)
 
   # function to pre-process data frame
-  data_preprocess <- as_function(data_preprocess)
+  data_preprocess <- as_function(data_preprocess, call = get_cli_abort_call())
 
   # create one row summary table -----------------------------------------------
   tbl_count_one <-
