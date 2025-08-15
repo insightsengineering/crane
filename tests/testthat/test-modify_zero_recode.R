@@ -34,7 +34,7 @@ test_that("modify_zero_recode() works", {
       gtsummary::modify_column_unhide(everything()) |>
       modify_zero_recode() |>
       as.data.frame() %>%
-      {.[, 1] == .[, 2]} |>
+      {.[, 1] == .[, 2]} |> # styler: off
       all()
   )
 })
