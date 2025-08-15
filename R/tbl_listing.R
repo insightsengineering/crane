@@ -4,9 +4,8 @@
 #' rely on few pre-processing steps, such as ensuring unique values in key columns or split
 #' by rows or columns. They are described in the note section.
 #'
-#' @param data (`data.frame` or `list` of `data.frame`)\cr
-#'   a data frame containing the data to be displayed in the listing. If a list of data frames is provided,
-#'   each data frame will be processed separately, and the results will be returned as a list of `tbl_listing` objects.
+#' @param data (`data.frame`)\cr
+#'   a data frame containing the data to be displayed in the listing.
 #' @param keys ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   columns to be highlighted on the left of the listing.
 #' @param order_by ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
@@ -22,7 +21,7 @@
 #'  * Unique values - this should be enforced in pre-processing by users.
 #'  * `NA` values - they are not printed by default in `{gtsummary}`. You can make them explicit if
 #'    they need to be displayed in the listing. See example 3.
-#'  * Split by rows - you can split the data frame by rows and then apply `tbl_listing()` to each subset.
+#'  * Split by rows - you can split the data frame by rows by using `split_by_rows`.
 #'    See example 5.
 #'  * Split by columns - you can split the data frame by columns and then apply `tbl_listing()` to each subset.
 #'    See example 6.
@@ -80,37 +79,11 @@
 tbl_listing <- function(data,
                         keys = NULL,
                         order_by = all_of(keys),
+                        split_by_rows = NULL,
+                        split_by_columns = NULL,
                         blank_rows_by = NULL,
                         hide_duplicate_keys = TRUE) {
   set_cli_abort_call()
-
-  if (is.list(data) && !is.data.frame(data)) {
-    # If data is a list, apply tbl_listing to each element
-    return(
-      map(
-        seq_along(data),
-        function(ii, data, keys, order_by, blank_rows_by, hide_duplicate_keys) {
-          if (interactive()) {
-            cli::cli_h1(
-              "{.val {ii}}/{.val {length(data)}} Creating listing for {.val {names(data[ii])}} data frame."
-            )
-          }
-          tbl_listing(
-            data = data[[ii]],
-            keys = {{ keys }},
-            order_by = {{ order_by }},
-            blank_rows_by = {{ blank_rows_by }},
-            hide_duplicate_keys = hide_duplicate_keys
-          )
-        },
-        data = data,
-        keys = {{ keys }},
-        order_by = {{ order_by }},
-        blank_rows_by = {{ blank_rows_by }},
-        hide_duplicate_keys = hide_duplicate_keys
-      )
-    )
-  }
 
   # Checks -----------------------------------
   check_not_missing(data)
@@ -121,6 +94,56 @@ tbl_listing <- function(data,
   cards::process_selectors(data, keys = {{ keys }})
   cards::process_selectors(data, order_by = {{ order_by }})
   cards::process_selectors(data, blank_rows_by = {{ blank_rows_by }})
+
+  # Is there a split? -----------------------------
+  if (!is.null(split_by_rows) || !is.null(split_by_columns)) {
+    # Split by columns first
+    if (!is.null(split_by_columns)) {
+      if (!is.list(split_by_columns) && any(!names(split_by_columns) == "groups")) {
+        cli::cli_abort(
+          c(
+            "The {.code split_by_columns} argument must a list of column names assigned as 'keys' or 'groups'.",
+            i = "If keys is not assigned it will be automatically defined as the tbl_listing keys."
+          ), call = get_cli_abort_call()
+        )
+      }
+
+      cards::process_selectors(data, split_by_columns_groups = {{ split_by_columns$groups }})
+      cards::process_selectors(data, split_by_columns_keys = {{ split_by_columns$keys }})
+
+      # Adding column groups
+      if (is.null(split_by_columns_keys)) {
+        split_by_columns_keys <- keys
+      }
+
+      # Adding
+
+
+    } else if (!is.null(split_by_rows)) {
+      cards::process_selectors(data, split_by_rows = {{ split_by_rows }})
+    }
+
+    return(
+      map(
+        seq_along(data_list),
+        function(ii) {
+          if (interactive()) {
+            cli::cli_h1(
+              "{.val {ii}}/{.val {length(data)}} Creating listing for {.val {names(data[ii])}} data frame."
+            )
+          }
+          tbl_listing(
+            data = data_list[[ii]],
+            keys = keys,
+            order_by = order_by,
+            blank_rows_by = blank_rows_by,
+            hide_duplicate_keys = hide_duplicate_keys
+          )
+        }
+      )
+    )
+  }
+
 
   tbl_listing_inputs <- as.list(environment())
 
