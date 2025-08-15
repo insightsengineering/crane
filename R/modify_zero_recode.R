@@ -1,14 +1,33 @@
 #' Zero Count Recode
 #'
 #' @description
-#' This function converts `"0 (0.0%)"` cells in a summary table to `"0"`.
+#' This function removes the percentage from cells with zero counts.
+#' For example,
 #'
-#' It's a simple wrapper for `gtsummary::modify_post_fmt_fun()`.
+#' ```r
+#' 0 (0.0%)      -->  0
+#' 0 (0%)        -->  0
+#' 0 (NA%)       -->  0
+#' 0 / nn (0%)   -->  0 / nn
+#' 0/nn (0.0%)   -->  0/nn
+#' 0 / 0 (NA%)   -->  0 / 0
+#' ```
+#'
+#' @details
+#' The function is a wrapper for `gtsummary::modify_post_fmt_fun()`.
 #'
 #' ```r
 #' gtsummary::modify_post_fmt_fun(
 #'   x,
-#'   fmt_fun = ~ ifelse(. %in% c("0 (0.0%)", "0 (NA%)"), "0", .),
+#'   fmt_fun = \(x) {
+#'     dplyr::case_when(
+#'       # convert "0 (0%)" OR "0 (0.0%)" OR 0 (NA%) to "0"
+#'       str_detect(x, "^0\\s\\((?:0(?:\\.0)?|NA)%\\)$") ~ str_remove(x, pattern = "\\s\\((?:0(?:\\.0)?|NA)%\\)$"),
+#'       # convert "0 / nn (0%)" OR "0/nn (0.0%)" OR 0/0 (NA%) to "0 / nn" OR "0/nn" OR "0/0"
+#'       str_detect(x, pattern = "^(0 ?/) ?\\d+[^()]* \\((?:0(?:\\.0)?|NA)%\\)$") ~ str_remove(x, pattern = "\\s\\((?:0(?:\\.0)?|NA)%\\)$"),
+#'       .default = x
+#'     )
+#'   },
 #'   columns = gtsummary::all_stat_cols()
 #' )
 #' ```
@@ -34,8 +53,10 @@ modify_zero_recode <- function(x) {
     x,
     fmt_fun = \(x) {
       dplyr::case_when(
-        x %in% c("0 (0.0%)", "0 (0%)", "0 (NA%)") ~ "0",
-        x %in% "0 / 0 (NA%)" ~ "0 / 0",
+        # convert "0 (0%)" OR "0 (0.0%)" OR 0 (NA%) to "0"
+        str_detect(x, "^0\\s\\((?:0(?:\\.0)?|NA)%\\)$") ~ str_remove(x, pattern = "\\s\\((?:0(?:\\.0)?|NA)%\\)$"),
+        # convert "0 / nn (0%)" OR "0/nn (0.0%)" OR 0/0 (NA%) to "0 / nn" OR "0/nn" OR "0/0"
+        str_detect(x, pattern = "^(0 ?/) ?\\d+[^()]* \\((?:0(?:\\.0)?|NA)%\\)$") ~ str_remove(x, pattern = "\\s\\((?:0(?:\\.0)?|NA)%\\)$"),
         .default = x
       )
     },
