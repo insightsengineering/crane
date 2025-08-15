@@ -48,3 +48,23 @@
       23                                                               Total number of events                   1                                1                               1                             3
       24                                                            APPLICATION SITE ERYTHEMA            1 (1.2%)                         1 (1.2%)                        1 (1.2%)                      3 (1.2%)
 
+# tbl_hierarchical_rate_and_count() works only with 2 or 3 variables
+
+    Code
+      tbl <- tbl_hierarchical_rate_and_count(ADAE_subset, denominator = cards::ADSL,
+      by = TRTA, variables = c(AEBODSYS), sort = "descending")
+    Condition
+      Error in `tbl_hierarchical_rate_and_count()`:
+      ! The `variables` argument must select 2 or 3 columns
+      i For a single variable summary, use `gtsummary::hierarchical(variables="AEBODSYS")`
+
+---
+
+    Code
+      tbl <- tbl_hierarchical_rate_and_count(ADAE_subset, denominator = cards::ADSL,
+      by = TRTA, variables = c(SEX, AEBODSYS, AEDECOD, SAFFL), sort = "descending")
+    Condition
+      Error in `tbl_hierarchical_rate_and_count()`:
+      ! The `variables` argument must select 2 or 3 columns
+      i Columns select are typically `c(AEBODSYS, AEDECOD)` or `c(AEBODSYS, AEHLT, AEDECOD)`
+
