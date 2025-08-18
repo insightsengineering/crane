@@ -80,7 +80,7 @@ it from ARDs.
 Here's the general outline for creating this table directly from ARDs.
 \enumerate{
 \item Create an ARD of survival quantiles using \code{cardx::ard_survival_survfit()}.
-\item Construct an ARD of the minimum and maximum survival times using \code{cards::ard_continuous()}.
+\item Construct an ARD of the minimum and maximum survival times using \code{cards::ard_summary()}.
 \item Combine the ARDs and build summary table with \code{gtsummary::tbl_ard_summary()}.
 }
 
@@ -101,7 +101,7 @@ ard_surv_quantiles <-
 
 # get the min/max followup time
 ard_surv_min_max <-
-  cards::ard_continuous(
+  cards::ard_summary(
     data = cards::ADTTE,
     variables = AVAL,
     by = "TRTA",
