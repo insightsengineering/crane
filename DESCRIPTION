@@ -41,8 +41,9 @@ Suggests:
     testthat (>= 3.0.0),
     withr (>= 3.0.1)
 Remotes: 
-    ddsjoberg/gtsummary,
-    insightsengineering/cards
+    ddsjoberg/gtsummary@cards-fn-rename,
+    insightsengineering/cards@470-function-rename,
+    insightsengineering/cardx@314-core-fn-rename
 Config/Needs/check: hms
 Config/Needs/website: rmarkdown, yaml
 Config/testthat/edition: 3
