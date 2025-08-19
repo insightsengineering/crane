@@ -1,4 +1,4 @@
-# crane 0.1.0.9052
+# crane 0.1.0.9053
 
 * Making the header bold within `flextable` standard format.
 
