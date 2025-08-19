@@ -10,10 +10,6 @@
 #'  String identifying the change from baseline values. Default is `CHG`.
 #' @param id (`string`)\cr
 #'  String identifying the unique subjects. Default is `USUBJID`.
-#' @param test_variable (`string`)\cr
-#'  String identifying the column containing lab test codes.
-#' @param test_cd (`string`)\cr
-#'  String identifying the lab test code to compute the change from baseline. This must be a value contained in `test_variable`.
 #' @param baseline_level (`string`)\cr
 #'  String identifying baseline level in the `visit` variable.
 #' @param header_label (`string`)\cr
@@ -22,27 +18,37 @@
 #'  Data set used to compute the header counts (typically `ADSL`).
 #' @param visit (`string`)\cr
 #'  String for the visit variable. Default is
-#'  `VISIT`.
-#' @param analysis_date (`string`)\cr
+#'  `AVISIT`.
+#' @param visit_number (`string`)\cr
 #'  String identifying the visit or analysis sequence number. Default is
-#'  `VISITNUM`.
+#'  `AVISITN`.
 #' @return a gtsummary table
 #' @name tbl_baseline_chg
 #'
 #' @examples
 #' theme_gtsummary_roche()
 #' library(dplyr, warn.conflicts = FALSE)
-#' df <- cards::ADLB
-#' df <- df[!grepl("unscheduled", df$VISIT, ignore.case = TRUE), ]
+#' df <- cards::ADLB |>
+#'   dplyr::mutate(AVISIT = str_trim(AVISIT, side = "left")) |>
+#'   dplyr::filter(
+#'     AVISIT != "End of Treatment",
+#'     PARAMCD == "SODIUM"
+#'   )
 #'
 #' tbl_baseline_chg(
 #'   data = df,
-#'   test_variable = "PARAMCD",
-#'   test_cd = "SODIUM",
-#'   baseline_level = "SCREENING 1",
+#'   baseline_level = "Baseline",
 #'   by = "TRTA",
 #'   denominator = cards::ADSL
 #' )
+#'
+#' tbl_baseline_chg(
+#'   data = df,
+#'   baseline_level = "Baseline",
+#'   by = "TRTA",
+#'   denominator = cards::ADSL
+#' ) |>
+#' add_overall()
 NULL
 
 #' @rdname tbl_baseline_chg
@@ -52,11 +58,9 @@ tbl_baseline_chg <- function(data,
                              change_variable = "CHG",
                              by = NULL,
                              id = "USUBJID",
-                             visit = "VISIT",
-                             test_variable,
-                             test_cd,
-                             analysis_date = "VISITNUM",
-                             header_label = "{level}  \n(N = {n})",
+                             visit = "AVISIT",
+                             visit_number = "AVISITN",
+                             digits = NULL,
                              baseline_level,
                              denominator) {
   set_cli_abort_call()
@@ -65,8 +69,6 @@ tbl_baseline_chg <- function(data,
   check_not_missing(data)
   check_not_missing(analysis_variable)
   check_not_missing(change_variable)
-  check_not_missing(test_variable)
-  check_not_missing(test_cd)
   check_not_missing(baseline_level)
   check_not_missing(denominator)
 
@@ -77,10 +79,7 @@ tbl_baseline_chg <- function(data,
   check_string(change_variable)
   check_string(id)
   check_string(visit)
-  check_string(test_variable)
-  check_string(test_cd)
-  check_string(analysis_date)
-  check_string(header_label)
+  check_string(visit_number)
   check_scalar(baseline_level, message = "The {.arg baseline_level} must be a scalar (single value).")
 
   # Allow `by` to be NULL or a string
@@ -95,7 +94,7 @@ tbl_baseline_chg <- function(data,
   if (!is.null(baseline_level) && !(baseline_level %in% data[[visit]])) {
     cli::cli_warn("The {.arg baseline_level} {.val {baseline_level}} is not found in the {.val {visit}} variable.")
   }
-  cards::process_selectors(data, visit = {{ visit }}, test_variable = {{ test_variable }}, analysis_variable = {{ analysis_variable }}, change_variable = {{ change_variable }}, by = {{ by }}, analysis_date = {{ analysis_date }})
+  cards::process_selectors(data, visit = {{ visit }}, analysis_variable = {{ analysis_variable }}, change_variable = {{ change_variable }}, by = {{ by }}, visit_number = {{ visit_number }})
   tbl_baseline_inputs <- as.list(environment())
 
   # build summary table -----------------------------------------------------
@@ -110,17 +109,16 @@ tbl_baseline_chg <- function(data,
   df_change_baseline <-
     # filter lab results data
     data |>
-    dplyr::arrange(id, visit, analysis_date) |>
+    dplyr::arrange(id, visit, visit_number) |>
     dplyr::filter(
       .by = all_of(c(id, visit)),
-      .data[[test_variable]] == test_cd,
       dplyr::row_number() == 1L
     ) |>
     dplyr::mutate(
-      visit = fct_reorder(.data[[visit]], .data[[analysis_date]])
+      visit = fct_reorder(.data[[visit]], .data[[visit_number]])
     ) |>
     tidyr::pivot_wider(
-      id_cols = all_of(c(id, test_variable, by)),
+      id_cols = all_of(c(id, by)),
       names_from = visit,
       values_from = all_of(c(analysis_variable, change_variable)),
       names_sort = TRUE
@@ -145,12 +143,7 @@ tbl_baseline_chg <- function(data,
       nonmissing = "always", # include the non-missing count in summary
       # round mean/sd/median/min/max,
       type = everything() ~ "continuous2",
-      digits = list(
-        all_continuous() ~ list(
-          mean = 2, sd = 2, median = 2,
-          min = 1, max = 1
-        )
-      )
+      digits = digits
     )
 
   # Building a table change values at each visit
@@ -166,13 +159,7 @@ tbl_baseline_chg <- function(data,
       nonmissing = "always", # include the non-missing count in summary
       # round mean/sd/median/min/max
       type = everything() ~ "continuous2",
-      digits =
-        list(
-          all_continuous() ~ list(
-            mean = 2, sd = 2, median = 2,
-            min = 1, max = 1
-          )
-        ),
+      digits = digits,
       include = everything() & !all_of(baseline_level) # Remove the baseline visit from summary
     )
 
@@ -180,12 +167,12 @@ tbl_baseline_chg <- function(data,
   baseline_chg_tbl <-
     list(tbl_aval, tbl_chg) |>
     gtsummary::tbl_merge(tab_spanner = FALSE) |>
-    gtsummary::modify_spanning_header(gtsummary::all_stat_cols() ~ header_label) |>
     gtsummary::modify_header(
       gtsummary::all_stat_cols() & ends_with("_1") ~ "Value at Visit",
       gtsummary::all_stat_cols() & ends_with("_2") ~ "Change from Baseline",
       label = "Visit"
     ) |>
+    modify_spanning_header(all_stat_cols() ~ "{level}  \n(N = {n})") |>
     # sort the stat columns together within treatment group
     gtsummary::modify_table_body(
       \(.x) {
@@ -199,6 +186,7 @@ tbl_baseline_chg <- function(data,
   # return tbl -----------------------------------------------------------------
   baseline_chg_tbl[["call_list"]] <- list(tbl_baseline_chg = match.call())
   baseline_chg_tbl$inputs <- tbl_baseline_inputs
+  baseline_chg_tbl$cards <- cards::bind_ard(gather_ard(tbl_aval)$tbl_summary, gather_ard(tbl_chg)$tbl_summary, .update = TRUE, .quiet = TRUE)
   baseline_chg_tbl |>
     structure(class = c("tbl_baseline_chg", "gtsummary"))
 }
@@ -206,12 +194,10 @@ tbl_baseline_chg <- function(data,
 #' @rdname tbl_baseline_chg
 #' @export
 add_overall.tbl_baseline_chg <- function(x,
-                                         col_label = "All Participants  \n(N = {gtsummary::style_number(n)})",
                                          last = FALSE, ...) {
   # check inputs ---------------------------------------------------------------
   set_cli_abort_call()
   check_dots_empty(call = get_cli_abort_call())
-  check_string(col_label)
   check_scalar_logical(last)
   if (is_empty(x$inputs$by)) {
     cli::cli_inform(
@@ -226,7 +212,6 @@ add_overall.tbl_baseline_chg <- function(x,
   tbl_overall <-
     x$inputs |>
     utils::modifyList(list(by = NULL)) |>
-    utils::modifyList(list(header_label = col_label)) |>
     (\(args_list) do.call("tbl_baseline_chg", args = args_list))()
 
   # check the tbls have the same structure before merging
@@ -246,7 +231,8 @@ add_overall.tbl_baseline_chg <- function(x,
       tbls = list(x, tbl_overall),
       tab_spanner = FALSE,
       merge_vars = c("variable", "row_type", "var_label", "label0", "label")
-    )
+    ) |>
+      modify_spanning_header(all_stat_cols() ~ "Worst Post-baseline NCI-CTCAE Grade")
   } else {
     gtsummary::tbl_merge(
       tbls = list(tbl_overall, x),

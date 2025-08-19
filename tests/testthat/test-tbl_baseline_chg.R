@@ -1,23 +1,40 @@
-adlb <- cards::ADLB |>
-  dplyr::mutate(TRTA = as.factor(.data$TRTA))
-df <- adlb[!grepl("unscheduled", adlb$VISIT, ignore.case = TRUE), ]
+df <- cards::ADLB |>
+  dplyr::mutate(
+    AVISIT = str_trim(AVISIT, side = "left"),
+    TRTA = as.factor(TRTA)
+  ) |>
+  dplyr::filter(
+    AVISIT != "End of Treatment",
+    PARAMCD == "SODIUM"
+  )
+
 
 test_that("tbl_baseline_chg() works", {
   withr::local_options(list(width = 120))
-
-  # loading lab data
   expect_silent(
     tbl <-
       tbl_baseline_chg(
         data = df,
-        test_variable = "PARAMCD",
-        test_cd = "SODIUM",
-        baseline_level = "SCREENING 1",
+        baseline_level = "Baseline",
         by = "TRTA",
         denominator = cards::ADSL
       )
   )
-  expect_snapshot(as.data.frame(tbl))
+  expect_snapshot(as.data.frame(tbl)[1:25, ])
+})
+
+test_that("tbl_baseline_chg() works with no `by` variable", {
+  withr::local_options(list(width = 120))
+
+  expect_silent(
+    tbl <-
+      tbl_baseline_chg(
+        data = df,
+        baseline_level = "Baseline",
+        denominator = cards::ADSL
+      )
+  )
+  expect_snapshot(as.data.frame(tbl)[1:25, ])
 })
 
 test_that("add_overall.tbl_baseline_chg() works", {
@@ -28,15 +45,13 @@ test_that("add_overall.tbl_baseline_chg() works", {
     tbl <-
       tbl_baseline_chg(
         data = df,
-        test_variable = "PARAMCD",
-        test_cd = "SODIUM",
-        baseline_level = "SCREENING 1",
+        baseline_level = "Baseline",
         by = "TRTA",
         denominator = cards::ADSL
       ) |>
-      add_overall(last = TRUE, col_label = "All Participants  \nN = {n}")
+      add_overall()
   )
-  expect_snapshot(as.data.frame(tbl))
+  expect_snapshot(as.data.frame(tbl)[1:25, ])
 })
 
 test_that("add_overall.tbl_baseline_chg() messaging", {
@@ -47,9 +62,7 @@ test_that("add_overall.tbl_baseline_chg() messaging", {
     tbl <-
       tbl_baseline_chg(
         data = df,
-        test_variable = "PARAMCD",
-        test_cd = "SODIUM",
-        baseline_level = "SCREENING 1",
+        baseline_level = "Baseline",
         denominator = cards::ADSL
       ) |>
       add_overall()
@@ -60,10 +73,8 @@ test_that("add_overall.tbl_baseline_chg() messaging", {
     tbl <-
       tbl_baseline_chg(
         data = df,
-        test_variable = "PARAMCD",
-        test_cd = "SODIUM",
         by = "TRTA",
-        baseline_level = "SCREENING 1",
+        baseline_level = "Baseline",
         denominator = cards::ADSL
       ) |>
       modify_table_body(
@@ -75,35 +86,11 @@ test_that("add_overall.tbl_baseline_chg() messaging", {
 })
 
 test_that("tbl_baseline_chg() throws error when required arguments are missing", {
-  # Missing test_variable
-  expect_error(
-    tbl_baseline_chg(
-      data = df,
-      test_cd = "SODIUM",
-      baseline_level = "SCREENING 1",
-      denominator = cards::ADSL
-    ),
-    "test_variable"
-  )
-
-  # Missing test_cd
-  expect_error(
-    tbl_baseline_chg(
-      data = df,
-      test_variable = "PARAMCD",
-      baseline_level = "SCREENING 1",
-      denominator = df
-    ),
-    "test_cd"
-  )
-
   # Missing denominator
   expect_error(
     tbl_baseline_chg(
       data = df,
-      test_cd = "TEST1",
-      test_variable = "TEST",
-      baseline_level = "BASELINE"
+      baseline_level = "Baseline"
     ),
     "denominator"
   )
@@ -111,9 +98,7 @@ test_that("tbl_baseline_chg() throws error when required arguments are missing",
   expect_error(
     tbl_baseline_chg(
       data = df,
-      test_cd = "SODIUM",
-      test_variable = "PARAMCD",
-      baseline_level = "SCREENING 1",
+      baseline_level = "Baseline",
       by = "ARM",
       denominator = cards::ADSL
     )
@@ -124,13 +109,11 @@ test_that("tbl_baseline_chg() throws error when required arguments are missing",
     expect_warning(
       tbl <- tbl_baseline_chg(
         data = df,
-        test_variable = "PARAMCD",
-        test_cd = "SODIUM",
-        baseline_level = "BASELINE",
+        baseline_level = "SCREENING 1",
         by = "TRTA",
         denominator = cards::ADSL
       ),
-      "The `baseline_level` \"BASELINE\" is not found in the \"VISIT\" variable."
+      "The `baseline_level` \"SCREENING 1\" is not found in the \"AVISIT\" variable."
     )
   )
 })
@@ -143,11 +126,21 @@ test_that("tbl_baseline_chg() messaging", {
     tbl <-
       tbl_baseline_chg(
         data = df |> dplyr::mutate(TRTA = as.character(TRTA)),
-        test_variable = "PARAMCD",
-        test_cd = "SODIUM",
-        baseline_level = "SCREENING 1",
+        baseline_level = "Baseline",
         by = "TRTA",
         denominator = cards::ADSL
       )
   )
+})
+
+test_that("gather_ard() works on output table", {
+  withr::local_options(list(width = 190))
+  tbl <-
+    tbl_baseline_chg(
+      data = df,
+      baseline_level = "Baseline",
+      by = "TRTA",
+      denominator = cards::ADSL
+    )
+  expect_snapshot(gather_ard(tbl))
 })

@@ -1,59 +1,34 @@
 # tbl_baseline_chg() works
 
     Code
-      as.data.frame(tbl)
+      as.data.frame(tbl)[1:25, ]
     Output
-               Visit Value at Visit Change from Baseline Value at Visit Change from Baseline Value at Visit
-      1  SCREENING 1           <NA>                 <NA>           <NA>                 <NA>           <NA>
-      2            n              7                 <NA>              7                 <NA>              6
-      3    Mean (SD)  141.14 (1.46)                 <NA>  139.14 (2.19)                 <NA>  139.50 (4.23)
-      4       Median         141.00                 <NA>         139.00                 <NA>         138.50
-      5    Min - Max  140.0 - 144.0                 <NA>  136.0 - 142.0                 <NA>  134.0 - 145.0
-      6       WEEK 2           <NA>                 <NA>           <NA>                 <NA>           <NA>
-      7            n              7                    7              6                    6              6
-      8    Mean (SD)  140.57 (1.62)         -0.57 (1.90)  138.83 (3.25)          0.17 (3.54)  139.50 (2.35)
-      9       Median         141.00                -1.00         140.50                 0.50         139.50
-      10   Min - Max  138.0 - 142.0           -3.0 - 2.0  133.0 - 141.0           -5.0 - 5.0  136.0 - 142.0
-      11      WEEK 4           <NA>                 <NA>           <NA>                 <NA>           <NA>
-      12           n              7                    7              6                    6              5
-      13   Mean (SD)  139.29 (2.81)         -1.86 (2.54)  139.83 (3.54)          1.17 (2.04)  139.40 (1.34)
-      14      Median         140.00                -1.00         138.50                 0.00         140.00
-      15   Min - Max  134.0 - 142.0           -7.0 - 0.0  138.0 - 147.0            0.0 - 5.0  138.0 - 141.0
-      16      WEEK 6           <NA>                 <NA>           <NA>                 <NA>           <NA>
-      17           n              5                    5              6                    6              4
-      18   Mean (SD)  140.00 (1.87)         -0.40 (1.67)  139.67 (1.97)          1.00 (2.28)  140.50 (2.65)
-      19      Median         140.00                 0.00         139.00                 0.50         140.00
-      20   Min - Max  138.0 - 143.0           -2.0 - 2.0  138.0 - 143.0           -1.0 - 5.0  138.0 - 144.0
-      21      WEEK 8           <NA>                 <NA>           <NA>                 <NA>           <NA>
-      22           n              5                    5              4                    4              3
-      23   Mean (SD)  140.60 (1.52)          0.20 (1.64)  139.00 (2.16)         -0.50 (2.38)  139.00 (2.65)
-      24      Median         141.00                 1.00         139.50                -0.50         140.00
-      25   Min - Max  139.0 - 142.0           -2.0 - 2.0  136.0 - 141.0           -3.0 - 2.0  136.0 - 141.0
-      26     WEEK 12           <NA>                 <NA>           <NA>                 <NA>           <NA>
-      27           n              5                    5              4                    4              2
-      28   Mean (SD)  141.00 (1.58)          0.60 (1.14)  140.75 (2.99)          1.25 (1.26)  139.00 (0.00)
-      29      Median         141.00                 1.00         140.00                 1.00         139.00
-      30   Min - Max  139.0 - 143.0           -1.0 - 2.0  138.0 - 145.0            0.0 - 3.0  139.0 - 139.0
-      31     WEEK 16           <NA>                 <NA>           <NA>                 <NA>           <NA>
-      32           n              5                    5              4                    4              2
-      33   Mean (SD)  140.80 (1.10)          0.40 (0.89)  142.00 (3.56)          2.50 (1.91)  139.50 (0.71)
-      34      Median         141.00                 1.00         141.00                 2.00         139.50
-      35   Min - Max  139.0 - 142.0           -1.0 - 1.0  139.0 - 147.0            1.0 - 5.0  139.0 - 140.0
-      36     WEEK 20           <NA>                 <NA>           <NA>                 <NA>           <NA>
-      37           n              5                    5              4                    4              2
-      38   Mean (SD)  141.60 (1.67)          1.20 (1.92)  138.75 (3.59)         -0.75 (2.22)  137.50 (0.71)
-      39      Median         142.00                 2.00         137.50                -1.00         137.50
-      40   Min - Max  139.0 - 143.0           -2.0 - 3.0  136.0 - 144.0           -3.0 - 2.0  137.0 - 138.0
-      41     WEEK 24           <NA>                 <NA>           <NA>                 <NA>           <NA>
-      42           n              5                    5              4                    4              2
-      43   Mean (SD)  140.40 (1.14)          0.00 (1.22)  139.25 (3.59)         -0.25 (2.63)  138.00 (2.83)
-      44      Median         140.00                 0.00         140.50                 0.50         138.00
-      45   Min - Max  139.0 - 142.0           -2.0 - 1.0  134.0 - 142.0           -4.0 - 2.0  136.0 - 140.0
-      46     WEEK 26           <NA>                 <NA>           <NA>                 <NA>           <NA>
-      47           n              5                    5              4                    4              2
-      48   Mean (SD)  140.60 (2.51)          0.20 (2.77)  138.75 (4.57)         -0.75 (2.87)  142.50 (2.12)
-      49      Median         140.00                -1.00         138.00                -1.00         142.50
-      50   Min - Max  139.0 - 145.0           -2.0 - 5.0  134.0 - 145.0           -4.0 - 3.0  141.0 - 144.0
+             Visit  Value at Visit Change from Baseline  Value at Visit Change from Baseline  Value at Visit
+      1   Baseline            <NA>                 <NA>            <NA>                 <NA>            <NA>
+      2          n               7                 <NA>               7                 <NA>               6
+      3  Mean (SD)   141.14 (1.46)                 <NA>   139.14 (2.19)                 <NA>   139.50 (4.23)
+      4     Median          141.00                 <NA>          139.00                 <NA>          138.50
+      5  Min - Max 140.00 - 144.00                 <NA> 136.00 - 142.00                 <NA> 134.00 - 145.00
+      6     Week 2            <NA>                 <NA>            <NA>                 <NA>            <NA>
+      7          n               7                    7               6                    6               6
+      8  Mean (SD)   140.57 (1.62)           -0.6 (1.9)   138.83 (3.25)            0.2 (3.5)   139.50 (2.35)
+      9     Median          141.00                 -1.0          140.50                  0.5          139.50
+      10 Min - Max 138.00 - 142.00           -3.0 - 2.0 133.00 - 141.00           -5.0 - 5.0 136.00 - 142.00
+      11    Week 4            <NA>                 <NA>            <NA>                 <NA>            <NA>
+      12         n               7                    7               6                    6               5
+      13 Mean (SD)   139.29 (2.81)         -1.86 (2.54)   139.83 (3.54)          1.17 (2.04)   139.40 (1.34)
+      14    Median          140.00                -1.00          138.50                 0.00          140.00
+      15 Min - Max 134.00 - 142.00         -7.00 - 0.00 138.00 - 147.00          0.00 - 5.00 138.00 - 141.00
+      16    Week 6            <NA>                 <NA>            <NA>                 <NA>            <NA>
+      17         n               5                    5               6                    6               4
+      18 Mean (SD)   140.00 (1.87)         -0.40 (1.67)   139.67 (1.97)          1.00 (2.28)   140.50 (2.65)
+      19    Median          140.00                 0.00          139.00                 0.50          140.00
+      20 Min - Max 138.00 - 143.00         -2.00 - 2.00 138.00 - 143.00         -1.00 - 5.00 138.00 - 144.00
+      21    Week 8            <NA>                 <NA>            <NA>                 <NA>            <NA>
+      22         n               5                    5               4                    4               3
+      23 Mean (SD)   140.60 (1.52)          0.20 (1.64)   139.00 (2.16)         -0.50 (2.38)   139.00 (2.65)
+      24    Median          141.00                 1.00          139.50                -0.50          140.00
+      25 Min - Max 139.00 - 142.00         -2.00 - 2.00 136.00 - 141.00         -3.00 - 2.00 136.00 - 141.00
          Change from Baseline
       1                  <NA>
       2                  <NA>
@@ -62,111 +37,93 @@
       5                  <NA>
       6                  <NA>
       7                     6
-      8           0.00 (3.69)
-      9                 -0.50
+      8             0.0 (3.7)
+      9                  -0.5
       10           -5.0 - 5.0
       11                 <NA>
       12                    5
       13         -0.60 (3.51)
       14                 0.00
-      15           -5.0 - 4.0
+      15         -5.00 - 4.00
       16                 <NA>
       17                    4
       18          1.75 (5.38)
       19                 2.50
-      20           -5.0 - 7.0
+      20         -5.00 - 7.00
       21                 <NA>
       22                    3
       23          0.00 (3.46)
       24                 2.00
-      25           -4.0 - 2.0
-      26                 <NA>
-      27                    2
-      28          0.00 (7.07)
-      29                 0.00
-      30           -5.0 - 5.0
-      31                 <NA>
-      32                    2
-      33          0.50 (6.36)
-      34                 0.50
-      35           -4.0 - 5.0
-      36                 <NA>
-      37                    2
-      38         -1.50 (6.36)
-      39                -1.50
-      40           -6.0 - 3.0
-      41                 <NA>
-      42                    2
-      43         -1.00 (4.24)
-      44                -1.00
-      45           -4.0 - 2.0
-      46                 <NA>
-      47                    2
-      48          3.50 (4.95)
-      49                 3.50
-      50            0.0 - 7.0
+      25         -4.00 - 2.00
+
+# tbl_baseline_chg() works with no `by` variable
+
+    Code
+      as.data.frame(tbl)[1:25, ]
+    Output
+             Visit  Value at Visit Change from Baseline
+      1   Baseline            <NA>                 <NA>
+      2          n              20                 <NA>
+      3  Mean (SD)   139.95 (2.78)                 <NA>
+      4     Median          140.00                 <NA>
+      5  Min - Max 134.00 - 145.00                 <NA>
+      6     Week 2            <NA>                 <NA>
+      7          n              19                   19
+      8  Mean (SD)   139.68 (2.43)           -0.2 (2.9)
+      9     Median          140.00                 -1.0
+      10 Min - Max 133.00 - 142.00           -5.0 - 5.0
+      11    Week 4            <NA>                 <NA>
+      12         n              18                   18
+      13 Mean (SD)   139.50 (2.64)         -0.50 (2.85)
+      14    Median          139.50                 0.00
+      15 Min - Max 134.00 - 147.00         -7.00 - 5.00
+      16    Week 6            <NA>                 <NA>
+      17         n              15                   15
+      18 Mean (SD)   140.00 (2.00)          0.73 (3.10)
+      19    Median          139.00                 0.00
+      20 Min - Max 138.00 - 144.00         -5.00 - 7.00
+      21    Week 8            <NA>                 <NA>
+      22         n              12                   12
+      23 Mean (SD)   139.67 (2.02)         -0.08 (2.19)
+      24    Median          140.00                 1.00
+      25 Min - Max 136.00 - 142.00         -4.00 - 2.00
 
 # add_overall.tbl_baseline_chg() works
 
     Code
-      as.data.frame(tbl)
+      as.data.frame(tbl)[1:25, ]
     Output
-               Visit Value at Visit Change from Baseline Value at Visit Change from Baseline Value at Visit Change from Baseline Value at Visit Change from Baseline
-      1  SCREENING 1           <NA>                 <NA>           <NA>                 <NA>           <NA>                 <NA>           <NA>                 <NA>
-      2            n              7                 <NA>              7                 <NA>              6                 <NA>             20                 <NA>
-      3    Mean (SD)  141.14 (1.46)                 <NA>  139.14 (2.19)                 <NA>  139.50 (4.23)                 <NA>  139.95 (2.78)                 <NA>
-      4       Median         141.00                 <NA>         139.00                 <NA>         138.50                 <NA>         140.00                 <NA>
-      5    Min - Max  140.0 - 144.0                 <NA>  136.0 - 142.0                 <NA>  134.0 - 145.0                 <NA>  134.0 - 145.0                 <NA>
-      6       WEEK 2           <NA>                 <NA>           <NA>                 <NA>           <NA>                 <NA>           <NA>                 <NA>
-      7            n              7                    7              6                    6              6                    6             19                   19
-      8    Mean (SD)  140.57 (1.62)         -0.57 (1.90)  138.83 (3.25)          0.17 (3.54)  139.50 (2.35)          0.00 (3.69)  139.68 (2.43)         -0.16 (2.93)
-      9       Median         141.00                -1.00         140.50                 0.50         139.50                -0.50         140.00                -1.00
-      10   Min - Max  138.0 - 142.0           -3.0 - 2.0  133.0 - 141.0           -5.0 - 5.0  136.0 - 142.0           -5.0 - 5.0  133.0 - 142.0           -5.0 - 5.0
-      11      WEEK 4           <NA>                 <NA>           <NA>                 <NA>           <NA>                 <NA>           <NA>                 <NA>
-      12           n              7                    7              6                    6              5                    5             18                   18
-      13   Mean (SD)  139.29 (2.81)         -1.86 (2.54)  139.83 (3.54)          1.17 (2.04)  139.40 (1.34)         -0.60 (3.51)  139.50 (2.64)         -0.50 (2.85)
-      14      Median         140.00                -1.00         138.50                 0.00         140.00                 0.00         139.50                 0.00
-      15   Min - Max  134.0 - 142.0           -7.0 - 0.0  138.0 - 147.0            0.0 - 5.0  138.0 - 141.0           -5.0 - 4.0  134.0 - 147.0           -7.0 - 5.0
-      16      WEEK 6           <NA>                 <NA>           <NA>                 <NA>           <NA>                 <NA>           <NA>                 <NA>
-      17           n              5                    5              6                    6              4                    4             15                   15
-      18   Mean (SD)  140.00 (1.87)         -0.40 (1.67)  139.67 (1.97)          1.00 (2.28)  140.50 (2.65)          1.75 (5.38)  140.00 (2.00)          0.73 (3.10)
-      19      Median         140.00                 0.00         139.00                 0.50         140.00                 2.50         139.00                 0.00
-      20   Min - Max  138.0 - 143.0           -2.0 - 2.0  138.0 - 143.0           -1.0 - 5.0  138.0 - 144.0           -5.0 - 7.0  138.0 - 144.0           -5.0 - 7.0
-      21      WEEK 8           <NA>                 <NA>           <NA>                 <NA>           <NA>                 <NA>           <NA>                 <NA>
-      22           n              5                    5              4                    4              3                    3             12                   12
-      23   Mean (SD)  140.60 (1.52)          0.20 (1.64)  139.00 (2.16)         -0.50 (2.38)  139.00 (2.65)          0.00 (3.46)  139.67 (2.02)         -0.08 (2.19)
-      24      Median         141.00                 1.00         139.50                -0.50         140.00                 2.00         140.00                 1.00
-      25   Min - Max  139.0 - 142.0           -2.0 - 2.0  136.0 - 141.0           -3.0 - 2.0  136.0 - 141.0           -4.0 - 2.0  136.0 - 142.0           -4.0 - 2.0
-      26     WEEK 12           <NA>                 <NA>           <NA>                 <NA>           <NA>                 <NA>           <NA>                 <NA>
-      27           n              5                    5              4                    4              2                    2             11                   11
-      28   Mean (SD)  141.00 (1.58)          0.60 (1.14)  140.75 (2.99)          1.25 (1.26)  139.00 (0.00)          0.00 (7.07)  140.55 (2.07)          0.73 (2.49)
-      29      Median         141.00                 1.00         140.00                 1.00         139.00                 0.00         140.00                 1.00
-      30   Min - Max  139.0 - 143.0           -1.0 - 2.0  138.0 - 145.0            0.0 - 3.0  139.0 - 139.0           -5.0 - 5.0  138.0 - 145.0           -5.0 - 5.0
-      31     WEEK 16           <NA>                 <NA>           <NA>                 <NA>           <NA>                 <NA>           <NA>                 <NA>
-      32           n              5                    5              4                    4              2                    2             11                   11
-      33   Mean (SD)  140.80 (1.10)          0.40 (0.89)  142.00 (3.56)          2.50 (1.91)  139.50 (0.71)          0.50 (6.36)  141.00 (2.28)          1.18 (2.56)
-      34      Median         141.00                 1.00         141.00                 2.00         139.50                 0.50         141.00                 1.00
-      35   Min - Max  139.0 - 142.0           -1.0 - 1.0  139.0 - 147.0            1.0 - 5.0  139.0 - 140.0           -4.0 - 5.0  139.0 - 147.0           -4.0 - 5.0
-      36     WEEK 20           <NA>                 <NA>           <NA>                 <NA>           <NA>                 <NA>           <NA>                 <NA>
-      37           n              5                    5              4                    4              2                    2             11                   11
-      38   Mean (SD)  141.60 (1.67)          1.20 (1.92)  138.75 (3.59)         -0.75 (2.22)  137.50 (0.71)         -1.50 (6.36)  139.82 (2.86)          0.00 (2.90)
-      39      Median         142.00                 2.00         137.50                -1.00         137.50                -1.50         139.00                 1.00
-      40   Min - Max  139.0 - 143.0           -2.0 - 3.0  136.0 - 144.0           -3.0 - 2.0  137.0 - 138.0           -6.0 - 3.0  136.0 - 144.0           -6.0 - 3.0
-      41     WEEK 24           <NA>                 <NA>           <NA>                 <NA>           <NA>                 <NA>           <NA>                 <NA>
-      42           n              5                    5              4                    4              2                    2             11                   11
-      43   Mean (SD)  140.40 (1.14)          0.00 (1.22)  139.25 (3.59)         -0.25 (2.63)  138.00 (2.83)         -1.00 (4.24)  139.55 (2.46)         -0.27 (2.15)
-      44      Median         140.00                 0.00         140.50                 0.50         138.00                -1.00         140.00                 0.00
-      45   Min - Max  139.0 - 142.0           -2.0 - 1.0  134.0 - 142.0           -4.0 - 2.0  136.0 - 140.0           -4.0 - 2.0  134.0 - 142.0           -4.0 - 2.0
-      46     WEEK 26           <NA>                 <NA>           <NA>                 <NA>           <NA>                 <NA>           <NA>                 <NA>
-      47           n              5                    5              4                    4              2                    2             11                   11
-      48   Mean (SD)  140.60 (2.51)          0.20 (2.77)  138.75 (4.57)         -0.75 (2.87)  142.50 (2.12)          3.50 (4.95)  140.27 (3.35)          0.45 (3.24)
-      49      Median         140.00                -1.00         138.00                -1.00         142.50                 3.50         140.00                -1.00
-      50   Min - Max  139.0 - 145.0           -2.0 - 5.0  134.0 - 145.0           -4.0 - 3.0  141.0 - 144.0            0.0 - 7.0  134.0 - 145.0           -4.0 - 7.0
+             Visit  Value at Visit Change from Baseline  Value at Visit Change from Baseline  Value at Visit Change from Baseline  Value at Visit Change from Baseline
+      1   Baseline            <NA>                 <NA>            <NA>                 <NA>            <NA>                 <NA>            <NA>                 <NA>
+      2          n              20                 <NA>               7                 <NA>               7                 <NA>               6                 <NA>
+      3  Mean (SD)   139.95 (2.78)                 <NA>   141.14 (1.46)                 <NA>   139.14 (2.19)                 <NA>   139.50 (4.23)                 <NA>
+      4     Median          140.00                 <NA>          141.00                 <NA>          139.00                 <NA>          138.50                 <NA>
+      5  Min - Max 134.00 - 145.00                 <NA> 140.00 - 144.00                 <NA> 136.00 - 142.00                 <NA> 134.00 - 145.00                 <NA>
+      6     Week 2            <NA>                 <NA>            <NA>                 <NA>            <NA>                 <NA>            <NA>                 <NA>
+      7          n              19                   19               7                    7               6                    6               6                    6
+      8  Mean (SD)   139.68 (2.43)           -0.2 (2.9)   140.57 (1.62)           -0.6 (1.9)   138.83 (3.25)            0.2 (3.5)   139.50 (2.35)            0.0 (3.7)
+      9     Median          140.00                 -1.0          141.00                 -1.0          140.50                  0.5          139.50                 -0.5
+      10 Min - Max 133.00 - 142.00           -5.0 - 5.0 138.00 - 142.00           -3.0 - 2.0 133.00 - 141.00           -5.0 - 5.0 136.00 - 142.00           -5.0 - 5.0
+      11    Week 4            <NA>                 <NA>            <NA>                 <NA>            <NA>                 <NA>            <NA>                 <NA>
+      12         n              18                   18               7                    7               6                    6               5                    5
+      13 Mean (SD)   139.50 (2.64)         -0.50 (2.85)   139.29 (2.81)         -1.86 (2.54)   139.83 (3.54)          1.17 (2.04)   139.40 (1.34)         -0.60 (3.51)
+      14    Median          139.50                 0.00          140.00                -1.00          138.50                 0.00          140.00                 0.00
+      15 Min - Max 134.00 - 147.00         -7.00 - 5.00 134.00 - 142.00         -7.00 - 0.00 138.00 - 147.00          0.00 - 5.00 138.00 - 141.00         -5.00 - 4.00
+      16    Week 6            <NA>                 <NA>            <NA>                 <NA>            <NA>                 <NA>            <NA>                 <NA>
+      17         n              15                   15               5                    5               6                    6               4                    4
+      18 Mean (SD)   140.00 (2.00)          0.73 (3.10)   140.00 (1.87)         -0.40 (1.67)   139.67 (1.97)          1.00 (2.28)   140.50 (2.65)          1.75 (5.38)
+      19    Median          139.00                 0.00          140.00                 0.00          139.00                 0.50          140.00                 2.50
+      20 Min - Max 138.00 - 144.00         -5.00 - 7.00 138.00 - 143.00         -2.00 - 2.00 138.00 - 143.00         -1.00 - 5.00 138.00 - 144.00         -5.00 - 7.00
+      21    Week 8            <NA>                 <NA>            <NA>                 <NA>            <NA>                 <NA>            <NA>                 <NA>
+      22         n              12                   12               5                    5               4                    4               3                    3
+      23 Mean (SD)   139.67 (2.02)         -0.08 (2.19)   140.60 (1.52)          0.20 (1.64)   139.00 (2.16)         -0.50 (2.38)   139.00 (2.65)          0.00 (3.46)
+      24    Median          140.00                 1.00          141.00                 1.00          139.50                -0.50          140.00                 2.00
+      25 Min - Max 136.00 - 142.00         -4.00 - 2.00 139.00 - 142.00         -2.00 - 2.00 136.00 - 141.00         -3.00 - 2.00 136.00 - 141.00         -4.00 - 2.00
 
 # add_overall.tbl_baseline_chg() messaging
 
     Code
-      tbl <- add_overall(tbl_baseline_chg(data = df, test_variable = "PARAMCD", test_cd = "SODIUM", baseline_level = "SCREENING 1", denominator = cards::ADSL))
+      tbl <- add_overall(tbl_baseline_chg(data = df, baseline_level = "Baseline", denominator = cards::ADSL))
     Message
       Original table was not stratified, and overall column cannot be added.
       i Table has been returned unaltered.
@@ -174,15 +131,37 @@
 ---
 
     Code
-      tbl <- add_overall(modify_table_body(tbl_baseline_chg(data = df, test_variable = "PARAMCD", test_cd = "SODIUM", by = "TRTA", baseline_level = "SCREENING 1", denominator = cards::ADSL),
-      ~ dplyr::filter(.x, dplyr::row_number() %in% 1:5)))
+      tbl <- add_overall(modify_table_body(tbl_baseline_chg(data = df, by = "TRTA", baseline_level = "Baseline", denominator = cards::ADSL), ~ dplyr::filter(.x, dplyr::row_number() %in% 1:5)))
     Message
       ! The structures of the original table and the overall table are not identical, and the resulting table may be malformed.
 
 # tbl_baseline_chg() messaging
 
     Code
-      tbl <- tbl_baseline_chg(data = dplyr::mutate(df, TRTA = as.character(TRTA)), test_variable = "PARAMCD", test_cd = "SODIUM", baseline_level = "SCREENING 1", by = "TRTA", denominator = cards::ADSL)
+      tbl <- tbl_baseline_chg(data = dplyr::mutate(df, TRTA = as.character(TRTA)), baseline_level = "Baseline", by = "TRTA", denominator = cards::ADSL)
     Message
       i Converting column "TRTA" to a factor.
+
+# gather_ard() works on output table
+
+    Code
+      gather_ard(tbl)
+    Message
+      {cards} data frame: 332 x 12
+    Output
+         group1 group1_level variable variable_level stat_name stat_label    stat
+      1    TRTA      Placebo Baseline                     mean       Mean 141.143
+      2    TRTA      Placebo Baseline                       sd         SD   1.464
+      3    TRTA      Placebo Baseline                   median     Median     141
+      4    TRTA      Placebo Baseline                      min        Min     140
+      5    TRTA      Placebo Baseline                      max        Max     144
+      6    TRTA    Xanomeli… Baseline                     mean       Mean 139.143
+      7    TRTA    Xanomeli… Baseline                       sd         SD   2.193
+      8    TRTA    Xanomeli… Baseline                   median     Median     139
+      9    TRTA    Xanomeli… Baseline                      min        Min     136
+      10   TRTA    Xanomeli… Baseline                      max        Max     142
+    Message
+      i 322 more rows
+      i Use `print(n = ...)` to see more rows
+      i 5 more variables: context, fmt_fun, warning, error, gts_column
 
