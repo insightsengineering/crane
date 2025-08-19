@@ -12,8 +12,6 @@
 #'  String identifying the unique subjects. Default is `USUBJID`.
 #' @param baseline_level (`string`)\cr
 #'  String identifying baseline level in the `visit` variable.
-#' @param header_label (`string`)\cr
-#'  String identifying the column header.
 #' @param denominator (`string`)\cr
 #'  Data set used to compute the header counts (typically `ADSL`).
 #' @param visit (`string`)\cr
@@ -172,7 +170,7 @@ tbl_baseline_chg <- function(data,
       gtsummary::all_stat_cols() & ends_with("_2") ~ "Change from Baseline",
       label = "Visit"
     ) |>
-    modify_spanning_header(all_stat_cols() ~ "{level}  \n(N = {n})") |>
+    gtsummary::modify_spanning_header(all_stat_cols() ~ "{level}  \n(N = {n})") |>
     # sort the stat columns together within treatment group
     gtsummary::modify_table_body(
       \(.x) {
@@ -186,7 +184,7 @@ tbl_baseline_chg <- function(data,
   # return tbl -----------------------------------------------------------------
   baseline_chg_tbl[["call_list"]] <- list(tbl_baseline_chg = match.call())
   baseline_chg_tbl$inputs <- tbl_baseline_inputs
-  baseline_chg_tbl$cards <- cards::bind_ard(gather_ard(tbl_aval)$tbl_summary, gather_ard(tbl_chg)$tbl_summary, .update = TRUE, .quiet = TRUE)
+  baseline_chg_tbl$cards <- cards::bind_ard(gtsummary::gather_ard(tbl_aval)$tbl_summary, gtsummary::gather_ard(tbl_chg)$tbl_summary, .update = TRUE, .quiet = TRUE)
   baseline_chg_tbl |>
     structure(class = c("tbl_baseline_chg", "gtsummary"))
 }

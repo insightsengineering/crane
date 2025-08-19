@@ -71,9 +71,6 @@ Default is \code{FALSE}, which will display overall column first.}
 String indicating the column label. Default is \code{"**Overall**  \nN = {style_number(N)}"}}
 
 \item{...}{These dots are for future extensions and must be empty.}
-
-\item{header_label}{(\code{string})\cr
-String identifying the column header.}
 }
 \value{
 a gtsummary table
