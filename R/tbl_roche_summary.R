@@ -16,7 +16,7 @@
 #'   - `nonmissing`: must be one of `c("always", "ifany", "no")`
 #'   - `nonmissing_text`: string indicating text shown on non-missing row. Default is `"n"`
 #'   - `nonmissing_stat`: statistic to show on non-missing row. Default is `"{N_nonmiss}"`.
-#'     Possible values are `N_nonmiss`, `N_miss`, `N_obs`,, `p_nonmiss` `p_miss`.
+#'     Possible values are `N_nonmiss`, `N_miss`, `N_obs`, `p_nonmiss` `p_miss`.
 #'
 #' @return a 'gtsummary' table
 #' @export

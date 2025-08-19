@@ -59,7 +59,7 @@ with this argument. Default is \code{NULL}. See below for details.}
 \item \code{nonmissing}: must be one of \code{c("always", "ifany", "no")}
 \item \code{nonmissing_text}: string indicating text shown on non-missing row. Default is \code{"n"}
 \item \code{nonmissing_stat}: statistic to show on non-missing row. Default is \code{"{N_nonmiss}"}.
-Possible values are \code{N_nonmiss}, \code{N_miss}, \code{N_obs},, \code{p_nonmiss} \code{p_miss}.
+Possible values are \code{N_nonmiss}, \code{N_miss}, \code{N_obs}, \code{p_nonmiss} \code{p_miss}.
 }}
 
 \item{sort}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
