@@ -9,7 +9,7 @@
 #' - If flextable-printed, header text is always bold.
 #' - Border defaults to `flextable::fp_border_default(width = 0.5)`.
 #' - The `add_overall(col_label)` default value has been updated.
-#' - The results from `gtsummary::tbl_hierachrical()` and `gtsummary::tbl_hierachrical_count()`
+#' - The results from `gtsummary::tbl_hierarchical()` and `gtsummary::tbl_hierarchical_count()`
 #'   are now post-processed with `gtsummary::remove_footnote_header()`,
 #'   `crane::modify_zero_recode()`, and `crane::modify_header_rm_md()`.
 #'
