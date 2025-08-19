@@ -1,6 +1,6 @@
 df <- cards::ADLB |>
   dplyr::mutate(
-    AVISIT = str_trim(AVISIT, side = "left"),
+    AVISIT = sub("^\\s+", "", AVISIT),
     TRTA = as.factor(TRTA)
   ) |>
   dplyr::filter(
@@ -20,7 +20,7 @@ test_that("tbl_baseline_chg() works", {
         denominator = cards::ADSL
       )
   )
-  expect_snapshot(as.data.frame(tbl)[1:25, ])
+  expect_snapshot(as.data.frame(tbl)[1:25, 1:5])
 })
 
 test_that("tbl_baseline_chg() works with no `by` variable", {

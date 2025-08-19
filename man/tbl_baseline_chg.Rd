@@ -86,7 +86,7 @@ measurement of an Analysis Variable.
 theme_gtsummary_roche()
 library(dplyr, warn.conflicts = FALSE)
 df <- cards::ADLB |>
-  dplyr::mutate(AVISIT = str_trim(AVISIT, side = "left")) |>
+  dplyr::mutate(AVISIT = sub("^\\\\s+", "", AVISIT)) |>
   dplyr::filter(
     AVISIT != "End of Treatment",
     PARAMCD == "SODIUM"
@@ -105,5 +105,5 @@ tbl_baseline_chg(
   by = "TRTA",
   denominator = cards::ADSL
 ) |>
-add_overall()
+  add_overall()
 }
