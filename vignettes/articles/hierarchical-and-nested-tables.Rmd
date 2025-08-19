@@ -184,7 +184,7 @@ any_ae <-
   ADAE_subset |>
   distinct(USUBJID, TRTA) |>
   mutate(AE_ANY = TRUE) |>
-  cards::ard_dichotomous(
+  cards::ard_tabulate_value(
     by = TRTA,
     variables = AE_ANY,
     denominator = cards::ADSL

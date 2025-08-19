@@ -14,13 +14,31 @@ a gtsummary table}
 a gtsummary table
 }
 \description{
-This function converts \code{"0 (0.0\%)"} cells in a summary table to \code{"0"}.
+This function removes the percentage from cells with zero counts.
+For example,
 
-It's a simple wrapper for \code{gtsummary::modify_post_fmt_fun()}.
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{0 (0.0\%)      -->  0
+0 (0\%)        -->  0
+0 (NA\%)       -->  0
+0 / nn (0\%)   -->  0 / nn
+0/nn (0.0\%)   -->  0/nn
+0 / 0 (NA\%)   -->  0 / 0
+}\if{html}{\out{</div>}}
+}
+\details{
+The function is a wrapper for \code{gtsummary::modify_post_fmt_fun()}.
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{gtsummary::modify_post_fmt_fun(
   x,
-  fmt_fun = ~ ifelse(. \%in\% c("0 (0.0\%)", "0 (NA\%)"), "0", .),
+  fmt_fun = \\(x) \{
+    dplyr::case_when(
+      # convert "0 (0\%)" OR "0 (0.0\%)" OR 0 (NA\%) to "0"
+      str_detect(x, "^0\\\\s\\\\((?:0(?:\\\\.0)?|NA)\%\\\\)$") ~ str_remove(x, pattern = "\\\\s\\\\((?:0(?:\\\\.0)?|NA)\%\\\\)$"),
+      # convert "0 / nn (0\%)" OR "0/nn (0.0\%)" OR 0/0 (NA\%) to "0 / nn" OR "0/nn" OR "0/0"
+      str_detect(x, pattern = "^(0 ?/) ?\\\\d+[^()]* \\\\((?:0(?:\\\\.0)?|NA)\%\\\\)$") ~ str_remove(x, pattern = "\\\\s\\\\((?:0(?:\\\\.0)?|NA)\%\\\\)$"),
+      .default = x
+    )
+  \},
   columns = gtsummary::all_stat_cols()
 )
 }\if{html}{\out{</div>}}

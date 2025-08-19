@@ -15,3 +15,11 @@
                                  label stat_0 stat_1 stat_2
       1 Overall total number of events     10      7      3
 
+# add_hierarchical_count_row(data_preprocess) works
+
+    Code
+      dplyr::slice(as.data.frame(tbl, col_label = FALSE), 2)
+    Output
+                                 label stat_1 stat_2
+      1 Overall total number of events     14      6
+

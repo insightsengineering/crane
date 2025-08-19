@@ -8,7 +8,8 @@ add_hierarchical_count_row(
   x,
   label = "Overall total number of events",
   .before = NULL,
-  .after = NULL
+  .after = NULL,
+  data_preprocess = identity
 )
 }
 \arguments{
@@ -20,6 +21,11 @@ label for the new row}
 
 \item{.before, .after}{(\code{integer})\cr
 Row index where to add the new row. Default is after last row.}
+
+\item{data_preprocess}{(\code{function} or \code{formula})\cr
+a function that is applied to \code{x$inputs$data} before the total row counts
+are tabulated. Default is \code{identity}. Tidyverse formula shortcut notation
+for the function is accepted. See \code{rlang::as_function()} for details.}
 }
 \value{
 gtsummary table
