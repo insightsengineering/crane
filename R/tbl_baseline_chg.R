@@ -48,7 +48,7 @@
 #'   by = "TRTA",
 #'   denominator = cards::ADSL
 #' ) |>
-#' add_overall()
+#'   add_overall()
 NULL
 
 #' @rdname tbl_baseline_chg
@@ -194,7 +194,7 @@ tbl_baseline_chg <- function(data,
 #' @rdname tbl_baseline_chg
 #' @export
 add_overall.tbl_baseline_chg <- function(x,
-                                         last = FALSE, ...) {
+                                         last = FALSE, col_label = "All Participants  \n(N = {gtsummary::style_number(n)})", ...) {
   # check inputs ---------------------------------------------------------------
   set_cli_abort_call()
   check_dots_empty(call = get_cli_abort_call())
@@ -212,7 +212,8 @@ add_overall.tbl_baseline_chg <- function(x,
   tbl_overall <-
     x$inputs |>
     utils::modifyList(list(by = NULL)) |>
-    (\(args_list) do.call("tbl_baseline_chg", args = args_list))()
+    (\(args_list) do.call("tbl_baseline_chg", args = args_list))() |>
+    gtsummary::modify_spanning_header(all_stat_cols() ~ col_label)
 
   # check the tbls have the same structure before merging
   if (!identical(
@@ -231,8 +232,7 @@ add_overall.tbl_baseline_chg <- function(x,
       tbls = list(x, tbl_overall),
       tab_spanner = FALSE,
       merge_vars = c("variable", "row_type", "var_label", "label0", "label")
-    ) |>
-      modify_spanning_header(all_stat_cols() ~ "Worst Post-baseline NCI-CTCAE Grade")
+    )
   } else {
     gtsummary::tbl_merge(
       tbls = list(tbl_overall, x),

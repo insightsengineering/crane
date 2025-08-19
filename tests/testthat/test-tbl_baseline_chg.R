@@ -49,7 +49,7 @@ test_that("add_overall.tbl_baseline_chg() works", {
         by = "TRTA",
         denominator = cards::ADSL
       ) |>
-      add_overall()
+      add_overall(last = TRUE)
   )
   expect_snapshot(as.data.frame(tbl)[1:25, ])
 })

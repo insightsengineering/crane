@@ -11,19 +11,17 @@ tbl_baseline_chg(
   change_variable = "CHG",
   by = NULL,
   id = "USUBJID",
-  visit = "VISIT",
-  test_variable,
-  test_cd,
-  analysis_date = "VISITNUM",
-  header_label = "{level}  \\n(N = {n})",
+  visit = "AVISIT",
+  visit_number = "AVISITN",
+  digits = NULL,
   baseline_level,
   denominator
 )
 
 \method{add_overall}{tbl_baseline_chg}(
   x,
-  col_label = "All Participants  \\n(N = {gtsummary::style_number(n)})",
   last = FALSE,
+  col_label = "All Participants  \\n(N = {gtsummary::style_number(n)})",
   ...
 )
 }
@@ -45,20 +43,16 @@ String identifying the unique subjects. Default is \code{USUBJID}.}
 
 \item{visit}{(\code{string})\cr
 String for the visit variable. Default is
-\code{VISIT}.}
+\code{AVISIT}.}
 
-\item{test_variable}{(\code{string})\cr
-String identifying the column containing lab test codes.}
-
-\item{test_cd}{(\code{string})\cr
-String identifying the lab test code to compute the change from baseline. This must be a value contained in \code{test_variable}.}
-
-\item{analysis_date}{(\code{string})\cr
+\item{visit_number}{(\code{string})\cr
 String identifying the visit or analysis sequence number. Default is
-\code{VISITNUM}.}
+\code{AVISITN}.}
 
-\item{header_label}{(\code{string})\cr
-String identifying the column header.}
+\item{digits}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
+Specifies how summary statistics are rounded. Values may be either integer(s)
+or function(s). If not specified, default formatting is assigned
+via \code{assign_summary_digits()}. See below for details.}
 
 \item{baseline_level}{(\code{string})\cr
 String identifying baseline level in the \code{visit} variable.}
@@ -69,14 +63,17 @@ Data set used to compute the header counts (typically \code{ADSL}).}
 \item{x}{(\code{tbl_summary}, \code{tbl_svysummary}, \code{tbl_continuous}, \code{tbl_custom_summary})\cr
 A stratified 'gtsummary' table}
 
-\item{col_label}{(\code{string})\cr
-String indicating the column label. Default is \code{"**Overall**  \nN = {style_number(N)}"}}
-
 \item{last}{(scalar \code{logical})\cr
 Logical indicator to display overall column last in table.
 Default is \code{FALSE}, which will display overall column first.}
 
+\item{col_label}{(\code{string})\cr
+String indicating the column label. Default is \code{"**Overall**  \nN = {style_number(N)}"}}
+
 \item{...}{These dots are for future extensions and must be empty.}
+
+\item{header_label}{(\code{string})\cr
+String identifying the column header.}
 }
 \value{
 a gtsummary table
@@ -88,15 +85,25 @@ measurement of an Analysis Variable.
 \examples{
 theme_gtsummary_roche()
 library(dplyr, warn.conflicts = FALSE)
-df <- cards::ADLB
-df <- df[!grepl("unscheduled", df$VISIT, ignore.case = TRUE), ]
+df <- cards::ADLB |>
+  dplyr::mutate(AVISIT = str_trim(AVISIT, side = "left")) |>
+  dplyr::filter(
+    AVISIT != "End of Treatment",
+    PARAMCD == "SODIUM"
+  )
 
 tbl_baseline_chg(
   data = df,
-  test_variable = "PARAMCD",
-  test_cd = "SODIUM",
-  baseline_level = "SCREENING 1",
+  baseline_level = "Baseline",
   by = "TRTA",
   denominator = cards::ADSL
 )
+
+tbl_baseline_chg(
+  data = df,
+  baseline_level = "Baseline",
+  by = "TRTA",
+  denominator = cards::ADSL
+) |>
+add_overall()
 }
