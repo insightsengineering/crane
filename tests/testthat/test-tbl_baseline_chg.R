@@ -51,7 +51,7 @@ test_that("add_overall.tbl_baseline_chg() works", {
       ) |>
       add_overall(last = TRUE)
   )
-  expect_snapshot(as.data.frame(tbl)[1:25, c(1, 4:9) ])
+  expect_snapshot(as.data.frame(tbl)[1:25, c(1, 4:9)])
 })
 
 test_that("add_overall.tbl_baseline_chg() messaging", {
