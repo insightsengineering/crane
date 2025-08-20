@@ -107,8 +107,9 @@ tbl_baseline_chg <- function(data,
 
   # warn if there are multiple entries per visit per subject
   dupes <- data |>
-    dplyr::count(data[[id]], data[[visit]]) |>
-    dplyr::filter(n > 1)
+    dplyr::group_by(data[[id]], data[[visit]]) |>
+    dplyr::filter(dplyr::n() > 1) |>
+    dplyr::ungroup()
 
   if (nrow(dupes) > 0) {
     cli::cli_warn("Multiple entries detected for some {.field id} + {.field visit} combinations. Keeping only the first row in each group.")
