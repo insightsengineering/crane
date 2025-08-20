@@ -83,6 +83,23 @@ test_that("add_overall.tbl_baseline_chg() messaging", {
       ) |>
       add_overall()
   )
+
+  # expect message about duplicate visit entries for each subject
+  duplicates <- df |>
+    group_by(USUBJID, AVISIT) |>
+    slice(1) |>
+    ungroup()
+
+  test_data <- bind_rows(df, duplicates)
+
+  expect_snapshot(
+    tbl <-
+      tbl_baseline_chg(
+        data = test_data,
+        baseline_level = "Baseline",
+        denominator = cards::ADSL
+      )
+  )
 })
 
 test_that("tbl_baseline_chg() throws error when required arguments are missing", {

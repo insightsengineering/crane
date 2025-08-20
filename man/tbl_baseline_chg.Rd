@@ -43,7 +43,8 @@ String identifying the unique subjects. Default is \code{USUBJID}.}
 
 \item{visit}{(\code{string})\cr
 String for the visit variable. Default is
-\code{AVISIT}.}
+\code{AVISIT}. If there are more than one entry for each visit and subject,
+only the first row is kept.}
 
 \item{visit_number}{(\code{string})\cr
 String identifying the visit or analysis sequence number. Default is
@@ -102,5 +103,5 @@ tbl_baseline_chg(
   by = "TRTA",
   denominator = cards::ADSL
 ) |>
-  add_overall()
+  add_overall(last = TRUE, col_label = "All Participants")
 }

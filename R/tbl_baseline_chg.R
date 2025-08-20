@@ -10,16 +10,17 @@
 #'  String identifying the change from baseline values. Default is `CHG`.
 #' @param id (`string`)\cr
 #'  String identifying the unique subjects. Default is `USUBJID`.
+#' @param visit (`string`)\cr
+#'  String for the visit variable. Default is
+#'  `AVISIT`. If there are more than one entry for each visit and subject,
+#'  only the first row is kept.
+#' @param visit_number (`string`)\cr
+#'  String identifying the visit or analysis sequence number. Default is
+#'  `AVISITN`.
 #' @param baseline_level (`string`)\cr
 #'  String identifying baseline level in the `visit` variable.
 #' @param denominator (`string`)\cr
 #'  Data set used to compute the header counts (typically `ADSL`).
-#' @param visit (`string`)\cr
-#'  String for the visit variable. Default is
-#'  `AVISIT`.
-#' @param visit_number (`string`)\cr
-#'  String identifying the visit or analysis sequence number. Default is
-#'  `AVISITN`.
 #' @return a gtsummary table
 #' @name tbl_baseline_chg
 #'
@@ -46,7 +47,7 @@
 #'   by = "TRTA",
 #'   denominator = cards::ADSL
 #' ) |>
-#'   add_overall()
+#'   add_overall(last = TRUE, col_label = "All Participants")
 NULL
 
 #' @rdname tbl_baseline_chg
@@ -102,6 +103,15 @@ tbl_baseline_chg <- function(data,
     old_by_label <- attr(data[[by]], "label")
     data[[by]] <- factor(data[[by]])
     attr(data[[by]], "label") <- old_by_label
+  }
+
+  # warn if there are multiple entries per visit per subject
+  dupes <- data |>
+    dplyr::count(data[[id]], data[[visit]]) |>
+    dplyr::filter(n > 1)
+
+  if (nrow(dupes) > 0) {
+    cli::cli_warn("Multiple entries detected for some {.field id} + {.field visit} combinations. Keeping only the first row in each group.")
   }
 
   df_change_baseline <-
