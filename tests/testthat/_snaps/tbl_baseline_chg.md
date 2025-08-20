@@ -109,10 +109,11 @@
     Message
       ! The structures of the original table and the overall table are not identical, and the resulting table may be malformed.
 
----
+# tbl_baseline_chg() throws error when required arguments are missing
 
     Code
-      tbl <- tbl_baseline_chg(data = test_data, baseline_level = "Baseline", denominator = cards::ADSL)
+      tbl <- tbl_baseline_chg(data = test_data, baseline_level = "Baseline",
+        denominator = cards::ADSL)
     Condition
       Warning:
       Multiple entries detected for some id + visit combinations. Keeping only the first row in each group.
