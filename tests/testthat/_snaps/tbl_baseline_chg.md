@@ -129,27 +129,47 @@
 # gather_ard() works on output table
 
     Code
-      map(gather_ard(tbl), head, n = 2)
+      gather_ard(tbl)
     Output
       $tbl_baseline_chg
     Message
-      {cards} data frame: 2 x 12
+      {cards} data frame: 620 x 12
     Output
-        group1 group1_level variable variable_level stat_name stat_label    stat
-      1   TRTA      Placebo     AVAL       Baseline      mean       Mean 141.143
-      2   TRTA      Placebo     AVAL       Baseline        sd         SD   1.464
+         group1 group1_level variable variable_level stat_name stat_label    stat
+      1    TRTA      Placebo     AVAL       Baseline      mean       Mean 141.143
+      2    TRTA      Placebo     AVAL       Baseline        sd         SD   1.464
+      3    TRTA      Placebo     AVAL       Baseline    median     Median     141
+      4    TRTA      Placebo     AVAL       Baseline       min        Min     140
+      5    TRTA      Placebo     AVAL       Baseline       max        Max     144
+      6    TRTA      Placebo     AVAL         Week 2      mean       Mean 140.571
+      7    TRTA      Placebo     AVAL         Week 2        sd         SD   1.618
+      8    TRTA      Placebo     AVAL         Week 2    median     Median     141
+      9    TRTA      Placebo     AVAL         Week 2       min        Min     138
+      10   TRTA      Placebo     AVAL         Week 2       max        Max     142
     Message
+      i 610 more rows
+      i Use `print(n = ...)` to see more rows
       i 5 more variables: context, fmt_fun, warning, error, gts_column
     Output
       
       $add_overall
     Message
-      {cards} data frame: 2 x 10
+      {cards} data frame: 229 x 10
     Output
-        variable variable_level context stat_name stat_label   stat
-      1     AVAL       Baseline summary      mean       Mean 139.95
-      2     AVAL       Baseline summary        sd         SD  2.781
+         variable variable_level context stat_name stat_label    stat
+      1      AVAL       Baseline summary      mean       Mean  139.95
+      2      AVAL       Baseline summary        sd         SD   2.781
+      3      AVAL       Baseline summary    median     Median     140
+      4      AVAL       Baseline summary       min        Min     134
+      5      AVAL       Baseline summary       max        Max     145
+      6      AVAL         Week 2 summary      mean       Mean 139.684
+      7      AVAL         Week 2 summary        sd         SD   2.428
+      8      AVAL         Week 2 summary    median     Median     140
+      9      AVAL         Week 2 summary       min        Min     133
+      10     AVAL         Week 2 summary       max        Max     142
     Message
+      i 219 more rows
+      i Use `print(n = ...)` to see more rows
       i 4 more variables: fmt_fun, warning, error, gts_column
     Output
       

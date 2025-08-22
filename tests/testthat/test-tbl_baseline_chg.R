@@ -152,7 +152,7 @@ test_that("tbl_baseline_chg() messaging", {
 })
 
 test_that("gather_ard() works on output table", {
-  withr::local_options(list(width = 190))
+  withr::local_options(list(width = 190, pillar.print_min = 2))
   tbl <-
     tbl_baseline_chg(
       data = df,
@@ -163,7 +163,6 @@ test_that("gather_ard() works on output table", {
     add_overall()
 
   expect_snapshot(
-    gather_ard(tbl) |>
-      map(head, n = 2)
+    gather_ard(tbl)
   )
 })
