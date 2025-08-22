@@ -7,15 +7,15 @@
 \usage{
 tbl_baseline_chg(
   data,
-  analysis_variable = "AVAL",
-  change_variable = "CHG",
+  denominator,
   by = NULL,
+  digits = NULL,
+  baseline_level = "Baseline",
   id = "USUBJID",
   visit = "AVISIT",
   visit_number = "AVISITN",
-  digits = NULL,
-  baseline_level,
-  denominator
+  analysis_variable = "AVAL",
+  change_variable = "CHG"
 )
 
 \method{add_overall}{tbl_baseline_chg}(
@@ -28,27 +28,12 @@ tbl_baseline_chg(
 \arguments{
 \item{data}{(\code{data.frame})\cr A data frame.}
 
-\item{analysis_variable}{(\code{string})\cr
-String identifying the analysis values. Default is \code{AVAL}.}
-
-\item{change_variable}{(\code{string})\cr
-String identifying the change from baseline values. Default is \code{CHG}.}
+\item{denominator}{(\code{string})\cr
+Data set used to compute the header counts (typically \code{ADSL}).}
 
 \item{by}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 A single column from \code{data}. Summary statistics will be stratified by this variable.
 Default is \code{NULL}.}
-
-\item{id}{(\code{string})\cr
-String identifying the unique subjects. Default is \code{USUBJID}.}
-
-\item{visit}{(\code{string})\cr
-String for the visit variable. Default is
-\code{AVISIT}. If there are more than one entry for each visit and subject,
-only the first row is kept.}
-
-\item{visit_number}{(\code{string})\cr
-String identifying the visit or analysis sequence number. Default is
-\code{AVISITN}.}
 
 \item{digits}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
 Specifies how summary statistics are rounded. Values may be either integer(s)
@@ -58,8 +43,23 @@ via \code{assign_summary_digits()}. See below for details.}
 \item{baseline_level}{(\code{string})\cr
 String identifying baseline level in the \code{visit} variable.}
 
-\item{denominator}{(\code{string})\cr
-Data set used to compute the header counts (typically \code{ADSL}).}
+\item{id}{(\code{string})\cr
+String identifying the unique subjects. Default is \code{'USUBJID'}.}
+
+\item{visit}{(\code{string})\cr
+String for the visit variable. Default is
+\code{'AVISIT'}. If there are more than one entry for each visit and subject,
+only the first row is kept.}
+
+\item{visit_number}{(\code{string})\cr
+String identifying the visit or analysis sequence number. Default is
+\code{'AVISITN'}.}
+
+\item{analysis_variable}{(\code{string})\cr
+String identifying the analysis values. Default is \code{'AVAL'}.}
+
+\item{change_variable}{(\code{string})\cr
+String identifying the change from baseline values. Default is \code{'CHG'}.}
 
 \item{x}{(\code{tbl_summary}, \code{tbl_svysummary}, \code{tbl_continuous}, \code{tbl_custom_summary})\cr
 A stratified 'gtsummary' table}

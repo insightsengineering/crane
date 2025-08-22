@@ -5,22 +5,23 @@
 #' @inheritParams tbl_roche_summary
 #' @inheritParams gtsummary::add_overall
 #' @param analysis_variable (`string`)\cr
-#'  String identifying the analysis values. Default is `AVAL`.
+#'  String identifying the analysis values. Default is `'AVAL'`.
 #' @param change_variable (`string`)\cr
-#'  String identifying the change from baseline values. Default is `CHG`.
+#'  String identifying the change from baseline values. Default is `'CHG'`.
 #' @param id (`string`)\cr
-#'  String identifying the unique subjects. Default is `USUBJID`.
+#'  String identifying the unique subjects. Default is `'USUBJID'`.
 #' @param visit (`string`)\cr
 #'  String for the visit variable. Default is
-#'  `AVISIT`. If there are more than one entry for each visit and subject,
+#'  `'AVISIT'`. If there are more than one entry for each visit and subject,
 #'  only the first row is kept.
 #' @param visit_number (`string`)\cr
 #'  String identifying the visit or analysis sequence number. Default is
-#'  `AVISITN`.
+#'  `'AVISITN'`.
 #' @param baseline_level (`string`)\cr
 #'  String identifying baseline level in the `visit` variable.
 #' @param denominator (`string`)\cr
 #'  Data set used to compute the header counts (typically `ADSL`).
+#'
 #' @return a gtsummary table
 #' @name tbl_baseline_chg
 #'
@@ -53,22 +54,19 @@ NULL
 #' @rdname tbl_baseline_chg
 #' @export
 tbl_baseline_chg <- function(data,
-                             analysis_variable = "AVAL",
-                             change_variable = "CHG",
+                             denominator,
                              by = NULL,
+                             digits = NULL,
+                             baseline_level = "Baseline",
                              id = "USUBJID",
                              visit = "AVISIT",
                              visit_number = "AVISITN",
-                             digits = NULL,
-                             baseline_level,
-                             denominator) {
+                             analysis_variable = "AVAL",
+                             change_variable = "CHG") {
   set_cli_abort_call()
 
   # check inputs ---------------------------------------------------------------
   check_not_missing(data)
-  check_not_missing(analysis_variable)
-  check_not_missing(change_variable)
-  check_not_missing(baseline_level)
   check_not_missing(denominator)
 
   # ---- Type and content checks ----
@@ -90,8 +88,8 @@ tbl_baseline_chg <- function(data,
   }
 
   # Check that `baseline_level` is one of the visit values
-  if (!is.null(baseline_level) && !(baseline_level %in% data[[visit]])) {
-    cli::cli_warn("The {.arg baseline_level} {.val {baseline_level}} is not found in the {.val {visit}} variable.")
+  if (!(baseline_level %in% data[[visit]])) {
+    cli::cli_abort("The {.arg baseline_level} {.val {baseline_level}} is not found in the {.val {visit}} variable.")
   }
   cards::process_selectors(data, visit = {{ visit }}, analysis_variable = {{ analysis_variable }}, change_variable = {{ change_variable }}, by = {{ by }}, visit_number = {{ visit_number }})
   tbl_baseline_inputs <- as.list(environment())
@@ -106,23 +104,18 @@ tbl_baseline_chg <- function(data,
   }
 
   # warn if there are multiple entries per visit per subject
-  dupes <- data |>
-    dplyr::group_by(data[[id]], data[[visit]]) |>
-    dplyr::filter(dplyr::n() > 1) |>
-    dplyr::ungroup()
-
-  if (nrow(dupes) > 0) {
-    cli::cli_warn("Multiple entries detected for some {.field id} + {.field visit} combinations. Keeping only the first row in each group.")
+  if (anyDuplicated(data[c(id, visit)]) > 0L) {
+    cli::cli_abort(
+      c("Columns {.val {c(id, visit)}} do not uniquely identify the rows in {.arg data}.",
+        i = "See row number {.val {anyDuplicated(data[c(id, visit)])}}."),
+      call = get_cli_abort_call()
+    )
   }
 
   df_change_baseline <-
     # filter lab results data
     data |>
-    dplyr::arrange(id, visit, visit_number) |>
-    dplyr::filter(
-      .by = all_of(c(id, visit)),
-      dplyr::row_number() == 1L
-    ) |>
+    dplyr::arrange(id, visit_number) |>
     dplyr::mutate(
       visit = fct_reorder(.data[[visit]], .data[[visit_number]])
     ) |>
@@ -134,7 +127,7 @@ tbl_baseline_chg <- function(data,
     ) |>
     # add in denominator for the header Ns
     dplyr::right_join(
-      gtsummary::select(denominator, all_of(c(id, by))),
+      denominator[c(id, by)],
       by = c(id, by),
       relationship = "many-to-one"
     )
@@ -195,7 +188,49 @@ tbl_baseline_chg <- function(data,
   # return tbl -----------------------------------------------------------------
   baseline_chg_tbl[["call_list"]] <- list(tbl_baseline_chg = match.call())
   baseline_chg_tbl$inputs <- tbl_baseline_inputs
-  baseline_chg_tbl$cards <- cards::bind_ard(gtsummary::gather_ard(tbl_aval)$tbl_summary, gtsummary::gather_ard(tbl_chg)$tbl_summary, .update = TRUE, .quiet = TRUE)
+  baseline_chg_tbl$cards$tbl_baseline_chg <-
+    cards::bind_ard(
+      gtsummary::gather_ard(tbl_aval)$tbl_summary %>%
+        {case_switch(
+          !"variable_level" %in% names(.) ~ dplyr::mutate(., variable_level = list(NULL), .after = "variable"),
+          .default = .
+        )} |>
+        dplyr::mutate(
+          variable_level =
+            ifelse(
+              !.data$variable %in% c(by, "..ard_total_n.."),
+              as.list(.data$variable),
+              .data$variable_level
+            ),
+          variable =
+            ifelse(
+              !.data$variable %in% c(by, "..ard_total_n.."),
+              analysis_variable,
+              .data$variable
+            )
+        ),
+      gtsummary::gather_ard(tbl_chg)$tbl_summary %>%
+        {case_switch(
+          !"variable_level" %in% names(.) ~ dplyr::mutate(., variable_level = list(NULL), .after = "variable"),
+          .default = .
+        )} |>
+        dplyr::mutate(
+          variable_level =
+            ifelse(
+              !.data$variable %in% c(by, "..ard_total_n.."),
+              as.list(.data$variable),
+              .data$variable_level
+            ),
+          variable =
+            ifelse(
+              !.data$variable %in% c(by, "..ard_total_n.."),
+              change_variable,
+              .data$variable
+            )
+        ),
+      .update = TRUE,
+      .quiet = TRUE
+    )
   baseline_chg_tbl |>
     structure(class = c("tbl_baseline_chg", "gtsummary"))
 }
@@ -210,7 +245,7 @@ add_overall.tbl_baseline_chg <- function(x,
   check_scalar_logical(last)
   if (is_empty(x$inputs$by)) {
     cli::cli_inform(
-      c("Original table was not stratified, and overall column cannot be added.",
+      c("Original table was not stratified, and overall columns cannot be added.",
         i = "Table has been returned unaltered."
       )
     )
@@ -250,5 +285,13 @@ add_overall.tbl_baseline_chg <- function(x,
     )
   }
 
-  return(merged_tbl)
+  # correct ARD structure
+  merged_tbl[["cards"]] <-
+    list(
+      tbl_baseline_chg = x$cards$tbl_baseline_chg,
+      add_overall = tbl_overall$cards$tbl_baseline_chg
+    )
+
+  merged_tbl |>
+    structure(class = class(x))
 }

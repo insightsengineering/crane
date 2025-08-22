@@ -99,7 +99,7 @@
     Code
       tbl <- add_overall(tbl_baseline_chg(data = df, baseline_level = "Baseline", denominator = cards::ADSL))
     Message
-      Original table was not stratified, and overall column cannot be added.
+      Original table was not stratified, and overall columns cannot be added.
       i Table has been returned unaltered.
 
 ---
@@ -115,8 +115,9 @@
       tbl <- tbl_baseline_chg(data = test_data, baseline_level = "Baseline",
         denominator = cards::ADSL)
     Condition
-      Warning:
-      Multiple entries detected for some id + visit combinations. Keeping only the first row in each group.
+      Error in `tbl_baseline_chg()`:
+      ! Columns "USUBJID" and "AVISIT" do not uniquely identify the rows in `data`.
+      i See row number 140.
 
 # tbl_baseline_chg() messaging
 
@@ -128,23 +129,28 @@
 # gather_ard() works on output table
 
     Code
-      gather_ard(tbl)
-    Message
-      {cards} data frame: 332 x 12
+      map(gather_ard(tbl), head, n = 2)
     Output
-         group1 group1_level variable variable_level stat_name stat_label    stat
-      1    TRTA      Placebo Baseline                     mean       Mean 141.143
-      2    TRTA      Placebo Baseline                       sd         SD   1.464
-      3    TRTA      Placebo Baseline                   median     Median     141
-      4    TRTA      Placebo Baseline                      min        Min     140
-      5    TRTA      Placebo Baseline                      max        Max     144
-      6    TRTA    Xanomeli… Baseline                     mean       Mean 139.143
-      7    TRTA    Xanomeli… Baseline                       sd         SD   2.193
-      8    TRTA    Xanomeli… Baseline                   median     Median     139
-      9    TRTA    Xanomeli… Baseline                      min        Min     136
-      10   TRTA    Xanomeli… Baseline                      max        Max     142
+      $tbl_baseline_chg
     Message
-      i 322 more rows
-      i Use `print(n = ...)` to see more rows
+      {cards} data frame: 2 x 12
+    Output
+        group1 group1_level variable variable_level stat_name stat_label    stat
+      1   TRTA      Placebo     AVAL       Baseline      mean       Mean 141.143
+      2   TRTA      Placebo     AVAL       Baseline        sd         SD   1.464
+    Message
       i 5 more variables: context, fmt_fun, warning, error, gts_column
+    Output
+      
+      $add_overall
+    Message
+      {cards} data frame: 2 x 10
+    Output
+        variable variable_level context stat_name stat_label   stat
+      1     AVAL       Baseline summary      mean       Mean 139.95
+      2     AVAL       Baseline summary        sd         SD  2.781
+    Message
+      i 4 more variables: fmt_fun, warning, error, gts_column
+    Output
+      
 

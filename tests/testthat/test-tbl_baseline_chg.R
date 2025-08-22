@@ -1,6 +1,6 @@
 df <- cards::ADLB |>
   dplyr::mutate(
-    AVISIT = sub("^\\s+", "", AVISIT),
+    AVISIT = str_trim(AVISIT),
     TRTA = as.factor(TRTA)
   ) |>
   dplyr::filter(
@@ -126,6 +126,7 @@ test_that("tbl_baseline_chg() throws error when required arguments are missing",
   test_data <- dplyr::bind_rows(df, duplicates)
 
   expect_snapshot(
+    error = TRUE,
     tbl <-
       tbl_baseline_chg(
         data = test_data,
@@ -158,6 +159,11 @@ test_that("gather_ard() works on output table", {
       baseline_level = "Baseline",
       by = "TRTA",
       denominator = cards::ADSL
-    )
-  expect_snapshot(gather_ard(tbl))
+    ) |>
+    add_overall()
+
+  expect_snapshot(
+    gather_ard(tbl) |>
+      map(head, n = 2)
+  )
 })
