@@ -1,5 +1,7 @@
 # crane 0.1.0.9053
 
+* Adding `tbl_baseline_chg()` function. (#62)
+
 * Making the header bold within `flextable` standard format.
 
 * Updated Roche theme to include parentheses around Ns in header, and updated function defaults to include the parentheses in crane functions.
