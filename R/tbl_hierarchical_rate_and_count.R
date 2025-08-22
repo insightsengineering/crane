@@ -78,7 +78,7 @@ tbl_hierarchical_rate_and_count <- function(data,
     by = {{ by }},
     id = {{ id }}
   )
-  if (!length(variables) %in% 2:3) {
+  if (!length(variables) %in% seq(2, 3)) {
     msg_pt1 <- "The {.arg variables} argument must select 2 or 3 columns"
     if (length(variables) == 1L) {
       cli::cli_abort(

@@ -92,3 +92,29 @@ test_that("tbl_hierarchical_rate_and_count() digits styling defaults to gtsummar
       add_overall(last = TRUE) |> as.data.frame()
   )
 })
+
+test_that("tbl_hierarchical_rate_and_count() works only with 2 or 3 variables", {
+  expect_snapshot(
+    tbl <-
+      ADAE_subset |>
+      tbl_hierarchical_rate_and_count(
+        denominator = cards::ADSL,
+        by = TRTA,
+        variables = c(AEBODSYS),
+        sort = "descending"
+      ),
+    error = TRUE
+  )
+
+  expect_snapshot(
+    tbl <-
+      ADAE_subset |>
+      tbl_hierarchical_rate_and_count(
+        denominator = cards::ADSL,
+        by = TRTA,
+        variables = c(SEX, AEBODSYS, AEDECOD, SAFFL),
+        sort = "descending"
+      ),
+    error = TRUE
+  )
+})
