@@ -1,6 +1,6 @@
 # crane 0.1.0.9053
 
-* Adding `tbl_baseline_chg()` function. ()
+* Adding `tbl_baseline_chg()` function. (#62)
 
 * Making the header bold within `flextable` standard format.
 
