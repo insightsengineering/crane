@@ -82,9 +82,9 @@ measurement of an Analysis Variable.
 }
 \examples{
 theme_gtsummary_roche()
-library(dplyr, warn.conflicts = FALSE)
+
 df <- cards::ADLB |>
-  dplyr::mutate(AVISIT = sub("^\\\\s+", "", AVISIT)) |>
+  dplyr::mutate(AVISIT = trimws(AVISIT)) |>
   dplyr::filter(
     AVISIT != "End of Treatment",
     PARAMCD == "SODIUM"
