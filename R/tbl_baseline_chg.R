@@ -54,10 +54,10 @@ NULL
 #' @rdname tbl_baseline_chg
 #' @export
 tbl_baseline_chg <- function(data,
+                             baseline_level,
                              denominator,
                              by = NULL,
                              digits = NULL,
-                             baseline_level = "Baseline",
                              id = "USUBJID",
                              visit = "AVISIT",
                              visit_number = "AVISITN",

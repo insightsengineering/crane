@@ -7,10 +7,10 @@
 \usage{
 tbl_baseline_chg(
   data,
+  baseline_level,
   denominator,
   by = NULL,
   digits = NULL,
-  baseline_level = "Baseline",
   id = "USUBJID",
   visit = "AVISIT",
   visit_number = "AVISITN",
@@ -28,6 +28,9 @@ tbl_baseline_chg(
 \arguments{
 \item{data}{(\code{data.frame})\cr A data frame.}
 
+\item{baseline_level}{(\code{string})\cr
+String identifying baseline level in the \code{visit} variable.}
+
 \item{denominator}{(\code{string})\cr
 Data set used to compute the header counts (typically \code{ADSL}).}
 
@@ -39,9 +42,6 @@ Default is \code{NULL}.}
 Specifies how summary statistics are rounded. Values may be either integer(s)
 or function(s). If not specified, default formatting is assigned
 via \code{assign_summary_digits()}. See below for details.}
-
-\item{baseline_level}{(\code{string})\cr
-String identifying baseline level in the \code{visit} variable.}
 
 \item{id}{(\code{string})\cr
 String identifying the unique subjects. Default is \code{'USUBJID'}.}
