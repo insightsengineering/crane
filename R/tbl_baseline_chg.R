@@ -107,7 +107,8 @@ tbl_baseline_chg <- function(data,
   if (anyDuplicated(data[c(id, visit)]) > 0L) {
     cli::cli_abort(
       c("Columns {.val {c(id, visit)}} do not uniquely identify the rows in {.arg data}.",
-        i = "See row number {.val {anyDuplicated(data[c(id, visit)])}}."),
+        i = "See row number {.val {anyDuplicated(data[c(id, visit)])}}."
+      ),
       call = get_cli_abort_call()
     )
   }
@@ -188,6 +189,7 @@ tbl_baseline_chg <- function(data,
   # return tbl -----------------------------------------------------------------
   baseline_chg_tbl[["call_list"]] <- list(tbl_baseline_chg = match.call())
   baseline_chg_tbl$inputs <- tbl_baseline_inputs
+  # styler: off
   baseline_chg_tbl$cards$tbl_baseline_chg <-
     cards::bind_ard(
       gtsummary::gather_ard(tbl_aval)$tbl_summary %>%
@@ -231,6 +233,7 @@ tbl_baseline_chg <- function(data,
       .update = TRUE,
       .quiet = TRUE
     )
+  # styler: on
   baseline_chg_tbl |>
     structure(class = c("tbl_baseline_chg", "gtsummary"))
 }
