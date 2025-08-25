@@ -145,7 +145,7 @@ tbl_baseline_chg <- function(data,
       by = any_of(by),
       nonmissing = "always", # include the non-missing count in summary
       # round mean/sd/median/min/max,
-      type = everything() ~ "continuous2",
+      type = list(everything() ~ "continuous2"),
       digits = digits
     )
 
@@ -161,7 +161,7 @@ tbl_baseline_chg <- function(data,
       by = any_of(by),
       nonmissing = "always", # include the non-missing count in summary
       # round mean/sd/median/min/max
-      type = everything() ~ "continuous2",
+      type = list(everything() ~ "continuous2"),
       digits = digits,
       include = everything() & !all_of(baseline_level) # Remove the baseline visit from summary
     )
