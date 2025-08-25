@@ -8,15 +8,15 @@ tbl_roche_summary(
   data,
   by = NULL,
   label = NULL,
-  statistic = list(all_continuous() ~ c("{mean} ({sd})", "{median}", "{min} - {max}"),
-    all_categorical() ~ "{n} ({p}\%)"),
+  statistic = list(gtsummary::all_continuous() ~ c("{mean} ({sd})", "{median}",
+    "{min} - {max}"), gtsummary::all_categorical() ~ "{n} ({p}\%)"),
   digits = NULL,
   type = NULL,
   value = NULL,
   nonmissing = c("no", "always", "ifany"),
   nonmissing_text = "n",
   nonmissing_stat = "{N_nonmiss}",
-  sort = all_categorical(FALSE) ~ "alphanumeric",
+  sort = gtsummary::all_categorical(FALSE) ~ "alphanumeric",
   percent = c("column", "row", "cell"),
   include = everything()
 )

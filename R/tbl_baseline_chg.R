@@ -145,7 +145,7 @@ tbl_baseline_chg <- function(data,
       by = any_of(by),
       nonmissing = "always", # include the non-missing count in summary
       # round mean/sd/median/min/max,
-      type = list(everything() ~ "continuous2"),
+      type = everything() ~ "continuous2",
       digits = digits
     )
 
@@ -161,7 +161,7 @@ tbl_baseline_chg <- function(data,
       by = any_of(by),
       nonmissing = "always", # include the non-missing count in summary
       # round mean/sd/median/min/max
-      type = list(everything() ~ "continuous2"),
+      type = everything() ~ "continuous2",
       digits = digits,
       include = everything() & !all_of(baseline_level) # Remove the baseline visit from summary
     )
@@ -175,7 +175,7 @@ tbl_baseline_chg <- function(data,
       gtsummary::all_stat_cols() & ends_with("_2") ~ "Change from Baseline",
       label = "Visit"
     ) |>
-    gtsummary::modify_spanning_header(all_stat_cols() ~ "{level}  \n(N = {n})") |>
+    gtsummary::modify_spanning_header(gtsummary::all_stat_cols() ~ "{level}  \n(N = {n})") |>
     # sort the stat columns together within treatment group
     gtsummary::modify_table_body(
       \(.x) {
@@ -260,7 +260,7 @@ add_overall.tbl_baseline_chg <- function(x,
     x$inputs |>
     utils::modifyList(list(by = NULL)) |>
     (\(args_list) do.call("tbl_baseline_chg", args = args_list))() |>
-    gtsummary::modify_spanning_header(all_stat_cols() ~ col_label)
+    gtsummary::modify_spanning_header(gtsummary::all_stat_cols() ~ col_label)
 
   # check the tbls have the same structure before merging
   if (!identical(
