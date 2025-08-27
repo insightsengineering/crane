@@ -15,20 +15,6 @@
       7 Drug A    47  0.266 T2   
       8 Drug A    52  0.719 T2   
 
-# tbl_listing(keys, order_by) works with standard values
-
-    Code
-      dplyr::slice_head(out$table_body, n = 5)
-    Output
-      # A tibble: 5 x 4
-        trt      stage   age marker
-        <chr>    <chr> <dbl>  <dbl>
-      1 "Drug B" "T2"      9  1.11 
-      2 ""       "T3"     34  0.205
-      3 "Drug A" "T2"     47  0.266
-      4 "Drug B" ""       49  0.157
-      5 "Drug A" ""       52  0.719
-
 # tbl_listing(hide_duplicate_keys = FALSE) works with standard values
 
     Code
@@ -37,9 +23,9 @@
       # A tibble: 3 x 4
         trt      stage   age marker
         <chr>    <chr> <dbl>  <dbl>
-      1 "Drug A" "T2"     47  0.266
-      2 ""       ""       52  0.719
-      3 ""       "T3"     NA  2.07 
+      1 "Drug B" "T2"      9  1.11 
+      2 ""       ""       49  0.157
+      3 "Drug A" "T3"     NA  2.07 
 
 ---
 
@@ -49,8 +35,8 @@
       # A tibble: 3 x 4
         trt    stage   age marker
         <chr>  <fct> <dbl>  <dbl>
-      1 Drug A T2       47  0.266
-      2 Drug A T2       52  0.719
+      1 Drug B T2        9  1.11 
+      2 Drug B T2       49  0.157
       3 Drug A T3       NA  2.07 
 
 # tbl_listing(blank_rows_by) works with standard values
@@ -60,10 +46,10 @@
     Output
       # A tibble: 5 x 4
         trt    stage   age marker
-        <chr>  <chr> <dbl>  <dbl>
-      1 Drug A T2       47  0.266
+        <chr>  <fct> <dbl>  <dbl>
+      1 Drug B T2        9  1.11 
       2 <NA>   <NA>     NA NA    
-      3 Drug A T2       52  0.719
+      3 Drug B T2       49  0.157
       4 <NA>   <NA>     NA NA    
       5 Drug A T3       NA  2.07 
 

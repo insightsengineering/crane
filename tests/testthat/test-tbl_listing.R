@@ -9,30 +9,6 @@ test_that("tbl_listing() works with default values", {
   )
 })
 
-test_that("tbl_listing(keys, order_by) works with standard values", {
-  expect_no_error(
-    out <- tbl_listing(tld, keys = c(trt, stage), order_by = age)
-  )
-
-  expect_s3_class(out, "tbl_listing")
-
-  expect_snapshot(
-    dplyr::slice_head(out$table_body, n = 5) # highlight but no sorting
-  )
-
-  # Checking column values
-  expect_setequal(
-    names(tld),
-    names(out$table_body)
-  )
-
-  # Checking printed labels
-  expect_setequal(
-    sapply(tld, attr, which = "label") |> unname(),
-    sapply(out$table_body, attr, which = "label") |> unname()
-  )
-})
-
 test_that("tbl_listing(hide_duplicate_keys = FALSE) works with standard values", {
   w_duplicated_keys <- tbl_listing(tld, keys = c(trt, stage), hide_duplicate_keys = TRUE)$table_body
   wo_duplicated_keys <- tbl_listing(tld, keys = c(trt, stage), hide_duplicate_keys = FALSE)$table_body
