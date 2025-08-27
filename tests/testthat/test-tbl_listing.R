@@ -10,16 +10,17 @@ test_that("tbl_listing() works with default values", {
 })
 
 test_that("tbl_listing(hide_duplicate_keys = FALSE) works with standard values", {
-  w_duplicated_keys <- tbl_listing(tld, keys = c(trt, stage), hide_duplicate_keys = TRUE)$table_body
-  wo_duplicated_keys <- tbl_listing(tld, keys = c(trt, stage), hide_duplicate_keys = FALSE)$table_body
+  w_duplicated_keys <- tbl_listing(tld) |>
+    lst_highlight_columns(columns = trt)
+  wo_duplicated_keys <- tbl_listing(tld)
 
-  expect_snapshot(w_duplicated_keys[seq(3), ])
-  expect_snapshot(wo_duplicated_keys[seq(3), ])
+  expect_snapshot(w_duplicated_keys$table_body[seq(3), ])
+  expect_snapshot(wo_duplicated_keys$table_body[seq(3), ])
 })
 
 test_that("tbl_listing(blank_rows_by) works with standard values", {
   expect_no_error(
-    out <- tbl_listing(tld, keys = c(trt, stage), blank_rows_by = age)
+    out <- tbl_listing(tld, blank_rows_by = age)
   )
 
   # Check that the blank rows are inserted correctly every 2 rows
@@ -33,5 +34,56 @@ test_that("tbl_listing(blank_rows_by) works with standard values", {
 
   expect_snapshot(
     dplyr::slice_head(out$table_body, n = 5)
+  )
+})
+
+test_that("tbl_listing(row_split) works with standard values", {
+  expect_no_error(
+    out <- tbl_listing(tld, row_split = list(row_numbers = c(2, 3)))
+  )
+  expect_length(out, 3) # 3 tables are created
+
+  expect_snapshot(
+    out[[2]]$table_body
+  )
+})
+
+test_that("tbl_listing(row_split, blank_rows_by) works with standard values", {
+  expect_no_error(
+    out <- tbl_listing(tld, row_split = list(row_numbers = c(2, 3)), blank_rows_by = trt)
+  )
+  expect_length(out, 3) # 3 tables are created
+
+  expect_snapshot(
+    out[[3]]$table_body |> dplyr::slice_head(n = 4)
+  )
+})
+
+test_that("tbl_listing(col_split) works with standard values", {
+  grps <- list(c("trt", "stage", "age"), c("trt", "stage", "marker"))
+  expect_no_error(
+    out <- tbl_listing(tld, col_split = list(groups = grps)) |>
+      lst_highlight_columns(columns = trt)
+  )
+  expect_length(out, 2) # 2 tables are created
+
+  expect_snapshot(
+    out[[2]]$table_body |> dplyr::slice_head(n = 4)
+  )
+})
+
+test_that("tbl_listing(row_split + col_split) works with standard values", {
+  grps <- list(c("trt", "stage", "age"), c("trt", "stage", "marker"))
+  expect_no_error(
+    out <- tbl_listing(tld,
+      row_split = list(row_numbers = c(2, 6)),
+      col_split = list(groups = grps),
+      blank_rows_by = trt
+    )
+  )
+  expect_length(out, 6) # 6 tables are created
+
+  expect_snapshot(
+    out[[4]]$table_body
   )
 })

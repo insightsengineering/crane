@@ -2,23 +2,16 @@
 % Please edit documentation in R/tbl_listing.R
 \name{tbl_listing}
 \alias{tbl_listing}
+\alias{lst_highlight_columns}
 \title{Create listings from a data frame}
 \usage{
-tbl_listing(
-  data,
-  keys = NULL,
-  row_split = list(),
-  col_split = list(),
-  blank_rows_by = NULL,
-  hide_duplicate_keys = FALSE
-)
+tbl_listing(data, row_split = list(), col_split = list(), blank_rows_by = NULL)
+
+lst_highlight_columns(x, columns = NULL, blank_str = "")
 }
 \arguments{
 \item{data}{(\code{data.frame})\cr
 a data frame containing the data to be displayed in the listing.}
-
-\item{keys}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-columns to be highlighted on the left of the listing.}
 
 \item{row_split}{(\code{list})\cr
 parameters passed to \code{\link[gtsummary:tbl_split_by]{gtsummary::tbl_split_by_rows()}}.}
@@ -30,25 +23,37 @@ parameters passed to \code{\link[gtsummary:tbl_split_by]{gtsummary::tbl_split_by
 columns where changing values is highlighted by a blank row. It depends substantially on the columns'
 sorting. See \code{\link[=add_blank_row]{add_blank_row()}} for more information. Defaults to \code{NULL}.}
 
-\item{hide_duplicate_keys}{(\code{logical})\cr
-whether to add blank values where key columns have duplicate values. Defaults to \code{FALSE}.}
+\item{columns}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+columns to highlight for duplicate values. If \code{NULL}, nothing is done.}
+
+\item{blank_str}{(\code{string})\cr
+string to use for blank values. Defaults to \code{""}. It should not be changed.}
 }
 \description{
 This function creates a listing from a data frame. Common uses
 rely on few pre-processing steps, such as ensuring unique values in key columns or split
 by rows or columns. They are described in the note section.
 }
+\section{Functions}{
+\itemize{
+\item \code{lst_highlight_columns()}: adds blank values for duplicate columns.
+
+}}
 \note{
 Common pre-processing steps for the data frame that may be common:
 \itemize{
 \item Unique values - this should be enforced in pre-processing by users.
 \item \code{NA} values - they are not printed by default in \code{{gtsummary}}. You can make them explicit if
 they need to be displayed in the listing. See example 3.
+\item Sorting key columns and moving them to the front. See the examples pre-processing.
+}
+\subsection{Splitting the listing}{
+\itemize{
 \item Split by rows - you can split the data frame by rows by using \code{row_split} parameter. You can use the same
 parameters used in \code{\link[gtsummary:tbl_split_by]{gtsummary::tbl_split_by_rows()}}. See example 4.
 \item Split by columns - you can split the data frame by columns by using \code{col_split} parameter. Use the same
 parameters from \code{\link[gtsummary:tbl_split_by]{gtsummary::tbl_split_by_rows()}}. See example 5.
-\item Split in post-processing is not suggested if \code{hide_duplicate_keys = TRUE}.
+}
 }
 }
 \examples{
@@ -58,21 +63,23 @@ trial_data <- trial |>
   dplyr::select(trt, age, marker, stage) |>
   dplyr::filter(stage \%in\% c("T2", "T3")) |>
   dplyr::slice_head(n = 2, by = c(trt, stage)) |> # downsampling
-  dplyr::arrange(trt, stage) # key columns should be sorted
+  dplyr::arrange(trt, stage) |> # key columns should be sorted
+  dplyr::relocate(trt, stage) # key columns should be first
 
 # Example 1 --------------------------------
-tbl_listing(trial_data, keys = c(trt, stage))
-tbl_listing(trial_data, keys = c(trt, stage), hide_duplicate_keys = TRUE)
+out <- tbl_listing(trial_data)
+out
+out |> lst_highlight_columns(columns = trt)
 
 # Example 2 --------------------------------
 # make NAs explicit
 trial_data_na <- trial_data |>
   mutate(across(everything(), ~ tidyr::replace_na(labelled::to_character(.), "-")))
-tbl_listing(trial_data_na, keys = c(trt, stage))
+tbl_listing(trial_data_na)
 
 # Example 3 --------------------------------
 # Add blank rows for first key column
-lst <- tbl_listing(trial_data_na, keys = c(trt, stage), blank_rows_by = trt)
+lst <- tbl_listing(trial_data_na, blank_rows_by = trt)
 lst
 
 # Can add them also manually in post-processing
@@ -80,23 +87,28 @@ lst |> add_blank_row(row_numbers = seq(2))
 
 # Example 4 --------------------------------
 # Split by rows
-list_lst <- tbl_listing(trial_data, keys = stage, row_split = list(row_numbers = c(2, 3, 4)))
+list_lst <- tbl_listing(trial_data, row_split = list(row_numbers = c(2, 3, 4)))
 list_lst[[2]]
 
 # Example 5 --------------------------------
 # Split by columns
 show_header_names(lst)
 grps <- list(c("trt", "stage", "age"), c("trt", "stage", "marker"))
-list_lst <- tbl_listing(trial_data, keys = stage, col_split = list(groups = grps))
+list_lst <- tbl_listing(trial_data, col_split = list(groups = grps))
 list_lst[[2]]
 
 # Example 6 --------------------------------
 # Split by rows and columns
 list_lst <- tbl_listing(trial_data,
-  keys = stage,
   row_split = list(row_numbers = c(2, 3, 4)), col_split = list(groups = grps)
 )
 length(list_lst) # 8 tables are flatten out
 list_lst[[2]]
 \dontshow{\}) # examplesIf}
+# Example 7 --------------------------------
+# Hide duplicate columns in post-processing
+list_lst |>
+  lst_highlight_columns() |>
+  dplyr::slice_head(n = 1)
+
 }
