@@ -1,6 +1,6 @@
 #' Create listings from a data frame
 #'
-#' This function creates a listing from a data frame, highlighting key columns. Common uses
+#' This function creates a listing from a data frame. Common uses
 #' rely on few pre-processing steps, such as ensuring unique values in key columns or split
 #' by rows or columns. They are described in the note section.
 #'
@@ -8,8 +8,6 @@
 #'   a data frame containing the data to be displayed in the listing.
 #' @param keys ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   columns to be highlighted on the left of the listing.
-#' @param order_by ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
-#'   columns to be sorted. It defaults to `keys`.
 #' @param blank_rows_by ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   columns where changing values is highlighted by a blank row. It depends substantially on the columns'
 #'   sorting. See [crane::add_blank_row()] for more information. Defaults to `NULL`.
@@ -22,9 +20,9 @@
 #'  * `NA` values - they are not printed by default in `{gtsummary}`. You can make them explicit if
 #'    they need to be displayed in the listing. See example 3.
 #'  * Split by rows - you can split the data frame by rows by using `split_by_rows`.
-#'    See example 5.
+#'    See example 4.
 #'  * Split by columns - you can split the data frame by columns and then apply `tbl_listing()` to each subset.
-#'    See example 6.
+#'    See example 5.
 #'  * Split in post-processing is not suggested if `hide_duplicate_keys = TRUE`.
 #'
 #' @examplesIf rlang::is_installed("labelled")
@@ -32,22 +30,20 @@
 #' trial_data <- trial |>
 #'   dplyr::select(trt, age, marker, stage) |>
 #'   dplyr::filter(stage %in% c("T2", "T3")) |>
-#'   dplyr::slice_head(n = 2, by = c(trt, stage)) # downsampling
+#'   dplyr::slice_head(n = 2, by = c(trt, stage)) |> # downsampling
+#'   dplyr::arrange(trt, stage) # key columns should be sorted
 #'
 #' # Example 1 --------------------------------
 #' tbl_listing(trial_data, keys = c(trt, stage))
+#' tbl_listing(trial_data, keys = c(trt, stage), hide_duplicate_keys = TRUE)
 #'
 #' # Example 2 --------------------------------
-#' # Sort by trt stage and marker
-#' tbl_listing(trial_data, keys = c(trt, stage), order_by = c(trt, stage, marker))
-#'
-#' # Example 3 --------------------------------
 #' # make NAs explicit
 #' trial_data_na <- trial_data |>
 #'   mutate(across(everything(), ~ tidyr::replace_na(labelled::to_character(.), "-")))
 #' tbl_listing(trial_data_na, keys = c(trt, stage))
 #'
-#' # Example 4 --------------------------------
+#' # Example 3 --------------------------------
 #' # Add blank rows for first key column
 #' lst <- tbl_listing(trial_data_na, keys = c(trt, stage), blank_rows_by = trt)
 #' lst
@@ -55,34 +51,25 @@
 #' # Can add them also manually in post-processing
 #' lst |> add_blank_row(row_numbers = seq(2))
 #'
-#' # Example 5 --------------------------------
+#' # Example 4 --------------------------------
 #' # Split by rows
-#' trial_data_split <- trial_data |>
-#'   split(trial_data$trt)
-#' list_lst <- lapply(trial_data_split, tbl_listing, keys = c(trt, stage))
-# list_lst <- tbl_listing(trial_data_split, keys = c(trt, stage)) # breaking!!
-#' # names(list_lst) # keeps names
+#' list_lst <- tbl_listing(trial_data, keys = stage, row_split = list(variables = trt))
 #' list_lst[[2]]
 #'
 #' # Example 6 --------------------------------
 #' # Split by columns
-#' column_groups <- list(
-#'   age = c("trt", "age"),
-#'   marker = c("trt", "marker")
-#' )
-#' trial_data_split <- lapply(column_groups, function(cols) trial_data[, cols, drop = FALSE])
-#' list_lst <- lapply(trial_data_split, tbl_listing, keys = trt)
-#' # names(list_lst) # keeps names
+#' show_header_names(lst)
+#' grps <- list(c("trt", "stage", "age"), c("trt", "stage", "marker"))
+#' list_lst <- tbl_listing(trial_data, keys = stage, col_split = list(groups = grps))
 #' list_lst[[2]]
 #'
 #' @export
 tbl_listing <- function(data,
                         keys = NULL,
-                        order_by = all_of(keys),
-                        split_by_rows = NULL,
-                        split_by_columns = NULL,
+                        row_split = list(),
+                        col_split = list(),
                         blank_rows_by = NULL,
-                        hide_duplicate_keys = TRUE) {
+                        hide_duplicate_keys = FALSE) {
   set_cli_abort_call()
 
   # Checks -----------------------------------
@@ -92,84 +79,8 @@ tbl_listing <- function(data,
 
   # Process arguments ------------------------
   cards::process_selectors(data, keys = {{ keys }})
-  cards::process_selectors(data, order_by = {{ order_by }})
   cards::process_selectors(data, blank_rows_by = {{ blank_rows_by }})
-
-  # Is there a split? -----------------------------
-  if (!is.null(split_by_rows) || !is.null(split_by_columns)) {
-    # Split by columns first
-    if (!is.null(split_by_columns)) {
-      if (!is.list(split_by_columns) && any(!names(split_by_columns) == "groups")) {
-        cli::cli_abort(
-          c(
-            "The {.code split_by_columns} argument must a list of column names assigned as 'keys' or 'groups'.",
-            i = "If keys is not assigned it will be automatically defined as the tbl_listing keys."
-          ), call = get_cli_abort_call()
-        )
-      }
-
-      cards::process_selectors(data, split_by_columns_groups = {{ split_by_columns$groups }})
-      cards::process_selectors(data, split_by_columns_keys = {{ split_by_columns$keys }})
-
-      # Adding column groups
-      if (is.null(split_by_columns_keys)) {
-        split_by_columns_keys <- keys
-      }
-
-      # Adding
-
-
-    } else if (!is.null(split_by_rows)) {
-      cards::process_selectors(data, split_by_rows = {{ split_by_rows }})
-    }
-
-    return(
-      map(
-        seq_along(data_list),
-        function(ii) {
-          if (interactive()) {
-            cli::cli_h1(
-              "{.val {ii}}/{.val {length(data)}} Creating listing for {.val {names(data[ii])}} data frame."
-            )
-          }
-          tbl_listing(
-            data = data_list[[ii]],
-            keys = keys,
-            order_by = order_by,
-            blank_rows_by = blank_rows_by,
-            hide_duplicate_keys = hide_duplicate_keys
-          )
-        }
-      )
-    )
-  }
-
-
   tbl_listing_inputs <- as.list(environment())
-
-  # Sorting ----------------------------------
-  if (!is.null(order_by)) {
-    data <- data |>
-      dplyr::arrange(across(all_of(order_by)))
-
-    # Inform about happened sorting if interactive
-    if (interactive()) { # nocov start
-      main_message <-
-        if (identical(order_by, keys)) {
-          "Sorting incoming data by key columns."
-        } else {
-          "Sorting incoming data by column{?s} {.val {order_by}}."
-        }
-
-      cli::cli_inform(
-        c(
-          "v" = main_message,
-          "i" = "If you want to change the sorting, please sort the data frame before passing it to `tbl_listing()`."
-        ),
-        call = get_cli_abort_call()
-      )
-    } # nocov end
-  }
 
   # Reorder the full set of cols to ensure key columns are first
   ordercols <- c(keys, setdiff(names(data), keys))
@@ -191,18 +102,40 @@ tbl_listing <- function(data,
     x <- add_blank_row(x, row_numbers = which(grp_diffs != 0))
   }
 
-  # Highlight keys if requested ------------------------------------------------
-  x <- .highlight_keys(x)
-
-  # Return with class and attributes -------------------------------------------
+  # add class and attributes ---------------------------------------------------
   structure(
     x,
     class = c("tbl_listing", "gtsummary")
   )
+
+  # Split it if requested ------------------------------------------------------
+  if (length(row_split) > 0 && length(col_split) > 0) {
+    cli::cli_abort(
+      c(
+        "You can only split by rows or by columns, not both.",
+        i = "Please choose one of the two options."
+      ), call = get_cli_abort_call()
+    )
+  }
+
+  if (length(row_split) > 0) {
+    row_split <- c(list(x = x), row_split)
+    x <- rlang::exec(gtsummary::tbl_split_by_rows, !!!row_split)
+  }
+  if (length(col_split) > 0) {
+    col_split <- c(list(x = x), col_split)
+    x <- rlang::exec(gtsummary::tbl_split_by_columns, !!!col_split)
+  }
+
+  # Return and highlight keys if requested -------------------------------------
+  .highlight_keys(x)
 }
 
 # Add blank values for key duplicates if requested -----------------------------
 .highlight_keys <- function(x, blank_str = "") {
+  if (is.list(x) && inherits(x[[1]], "gtsummary")) {
+    return(lapply(x, .highlight_keys, blank_str = blank_str))
+  }
   do_it_flag <- x$inputs$hide_duplicate_keys
   keys <- x$inputs$keys
 
