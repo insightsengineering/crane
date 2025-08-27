@@ -95,7 +95,7 @@ tbl_survfit_times <- function(data,
 
   # calculate ARD for by vars
   if (!is_empty(by)) {
-    ard_by <- cards::ard_categorical(data, variables = all_of(by))
+    ard_by <- cards::ard_tabulate(data, variables = all_of(by))
   }
   ard_n <- cards::ard_total_n(data)
 

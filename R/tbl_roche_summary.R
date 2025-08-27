@@ -16,7 +16,7 @@
 #'   - `nonmissing`: must be one of `c("always", "ifany", "no")`
 #'   - `nonmissing_text`: string indicating text shown on non-missing row. Default is `"n"`
 #'   - `nonmissing_stat`: statistic to show on non-missing row. Default is `"{N_nonmiss}"`.
-#'     Possible values are `N_nonmiss`, `N_miss`, `N_obs`,, `p_nonmiss` `p_miss`.
+#'     Possible values are `N_nonmiss`, `N_miss`, `N_obs`, `p_nonmiss` `p_miss`.
 #'
 #' @return a 'gtsummary' table
 #' @export
@@ -35,8 +35,8 @@ tbl_roche_summary <- function(data,
                               label = NULL,
                               statistic =
                                 list(
-                                  all_continuous() ~ c("{mean} ({sd})", "{median}", "{min} - {max}"),
-                                  all_categorical() ~ "{n} ({p}%)"
+                                  gtsummary::all_continuous() ~ c("{mean} ({sd})", "{median}", "{min} - {max}"),
+                                  gtsummary::all_categorical() ~ "{n} ({p}%)"
                                 ),
                               digits = NULL,
                               type = NULL,
@@ -44,7 +44,7 @@ tbl_roche_summary <- function(data,
                               nonmissing = c("no", "always", "ifany"),
                               nonmissing_text = "n",
                               nonmissing_stat = "{N_nonmiss}",
-                              sort = all_categorical(FALSE) ~ "alphanumeric",
+                              sort = gtsummary::all_categorical(FALSE) ~ "alphanumeric",
                               percent = c("column", "row", "cell"),
                               include = everything()) {
   set_cli_abort_call()
