@@ -8,15 +8,15 @@ tbl_roche_summary(
   data,
   by = NULL,
   label = NULL,
-  statistic = list(all_continuous() ~ c("{mean} ({sd})", "{median}", "{min} - {max}"),
-    all_categorical() ~ "{n} ({p}\%)"),
+  statistic = list(gtsummary::all_continuous() ~ c("{mean} ({sd})", "{median}",
+    "{min} - {max}"), gtsummary::all_categorical() ~ "{n} ({p}\%)"),
   digits = NULL,
   type = NULL,
   value = NULL,
   nonmissing = c("no", "always", "ifany"),
   nonmissing_text = "n",
   nonmissing_stat = "{N_nonmiss}",
-  sort = all_categorical(FALSE) ~ "alphanumeric",
+  sort = gtsummary::all_categorical(FALSE) ~ "alphanumeric",
   percent = c("column", "row", "cell"),
   include = everything()
 )
@@ -59,7 +59,7 @@ with this argument. Default is \code{NULL}. See below for details.}
 \item \code{nonmissing}: must be one of \code{c("always", "ifany", "no")}
 \item \code{nonmissing_text}: string indicating text shown on non-missing row. Default is \code{"n"}
 \item \code{nonmissing_stat}: statistic to show on non-missing row. Default is \code{"{N_nonmiss}"}.
-Possible values are \code{N_nonmiss}, \code{N_miss}, \code{N_obs},, \code{p_nonmiss} \code{p_miss}.
+Possible values are \code{N_nonmiss}, \code{N_miss}, \code{N_obs}, \code{p_nonmiss} \code{p_miss}.
 }}
 
 \item{sort}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
@@ -73,7 +73,7 @@ Must be one of \code{c("column", "row", "cell")}. Default is \code{"column"}.
 
 In rarer cases, you may need to define/override the typical denominators.
 In these cases, pass an integer or a data frame. Refer to the
-\code{\link[cards:ard_categorical]{?cards::ard_categorical(denominator)}} help file for details.}
+\code{\link[cards:ard_tabulate]{?cards::ard_tabulate(denominator)}} help file for details.}
 
 \item{include}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 Variables to include in the summary table. Default is \code{everything()}.}

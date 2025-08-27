@@ -41,7 +41,7 @@
 #'
 #' Here's the general outline for creating this table directly from ARDs.
 #' 1. Create an ARD of survival quantiles using `cardx::ard_survival_survfit()`.
-#' 2. Construct an ARD of the minimum and maximum survival times using `cards::ard_continuous()`.
+#' 2. Construct an ARD of the minimum and maximum survival times using `cards::ard_summary()`.
 #' 3. Combine the ARDs and build summary table with `gtsummary::tbl_ard_summary()`.
 #'
 #' ```r
@@ -62,7 +62,7 @@
 #'
 #' # get the min/max followup time
 #' ard_surv_min_max <-
-#'   cards::ard_continuous(
+#'   cards::ard_summary(
 #'     data = cards::ADTTE,
 #'     variables = AVAL,
 #'     by = "TRTA",
@@ -177,7 +177,7 @@ tbl_survfit_quantiles <- function(data,
     dplyr::mutate(time = .data$time[, 1])
 
   ard_followup_range <-
-    cards::ard_continuous(
+    cards::ard_summary(
       df_time,
       variables = "time",
       by = any_of(by),
@@ -190,7 +190,7 @@ tbl_survfit_quantiles <- function(data,
 
   # calculate ARD for by vars
   if (!is_empty(by)) {
-    ard_by <- cards::ard_categorical(data, variables = all_of(by))
+    ard_by <- cards::ard_tabulate(data, variables = all_of(by))
   }
   ard_n <- cards::ard_total_n(data)
 
