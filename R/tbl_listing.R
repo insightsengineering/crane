@@ -8,21 +8,25 @@
 #'   a data frame containing the data to be displayed in the listing.
 #' @param keys ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   columns to be highlighted on the left of the listing.
+#' @param row_split (`list`)\cr
+#'   parameters passed to [gtsummary::tbl_split_by_rows()].
+#' @param col_split (`list`)\cr
+#'   parameters passed to [gtsummary::tbl_split_by_columns()].
 #' @param blank_rows_by ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   columns where changing values is highlighted by a blank row. It depends substantially on the columns'
 #'   sorting. See [crane::add_blank_row()] for more information. Defaults to `NULL`.
 #' @param hide_duplicate_keys (`logical`)\cr
-#'   whether to add blank values where key columns have duplicate values. Defaults to `TRUE`.
+#'   whether to add blank values where key columns have duplicate values. Defaults to `FALSE`.
 #'
 #' @note
 #' Common pre-processing steps for the data frame that may be common:
 #'  * Unique values - this should be enforced in pre-processing by users.
 #'  * `NA` values - they are not printed by default in `{gtsummary}`. You can make them explicit if
 #'    they need to be displayed in the listing. See example 3.
-#'  * Split by rows - you can split the data frame by rows by using `split_by_rows`.
-#'    See example 4.
-#'  * Split by columns - you can split the data frame by columns and then apply `tbl_listing()` to each subset.
-#'    See example 5.
+#'  * Split by rows - you can split the data frame by rows by using `row_split` parameter. You can use the same
+#'    parameters used in [gtsummary::tbl_split_by_rows()]. See example 4.
+#'  * Split by columns - you can split the data frame by columns by using `col_split` parameter. Use the same
+#'    parameters from [gtsummary::tbl_split_by_rows()]. See example 5.
 #'  * Split in post-processing is not suggested if `hide_duplicate_keys = TRUE`.
 #'
 #' @examplesIf rlang::is_installed("labelled")
@@ -53,14 +57,23 @@
 #'
 #' # Example 4 --------------------------------
 #' # Split by rows
-#' list_lst <- tbl_listing(trial_data, keys = stage, row_split = list(variables = trt))
+#' list_lst <- tbl_listing(trial_data, keys = stage, row_split = list(row_numbers = c(2, 3, 4)))
 #' list_lst[[2]]
 #'
-#' # Example 6 --------------------------------
+#' # Example 5 --------------------------------
 #' # Split by columns
 #' show_header_names(lst)
 #' grps <- list(c("trt", "stage", "age"), c("trt", "stage", "marker"))
 #' list_lst <- tbl_listing(trial_data, keys = stage, col_split = list(groups = grps))
+#' list_lst[[2]]
+#'
+#' # Example 6 --------------------------------
+#' # Split by rows and columns
+#' list_lst <- tbl_listing(trial_data,
+#'   keys = stage,
+#'   row_split = list(row_numbers = c(2, 3, 4)), col_split = list(groups = grps)
+#' )
+#' length(list_lst) # 8 tables are flatten out
 #' list_lst[[2]]
 #'
 #' @export
@@ -109,15 +122,6 @@ tbl_listing <- function(data,
   )
 
   # Split it if requested ------------------------------------------------------
-  if (length(row_split) > 0 && length(col_split) > 0) {
-    cli::cli_abort(
-      c(
-        "You can only split by rows or by columns, not both.",
-        i = "Please choose one of the two options."
-      ), call = get_cli_abort_call()
-    )
-  }
-
   if (length(row_split) > 0) {
     row_split <- c(list(x = x), row_split)
     x <- rlang::exec(gtsummary::tbl_split_by_rows, !!!row_split)
