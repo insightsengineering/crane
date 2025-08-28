@@ -107,8 +107,8 @@ list_lst[[2]]
 \dontshow{\}) # examplesIf}
 # Example 7 --------------------------------
 # Hide duplicate columns in post-processing
-list_lst |>
-  lst_highlight_columns() |>
-  dplyr::slice_head(n = 1)
+out <- list_lst |>
+  lst_highlight_columns(columns = c(trt, stage))
+out[[2]]
 
 }
