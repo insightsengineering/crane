@@ -136,14 +136,14 @@ tbl_listing <- function(data,
 #' @examples
 #' # Example 7 --------------------------------
 #' # Hide duplicate columns in post-processing
-#' list_lst |>
-#'   lst_highlight_columns() |>
-#'   dplyr::slice_head(n = 1)
+#' out <- list_lst |>
+#'   lst_highlight_columns(columns = c(trt, stage))
+#' out[[2]]
 #'
 #' @export
 lst_highlight_columns <- function(x, columns = NULL, blank_str = "") {
   if (is.list(x) && inherits(x[[1]], "gtsummary")) {
-    return(lapply(x, lst_highlight_columns, columns = {{ columns }}, blank_str = blank_str))
+    return(map(x, lst_highlight_columns, columns = {{ columns }}, blank_str = blank_str))
   }
 
   # Checks -----------------------------------
