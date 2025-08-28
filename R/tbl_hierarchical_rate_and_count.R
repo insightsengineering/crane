@@ -42,7 +42,7 @@
 #' @returns a gtsummary table
 #' @name tbl_hierarchical_rate_and_count
 #'
-#' @examples
+#' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true")
 #' # Example 1 ----------------------------------
 #' cards::ADAE[c(1, 2, 3, 8, 16), ] |>
 #'   tbl_hierarchical_rate_and_count(
