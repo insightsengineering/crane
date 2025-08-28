@@ -23,6 +23,9 @@ parameters passed to \code{\link[gtsummary:tbl_split_by]{gtsummary::tbl_split_by
 columns where changing values is highlighted by a blank row. It depends substantially on the columns'
 sorting. See \code{\link[=add_blank_row]{add_blank_row()}} for more information. Defaults to \code{NULL}.}
 
+\item{x}{(\code{tbl_listing} or \code{list})\cr
+a \code{tbl_listing} object or a list of \code{tbl_listing} objects.}
+
 \item{columns}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 columns to highlight for duplicate values. If \code{NULL}, nothing is done.}
 

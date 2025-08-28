@@ -128,6 +128,8 @@ tbl_listing <- function(data,
 
 #' @describeIn tbl_listing adds blank values for duplicate columns.
 #'
+#' @param x (`tbl_listing` or `list`)\cr
+#'   a `tbl_listing` object or a list of `tbl_listing` objects.
 #' @param columns ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   columns to highlight for duplicate values. If `NULL`, nothing is done.
 #' @param blank_str (`string`)\cr
