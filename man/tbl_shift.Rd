@@ -94,6 +94,7 @@ headers, indentation, column alignment, etc.
 }\if{html}{\out{</div>}}
 }
 \examples{
+\dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 library(dplyr, warn.conflicts = FALSE)
 
 # subsetting ADLB on one PARAM, and the highest grade
@@ -180,4 +181,5 @@ filter(adlb, PARAMCD \%in\% "CHOLES") |>
     nonmissing = "no"
   ) |>
   modify_spanning_header(all_stat_cols() ~ "Worst Post-baseline NCI-CTCAE Grade")
+\dontshow{\}) # examplesIf}
 }

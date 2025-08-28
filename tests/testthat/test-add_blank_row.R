@@ -6,11 +6,11 @@ test_that("add_blank_row() works", {
         by = trt,
         include = c(age, grade)
       ) |>
-      add_blank_row()
+      add_blank_row(variables = everything())
   )
 })
 
-test_that("add_blank_row(age) works", {
+test_that("add_blank_row(variables) works", {
   expect_silent(
     tbl <-
       gtsummary::trial |>
@@ -18,24 +18,26 @@ test_that("add_blank_row(age) works", {
         by = trt,
         include = c(age, grade)
       ) |>
-      add_blank_row(age)
+      add_blank_row(variables = age)
   )
 
+  # one blank row added (the NA value)
   expect_equal(
     tbl$table_body |>
-      dplyr::filter(variable == "age") |>
-      dplyr::pull(row_type),
-    c("label", "level", "level", "level", NA)
+      dplyr::pull(row_type) |>
+      is.na() |>
+      sum(),
+    1L
   )
 })
 
-test_that("add_blank_row(grade) is last row, then table identical", {
+test_that("add_blank_row(variables=grade) is last row, then table identical", {
   tbl <- gtsummary::trial |>
     tbl_roche_summary(
       by = trt,
       include = c(age, grade)
     ) |>
-    add_blank_row(grade)
+    add_blank_row(variables = grade)
   tbl2 <- gtsummary::trial |>
     tbl_roche_summary(
       by = trt,
@@ -48,20 +50,37 @@ test_that("add_blank_row(grade) is last row, then table identical", {
   )
 })
 
-test_that("add_blank_row(grade) is last row, then table identical", {
-  tbl <- trial |>
-    tbl_roche_summary(
-      by = trt, statistic = age ~ "{mean}",
-      include = c(age, grade),
-      nonmissing = "no"
-    ) |>
-    add_blank_row(age, row_numbers = c(1, 1))
-
+test_that("add_blank_row(variable_level) works", {
+  # splitting by all variables is the same as splittling by the 'variable' column levels
   expect_equal(
-    tbl$table_body |>
-      dplyr::filter(variable == "age" | str_detect(variable, "^row_sep")) |>
-      dplyr::pull(row_type),
-    c("label", NA, NA, "level", NA)
+    gtsummary::trial |>
+      tbl_roche_summary(
+        by = trt,
+        include = c(age, grade)
+      ) |>
+      add_blank_row(variable_level = variable) |>
+      as.data.frame(),
+    gtsummary::trial |>
+      tbl_roche_summary(
+        by = trt,
+        include = c(age, grade)
+      ) |>
+      add_blank_row(variables = everything()) |>
+      as.data.frame()
+  )
+})
+
+test_that("add_blank_row() error message", {
+  # specifying more than one split method
+  expect_snapshot(
+    error = TRUE,
+    trial |>
+      tbl_roche_summary(
+        by = trt, statistic = age ~ "{mean}",
+        include = c(age, grade),
+        nonmissing = "no"
+      ) |>
+      add_blank_row(variables = age, row_numbers = c(1, 1))
   )
 })
 
@@ -81,6 +100,6 @@ test_that("add_blank_row() errors when no variable", {
   expect_snapshot(
     error = TRUE,
     gtsummary::as_gtsummary(gtsummary::trial[1:5, 1:2]) |>
-      add_blank_row()
+      add_blank_row(variables = everything())
   )
 })
