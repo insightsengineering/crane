@@ -107,7 +107,7 @@ tbl_listing <- function(data,
   }
 
   # add class and attributes ---------------------------------------------------
-  structure(
+  x <- structure(
     x,
     class = c("tbl_listing", "gtsummary")
   )
