@@ -34,8 +34,7 @@ theme_gtsummary_roche()
 #> Setting theme "Roche"
 
 tbl <- trial |>
-  tbl_roche_summary(by = trt, include = c(age, grade), nonmissing = "always") |>
-  add_blank_row()
+  tbl_roche_summary(by = trt, include = c(age, grade), nonmissing = "always")
 ```
 
 <img src="man/figures/README-tbl_print_simple-1.png" width="40%" />

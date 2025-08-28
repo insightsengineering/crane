@@ -11,16 +11,16 @@ test_that("tbl_listing() works with default values", {
 
 test_that("tbl_listing(hide_duplicate_keys = FALSE) works with standard values", {
   w_duplicated_keys <- tbl_listing(tld) |>
-    lst_highlight_columns(columns = trt)
+    remove_duplicate_keys(keys = trt)
   wo_duplicated_keys <- tbl_listing(tld)
 
   expect_snapshot(w_duplicated_keys$table_body[seq(3), ])
   expect_snapshot(wo_duplicated_keys$table_body[seq(3), ])
 })
 
-test_that("tbl_listing(blank_rows_by) works with standard values", {
+test_that("tbl_listing(add_blanks_rows) works with standard values", {
   expect_no_error(
-    out <- tbl_listing(tld, blank_rows_by = age)
+    out <- tbl_listing(tld, add_blank_rows = list(variable_level = "age"))
   )
 
   # Check that the blank rows are inserted correctly every 2 rows
@@ -37,9 +37,9 @@ test_that("tbl_listing(blank_rows_by) works with standard values", {
   )
 })
 
-test_that("tbl_listing(row_split) works with standard values", {
+test_that("tbl_listing(split_by_rows) works with standard values", {
   expect_no_error(
-    out <- tbl_listing(tld, row_split = list(row_numbers = c(2, 3)))
+    out <- tbl_listing(tld, split_by_rows = list(row_numbers = c(2, 3)))
   )
   expect_length(out, 3) # 3 tables are created
 
@@ -48,9 +48,13 @@ test_that("tbl_listing(row_split) works with standard values", {
   )
 })
 
-test_that("tbl_listing(row_split, blank_rows_by) works with standard values", {
+test_that("tbl_listing(split_by_rows, add_blank_rows) works with standard values", {
   expect_no_error(
-    out <- tbl_listing(tld, row_split = list(row_numbers = c(2, 3)), blank_rows_by = trt)
+    out <- tld |>
+      tbl_listing(
+        split_by_rows = list(row_numbers = c(2, 3)),
+        add_blank_rows = list(variable_level = "trt")
+      )
   )
   expect_length(out, 3) # 3 tables are created
 
@@ -59,11 +63,11 @@ test_that("tbl_listing(row_split, blank_rows_by) works with standard values", {
   )
 })
 
-test_that("tbl_listing(col_split) works with standard values", {
+test_that("tbl_listing(split_by_columns) works with standard values", {
   grps <- list(c("trt", "stage", "age"), c("trt", "stage", "marker"))
   expect_no_error(
-    out <- tbl_listing(tld, col_split = list(groups = grps)) |>
-      lst_highlight_columns(columns = trt)
+    out <- tbl_listing(tld, split_by_columns = list(groups = grps)) |>
+      remove_duplicate_keys(keys = "trt")
   )
   expect_length(out, 2) # 2 tables are created
 
@@ -72,13 +76,13 @@ test_that("tbl_listing(col_split) works with standard values", {
   )
 })
 
-test_that("tbl_listing(row_split + col_split) works with standard values", {
+test_that("tbl_listing(split_by_rows + split_by_columns) works with standard values", {
   grps <- list(c("trt", "stage", "age"), c("trt", "stage", "marker"))
   expect_no_error(
     out <- tbl_listing(tld,
-      row_split = list(row_numbers = c(2, 6)),
-      col_split = list(groups = grps),
-      blank_rows_by = trt
+      split_by_rows = list(row_numbers = c(2, 6)),
+      split_by_columns = list(groups = grps),
+      add_blank_rows = list(variable_level = "trt")
     )
   )
   expect_length(out, 6) # 6 tables are created

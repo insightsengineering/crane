@@ -2,46 +2,46 @@
 % Please edit documentation in R/tbl_listing.R
 \name{tbl_listing}
 \alias{tbl_listing}
-\alias{lst_highlight_columns}
+\alias{remove_duplicate_keys}
 \title{Create listings from a data frame}
 \usage{
-tbl_listing(data, row_split = list(), col_split = list(), blank_rows_by = NULL)
+tbl_listing(
+  data,
+  split_by_rows = list(),
+  split_by_columns = list(),
+  add_blank_rows = list()
+)
 
-lst_highlight_columns(x, columns = NULL, blank_str = "")
+remove_duplicate_keys(x, keys = NULL, value = NA)
 }
 \arguments{
 \item{data}{(\code{data.frame})\cr
 a data frame containing the data to be displayed in the listing.}
 
-\item{row_split}{(\code{list})\cr
-parameters passed to \code{\link[gtsummary:tbl_split_by]{gtsummary::tbl_split_by_rows()}}.}
+\item{split_by_rows, split_by_columns, add_blank_rows}{(named \code{list})\cr
+\itemize{
+\item \code{split_by_rows}: Named list of arguments that are passed to \code{gtsummary::tbl_split_by_rows()}.
+\item \code{split_by_columns}: Named list of arguments that are passed to \code{gtsummary::tbl_split_by_columns()}.
+\item \code{add_blank_rows}: Named list of arguments that are passed to \code{crane::add_blank_rows()}.
+\code{add_blank_rows()} is applied after table splitting and applied to each table individually.
+}
 
-\item{col_split}{(\code{list})\cr
-parameters passed to \code{\link[gtsummary:tbl_split_by]{gtsummary::tbl_split_by_columns()}}.}
-
-\item{blank_rows_by}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-columns where changing values is highlighted by a blank row. It depends substantially on the columns'
-sorting. See \code{\link[=add_blank_row]{add_blank_row()}} for more information. Defaults to \code{NULL}.}
+\emph{Variable names passed in these named lists must be character vectors; tidyselect/unquoted syntax is not accepted.}}
 
 \item{x}{(\code{tbl_listing} or \code{list})\cr
 a \code{tbl_listing} object or a list of \code{tbl_listing} objects.}
 
-\item{columns}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+\item{keys}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 columns to highlight for duplicate values. If \code{NULL}, nothing is done.}
 
-\item{blank_str}{(\code{string})\cr
-string to use for blank values. Defaults to \code{""}. It should not be changed.}
+\item{value}{(\code{string})\cr
+string to use for blank values. Defaults to \code{NA}. It should not be changed.}
 }
 \description{
 This function creates a listing from a data frame. Common uses
 rely on few pre-processing steps, such as ensuring unique values in key columns or split
 by rows or columns. They are described in the note section.
 }
-\section{Functions}{
-\itemize{
-\item \code{lst_highlight_columns()}: adds blank values for duplicate columns.
-
-}}
 \note{
 Common pre-processing steps for the data frame that may be common:
 \itemize{
@@ -52,15 +52,15 @@ they need to be displayed in the listing. See example 3.
 }
 \subsection{Splitting the listing}{
 \itemize{
-\item Split by rows - you can split the data frame by rows by using \code{row_split} parameter. You can use the same
+\item Split by rows - you can split the data frame by rows by using \code{split_by_rows} parameter. You can use the same
 parameters used in \code{\link[gtsummary:tbl_split_by]{gtsummary::tbl_split_by_rows()}}. See example 4.
-\item Split by columns - you can split the data frame by columns by using \code{col_split} parameter. Use the same
+\item Split by columns - you can split the data frame by columns by using \code{split_by_columns} parameter. Use the same
 parameters from \code{\link[gtsummary:tbl_split_by]{gtsummary::tbl_split_by_rows()}}. See example 5.
 }
 }
 }
 \examples{
-\dontshow{if (rlang::is_installed("labelled")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (crane:::is_pkg_installed("labelled")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # Load the trial dataset
 trial_data <- trial |>
   dplyr::select(trt, age, marker, stage) |>
@@ -72,7 +72,7 @@ trial_data <- trial |>
 # Example 1 --------------------------------
 out <- tbl_listing(trial_data)
 out
-out |> lst_highlight_columns(columns = trt)
+out |> remove_duplicate_keys(keys = "trt")
 
 # Example 2 --------------------------------
 # make NAs explicit
@@ -82,36 +82,36 @@ tbl_listing(trial_data_na)
 
 # Example 3 --------------------------------
 # Add blank rows for first key column
-lst <- tbl_listing(trial_data_na, blank_rows_by = trt)
+lst <- tbl_listing(trial_data_na, add_blank_rows = list(variable_level = "trt"))
 lst
 
 # Can add them also manually in post-processing
-lst |> add_blank_row(row_numbers = seq(2))
+lst |> add_blank_rows(row_numbers = seq(2))
 
 # Example 4 --------------------------------
 # Split by rows
-list_lst <- tbl_listing(trial_data, row_split = list(row_numbers = c(2, 3, 4)))
+list_lst <- tbl_listing(trial_data, split_by_rows = list(row_numbers = c(2, 3, 4)))
 list_lst[[2]]
 
 # Example 5 --------------------------------
 # Split by columns
 show_header_names(lst)
 grps <- list(c("trt", "stage", "age"), c("trt", "stage", "marker"))
-list_lst <- tbl_listing(trial_data, col_split = list(groups = grps))
+list_lst <- tbl_listing(trial_data, split_by_columns = list(groups = grps))
 list_lst[[2]]
 
 # Example 6 --------------------------------
 # Split by rows and columns
 list_lst <- tbl_listing(trial_data,
-  row_split = list(row_numbers = c(2, 3, 4)), col_split = list(groups = grps)
+  split_by_rows = list(row_numbers = c(2, 3, 4)), split_by_columns = list(groups = grps)
 )
 length(list_lst) # 8 tables are flatten out
 list_lst[[2]]
-\dontshow{\}) # examplesIf}
+
 # Example 7 --------------------------------
 # Hide duplicate columns in post-processing
 out <- list_lst |>
-  lst_highlight_columns(columns = c(trt, stage))
+  remove_duplicate_keys(keys = c("trt", "stage"))
 out[[2]]
-
+\dontshow{\}) # examplesIf}
 }
