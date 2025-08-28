@@ -51,7 +51,7 @@
 #' )
 #' ```
 #'
-#' @examples
+#' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true")
 #' library(dplyr, warn.conflicts = FALSE)
 #'
 #' # subsetting ADLB on one PARAM, and the highest grade

@@ -4,16 +4,21 @@
 \alias{add_blank_row}
 \title{Add Blank Row}
 \usage{
-add_blank_row(x, variables = NULL, row_numbers = NULL)
+add_blank_row(x, variables = NULL, row_numbers = NULL, variable_level = NULL)
 }
 \arguments{
 \item{x}{(\code{gtsummary})\cr
 a 'gtsummary' table. The table must include a column named \code{'variable'}
 in \code{x$table_body}.}
 
-\item{variables, row_numbers}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}} or \code{integer})\cr
-variables or row numbers at which a blank row needs to be added. If none is selected,
-\code{variables = everything()} is used, which adds a blank row after every variable.}
+\item{variables, row_numbers, variable_level}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}} or \code{integer})\cr
+\itemize{
+\item \code{variables}: When a table contains variable summaries, use this argument
+to add blank rows below the specified variable block.
+\item \code{row_numbers}: Add blank rows after each row number specified.
+\item \code{variable_level}: A single column name in \code{x$table_body} and blank rows
+will be added after each unique level.
+}}
 }
 \value{
 updated 'gtsummary' table.
@@ -35,7 +40,7 @@ trial |>
     include = c(age, marker, grade),
     nonmissing = "always"
   ) |>
-  add_blank_row()
+  add_blank_row(variables = everything())
 
 # Example 2 ----------------------------------
 trial |>
@@ -45,14 +50,4 @@ trial |>
     nonmissing = "always"
   ) |>
   add_blank_row(variables = age)
-
-# Example 3 ----------------------------------
-trial |>
-  tbl_roche_summary(
-    by = trt, statistic = age ~ "{mean}",
-    include = c(age, grade),
-    nonmissing = "no"
-  ) |>
-  add_blank_row(age, row_numbers = c(1, 1)) # can add multiple blank lines
-
 }
