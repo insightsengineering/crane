@@ -83,6 +83,9 @@ test_that("tbl_listing(row_split + col_split) works with standard values", {
   )
   expect_length(out, 6) # 6 tables are created
 
+  expect_s3_class(out, "tbl_split")
+  expect_s3_class(out[[4]], "tbl_listing")
+
   expect_snapshot(
     out[[4]]$table_body
   )
