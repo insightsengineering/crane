@@ -49,8 +49,7 @@ add_blank_row <- function(x, variables = NULL, row_numbers = NULL, variable_leve
   check_class(x, "gtsummary")
   if ("variable" %in% names(x$table_body)) {
     cards::process_selectors(gtsummary::scope_table_body(x$table_body), variables = {{ variables }})
-  }
-  else if (tryCatch(!is_empty(variables), error = \(e) TRUE)) {
+  } else if (tryCatch(!is_empty(variables), error = \(e) TRUE)) {
     cli::cli_abort(
       "The {.arg variables} argument cannot be specified when {.code x$table_body}
        does not have a column named {.val variable}.",
@@ -82,7 +81,7 @@ add_blank_row <- function(x, variables = NULL, row_numbers = NULL, variable_leve
     include_bounds = c(TRUE, TRUE),
     range = c(1L, nrow(x$table_body)),
     message = c("Argument {.arg row_numbers} is out of bounds.",
-                i = "Must be between {.val {1}} and {.val {nrow(x$table_body)}}."
+      i = "Must be between {.val {1}} and {.val {nrow(x$table_body)}}."
     ),
     envir = current_env(),
     allow_empty = TRUE
@@ -100,20 +99,21 @@ add_blank_row <- function(x, variables = NULL, row_numbers = NULL, variable_leve
       dplyr::filter(.data$variable %in% variables) |>
       dplyr::filter(.by = "variable", dplyr::row_number() == dplyr::n()) |>
       deframe()
-  }
-  else if (!is_empty(variable_level)) {
+  } else if (!is_empty(variable_level)) {
     row_indices <-
       x$table_body[variable_level] |>
       dplyr::mutate(....crane_row_number.... = dplyr::row_number()) |>
       dplyr::filter(.by = any_of(variable_level), dplyr::row_number() == dplyr::n()) |>
       deframe()
-  }
-  else {
+  } else {
     row_indices <- row_numbers
   }
 
   # remove the last row if specified, and sort and reverse the order
-  row_indices <- setdiff(row_indices, nrow(x$table_body)) |> sort() |> unique() |> rev()
+  row_indices <- setdiff(row_indices, nrow(x$table_body)) |>
+    sort() |>
+    unique() |>
+    rev()
 
   # cycle through the row indices and add a blank row after each
   for (i in seq_along(row_indices)) {
