@@ -105,28 +105,31 @@ style_roche_ratio <- function(x,
                               decimal.mark = getOption("OutDec"),
                               ...) {
   dplyr::case_when(
+    # Lower threshold
     x < 10 ^ (-digits) ~
       gtsummary::style_number(
         x = 10 ^ (-digits),
         digits = digits,
-        prefix = paste0(prefix, "< "),
+        prefix = paste0(prefix, "<"),
         suffix = suffix,
         scale = scale,
         big.mark = big.mark,
         decimal.mark = decimal.mark,
         ...
       ),
+    # Upper threshold
     x > 1000 - 10 ^ (-digits) ~
       gtsummary::style_number(
         x = 1000 - 10 ^ (-digits),
         digits = digits,
-        prefix = paste0(prefix, "> "),
+        prefix = paste0(prefix, ">"),
         suffix = suffix,
         scale = scale,
         big.mark = big.mark,
         decimal.mark = decimal.mark,
         ...
       ),
+    # All numbers not above or below threshold
     .default =
       gtsummary::style_number(
         x = x,

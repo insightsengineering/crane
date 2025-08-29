@@ -31,11 +31,11 @@ test_that("style_roche_ratio() works", {
 
   expect_equal(
     style_roche_ratio(x),
-    c("< 0.01", "0.82", "2.12", "> 999.99")
+    c("<0.01", "0.82", "2.12", ">999.99")
   )
 
   expect_equal(
     label_roche_ratio()(x),
-    c("< 0.01", "0.82", "2.12", "> 999.99")
+    c("<0.01", "0.82", "2.12", ">999.99")
   )
 })
