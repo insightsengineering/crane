@@ -1,5 +1,7 @@
 # crane 0.1.0.9058
 
+* Added formatting functions `style_roche_ratio()` and `label_roche_ratio()`. (#91)
+ 
 * Adding `tbl_baseline_chg()` function. (#62)
 
 * Making the header bold within `flextable` standard format.
@@ -18,9 +20,9 @@
 
 * Added `theme_gtsummary_roche(font_size, print_egine)` arguments to control the default font size and the print engine.
 
-* Added `roche_percent()` and `label_roche_percent()` functions.
+* Added `style_roche_percent()` and `label_roche_percent()` functions.
 
-* Updated Roche theme to use `roche_percent()` as the default function to format percentages.
+* Updated Roche theme to use `style_roche_percent()` as the default function to format percentages.
 
 * The {gtsummary} is now loaded with {crane}.
 
