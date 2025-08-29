@@ -29,7 +29,7 @@
 #'     include = c(age, marker, grade),
 #'     nonmissing = "always"
 #'   ) |>
-#'   add_blank_row(variables = everything())
+#'   add_blank_rows(variables = everything())
 #'
 #' # Example 2 ----------------------------------
 #' trial |>
@@ -38,9 +38,9 @@
 #'     include = c(age, marker, grade),
 #'     nonmissing = "always"
 #'   ) |>
-#'   add_blank_row(variables = age)
+#'   add_blank_rows(variables = age)
 #' @export
-add_blank_row <- function(x, variables = NULL, row_numbers = NULL, variable_level = NULL) {
+add_blank_rows <- function(x, variables = NULL, row_numbers = NULL, variable_level = NULL) {
   set_cli_abort_call()
   # check inputs ---------------------------------------------------------------
   check_class(x, "gtsummary")
@@ -88,7 +88,7 @@ add_blank_row <- function(x, variables = NULL, row_numbers = NULL, variable_leve
   )
 
 
-  updated_call_list <- append(x$call_list, list(add_blank_row = match.call()))
+  updated_call_list <- append(x$call_list, list(add_blank_rows = match.call()))
 
   # add blank row --------------------------------------------------------------
   # get row indices where to add blank row

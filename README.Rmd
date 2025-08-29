@@ -40,8 +40,7 @@ library(crane)
 theme_gtsummary_roche()
 
 tbl <- trial |>
-  tbl_roche_summary(by = trt, include = c(age, grade), nonmissing = "always") |>
-  add_blank_row()
+  tbl_roche_summary(by = trt, include = c(age, grade), nonmissing = "always")
 ```
 
 ```{r tbl_print_simple, include = FALSE}
