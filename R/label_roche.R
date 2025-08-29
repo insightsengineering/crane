@@ -106,9 +106,9 @@ style_roche_ratio <- function(x,
                               ...) {
   dplyr::case_when(
     # Lower threshold
-    x < 10 ^ (-digits) ~
+    x < 10^(-digits) ~
       gtsummary::style_number(
-        x = 10 ^ (-digits),
+        x = 10^(-digits),
         digits = digits,
         prefix = paste0(prefix, "<"),
         suffix = suffix,
@@ -118,9 +118,9 @@ style_roche_ratio <- function(x,
         ...
       ),
     # Upper threshold
-    x > 1000 - 10 ^ (-digits) ~
+    x > 1000 - 10^(-digits) ~
       gtsummary::style_number(
-        x = 1000 - 10 ^ (-digits),
+        x = 1000 - 10^(-digits),
         digits = digits,
         prefix = paste0(prefix, ">"),
         suffix = suffix,

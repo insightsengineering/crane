@@ -129,8 +129,7 @@ tbl_listing <- function(data,
       x <- x |>
         lapply(FUN = \(.x) exec("add_blank_rows", x = .x, !!!add_blank_rows)) |>
         structure(class = class(x))
-    }
-    else {
+    } else {
       x <- exec("add_blank_rows", x = x, !!!add_blank_rows)
     }
   }
