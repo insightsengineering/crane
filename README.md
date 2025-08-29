@@ -23,9 +23,15 @@ install.packages("crane")
 Install the development version with
 `pak::pak("insightsengineering/crane")`
 
-## Example
+## Examples
 
-This is a basic example which shows you how to solve a common problem:
+The package exports a gtsummary theme for reporting at Roche. The theme
+sets function defaults to meet reporting requirements at Roche, making
+it simpler programmers to achieve the desired results without setting
+too many arguments.
+
+The package also exports a wrapper for the `gtsummary::tbl_summary()`
+function with defaults more suited to reporting at Roche.
 
 ``` r
 library(crane)
@@ -38,3 +44,6 @@ tbl <- trial |>
 ```
 
 <img src="man/figures/README-tbl_print_simple-1.png" width="40%" />
+
+The package also exports functions for Roche adverse event reporting,
+functions for shift tables, and others.
