@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.9059</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.1.0.9060</span>
       </span>
     </div>
 
@@ -61,36 +61,41 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.1.0.9059" id="crane-0109059">crane 0.1.0.9059<a class="anchor" aria-label="anchor" href="#crane-0109059"></a></h2>
-<ul><li><p>Added formatting functions <code><a href="../reference/label_roche.html">style_roche_ratio()</a></code> and <code><a href="../reference/label_roche.html">label_roche_ratio()</a></code>. (<a href="https://github.com/insightsengineering/crane/issues/91" class="external-link">#91</a>)</p></li>
-<li><p>Adding <code><a href="../reference/tbl_baseline_chg.html">tbl_baseline_chg()</a></code> function. (<a href="https://github.com/insightsengineering/crane/issues/62" class="external-link">#62</a>)</p></li>
-<li><p>Making the header bold within <code>flextable</code> standard format.</p></li>
-<li><p>Updated Roche theme to include parentheses around Ns in header, and updated function defaults to include the parentheses in crane functions.</p></li>
-<li><p>Re-coding <code>0 / 0 (NA%)</code> to <code>0 / 0</code> in <code><a href="../reference/modify_zero_recode.html">modify_zero_recode()</a></code>. (<a href="https://github.com/insightsengineering/crane/issues/85" class="external-link">#85</a>)</p></li>
-<li><p>Added function <code><a href="../reference/tbl_shift.html">tbl_shift()</a></code> for easing the creation of shift tables. (<a href="https://github.com/insightsengineering/crane/issues/83" class="external-link">#83</a>)</p></li>
-<li><p>Added function <code><a href="../reference/tbl_hierarchical_rate_by_grade.html">tbl_hierarchical_rate_by_grade()</a></code> to summarize adverse event rates by highest toxicity grade. (<a href="https://github.com/insightsengineering/crane/issues/46" class="external-link">#46</a>)</p></li>
-<li><p>Added <code>variables</code> and <code>row_numbers</code> arguments to the <code><a href="../reference/add_blank_rows.html">add_blank_rows()</a></code> function. (<a href="https://github.com/insightsengineering/crane/issues/45" class="external-link">#45</a>)</p></li>
-<li><p>Updated <code><a href="../reference/theme_gtsummary_roche.html">theme_gtsummary_roche()</a></code> to further style results from <code>gtsummary::tbl_hierarchical*()</code> functions.</p></li>
-<li><p>Added <code>theme_gtsummary_roche(font_size, print_egine)</code> arguments to control the default font size and the print engine.</p></li>
-<li><p>Added <code><a href="../reference/label_roche.html">style_roche_percent()</a></code> and <code><a href="../reference/label_roche.html">label_roche_percent()</a></code> functions.</p></li>
-<li><p>Updated Roche theme to use <code><a href="../reference/label_roche.html">style_roche_percent()</a></code> as the default function to format percentages.</p></li>
-<li><p>The {gtsummary} is now loaded with {crane}.</p></li>
-<li>
+<h2 class="page-header" data-toc-text="0.1.0.9060" id="crane-0109060">crane 0.1.0.9060<a class="anchor" aria-label="anchor" href="#crane-0109060"></a></h2>
+<div class="section level3">
+<h3 id="new-functions-and-functionality-0-1-0-9060">New Functions and Functionality<a class="anchor" aria-label="anchor" href="#new-functions-and-functionality-0-1-0-9060"></a></h3>
+<ul><li>
 <p>The <code><a href="../reference/deprecated.html">tbl_demographics()</a></code> function has been renamed to <code><a href="../reference/tbl_roche_summary.html">tbl_roche_summary()</a></code> with the following updates. (<a href="https://github.com/insightsengineering/crane/issues/73" class="external-link">#73</a>).</p>
 <ul><li><p>Updated <code><a href="../reference/tbl_roche_summary.html">tbl_roche_summary()</a></code> to convert cells with <code>"0 (0.0%)"</code> to <code>"0"</code>.</p></li>
 <li><p>Update the <code><a href="../reference/tbl_roche_summary.html">tbl_roche_summary()</a></code> returned <code>inputs</code> list to match the <code><a href="../reference/tbl_roche_summary.html">tbl_roche_summary()</a></code> argument inputs, whereas it previously returned the <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html" class="external-link">tbl_summary()</a></code> inputs. (<a href="https://github.com/insightsengineering/crane/issues/31" class="external-link">#31</a>)</p></li>
 <li><p>Changed the default header in <code><a href="../reference/tbl_roche_summary.html">tbl_roche_summary()</a></code> tables from <code>**Characteristic**</code> to an empty string.</p></li>
 <li><p>Fix in <code><a href="../reference/tbl_roche_summary.html">tbl_roche_summary()</a></code> when a variable is all <code>NA</code> within a stratum. The zero count was displayed as <code>"0 (NA%)"</code> instead of <code>"0"</code>. (<a href="https://github.com/insightsengineering/crane/issues/60" class="external-link">#60</a>)</p></li>
 </ul></li>
+<li><p>Added function <code><a href="../reference/tbl_hierarchical_rate_by_grade.html">tbl_hierarchical_rate_by_grade()</a></code> to summarize adverse event rates by highest toxicity grade. (<a href="https://github.com/insightsengineering/crane/issues/46" class="external-link">#46</a>)</p></li>
 <li><p>Adding the <code><a href="../reference/modify_zero_recode.html">modify_zero_recode()</a></code> function that recodes <code>"0 (0.0%)"</code> to <code>"0"</code> in summary tables.</p></li>
 <li><p>Adding the <code><a href="../reference/modify_header_rm_md.html">modify_header_rm_md()</a></code> function to remove bold and italic markdown syntax from the headers of a gtsummary table. (<a href="https://github.com/insightsengineering/crane/issues/53" class="external-link">#53</a>)</p></li>
 <li><p>Adding <code><a href="../reference/tbl_hierarchical_rate_and_count.html">tbl_hierarchical_rate_and_count()</a></code> and associated S3 method <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_overall.html" class="external-link">add_overall()</a></code> to summarize hierarchical event rates and counts. (<a href="https://github.com/insightsengineering/crane/issues/36" class="external-link">#36</a>)</p></li>
-<li><p>Adding <code><a href="../reference/tbl_survfit_times.html">tbl_survfit_times()</a></code> and <code><a href="../reference/tbl_survfit_times.html">add_overall.tbl_survfit_times()</a></code></p></li>
-<li><p>Added an article giving an overview of the {crane} package. (<a href="https://github.com/insightsengineering/crane/issues/37" class="external-link">#37</a>)</p></li>
 <li><p>Added <code><a href="../reference/tbl_survfit_quantiles.html">tbl_survfit_quantiles()</a></code> and <code><a href="../reference/tbl_survfit_quantiles.html">add_overall.tbl_survfit_quantiles()</a></code> to create a table of survival quantiles. (<a href="https://github.com/insightsengineering/crane/issues/19" class="external-link">#19</a>)</p></li>
-<li><p>Added {flextable} specs for <code><a href="../reference/theme_gtsummary_roche.html">theme_gtsummary_roche()</a></code>. Mainly border line width (0.5) and footer font size (<code>font_size</code> - 1).</p></li>
-<li><p>Set <code>digits</code> to <code>NULL</code> in <code><a href="../reference/tbl_hierarchical_rate_and_count.html">tbl_hierarchical_rate_and_count()</a></code>. (<a href="https://github.com/insightsengineering/crane/issues/72" class="external-link">#72</a>)</p></li>
+<li><p>Adding <code><a href="../reference/tbl_survfit_times.html">tbl_survfit_times()</a></code> and <code><a href="../reference/tbl_survfit_times.html">add_overall.tbl_survfit_times()</a></code></p></li>
+<li><p>Adding <code><a href="../reference/tbl_baseline_chg.html">tbl_baseline_chg()</a></code> function. (<a href="https://github.com/insightsengineering/crane/issues/62" class="external-link">#62</a>)</p></li>
+<li><p>Added function <code><a href="../reference/tbl_shift.html">tbl_shift()</a></code> for easing the creation of shift tables. (<a href="https://github.com/insightsengineering/crane/issues/83" class="external-link">#83</a>)</p></li>
+<li><p>Added <code><a href="../reference/label_roche.html">style_roche_percent()</a></code> and <code><a href="../reference/label_roche.html">label_roche_percent()</a></code> functions.</p></li>
+<li><p>Added formatting functions <code><a href="../reference/label_roche.html">style_roche_ratio()</a></code> and <code><a href="../reference/label_roche.html">label_roche_ratio()</a></code>. (<a href="https://github.com/insightsengineering/crane/issues/91" class="external-link">#91</a>)</p></li>
+<li><p>Added <code>variables</code> and <code>row_numbers</code> arguments to the <code><a href="../reference/add_blank_rows.html">add_blank_rows()</a></code> function. (<a href="https://github.com/insightsengineering/crane/issues/45" class="external-link">#45</a>)</p></li>
+<li><p>Re-coding <code>0 / 0 (NA%)</code> to <code>0 / 0</code> in <code><a href="../reference/modify_zero_recode.html">modify_zero_recode()</a></code>. (<a href="https://github.com/insightsengineering/crane/issues/85" class="external-link">#85</a>)</p></li>
 </ul></div>
+<div class="section level3">
+<h3 id="other-updates-0-1-0-9060">Other Updates<a class="anchor" aria-label="anchor" href="#other-updates-0-1-0-9060"></a></h3>
+<ul><li><p>Added an article giving an overview of the {crane} package. (<a href="https://github.com/insightsengineering/crane/issues/37" class="external-link">#37</a>)</p></li>
+<li><p>The {gtsummary} is now loaded with {crane}.</p></li>
+<li><p>Updated Roche theme to bold headers for <code>flextable</code> outputs.</p></li>
+<li><p>Updated Roche theme to include parentheses around Ns in header, and updated function defaults to include the parentheses in crane functions.</p></li>
+<li><p>Updated <code><a href="../reference/theme_gtsummary_roche.html">theme_gtsummary_roche()</a></code> to further style results from <code>gtsummary::tbl_hierarchical*()</code> functions.</p></li>
+<li><p>Added <code>theme_gtsummary_roche(font_size, print_egine)</code> arguments to control the default font size and the print engine.</p></li>
+<li><p>Updated Roche theme to use <code><a href="../reference/label_roche.html">style_roche_percent()</a></code> as the default function to format percentages.</p></li>
+<li><p>Added additional {flextable} specs for <code><a href="../reference/theme_gtsummary_roche.html">theme_gtsummary_roche()</a></code>. Mainly border line width (0.5) and footer font size (<code>font_size</code> - 1).</p></li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.1.0" id="crane-010">crane 0.1.0<small>2025-02-24</small><a class="anchor" aria-label="anchor" href="#crane-010"></a></h2>
 <ul><li>Initial release</li>
