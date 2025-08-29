@@ -2,13 +2,15 @@
 % Please edit documentation in R/label_roche.R
 \name{label_roche}
 \alias{label_roche}
-\alias{roche_pvalue}
+\alias{style_roche_pvalue}
 \alias{label_roche_pvalue}
-\alias{roche_percent}
+\alias{style_roche_percent}
 \alias{label_roche_percent}
+\alias{style_roche_ratio}
+\alias{label_roche_ratio}
 \title{Formatting percent and p-values}
 \usage{
-roche_pvalue(
+style_roche_pvalue(
   x,
   big.mark = ifelse(decimal.mark == ",", " ", ","),
   decimal.mark = getOption("OutDec"),
@@ -21,11 +23,11 @@ label_roche_pvalue(
   ...
 )
 
-roche_percent(
+style_roche_percent(
   x,
+  digits = 1,
   prefix = "",
   suffix = "",
-  digits = 1,
   scale = 100,
   big.mark = ifelse(decimal.mark == ",", " ", ","),
   decimal.mark = getOption("OutDec"),
@@ -33,17 +35,38 @@ roche_percent(
 )
 
 label_roche_percent(
-  big.mark = ifelse(decimal.mark == ",", " ", ","),
+  digits = 1,
   suffix = "",
   scale = 100,
-  digits = 1,
+  big.mark = ifelse(decimal.mark == ",", " ", ","),
+  decimal.mark = getOption("OutDec"),
+  ...
+)
+
+style_roche_ratio(
+  x,
+  digits = 2,
+  prefix = "",
+  suffix = "",
+  scale = 1,
+  big.mark = ifelse(decimal.mark == ",", " ", ","),
+  decimal.mark = getOption("OutDec"),
+  ...
+)
+
+label_roche_ratio(
+  digits = 2,
+  prefix = "",
+  suffix = "",
+  scale = 1,
+  big.mark = ifelse(decimal.mark == ",", " ", ","),
   decimal.mark = getOption("OutDec"),
   ...
 )
 }
 \arguments{
 \item{x}{(\code{numeric})\cr
-Numeric vector of p-values.}
+Numeric vector}
 
 \item{big.mark}{(\code{string})\cr
 Character used between every 3 digits to separate
@@ -56,15 +79,16 @@ Default is \code{"."}  or \code{getOption("OutDec")}}
 
 \item{...}{Arguments passed on to \code{base::format()}}
 
+\item{digits}{(non-negative \code{integer})\cr
+Integer or vector of integers specifying the number of decimals
+to round \code{x}. When vector is passed, each integer is mapped 1:1 to the
+numeric values in \code{x}}
+
 \item{prefix}{(\code{string})\cr
 Additional text to display before the number.}
 
 \item{suffix}{(\code{string})\cr
 Additional text to display after the number.}
-
-\item{digits}{(\code{integer})\cr
-Number of digits large p-values are rounded. Must be 1, 2, or 3.
-Default is 1.}
 
 \item{scale}{(scalar \code{numeric})\cr
 A scaling factor: \code{x} will be multiplied by scale before formatting.}
@@ -76,18 +100,25 @@ A character vector of rounded p-values
 \itemize{
 \item \code{label_roche_pvalue()} returns formatted p-values.
 \item \code{label_roche_percent()} returns formatted percent values. This function only formats percentages between 0 and 1.
+\item \code{label_roche_ratio()} returns formatted ratios with values below and above a threshold being returned as \verb{< 0.1} and \verb{> 999.9}, for example, when \code{digits=1}.
 }
 }
 \examples{
 # p-value formatting
 x <- c(0.0000001, 0.123456)
 
-roche_pvalue(x)
+style_roche_pvalue(x)
 label_roche_pvalue()(x)
 
 # percent formatting
 x <- c(0.0008, 0.9998)
 
-roche_percent(x)
+style_roche_percent(x)
 label_roche_percent()(x)
+
+# ratio formatting
+x <- c(0.0008, 0.8234, 2.123, 1000)
+
+style_roche_ratio(x)
+label_roche_ratio()(x)
 }
