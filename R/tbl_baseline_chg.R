@@ -25,7 +25,7 @@
 #' @return a gtsummary table
 #' @name tbl_baseline_chg
 #'
-#' @examples
+#' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true")
 #' theme_gtsummary_roche()
 #'
 #' df <- cards::ADLB |>

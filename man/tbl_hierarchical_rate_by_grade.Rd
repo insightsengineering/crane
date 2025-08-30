@@ -144,6 +144,7 @@ and the SOC variable is included in \code{include_overall} the \verb{- Any adver
 See \code{\link[gtsummary:filter_hierarchical]{gtsummary::filter_hierarchical()}} for more details and examples.
 }
 \examples{
+\dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 theme_gtsummary_roche()
 ADSL <- cards::ADSL
 ADAE_subset <- cards::ADAE |>
@@ -184,4 +185,5 @@ tbl_hierarchical_rate_by_grade(
   filter = sum(n) / sum(N) > 0.10
 ) |>
   add_overall(last = TRUE)
+\dontshow{\}) # examplesIf}
 }

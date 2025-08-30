@@ -53,7 +53,7 @@
 #' @returns a gtsummary table of class `"tbl_hierarchical_rate_by_grade"`.
 #' @name tbl_hierarchical_rate_by_grade
 #'
-#' @examples
+#' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true")
 #' theme_gtsummary_roche()
 #' ADSL <- cards::ADSL
 #' ADAE_subset <- cards::ADAE |>
