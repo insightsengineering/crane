@@ -72,26 +72,25 @@ tbl_baseline_chg <- function(data,
   # ---- Type and content checks ----
   check_data_frame(data)
   check_data_frame(denominator)
-  check_string(analysis_variable)
-  check_string(change_variable)
-  check_string(id)
-  check_string(visit)
-  check_string(visit_number)
+  check_not_missing(id)
+  check_not_missing(visit)
+  check_not_missing(visit_number)
+  check_not_missing(analysis_variable)
+  check_not_missing(change_variable)
+  cards::process_selectors(
+    data,
+    by = {{ by }}, id = {{ id }}, visit = {{ visit }}, visit_number = {{ visit_number }},
+    analysis_variable = {{ analysis_variable }}, change_variable = {{ change_variable }}
+  )
   check_scalar(baseline_level, message = "The {.arg baseline_level} must be a scalar (single value).")
 
   # Allow `by` to be NULL or a string
   check_scalar(by, allow_empty = TRUE, message = "The {.arg by} argument must select exactly one variable or none.")
 
-  # Check that `by` exists in data if not NULL
-  if (!is.null(by) && !by %in% names(data)) {
-    cli::cli_abort("The variable {.val {by}} specified in {.arg by} is not found in {.arg data}.")
-  }
-
   # Check that `baseline_level` is one of the visit values
   if (!(baseline_level %in% data[[visit]])) {
     cli::cli_abort("The {.arg baseline_level} {.val {baseline_level}} is not found in the {.val {visit}} variable.")
   }
-  cards::process_selectors(data, visit = {{ visit }}, analysis_variable = {{ analysis_variable }}, change_variable = {{ change_variable }}, by = {{ by }}, visit_number = {{ visit_number }})
   tbl_baseline_inputs <- as.list(environment())
 
   # build summary table -----------------------------------------------------

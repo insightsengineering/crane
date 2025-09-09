@@ -16,7 +16,7 @@ test_that("tbl_baseline_chg() works", {
       tbl_baseline_chg(
         data = df,
         baseline_level = "Baseline",
-        by = "TRTA",
+        by = TRTA,
         denominator = cards::ADSL
       )
   )
