@@ -72,6 +72,7 @@ tbl_baseline_chg <- function(data,
   # ---- Type and content checks ----
   check_data_frame(data)
   check_data_frame(denominator)
+  check_string(baseline_level)
   check_not_missing(id)
   check_not_missing(visit)
   check_not_missing(visit_number)
@@ -82,10 +83,12 @@ tbl_baseline_chg <- function(data,
     by = {{ by }}, id = {{ id }}, visit = {{ visit }}, visit_number = {{ visit_number }},
     analysis_variable = {{ analysis_variable }}, change_variable = {{ change_variable }}
   )
-  check_scalar(baseline_level, message = "The {.arg baseline_level} must be a scalar (single value).")
-
-  # Allow `by` to be NULL or a string
-  check_scalar(by, allow_empty = TRUE, message = "The {.arg by} argument must select exactly one variable or none.")
+  check_scalar(by, allow_empty = TRUE)
+  check_scalar(id)
+  check_scalar(visit)
+  check_scalar(visit_number)
+  check_scalar(analysis_variable)
+  check_scalar(change_variable)
 
   # Check that `baseline_level` is one of the visit values
   if (!(baseline_level %in% data[[visit]])) {
