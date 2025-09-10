@@ -21,6 +21,22 @@ test_that("tbl_baseline_chg() works", {
       )
   )
   expect_snapshot(as.data.frame(tbl)[1:25, 1:5])
+
+  # non-string variable input works
+  expect_silent(
+    tbl <-
+      tbl_baseline_chg(
+        data = df,
+        baseline_level = "Baseline",
+        by = TRTA,
+        id = USUBJID,
+        visit = AVISIT,
+        visit_number = AVISITN,
+        analysis_variable = AVAL,
+        change_variable = CHG,
+        denominator = cards::ADSL
+      )
+  )
 })
 
 test_that("tbl_baseline_chg() works with no `by` variable", {

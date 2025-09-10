@@ -99,7 +99,7 @@ When creating a filtered summary, use \code{gtsummary::tbl_hierarchical()} or
 \code{gtsummary::filter_hierarchical()}.
 }
 \examples{
-\dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true")) withAutoprint(\{ # examplesIf}
 # Example 1 ----------------------------------
 cards::ADAE[c(1, 2, 3, 8, 16), ] |>
   tbl_hierarchical_rate_and_count(
