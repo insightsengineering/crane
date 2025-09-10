@@ -94,7 +94,7 @@ headers, indentation, column alignment, etc.
 }\if{html}{\out{</div>}}
 }
 \examples{
-\dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true")) withAutoprint(\{ # examplesIf}
 library(dplyr, warn.conflicts = FALSE)
 
 # subsetting ADLB on one PARAM, and the highest grade

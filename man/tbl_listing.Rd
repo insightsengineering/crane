@@ -60,7 +60,7 @@ parameters from \code{\link[gtsummary:tbl_split_by]{gtsummary::tbl_split_by_rows
 }
 }
 \examples{
-\dontshow{if (crane:::is_pkg_installed("labelled")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (crane:::is_pkg_installed("labelled")) withAutoprint(\{ # examplesIf}
 # Load the trial dataset
 trial_data <- trial |>
   dplyr::select(trt, age, marker, stage) |>
