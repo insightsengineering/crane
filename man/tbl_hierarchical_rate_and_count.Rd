@@ -11,6 +11,7 @@ tbl_hierarchical_rate_and_count(
   denominator,
   by = NULL,
   id = "USUBJID",
+  label = NULL,
   digits = NULL,
   sort = NULL,
   label_overall_rate = "Total number of participants with at least one adverse event",
@@ -49,6 +50,11 @@ Default is \code{NULL}.}
 \item{id}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 argument used to subset \code{data} to identify rows in \code{data} to calculate
 event rates in \code{tbl_hierarchical()}.}
+
+\item{label}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
+used to override default labels in hierarchical table, e.g. \code{list(AESOC = "System Organ Class")}.
+The default for each variable is the column label attribute, \code{attr(., 'label')}.
+If no label has been set, the column name is used.}
 
 \item{digits}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
 Specifies how summary statistics are rounded. Values may be either integer(s) or function(s).

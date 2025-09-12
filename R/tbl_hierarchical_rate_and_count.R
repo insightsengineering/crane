@@ -60,6 +60,7 @@ tbl_hierarchical_rate_and_count <- function(data,
                                             denominator,
                                             by = NULL,
                                             id = "USUBJID",
+                                            label = NULL,
                                             digits = NULL,
                                             sort = NULL,
                                             label_overall_rate = "Total number of participants with at least one adverse event",
@@ -99,6 +100,20 @@ tbl_hierarchical_rate_and_count <- function(data,
   # saving function inputs
   tbl_hierarchical_rate_and_count_inputs <- as.list(environment())
 
+  # process labels -------------------------------------------------------------
+  df_variables <- data[variables] |> dplyr::mutate(..ard_hierarchical_overall.. = data[[variables[1]]])
+
+  # add a default label to the overall row - we update it later to say counts
+  attr(df_variables[["..ard_hierarchical_overall.."]], "label") <- label_overall_rate
+
+  cards::process_formula_selectors(df_variables, label = label)
+
+  # fill in unspecified labels
+  cards::fill_formula_selectors(
+    df_variables,
+    label = lapply(names(df_variables), \(x) attr(df_variables[[x]], "label") %||% x) |> stats::setNames(names(df_variables))
+  )
+
   # build AE rates table -------------------------------------------------------
   tbl_rates <-
     gtsummary::tbl_hierarchical(
@@ -109,7 +124,7 @@ tbl_hierarchical_rate_and_count <- function(data,
       denominator = denominator,
       id = all_of(id),
       overall_row = TRUE,
-      label = list(..ard_hierarchical_overall.. = label_overall_rate),
+      label = label,
       digits = digits
     ) |>
     gtsummary::remove_footnote_header()
@@ -131,8 +146,7 @@ tbl_hierarchical_rate_and_count <- function(data,
       include = all_of(variables),
       by = all_of(by),
       overall_row = TRUE,
-      # this label needs to match tbl_rates. We update it later to say counts
-      label = list(..ard_hierarchical_overall.. = label_overall_rate),
+      label = label,
       digits = tbl_rates$inputs$digits
     )
 
