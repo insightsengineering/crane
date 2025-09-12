@@ -3,7 +3,7 @@
     Code
       as.data.frame(tbl)
     Output
-            Body System or Organ Class  \n    Dictionary-Derived Term Placebo  \n(N = 86) Xanomeline High Dose  \n(N = 84) Xanomeline Low Dose  \n(N = 84) All Participants  \n(N = 254)
+              Body System or Organ Class  \n    MedDRA Preferred Term Placebo  \n(N = 86) Xanomeline High Dose  \n(N = 84) Xanomeline Low Dose  \n(N = 84) All Participants  \n(N = 254)
       1  Total number of participants with at least one adverse event            3 (3.5%)                         2 (2.4%)                        1 (1.2%)                      6 (2.4%)
       2                                Overall total number of events                   5                                4                               1                            10
       3                                    GASTROINTESTINAL DISORDERS                <NA>                             <NA>                            <NA>                          <NA>
