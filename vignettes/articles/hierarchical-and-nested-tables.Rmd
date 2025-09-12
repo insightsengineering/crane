@@ -23,7 +23,6 @@ theme_gtsummary_compact()
 
 To begin, let's create a basic `tbl_hierarchical()` adverse event table summarizing adverse events (AEs) within System Organ Class (SOC).
 
-
 ```{r tbl_hierarchical}
 ADAE_subset <- cards::ADAE |>
   dplyr::filter(AEBODSYS %in% c("SKIN AND SUBCUTANEOUS TISSUE DISORDERS", "EAR AND LABYRINTH DISORDERS")) |>
@@ -211,14 +210,24 @@ Hierarchical tables can be further customized after creation by sorting and filt
 
 By default, hierarchical tables are sorted alphanumerically at each level of the hierarchy. 
 
-By applying the `sort_hierarchical()` function to an existing hierarchical table the sort order can be changed to "descending" - sorting rows by descending event rate/count sum at each level of the hierarchy such that the most prevalent events will be listed first.
+By applying the `sort_hierarchical()` function to an existing hierarchical table the sort order can be changed at each level of the hierarchy to "descending" - sorting rows by descending event rate/count sum such that the most prevalent events will be listed first.
+
+The `sort` argument to `sort_hierarchical()` can accept either:
+
+- a string specifying the sorting criteria (`"descending"` or `"alphanumeric"`) to apply at all levels of the hierarchy, or
+- a named list, a list of formulas, or a single formula specifying the sorting criteria to apply at specific levels of the hierarchy.
+
+By default `sort_hierarchical()` changes the sorting criteria to "descending" at all levels of the hierarchy.
 
 In addition to sorting, hierarchical tables can also be filtered using `filter_hierarchical()`, which uses a given expression to filter out rows of the table. 
 
 For examples of possible filters please see the documentation for the `filter_hierarchical()` function. 
 
-Filtering is only applied at the innermost hierarchy level, with all summary rows from outer hierarchy levels kept. 
-If all rows of a section are filtered out then the summary row for that section is also removed unless `keep_empty = TRUE` is specified. 
+Filtering can be applied at any hierarchy level, but defaults to the innermost level of the hierarchy with all summary rows from corresponding outer hierarchy levels kept.
+
+To change the variable level of the hierarchy at which filtering is applied you can specify the `var` argument to `filter_hierarchical()`.
+
+If all rows of a section are filtered out then the summary row for that section is also removed unless `keep_empty = TRUE` is specified.
 
 If the table contains an overall column then this column is ignored when filtering.
 
@@ -237,8 +246,8 @@ tbl <-
   add_overall()
 
 tbl |>
-  sort_hierarchical("descending") |>
-  filter_hierarchical(filter = sum(n) > 1)
+  sort_hierarchical(everything() ~ "descending") |>
+  filter_hierarchical(filter = n_overall > 1)
 ```
 
 ## Tables with Stratified Nesting: `tbl_strata_nested_stack()`
