@@ -2,6 +2,8 @@
 
 * Updated variable processing in `tbl_baseline_chg()` to allow for non-string input. (#114)
 
+* Updated details about the `sort_hierarchical()` and `filter_hierarchical()` functions in the hierarchical tables article. (#116)
+
 # crane 0.2.0
 
 ## New Functions and Functionality
