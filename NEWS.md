@@ -4,6 +4,8 @@
 
 * Updated details about the `sort_hierarchical()` and `filter_hierarchical()` functions in the hierarchical tables article. (#116)
 
+* Added the `label` argument to `tbl_hierarchical_rate_and_count()` to set hierarchy variables labels in the table header. (#118)
+
 # crane 0.2.0
 
 ## New Functions and Functionality
