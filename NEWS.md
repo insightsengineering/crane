@@ -1,4 +1,4 @@
-# crane 0.2.0.9002
+# crane 0.2.0.9003
 
 * Updated variable processing in `tbl_baseline_chg()` to allow for non-string input. (#114)
 
