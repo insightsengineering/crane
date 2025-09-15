@@ -50,7 +50,7 @@ test_that("tbl_shift(by) messaging", {
       tbl_shift(
         data =
           dplyr::filter(adlb, PARAMCD %in% "CHOLES") |>
-            dplyr::mutate(TRT01A = as.character(TRT01A)),
+          dplyr::mutate(TRT01A = as.character(TRT01A)),
         strata = BTOXGRH,
         variable = ATOXGRH,
         by = TRT01A,

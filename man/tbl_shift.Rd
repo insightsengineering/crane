@@ -22,7 +22,7 @@ tbl_shift(
 
 \method{add_overall}{tbl_shift}(
   x,
-  col_label = "All Participants  \\n(N = {gtsummary::style_number(n)})",
+  col_label = "All Participants  \\n(N = {style_roche_number(n)})",
   last = FALSE,
   ...
 )
@@ -68,7 +68,7 @@ See details below for call details to \code{tbl_roche_summary()}.}
 Object of class \code{'tbl_shift'}.}
 
 \item{col_label}{(\code{string})\cr
-String indicating the column label. Default is \code{"All Participants \\nN = {gtsummary::style_number(n)}"}}
+String indicating the column label. Default is \code{"All Participants \\nN = {style_roche_number(n)}"}}
 
 \item{last}{(scalar \code{logical})\cr
 Logical indicator to display overall column last in table.

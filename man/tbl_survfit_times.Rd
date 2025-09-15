@@ -12,14 +12,14 @@ tbl_survfit_times(
   by = NULL,
   label = "Time {time}",
   statistic = c("{n.risk}", "{estimate}\%", "{conf.low}\%, {conf.high}\%"),
-  estimate_fun = label_style_number(digits = 1, scale = 100),
+  estimate_fun = label_roche_number(digits = 1, scale = 100),
   method.args = list(conf.int = 0.95)
 )
 
 \method{add_overall}{tbl_survfit_times}(
   x,
   last = FALSE,
-  col_label = "All Participants  \\nN = {gtsummary::style_number(N)}",
+  col_label = "All Participants  \\nN = {style_roche_number(N)}",
   ...
 )
 }

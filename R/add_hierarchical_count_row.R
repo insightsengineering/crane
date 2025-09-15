@@ -55,7 +55,7 @@ add_hierarchical_count_row <- function(x,
       include = "...row_count...",
       type = list(...row_count... = "continuous"),
       statistic = list(...row_count... = "{sum}"),
-      digits = list(...row_count... = gtsummary::label_style_number()),
+      digits = list(...row_count... = label_roche_number()),
       label = list(...row_count... = label)
     )
 

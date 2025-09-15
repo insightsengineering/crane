@@ -16,7 +16,3 @@ gtsummary::filter_hierarchical
 #' @export
 #' @importFrom gtsummary sort_hierarchical
 gtsummary::sort_hierarchical
-
-#' @export
-#' @importFrom gtsummary label_style_number
-gtsummary::label_style_number

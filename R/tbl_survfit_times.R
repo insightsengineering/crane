@@ -46,7 +46,7 @@ tbl_survfit_times <- function(data,
                               by = NULL,
                               label = "Time {time}",
                               statistic = c("{n.risk}", "{estimate}%", "{conf.low}%, {conf.high}%"),
-                              estimate_fun = label_style_number(digits = 1, scale = 100),
+                              estimate_fun = label_roche_number(digits = 1, scale = 100),
                               method.args = list(conf.int = 0.95)) {
   # check inputs ---------------------------------------------------------------
   method.args <- enquo(method.args)
@@ -90,7 +90,7 @@ tbl_survfit_times <- function(data,
     ) |>
     cards::update_ard_fmt_fun(
       stat_names = c("n.risk", "n.censor", "cum.risk", "cum.censor"),
-      fmt_fun = gtsummary::label_style_number()
+      fmt_fun = label_roche_number()
     )
 
   # calculate ARD for by vars
@@ -137,7 +137,7 @@ tbl_survfit_times <- function(data,
           label = dplyr::case_when(
             .data$label == "Number of Subjects at Risk" ~ "Patients remaining at risk",
             .data$label == "Survival Probability%" ~ "Event Free Rate (%)",
-            .data$label == "CI Lower Bound%, CI Upper Bound%" ~ glue("{gtsummary::style_number(conf.level, scale = 100)}% CI"),
+            .data$label == "CI Lower Bound%, CI Upper Bound%" ~ glue("{style_roche_number(conf.level, scale = 100)}% CI"),
             .default = .data$label
           )
         )

@@ -260,7 +260,7 @@ tbl_hierarchical_rate_and_count <- function(data,
 #' @export
 add_overall.tbl_hierarchical_rate_and_count <- function(x,
                                                         last = FALSE,
-                                                        col_label = "All Participants  \n(N = {style_number(N)})", ...) {
+                                                        col_label = "All Participants  \n(N = {style_roche_number(N)})", ...) {
   do.call(
     what = asNamespace("gtsummary")[["add_overall.tbl_hierarchical"]],
     args = list(x = x, last = last, col_label = col_label)
