@@ -210,6 +210,5 @@ label_roche_number <- function(digits = 0,
                                na = "NE",
                                inf = "NE",
                                ...) {
-
   function(x) style_roche_number(x, digits = digits, big.mark = big.mark, decimal.mark = decimal.mark, scale = scale, prefix = prefix, suffix = suffix, na = na, inf = inf, ...)
 }
