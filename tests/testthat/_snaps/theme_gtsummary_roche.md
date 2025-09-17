@@ -30,24 +30,21 @@
           color = "#666666", style = "solid"))
       
       $user_added3[[3]]
-      flextable::bold(bold = TRUE, part = "header")
-      
-      $user_added3[[4]]
       flextable::valign(valign = "top", part = "all")
       
-      $user_added3[[5]]
+      $user_added3[[4]]
       flextable::font(fontname = "Arial", part = "all")
       
-      $user_added3[[6]]
+      $user_added3[[5]]
       flextable::padding(padding.top = 0, part = "all")
       
-      $user_added3[[7]]
+      $user_added3[[6]]
       flextable::padding(padding.bottom = 0, part = "all")
       
-      $user_added3[[8]]
+      $user_added3[[7]]
       flextable::line_spacing(space = 1, part = "all")
       
-      $user_added3[[9]]
+      $user_added3[[8]]
       flextable::set_table_properties(layout = "autofit")
       
       

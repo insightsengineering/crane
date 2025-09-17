@@ -6,7 +6,6 @@
 #' - Uses `label_roche_pvalue()` as the default formatting function for all p-values.
 #' - Uses `label_roche_percent()` as the default formatting function for all percent values.
 #' - Font size defaults are 8 points for all the table by the footers that are 7 points.
-#' - If flextable-printed, header text is always bold.
 #' - Border defaults to `flextable::fp_border_default(width = 0.5)`.
 #' - The `add_overall(col_label)` default value has been updated.
 #' - The results from `gtsummary::tbl_hierarchical()` and `gtsummary::tbl_hierarchical_count()`
@@ -83,7 +82,6 @@ theme_gtsummary_roche <- function(font_size = NULL,
         valign = list( # valign only because it will append to to last commands
           rlang::expr(flextable::fontsize(size = !!((font_size %||% 8) - 1), part = "footer")), # second fontsize spec
           rlang::expr(flextable::border_outer(part = "header", border = !!border)), # second command from border
-          rlang::expr(flextable::bold(bold = TRUE, part = "header")),
           rlang::expr(flextable::valign(valign = "top", part = "all")),
           rlang::expr(flextable::font(fontname = "Arial", part = "all")),
           rlang::expr(flextable::padding(padding.top = 0, part = "all")),
