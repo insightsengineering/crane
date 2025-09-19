@@ -7,7 +7,6 @@
 \alias{add_overall}
 \alias{filter_hierarchical}
 \alias{sort_hierarchical}
-\alias{label_style_number}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -17,6 +16,6 @@ below to see their documentation.
 \describe{
   \item{dplyr}{\code{\link[dplyr:reexports]{\%>\%}}}
 
-  \item{gtsummary}{\code{\link[gtsummary]{add_overall}}, \code{\link[gtsummary]{filter_hierarchical}}, \code{\link[gtsummary:label_style]{label_style_number}}, \code{\link[gtsummary]{sort_hierarchical}}}
+  \item{gtsummary}{\code{\link[gtsummary]{add_overall}}, \code{\link[gtsummary]{filter_hierarchical}}, \code{\link[gtsummary]{sort_hierarchical}}}
 }}
 

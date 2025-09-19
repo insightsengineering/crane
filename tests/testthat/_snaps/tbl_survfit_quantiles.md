@@ -53,8 +53,7 @@
 # tbl_survfit_quantiles(estimate_fun)
 
     Code
-      as.data.frame(tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA", estimate_fun = gtsummary::label_style_number(
-        digits = 3)))
+      as.data.frame(tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA", estimate_fun = label_roche_number(digits = 3, na = NA_character_)))
     Output
                         Placebo  \n(N = 86) Xanomeline High Dose  \n(N = 84) Xanomeline Low Dose  \n(N = 84)
       1   Time to event                <NA>                             <NA>                            <NA>
