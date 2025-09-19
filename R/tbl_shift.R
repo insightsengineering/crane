@@ -55,32 +55,49 @@
 #' library(dplyr, warn.conflicts = FALSE)
 #'
 #' # subsetting ADLB on one PARAM, and the highest grade
-#' adlb <- pharmaverseadam::adlb |>
-#'   select("USUBJID", "TRT01A", "PARAM", "PARAMCD", "ATOXGRH", "BTOXGRH", "VISITNUM") |>
-#'   mutate(TRT01A = factor(TRT01A)) |>
-#'   filter(PARAMCD %in% c("CHOLES", "GLUC")) |>
-#'   slice_max(by = c(USUBJID, PARAMCD), order_by = ATOXGRH, n = 1L, with_ties = FALSE) |>
-#'   labelled::set_variable_labels(
-#'     BTOXGRH = "Baseline  \nNCI-CTCAE Grade",
-#'     ATOXGRH = "Post-baseline  \nNCI-CTCAE Grade"
-#'   )
-#' adsl <- pharmaverseadam::adsl[c("USUBJID", "TRT01A")] |>
-#'   filter(TRT01A != "Screen Failure")
+#' No ATOXGRH or BOTOXGRH in cards::ADLB, generating these variables here
+#'adlb <- cards::ADLB |>
+#'  dplyr::mutate(
+#'    ATOXGRH = factor(dplyr::case_when(
+#'      LBNRIND == "HIGH" & A1HI >= 0 & A1HI <= 30 ~ "0",
+#'      LBNRIND == "HIGH" & A1HI >= 31 & A1HI <= 100 ~ "1",
+#'      LBNRIND == "HIGH" & A1HI >= 100 & A1HI <= 300 ~ "2",
+#'      LBNRIND == "HIGH" & A1HI >= 400 & A1HI <= 500 ~ "3",
+#'      TRUE ~ NA_character_
+#'    )),
+#'    BTOXGRH = factor(dplyr::case_when(
+#'      LBNRIND == "HIGH" & BR2A1HI >= 0 & BR2A1HI <= 0.40 ~ "0",
+#'      LBNRIND == "HIGH" & BR2A1HI >= 0.41 & BR2A1HI <= 0.80 ~ "1",
+#'      LBNRIND == "HIGH" & BR2A1HI >= 0.81 & BR2A1HI <= 1.0 ~ "2",
+#'      LBNRIND == "HIGH" & BR2A1HI >= 1.1 & BR2A1HI <= 1.50 ~ "3",
+#'      TRUE ~ NA_character_
+#'    ))
+#'  ) |>
+#'  dplyr::select("USUBJID", "TRTA", "PARAM", "PARAMCD", "ATOXGRH", "BTOXGRH", "VISITNUM") |>
+#'  dplyr::mutate(TRTA = factor(TRTA)) |>
+#'  dplyr::filter(PARAMCD %in% c("CHOL", "GLUC")) |>
+#'  dplyr::slice_max(by = c(USUBJID, PARAMCD), order_by = ATOXGRH, n = 1L, with_ties = FALSE) |>
+#'  labelled::set_variable_labels(
+#'    BTOXGRH = "Baseline  \nNCI-CTCAE Grade",
+#'    ATOXGRH = "Post-baseline  \nNCI-CTCAE Grade"
+#'  )
+#' adsl <- cards::ADSL[c("USUBJID", "TRTA")] |>
+#' dplyr::mutate(TRTA = factor(TRTA))
 #'
 #' # Example 1 ----------------------------------
 #' # tabulate baseline grade by worst grade
 #' tbl_shift(
-#'   data = filter(adlb, PARAMCD %in% "CHOLES"),
+#'   data = filter(adlb, PARAMCD %in% "CHOL"),
 #'   strata = BTOXGRH,
 #'   variable = ATOXGRH,
-#'   by = TRT01A,
+#'   by = TRTA,
 #'   data_header = adsl
 #' )
 #'
 #' # Example 2 ----------------------------------
 #' # same as Ex1, but with the stratifying variable levels in header rows
 #' adlb |>
-#'   filter(PARAMCD %in% "CHOLES") |>
+#'   filter(PARAMCD %in% "CHOL") |>
 #'   labelled::set_variable_labels(
 #'     BTOXGRH = "Baseline NCI-CTCAE Grade",
 #'     ATOXGRH = "Post-baseline NCI-CTCAE Grade"
@@ -90,7 +107,7 @@
 #'     strata = BTOXGRH,
 #'     variable = ATOXGRH,
 #'     strata_location = "header",
-#'     by = TRT01A,
+#'     by = TRTA,
 #'     data_header = adsl
 #'   )
 #'
@@ -108,7 +125,7 @@
 #'         strata = BTOXGRH,
 #'         variable = ATOXGRH,
 #'         strata_location = "header",
-#'         by = TRT01A,
+#'         by = TRTA,
 #'         data_header = adsl
 #'       )
 #'   ) |>
@@ -121,19 +138,18 @@
 #'
 #' # Example 4 ----------------------------------
 #' # Include the treatment variable in a new column
-#' filter(adlb, PARAMCD %in% "CHOLES") |>
+#' filter(adlb, PARAMCD %in% "CHOL") |>
 #'   right_join(
-#'     pharmaverseadam::adsl[c("USUBJID", "TRT01A")] |>
-#'       filter(TRT01A != "Screen Failure"),
-#'     by = c("USUBJID", "TRT01A")
+#'     cards::ADSL[c("USUBJID", "TRTA")],
+#'     by = c("USUBJID", "TRTA")
 #'   ) |>
 #'   tbl_shift(
-#'     strata = TRT01A,
+#'     strata = TRTA,
 #'     variable = BTOXGRH,
 #'     by = ATOXGRH,
 #'     header = "{level}",
 #'     strata_label = "{strata}, N={n}",
-#'     label = list(TRT01A = "Actual Treatment"),
+#'     label = list(TRTA = "Actual Treatment"),
 #'     percent = "cell",
 #'     nonmissing = "no"
 #'   ) |>
