@@ -1,29 +1,19 @@
-# No ATOXGRH or BOTOXGRH in cards::ADLB, generating these variables here
+# Add grade variation to cards::ADLB `ANRIND` and `BNRIND`
+set.seed(78)
 adlb <- cards::ADLB |>
   dplyr::mutate(
-    ATOXGRH = factor(dplyr::case_when(
-      LBNRIND == "HIGH" & A1HI >= 0 & A1HI <= 30 ~ "0",
-      LBNRIND == "HIGH" & A1HI >= 31 & A1HI <= 100 ~ "1",
-      LBNRIND == "HIGH" & A1HI >= 100 & A1HI <= 300 ~ "2",
-      LBNRIND == "HIGH" & A1HI >= 400 & A1HI <= 500 ~ "3",
-      TRUE ~ NA_character_
-    )),
-    BTOXGRH = factor(dplyr::case_when(
-      LBNRIND == "HIGH" & BR2A1HI >= 0 & BR2A1HI <= 0.40 ~ "0",
-      LBNRIND == "HIGH" & BR2A1HI >= 0.41 & BR2A1HI <= 0.80 ~ "1",
-      LBNRIND == "HIGH" & BR2A1HI >= 0.81 & BR2A1HI <= 1.0 ~ "2",
-      LBNRIND == "HIGH" & BR2A1HI >= 1.1 & BR2A1HI <= 1.50 ~ "3",
-      TRUE ~ NA_character_
-    ))
+    ANRIND = ifelse(is.na(ANRIND), NA, sample(c("High", "Low", "Normal"), dplyr::n(), replace = TRUE, prob = c(0.6, 0.2, 0.2))),
+    BNRIND = ifelse(is.na(BNRIND), NA, sample(c("High", "Low", "Normal"), dplyr::n(), replace = TRUE, prob = c(0.4, 0.4, 0.2)))
   ) |>
-  dplyr::select("USUBJID", "TRTA", "PARAM", "PARAMCD", "ATOXGRH", "BTOXGRH", "VISITNUM") |>
+  dplyr::select("USUBJID", "TRTA", "PARAM", "PARAMCD", "ANRIND", "BNRIND", "VISITNUM") |>
   dplyr::mutate(TRTA = factor(TRTA)) |>
   dplyr::filter(PARAMCD %in% c("CHOL", "GLUC")) |>
-  dplyr::slice_max(by = c(USUBJID, PARAMCD), order_by = ATOXGRH, n = 1L, with_ties = FALSE) |>
+  dplyr::slice_max(by = c(USUBJID, PARAMCD), order_by = ANRIND, n = 1L, with_ties = FALSE) |>
   labelled::set_variable_labels(
-    BTOXGRH = "Baseline  \nNCI-CTCAE Grade",
-    ATOXGRH = "Post-baseline  \nNCI-CTCAE Grade"
+    BNRIND = "Baseline  \nNCI-CTCAE Grade",
+    ANRIND = "Post-baseline  \nNCI-CTCAE Grade"
   )
+
 adsl <- cards::ADSL[c("USUBJID", "TRTA")] |>
   dplyr::mutate(TRTA = factor(TRTA))
 
@@ -35,8 +25,8 @@ test_that("tbl_shift(strata_location)", {
     tbl <-
       tbl_shift(
         data = dplyr::filter(adlb, PARAMCD %in% "CHOL"),
-        strata = BTOXGRH,
-        variable = ATOXGRH,
+        strata = BNRIND,
+        variable = ANRIND,
         by = TRTA,
         data_header = adsl,
         strata_location = "new_column"
@@ -48,8 +38,8 @@ test_that("tbl_shift(strata_location)", {
     tbl <-
       tbl_shift(
         data = dplyr::filter(adlb, PARAMCD %in% "CHOL"),
-        strata = BTOXGRH,
-        variable = ATOXGRH,
+        strata = BNRIND,
+        variable = ANRIND,
         by = TRTA,
         data_header = adsl,
         strata_location = "header"
@@ -68,8 +58,8 @@ test_that("tbl_shift(by) messaging", {
         data =
           dplyr::filter(adlb, PARAMCD %in% "CHOL") |>
             dplyr::mutate(TRTA = as.character(TRTA)),
-        strata = BTOXGRH,
-        variable = ATOXGRH,
+        strata = BNRIND,
+        variable = ANRIND,
         by = TRTA,
         data_header = adsl,
         strata_location = "new_column"
@@ -85,8 +75,8 @@ test_that("tbl_shift(data_header) messaging", {
     error = TRUE,
     tbl_shift(
       data = dplyr::filter(adlb, PARAMCD %in% "CHOL"),
-      strata = BTOXGRH,
-      variable = ATOXGRH,
+      strata = BNRIND,
+      variable = ANRIND,
       data_header = adsl |> dplyr::mutate(asldfk = TRUE),
       strata_location = "new_column"
     )
@@ -102,8 +92,8 @@ test_that("add_overall.tbl_shift()", {
     tbl <-
       tbl_shift(
         data = dplyr::filter(adlb, PARAMCD %in% "CHOL"),
-        strata = BTOXGRH,
-        variable = ATOXGRH,
+        strata = BNRIND,
+        variable = ANRIND,
         by = TRTA,
         data_header = adsl,
         strata_location = "new_column"
@@ -117,8 +107,8 @@ test_that("add_overall.tbl_shift()", {
     tbl <-
       tbl_shift(
         data = dplyr::filter(adlb, PARAMCD %in% "CHOL"),
-        strata = BTOXGRH,
-        variable = ATOXGRH,
+        strata = BNRIND,
+        variable = ANRIND,
         by = TRTA,
         data_header = adsl,
         strata_location = "header"
@@ -137,8 +127,8 @@ test_that("add_overall.tbl_shift() messaging", {
     tbl <-
       tbl_shift(
         data = dplyr::filter(adlb, PARAMCD %in% "CHOL"),
-        strata = BTOXGRH,
-        variable = ATOXGRH,
+        strata = BNRIND,
+        variable = ANRIND,
         by = TRTA,
         data_header = adsl,
         strata_location = "new_column"
@@ -155,8 +145,8 @@ test_that("add_overall.tbl_shift() messaging", {
     tbl <-
       tbl_shift(
         data = dplyr::filter(adlb, PARAMCD %in% "CHOL"),
-        strata = BTOXGRH,
-        variable = ATOXGRH,
+        strata = BNRIND,
+        variable = ANRIND,
         data_header = adsl,
         strata_location = "new_column"
       ) |>
@@ -171,8 +161,8 @@ test_that("add_overall.tbl_shift(strata=NULL) messaging", {
     tbl <-
       dplyr::filter(adlb, PARAMCD %in% "CHOL") |>
       tbl_shift(
-        variable = BTOXGRH,
-        by = ATOXGRH,
+        variable = BNRIND,
+        by = ANRIND,
         header = "{level}",
         strata_label = "{strata}, N={n}",
         label = list(TRTA = "Actual Treatment"),
