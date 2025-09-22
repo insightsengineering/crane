@@ -33,7 +33,7 @@
 #' @param x (`tbl_shift`)\cr
 #'   Object of class `'tbl_shift'`.
 #' @param col_label (`string`)\cr
-#'   String indicating the column label. Default is `"All Participants \nN = {gtsummary::style_number(n)}"`
+#'   String indicating the column label. Default is `"All Participants \nN = {style_roche_number(n)}"`
 #'
 #' @returns a 'gtsummary' table
 #' @name tbl_shift
@@ -286,7 +286,7 @@ tbl_shift <- function(data,
 #' @rdname tbl_shift
 #' @export
 add_overall.tbl_shift <- function(x,
-                                  col_label = "All Participants  \n(N = {gtsummary::style_number(n)})",
+                                  col_label = "All Participants  \n(N = {style_roche_number(n)})",
                                   last = FALSE, ...) {
   # check inputs ---------------------------------------------------------------
   set_cli_abort_call()

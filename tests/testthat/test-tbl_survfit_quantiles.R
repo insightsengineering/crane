@@ -76,7 +76,7 @@ test_that("tbl_survfit_quantiles(estimate_fun)", {
     tbl_survfit_quantiles(
       data = cards::ADTTE,
       by = "TRTA",
-      estimate_fun = gtsummary::label_style_number(digits = 3)
+      estimate_fun = label_roche_number(digits = 3, na = NA_character_)
     ) |>
       as.data.frame()
   )

@@ -243,7 +243,7 @@ tbl_baseline_chg <- function(data,
 #' @rdname tbl_baseline_chg
 #' @export
 add_overall.tbl_baseline_chg <- function(x,
-                                         last = FALSE, col_label = "All Participants  \n(N = {gtsummary::style_number(n)})", ...) {
+                                         last = FALSE, col_label = "All Participants  \n(N = {style_roche_number(n)})", ...) {
   # check inputs ---------------------------------------------------------------
   set_cli_abort_call()
   check_dots_empty(call = get_cli_abort_call())

@@ -19,7 +19,7 @@
 #'   Default is `"Time to event"`.
 #' @param estimate_fun (`function`)\cr
 #'   Function used to round and format the estimates in the table.
-#'   Default is `label_style_number(digits = 1)`.
+#'   Default is `label_roche_number(digits = 1)`.
 #' @param method.args (named `list`)\cr
 #'   Named list of arguments that will be passed to `survival::survfit()`.
 #'
@@ -110,7 +110,7 @@
 #' tbl_survfit_quantiles(
 #'   data = cards::ADTTE,
 #'   by = "TRTA",
-#'   estimate_fun = label_style_number(digits = 1, na = "NE")
+#'   estimate_fun = label_roche_number(digits = 1, na = "NE")
 #' ) |>
 #'   add_overall(last = TRUE, col_label = "**All Participants**  \nN = {n}")
 #'
@@ -124,7 +124,7 @@ tbl_survfit_quantiles <- function(data,
                                   y = "survival::Surv(time = AVAL, event = 1 - CNSR, type = 'right', origin = 0)",
                                   by = NULL,
                                   header = "Time to event",
-                                  estimate_fun = label_style_number(digits = 1, na = "NE"),
+                                  estimate_fun = label_roche_number(digits = 1, na = "NE"),
                                   method.args = list(conf.int = 0.95)) {
   method.args <- enquo(method.args)
 
@@ -236,7 +236,7 @@ tbl_survfit_quantiles <- function(data,
         dplyr::mutate(
           label = dplyr::case_when(
             .data$label == "Survival Probability" ~ "Median",
-            .data$label == "(CI Lower Bound, CI Upper Bound)" ~ glue("{gtsummary::style_number(conf.level, scale = 100)}% CI"),
+            .data$label == "(CI Lower Bound, CI Upper Bound)" ~ glue("{style_roche_number(conf.level, scale = 100)}% CI"),
             .data$label == "Survival Probability, Survival Probability" ~ "25% and 75%-ile",
             .default = .data$label
           )
@@ -244,7 +244,7 @@ tbl_survfit_quantiles <- function(data,
     ) |>
     gtsummary::modify_indent(
       columns = "label",
-      rows = .data$label == glue("{gtsummary::style_number(conf.level, scale = 100)}% CI"),
+      rows = .data$label == glue("{style_roche_number(conf.level, scale = 100)}% CI"),
       indent = 8L
     ) |>
     gtsummary::modify_indent(
@@ -276,7 +276,7 @@ tbl_survfit_quantiles <- function(data,
 #' @rdname tbl_survfit_quantiles
 add_overall.tbl_survfit_quantiles <- function(x,
                                               last = FALSE,
-                                              col_label = "All Participants  \nN = {gtsummary::style_number(N)}",
+                                              col_label = "All Participants  \nN = {style_roche_number(N)}",
                                               ...) {
   set_cli_abort_call()
   rlang::check_dots_empty(call = get_cli_abort_call())

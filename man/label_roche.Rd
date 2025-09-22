@@ -8,6 +8,8 @@
 \alias{label_roche_percent}
 \alias{style_roche_ratio}
 \alias{label_roche_ratio}
+\alias{style_roche_number}
+\alias{label_roche_number}
 \title{Formatting percent and p-values}
 \usage{
 style_roche_pvalue(
@@ -63,6 +65,31 @@ label_roche_ratio(
   decimal.mark = getOption("OutDec"),
   ...
 )
+
+style_roche_number(
+  x,
+  digits = 0,
+  big.mark = ifelse(decimal.mark == ",", " ", ","),
+  decimal.mark = getOption("OutDec"),
+  scale = 1,
+  prefix = "",
+  suffix = "",
+  na = "NE",
+  inf = "NE",
+  ...
+)
+
+label_roche_number(
+  digits = 0,
+  big.mark = ifelse(decimal.mark == ",", " ", ","),
+  decimal.mark = getOption("OutDec"),
+  scale = 1,
+  prefix = "",
+  suffix = "",
+  na = "NE",
+  inf = "NE",
+  ...
+)
 }
 \arguments{
 \item{x}{(\code{numeric})\cr
@@ -92,6 +119,11 @@ Additional text to display after the number.}
 
 \item{scale}{(scalar \code{numeric})\cr
 A scaling factor: \code{x} will be multiplied by scale before formatting.}
+
+\item{na}{(\code{NA}/\code{string})\cr
+Character to replace \code{NA} values with. Default is \code{NA_character}}
+
+\item{inf}{character value used to style infinite values in the table.}
 }
 \value{
 A character vector of rounded p-values

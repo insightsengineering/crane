@@ -91,7 +91,7 @@ test_that("tbl_hierarchical_rate_and_count() digits styling defaults to gtsummar
         denominator = cards::ADSL,
         by = TRTA,
         digits = everything() ~ list(
-          n = label_style_number(),
+          n = label_roche_number(),
           p = label_roche_percent(digits = 1)
         ),
         variables = c(AEBODSYS, AEDECOD)

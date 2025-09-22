@@ -39,3 +39,17 @@ test_that("style_roche_ratio() works", {
     c("<0.01", "0.82", "2.12", ">999.99")
   )
 })
+
+test_that("style_roche_number() works", {
+  x <- c(0.0008, 0.8234, 2.123, 1000, NA, Inf, -Inf)
+
+  expect_equal(
+    style_roche_number(x),
+    c("0", "1", "2", "1,000", "NE", "NE", "NE")
+  )
+
+  expect_equal(
+    label_roche_number()(x),
+    c("0", "1", "2", "1,000", "NE", "NE", "NE")
+  )
+})
