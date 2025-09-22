@@ -69,7 +69,7 @@ test_that("tbl_hierarchical_rate_by_grade() works", {
         by = TRTA,
         label = label,
         statistic = everything() ~ "{n}/{N}, {p}%",
-        digits = everything() ~ list(n = label_style_number(digits = 1, decimal.mark = ","), p = 3)
+        digits = everything() ~ list(n = label_roche_number(digits = 1, decimal.mark = ","), p = 3)
       )
   )
   expect_snapshot(as.data.frame(tbl)[1, ])

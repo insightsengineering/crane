@@ -10,14 +10,14 @@ tbl_survfit_quantiles(
   y = "survival::Surv(time = AVAL, event = 1 - CNSR, type = 'right', origin = 0)",
   by = NULL,
   header = "Time to event",
-  estimate_fun = label_style_number(digits = 1, na = "NE"),
+  estimate_fun = label_roche_number(digits = 1, na = "NE"),
   method.args = list(conf.int = 0.95)
 )
 
 \method{add_overall}{tbl_survfit_quantiles}(
   x,
   last = FALSE,
-  col_label = "All Participants  \\nN = {gtsummary::style_number(N)}",
+  col_label = "All Participants  \\nN = {style_roche_number(N)}",
   ...
 )
 }
@@ -40,7 +40,7 @@ Default is \code{"Time to event"}.}
 
 \item{estimate_fun}{(\code{function})\cr
 Function used to round and format the estimates in the table.
-Default is \code{label_style_number(digits = 1)}.}
+Default is \code{label_roche_number(digits = 1)}.}
 
 \item{method.args}{(named \code{list})\cr
 Named list of arguments that will be passed to \code{survival::survfit()}.
@@ -150,7 +150,7 @@ cards::bind_ard(
 tbl_survfit_quantiles(
   data = cards::ADTTE,
   by = "TRTA",
-  estimate_fun = label_style_number(digits = 1, na = "NE")
+  estimate_fun = label_roche_number(digits = 1, na = "NE")
 ) |>
   add_overall(last = TRUE, col_label = "**All Participants**  \nN = {n}")
 

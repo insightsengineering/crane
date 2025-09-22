@@ -21,7 +21,7 @@ tbl_baseline_chg(
 \method{add_overall}{tbl_baseline_chg}(
   x,
   last = FALSE,
-  col_label = "All Participants  \\n(N = {gtsummary::style_number(n)})",
+  col_label = "All Participants  \\n(N = {style_roche_number(n)})",
   ...
 )
 }

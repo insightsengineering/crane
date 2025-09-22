@@ -1,10 +1,12 @@
-# crane 0.2.0.9004
+# crane 0.2.0.9005
 
 * Updated variable processing in `tbl_baseline_chg()` to allow for non-string input. (#114)
 
 * Updated details about the `sort_hierarchical()` and `filter_hierarchical()` functions in the hierarchical tables article. (#116)
 
 * Added the `label` argument to `tbl_hierarchical_rate_and_count()` to set hierarchy variables labels in the table header. (#118)
+
+* Added functions `style_roche_number()` and `label_roche_number()` to replace their respective gtsummary versions, with additional `inf` argument for customization of `Inf`/`-Inf`/`NaN` values.
 
 # crane 0.2.0
 
