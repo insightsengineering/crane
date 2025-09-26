@@ -42,6 +42,9 @@ theme_gtsummary_roche <- function(font_size = NULL,
   # Initialization with compact gt options -------------------------------------
   lst_theme <- list("pkgwide-str:theme_name" = "Roche")
 
+  # Specifying that no type interpretation will happen automatically -----------
+  lst_theme <- lst_theme |> append(list("assign_summary_type-arg:cat_threshold" = 0L))
+
   # updating with some pharma-specific bits ------------------------------------
   lst_theme <- lst_theme |>
     append(
