@@ -14,7 +14,7 @@ tbl_null_report <- function() {
   x <- gtsummary::as_gtsummary(data.frame(blank = character())) |>
     gtsummary::modify_header(
       blank = "Null Report: no observations met the reporting criteria for inclusion in this output."
-  )
+    )
 
   # add class and attributes ---------------------------------------------------
   x <- structure(
