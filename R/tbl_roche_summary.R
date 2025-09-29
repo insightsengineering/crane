@@ -94,15 +94,15 @@ tbl_roche_summary <- function(data,
         .x |>
           # add column to retain variable order (arrange() forces alphanumeric sorting)
           dplyr::mutate(
-            variable_order = match(variable, unique(variable))
+            variable_order = match(.x[["variable"]], unique(.x[["variable"]]))
           ) |>
           dplyr::arrange(
-            variable_order,
+            .x[["variable_order"]],
             # `desc()` makes TRUE (label) come before FALSE
-            desc(row_type == "label"),
-            row_type != "missing"
+            dplyr::desc(.x[["row_type"]] == "label"),
+            .x[["row_type"]] != "missing"
           ) |>
-          dplyr::select(-variable_order) # clean up
+          dplyr::select(-.x[["variable_order"]]) # clean up
       }
     ) |>
     # assign class
