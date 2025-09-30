@@ -92,17 +92,12 @@ tbl_roche_summary <- function(data,
     gtsummary::modify_table_body(
       function(.x) {
         .x |>
-          # add column to retain variable order (arrange() forces alphanumeric sorting)
-          dplyr::mutate(
-            variable_order = match(variable, unique(variable))
-          ) |>
           dplyr::arrange(
-            variable_order,
-            # `desc()` makes TRUE (label) come before FALSE
-            dplyr::desc(row_type == "label"),
-            row_type != "missing"
-          ) |>
-          dplyr::select(-variable_order) # clean up
+            # retain variable order (arrange() forces alphanumeric sorting)
+            match(variable, unique(variable)),
+            row_type != "label", # first
+            row_type != "missing" # second
+          )
       }
     )  |>
     # assign class
