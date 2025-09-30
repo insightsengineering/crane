@@ -4,12 +4,19 @@
 \alias{tbl_null_report}
 \title{Creates null report}
 \usage{
-tbl_null_report()
+tbl_null_report(
+  label =
+    "Null Report: no observations met the reporting criteria for inclusion in this output."
+)
+}
+\arguments{
+\item{label}{(\code{string})\cr label to display in the header of the null report. It defaults to
+"Null Report: no observations met the reporting criteria for inclusion in this output."}
 }
 \description{
 This function creates a null report for tables or listings without any statistics.
 }
 \examples{
-tbl_null_report()
+tbl_null_report(label = "No data available for the selected criteria.")
 
 }
