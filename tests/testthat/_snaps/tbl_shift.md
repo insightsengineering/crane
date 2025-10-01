@@ -4,14 +4,13 @@
       as.data.frame(tbl)
     Output
         Baseline  \nNCI-CTCAE Grade Post-baseline  \nNCI-CTCAE Grade Placebo  \nN = 86 Xanomeline High Dose  \nN = 84 Xanomeline Low Dose  \nN = 84
-      1                        High                            Total                 2                              2                             4
-      2                        <NA>                              Low                 0                      1 (50.0%)                     1 (25.0%)
-      3                        <NA>                           Normal          2 (100%)                      1 (50.0%)                     3 (75.0%)
-      4                         Low                            Total                 3                              3                             1
-      5                        <NA>                             High         1 (33.3%)                              0                             0
-      6                        <NA>                           Normal         2 (66.7%)                       3 (100%)                      1 (100%)
-      7                      Normal                            Total                 2                              2                             1
-      8                        <NA>                           Normal          2 (100%)                       2 (100%)                      1 (100%)
+      1                        High                            Total                 3                              3                             4
+      2                        <NA>                           Normal          3 (100%)                       3 (100%)                      4 (100%)
+      3                         Low                            Total                 3                              3                             1
+      4                        <NA>                           Normal          3 (100%)                       3 (100%)                      1 (100%)
+      5                      Normal                            Total                 1                              1                             1
+      6                        <NA>                              Low                 0                              0                      1 (100%)
+      7                        <NA>                           Normal          1 (100%)                       1 (100%)                             0
 
 ---
 
@@ -20,16 +19,15 @@
     Output
          Baseline  \nNCI-CTCAE Grade  \n    Post-baseline  \nNCI-CTCAE Grade Placebo  \nN = 86 Xanomeline High Dose  \nN = 84 Xanomeline Low Dose  \nN = 84
       1                                                                 High              <NA>                           <NA>                          <NA>
-      2                                                                Total                 2                              2                             4
-      3                                                                  Low                 0                      1 (50.0%)                     1 (25.0%)
-      4                                                               Normal          2 (100%)                      1 (50.0%)                     3 (75.0%)
-      5                                                                  Low              <NA>                           <NA>                          <NA>
-      6                                                                Total                 3                              3                             1
-      7                                                                 High         1 (33.3%)                              0                             0
-      8                                                               Normal         2 (66.7%)                       3 (100%)                      1 (100%)
-      9                                                               Normal              <NA>                           <NA>                          <NA>
-      10                                                               Total                 2                              2                             1
-      11                                                              Normal          2 (100%)                       2 (100%)                      1 (100%)
+      2                                                                Total                 3                              3                             4
+      3                                                               Normal          3 (100%)                       3 (100%)                      4 (100%)
+      4                                                                  Low              <NA>                           <NA>                          <NA>
+      5                                                                Total                 3                              3                             1
+      6                                                               Normal          3 (100%)                       3 (100%)                      1 (100%)
+      7                                                               Normal              <NA>                           <NA>                          <NA>
+      8                                                                Total                 1                              1                             1
+      9                                                                  Low                 0                              0                      1 (100%)
+      10                                                              Normal          1 (100%)                       1 (100%)                             0
 
 # tbl_shift(by) messaging
 
@@ -54,14 +52,13 @@
       as.data.frame(tbl)
     Output
         Baseline  \nNCI-CTCAE Grade Post-baseline  \nNCI-CTCAE Grade Placebo  \nN = 86 Xanomeline High Dose  \nN = 84 Xanomeline Low Dose  \nN = 84 Overall  \nN = 254
-      1                        High                            Total                 2                              2                             4                  8
-      2                        <NA>                              Low                 0                      1 (50.0%)                     1 (25.0%)          2 (25.0%)
-      3                        <NA>                           Normal          2 (100%)                      1 (50.0%)                     3 (75.0%)          6 (75.0%)
-      4                         Low                            Total                 3                              3                             1                  7
-      5                        <NA>                             High         1 (33.3%)                              0                             0          1 (14.3%)
-      6                        <NA>                           Normal         2 (66.7%)                       3 (100%)                      1 (100%)          6 (85.7%)
-      7                      Normal                            Total                 2                              2                             1                  5
-      8                        <NA>                           Normal          2 (100%)                       2 (100%)                      1 (100%)           5 (100%)
+      1                        High                            Total                 3                              3                             4                 10
+      2                        <NA>                           Normal          3 (100%)                       3 (100%)                      4 (100%)          10 (100%)
+      3                         Low                            Total                 3                              3                             1                  7
+      4                        <NA>                           Normal          3 (100%)                       3 (100%)                      1 (100%)           7 (100%)
+      5                      Normal                            Total                 1                              1                             1                  3
+      6                        <NA>                              Low                 0                              0                      1 (100%)          1 (33.3%)
+      7                        <NA>                           Normal          1 (100%)                       1 (100%)                             0          2 (66.7%)
 
 ---
 
@@ -70,16 +67,15 @@
     Output
          Baseline  \nNCI-CTCAE Grade  \n    Post-baseline  \nNCI-CTCAE Grade Placebo  \nN = 86 Xanomeline High Dose  \nN = 84 Xanomeline Low Dose  \nN = 84 Overall  \nN = 254
       1                                                                 High              <NA>                           <NA>                          <NA>               <NA>
-      2                                                                Total                 2                              2                             4                  8
-      3                                                                  Low                 0                      1 (50.0%)                     1 (25.0%)          2 (25.0%)
-      4                                                               Normal          2 (100%)                      1 (50.0%)                     3 (75.0%)          6 (75.0%)
-      5                                                                  Low              <NA>                           <NA>                          <NA>               <NA>
-      6                                                                Total                 3                              3                             1                  7
-      7                                                                 High         1 (33.3%)                              0                             0          1 (14.3%)
-      8                                                               Normal         2 (66.7%)                       3 (100%)                      1 (100%)          6 (85.7%)
-      9                                                               Normal              <NA>                           <NA>                          <NA>               <NA>
-      10                                                               Total                 2                              2                             1                  5
-      11                                                              Normal          2 (100%)                       2 (100%)                      1 (100%)           5 (100%)
+      2                                                                Total                 3                              3                             4                 10
+      3                                                               Normal          3 (100%)                       3 (100%)                      4 (100%)          10 (100%)
+      4                                                                  Low              <NA>                           <NA>                          <NA>               <NA>
+      5                                                                Total                 3                              3                             1                  7
+      6                                                               Normal          3 (100%)                       3 (100%)                      1 (100%)           7 (100%)
+      7                                                               Normal              <NA>                           <NA>                          <NA>               <NA>
+      8                                                                Total                 1                              1                             1                  3
+      9                                                                  Low                 0                              0                      1 (100%)          1 (33.3%)
+      10                                                              Normal          1 (100%)                       1 (100%)                             0          2 (66.7%)
 
 # add_overall.tbl_shift() messaging
 
@@ -102,8 +98,8 @@
     Code
       as.data.frame(tbl)
     Output
-                        Cohort Baseline  \nNCI-CTCAE Grade     High       Low    Normal
-      1 All Participants, N=20                        High        0 2 (10.0%) 6 (30.0%)
-      2                   <NA>                         Low 1 (5.0%)         0 6 (30.0%)
-      3                   <NA>                      Normal        0         0 5 (25.0%)
+                        Cohort Baseline  \nNCI-CTCAE Grade      Low     Normal
+      1 All Participants, N=20                        High        0 10 (50.0%)
+      2                   <NA>                         Low        0  7 (35.0%)
+      3                   <NA>                      Normal 1 (5.0%)  2 (10.0%)
 

@@ -1,18 +1,20 @@
 # Add grade variation to cards::ADLB `ANRIND` and `BNRIND`
-set.seed(78)
-adlb <- cards::ADLB |>
-  dplyr::mutate(
-    ANRIND = ifelse(is.na(ANRIND), NA, sample(c("High", "Low", "Normal"), dplyr::n(), replace = TRUE, prob = c(0.6, 0.2, 0.2))),
-    BNRIND = ifelse(is.na(BNRIND), NA, sample(c("High", "Low", "Normal"), dplyr::n(), replace = TRUE, prob = c(0.4, 0.4, 0.2)))
-  ) |>
-  dplyr::select("USUBJID", "TRTA", "PARAM", "PARAMCD", "ANRIND", "BNRIND", "VISITNUM") |>
-  dplyr::mutate(TRTA = factor(TRTA)) |>
-  dplyr::filter(PARAMCD %in% c("CHOL", "GLUC")) |>
-  dplyr::slice_max(by = c(USUBJID, PARAMCD), order_by = ANRIND, n = 1L, with_ties = FALSE) |>
-  labelled::set_variable_labels(
-    BNRIND = "Baseline  \nNCI-CTCAE Grade",
-    ANRIND = "Post-baseline  \nNCI-CTCAE Grade"
-  )
+withr::with_seed(123, {
+  runif(1)
+  adlb <- cards::ADLB |>
+    dplyr::mutate(
+      ANRIND = ifelse(is.na(ANRIND), NA, sample(c("High", "Low", "Normal"), dplyr::n(), replace = TRUE, prob = c(0.6, 0.2, 0.2))),
+      BNRIND = ifelse(is.na(BNRIND), NA, sample(c("High", "Low", "Normal"), dplyr::n(), replace = TRUE, prob = c(0.4, 0.4, 0.2)))
+    ) |>
+    dplyr::select("USUBJID", "TRTA", "PARAM", "PARAMCD", "ANRIND", "BNRIND", "VISITNUM") |>
+    dplyr::mutate(TRTA = factor(TRTA)) |>
+    dplyr::filter(PARAMCD %in% c("CHOL", "GLUC")) |>
+    dplyr::slice_max(by = c(USUBJID, PARAMCD), order_by = ANRIND, n = 1L, with_ties = FALSE) |>
+    labelled::set_variable_labels(
+      BNRIND = "Baseline  \nNCI-CTCAE Grade",
+      ANRIND = "Post-baseline  \nNCI-CTCAE Grade"
+    )
+})
 
 adsl <- cards::ADSL[c("USUBJID", "TRTA")] |>
   dplyr::mutate(TRTA = factor(TRTA))
