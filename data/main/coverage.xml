@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0.986516853932584" branch-rate="0" lines-covered="1317" lines-valid="1335" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2025-09-30 00:41:47.228179">
+<coverage line-rate="0.986607142857143" branch-rate="0" lines-covered="1326" lines-valid="1344" branches-covered="0" branches-valid="0" complexity="0" version="3.6.4" timestamp="2025-10-02 14:48:28.095958">
   <sources>
     <source>/__w/crane/crane/crane</source>
   </sources>
   <packages>
-    <package name="crane" line-rate="0.986516853932584" branch-rate="0" complexity="0">
+    <package name="crane" line-rate="0.986607142857143" branch-rate="0" complexity="0">
       <classes>
         <class name="add_blank_rows.R" filename="R/add_blank_rows.R" line-rate="1" branch-rate="0" complexity="0">
           <methods>
@@ -1881,6 +1881,34 @@
             <line number="161" hits="3" branch="false"/>
             <line number="162" hits="3" branch="false"/>
             <line number="166" hits="3" branch="false"/>
+          </lines>
+        </class>
+        <class name="tbl_null_report.R" filename="R/tbl_null_report.R" line-rate="1" branch-rate="0" complexity="0">
+          <methods>
+            <method name="tbl_null_report" signature="" line-rate="1" branch-rate="0" complexity="0">
+              <lines>
+                <line number="15" hits="3" branch="false"/>
+                <line number="18" hits="3" branch="false"/>
+                <line number="21" hits="2" branch="false"/>
+                <line number="22" hits="2" branch="false"/>
+                <line number="25" hits="2" branch="false"/>
+                <line number="26" hits="2" branch="false"/>
+                <line number="27" hits="2" branch="false"/>
+                <line number="28" hits="2" branch="false"/>
+                <line number="30" hits="2" branch="false"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="15" hits="3" branch="false"/>
+            <line number="18" hits="3" branch="false"/>
+            <line number="21" hits="2" branch="false"/>
+            <line number="22" hits="2" branch="false"/>
+            <line number="25" hits="2" branch="false"/>
+            <line number="26" hits="2" branch="false"/>
+            <line number="27" hits="2" branch="false"/>
+            <line number="28" hits="2" branch="false"/>
+            <line number="30" hits="2" branch="false"/>
           </lines>
         </class>
         <class name="tbl_roche_summary.R" filename="R/tbl_roche_summary.R" line-rate="1" branch-rate="0" complexity="0">
