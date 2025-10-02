@@ -1,4 +1,4 @@
-# crane 0.2.0.9006
+# crane 0.2.0.9007
 
 * Added `tbl_null_report()` for cases without any information to display. (#11)
 
