@@ -1,5 +1,7 @@
 # crane 0.2.0.9006
 
+* Added `tbl_null_report()` for cases without any information to display. (#11)
+
 * Updated variable processing in `tbl_baseline_chg()` to allow for non-string input. (#114)
 
 * Updated details about the `sort_hierarchical()` and `filter_hierarchical()` functions in the hierarchical tables article. (#116)
