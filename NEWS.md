@@ -1,4 +1,6 @@
-# crane 0.2.0.9006
+# crane 0.2.0.9007
+
+* Added `tbl_null_report()` for cases without any information to display. (#11)
 
 * Updated variable processing in `tbl_baseline_chg()` to allow for non-string input. (#114)
 
