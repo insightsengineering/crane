@@ -11,7 +11,8 @@
 #' @inheritParams gtsummary::style_pvalue
 #' @param na,inf,nan (`NA`/`string`)\cr
 #'   scalar to replace `NA`, infinite, and `NaN` values with.
-#'   Default is ``
+#'   Default is `"NE"` for arguments `na` and `inf`, and `"NaN"` for the `nan` argument.
+#'
 #' @examples
 #' # p-value formatting
 #' x <- c(0.0000001, 0.123456)
