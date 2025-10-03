@@ -164,6 +164,7 @@ label_roche_ratio <- function(digits = 2,
 }
 
 #' @param inf character value used to style infinite values in the table.
+#' @param nan character value used to style NaN values in the table.
 #' @export
 #' @rdname label_roche
 style_roche_number <- function(x,
