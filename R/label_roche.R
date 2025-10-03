@@ -9,10 +9,9 @@
 #' @return A character vector of rounded p-values
 #' @inheritParams gtsummary::style_number
 #' @inheritParams gtsummary::style_pvalue
-#' @param inf (`string`)\cr
-#'   Character to replace `Inf` values with. Default is "NE".
-#' @param nan (`NA`/`string`)\cr
-#'   Character to replace `NaN` values with. Default is `NA`.
+#' @param na,inf,nan (`NA`/`string`)\cr
+#'   scalar to replace `NA`, infinite, and `NaN` values with.
+#'   Default is ``
 #' @examples
 #' # p-value formatting
 #' x <- c(0.0000001, 0.123456)
@@ -178,7 +177,7 @@ style_roche_number <- function(x,
                                suffix = "",
                                na = "NE",
                                inf = "NE",
-                               nan = NA,
+                               nan = "NaN",
                                ...) {
   set_cli_abort_call()
 
@@ -203,7 +202,7 @@ label_roche_number <- function(digits = 0,
                                suffix = "",
                                na = "NE",
                                inf = "NE",
-                               nan = NA,
+                               nan = "NaN",
                                ...) {
   function(x) style_roche_number(x, digits = digits, big.mark = big.mark, decimal.mark = decimal.mark, scale = scale, prefix = prefix, suffix = suffix, na = na, inf = inf, nan = nan, ...)
 }

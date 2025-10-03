@@ -45,11 +45,11 @@ test_that("style_roche_number() works", {
 
   expect_equal(
     style_roche_number(x),
-    c("0", "1", "2", "1,000", "NE", "NE", "NE", NA)
+    c("0", "1", "2", "1,000", "NE", "NE", "NE", "NaN")
   )
 
   expect_equal(
     label_roche_number()(x),
-    c("0", "1", "2", "1,000", "NE", "NE", "NE", NA)
+    c("0", "1", "2", "1,000", "NE", "NE", "NE", "NaN")
   )
 })

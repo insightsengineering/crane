@@ -76,7 +76,7 @@ style_roche_number(
   suffix = "",
   na = "NE",
   inf = "NE",
-  nan = NA,
+  nan = "NaN",
   ...
 )
 
@@ -89,7 +89,7 @@ label_roche_number(
   suffix = "",
   na = "NE",
   inf = "NE",
-  nan = NA,
+  nan = "NaN",
   ...
 )
 }
@@ -122,14 +122,9 @@ Additional text to display after the number.}
 \item{scale}{(scalar \code{numeric})\cr
 A scaling factor: \code{x} will be multiplied by scale before formatting.}
 
-\item{na}{(\code{NA}/\code{string})\cr
-Character to replace \code{NA} values with. Default is \code{NA_character}}
-
-\item{inf}{(\code{string})\cr
-Character to replace \code{Inf} values with. Default is "NE".}
-
-\item{nan}{(\code{NA}/\code{string})\cr
-Character to replace \code{NaN} values with. Default is \code{NA}.}
+\item{na, inf, nan}{(\code{NA}/\code{string})\cr
+scalar to replace \code{NA}, infinite, and \code{NaN} values with.
+Default is}
 }
 \value{
 A character vector of rounded p-values
