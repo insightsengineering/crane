@@ -9,6 +9,10 @@
 #' @return A character vector of rounded p-values
 #' @inheritParams gtsummary::style_number
 #' @inheritParams gtsummary::style_pvalue
+#' @param inf (`string`)\cr
+#'   Character to replace `Inf` values with. Default is "NE".
+#' @param nan (`NA`/`string`)\cr
+#'   Character to replace `NaN` values with. Default is `NA`.
 #' @examples
 #' # p-value formatting
 #' x <- c(0.0000001, 0.123456)
@@ -163,8 +167,6 @@ label_roche_ratio <- function(digits = 2,
   function(x) style_roche_ratio(x, prefix = prefix, suffix = suffix, big.mark = big.mark, decimal.mark = decimal.mark, digits = digits, ...)
 }
 
-#' @param inf character value used to style infinite values in the table.
-#' @param nan character value used to style NaN values in the table.
 #' @export
 #' @rdname label_roche
 style_roche_number <- function(x,

@@ -41,15 +41,15 @@ test_that("style_roche_ratio() works", {
 })
 
 test_that("style_roche_number() works", {
-  x <- c(0.0008, 0.8234, 2.123, 1000, NA, Inf, -Inf)
+  x <- c(0.0008, 0.8234, 2.123, 1000, NA, Inf, -Inf, NaN)
 
   expect_equal(
     style_roche_number(x),
-    c("0", "1", "2", "1,000", "NE", "NE", "NE")
+    c("0", "1", "2", "1,000", "NE", "NE", "NE", NA)
   )
 
   expect_equal(
     label_roche_number()(x),
-    c("0", "1", "2", "1,000", "NE", "NE", "NE")
+    c("0", "1", "2", "1,000", "NE", "NE", "NE", NA)
   )
 })

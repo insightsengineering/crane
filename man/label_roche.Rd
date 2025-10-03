@@ -125,9 +125,11 @@ A scaling factor: \code{x} will be multiplied by scale before formatting.}
 \item{na}{(\code{NA}/\code{string})\cr
 Character to replace \code{NA} values with. Default is \code{NA_character}}
 
-\item{inf}{character value used to style infinite values in the table.}
+\item{inf}{(\code{string})\cr
+Character to replace \code{Inf} values with. Default is "NE".}
 
-\item{nan}{character value used to style NaN values in the table.}
+\item{nan}{(\code{NA}/\code{string})\cr
+Character to replace \code{NaN} values with. Default is \code{NA}.}
 }
 \value{
 A character vector of rounded p-values
