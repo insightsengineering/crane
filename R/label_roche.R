@@ -4,6 +4,7 @@
 #' - `label_roche_pvalue()` returns formatted p-values.
 #' - `label_roche_percent()` returns formatted percent values. This function only formats percentages between 0 and 1.
 #' - `label_roche_ratio()` returns formatted ratios with values below and above a threshold being returned as `< 0.1` and `> 999.9`, for example, when `digits=1`.
+#' - `label_roche_number()` returns formatted numbers.
 #'
 #' @return A character vector of rounded p-values
 #' @inheritParams gtsummary::style_number
@@ -26,6 +27,12 @@
 #'
 #' style_roche_ratio(x)
 #' label_roche_ratio()(x)
+#'
+#' # number formatting
+#' x <- c(0.0008, 0.8234, 2.123, 1000, NA, Inf, -Inf)
+#'
+#' style_roche_number(x)
+#' label_roche_number()(x)
 #' @name label_roche
 NULL
 

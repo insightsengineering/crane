@@ -135,6 +135,7 @@ A character vector of rounded p-values
 \item \code{label_roche_pvalue()} returns formatted p-values.
 \item \code{label_roche_percent()} returns formatted percent values. This function only formats percentages between 0 and 1.
 \item \code{label_roche_ratio()} returns formatted ratios with values below and above a threshold being returned as \verb{< 0.1} and \verb{> 999.9}, for example, when \code{digits=1}.
+\item \code{label_roche_number()} returns formatted numbers.
 }
 }
 \examples{
@@ -155,4 +156,10 @@ x <- c(0.0008, 0.8234, 2.123, 1000)
 
 style_roche_ratio(x)
 label_roche_ratio()(x)
+
+# number formatting
+x <- c(0.0008, 0.8234, 2.123, 1000, NA, Inf, -Inf)
+
+style_roche_number(x)
+label_roche_number()(x)
 }
