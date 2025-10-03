@@ -168,33 +168,17 @@ style_roche_number <- function(x,
                                suffix = "",
                                na = "NE",
                                inf = "NE",
+                               nan = NA,
                                ...) {
   set_cli_abort_call()
-  if (!is_string(prefix) || !is_string(suffix)) {
-    cli::cli_abort(
-      "Arguments {.arg prefix} and {.arg suffix} must be strings.",
-      call = get_cli_abort_call()
-    )
-  }
 
-  digits <- rep(digits, length.out = length(x))
+  ret <- gtsummary::style_number(
+    x = x, digits = digits, big.mark = big.mark, decimal.mark = decimal.mark,
+    scale = scale, prefix = prefix, suffix = suffix, na = na, ...
+  )
 
-  ret <- rep(NA_character_, length.out = length(x))
-
-  for (d in unique(digits)) {
-    idx <- digits %in% d
-    ret[idx] <-
-      cards::round5(x[idx] * scale, digits = d) |>
-      format(
-        big.mark = big.mark, decimal.mark = decimal.mark, nsmall = d,
-        scientific = FALSE, trim = TRUE, ...
-      )
-  }
-  ret <- paste0(prefix, ret, suffix)
-  ret[is.na(x)] <- na
   ret[is.infinite(x)] <- inf
-  ret[is.nan(x)] <- inf
-  attributes(ret) <- attributes(unclass(x))
+  ret[is.nan(x)] <- nan
 
   ret
 }
@@ -209,6 +193,7 @@ label_roche_number <- function(digits = 0,
                                suffix = "",
                                na = "NE",
                                inf = "NE",
+                               nan = NA,
                                ...) {
-  function(x) style_roche_number(x, digits = digits, big.mark = big.mark, decimal.mark = decimal.mark, scale = scale, prefix = prefix, suffix = suffix, na = na, inf = inf, ...)
+  function(x) style_roche_number(x, digits = digits, big.mark = big.mark, decimal.mark = decimal.mark, scale = scale, prefix = prefix, suffix = suffix, na = na, inf = inf, nan = nan, ...)
 }
