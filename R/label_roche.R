@@ -4,10 +4,15 @@
 #' - `label_roche_pvalue()` returns formatted p-values.
 #' - `label_roche_percent()` returns formatted percent values. This function only formats percentages between 0 and 1.
 #' - `label_roche_ratio()` returns formatted ratios with values below and above a threshold being returned as `< 0.1` and `> 999.9`, for example, when `digits=1`.
+#' - `label_roche_number()` returns formatted numbers.
 #'
 #' @return A character vector of rounded p-values
 #' @inheritParams gtsummary::style_number
 #' @inheritParams gtsummary::style_pvalue
+#' @param na,inf,nan (`NA`/`string`)\cr
+#'   scalar to replace `NA`, infinite, and `NaN` values with.
+#'   Default is `"NE"` for arguments `na` and `inf`, and `"NaN"` for the `nan` argument.
+#'
 #' @examples
 #' # p-value formatting
 #' x <- c(0.0000001, 0.123456)
@@ -26,6 +31,12 @@
 #'
 #' style_roche_ratio(x)
 #' label_roche_ratio()(x)
+#'
+#' # number formatting
+#' x <- c(0.0008, 0.8234, 2.123, 1000, NA, Inf, -Inf)
+#'
+#' style_roche_number(x)
+#' label_roche_number()(x)
 #' @name label_roche
 NULL
 
@@ -156,7 +167,6 @@ label_roche_ratio <- function(digits = 2,
   function(x) style_roche_ratio(x, prefix = prefix, suffix = suffix, big.mark = big.mark, decimal.mark = decimal.mark, digits = digits, ...)
 }
 
-#' @param inf character value used to style infinite values in the table.
 #' @export
 #' @rdname label_roche
 style_roche_number <- function(x,
@@ -168,33 +178,17 @@ style_roche_number <- function(x,
                                suffix = "",
                                na = "NE",
                                inf = "NE",
+                               nan = "NaN",
                                ...) {
   set_cli_abort_call()
-  if (!is_string(prefix) || !is_string(suffix)) {
-    cli::cli_abort(
-      "Arguments {.arg prefix} and {.arg suffix} must be strings.",
-      call = get_cli_abort_call()
-    )
-  }
 
-  digits <- rep(digits, length.out = length(x))
+  ret <- gtsummary::style_number(
+    x = x, digits = digits, big.mark = big.mark, decimal.mark = decimal.mark,
+    scale = scale, prefix = prefix, suffix = suffix, na = na, ...
+  )
 
-  ret <- rep(NA_character_, length.out = length(x))
-
-  for (d in unique(digits)) {
-    idx <- digits %in% d
-    ret[idx] <-
-      cards::round5(x[idx] * scale, digits = d) |>
-      format(
-        big.mark = big.mark, decimal.mark = decimal.mark, nsmall = d,
-        scientific = FALSE, trim = TRUE, ...
-      )
-  }
-  ret <- paste0(prefix, ret, suffix)
-  ret[is.na(x)] <- na
   ret[is.infinite(x)] <- inf
-  ret[is.nan(x)] <- inf
-  attributes(ret) <- attributes(unclass(x))
+  ret[is.nan(x)] <- nan
 
   ret
 }
@@ -209,6 +203,7 @@ label_roche_number <- function(digits = 0,
                                suffix = "",
                                na = "NE",
                                inf = "NE",
+                               nan = "NaN",
                                ...) {
-  function(x) style_roche_number(x, digits = digits, big.mark = big.mark, decimal.mark = decimal.mark, scale = scale, prefix = prefix, suffix = suffix, na = na, inf = inf, ...)
+  function(x) style_roche_number(x, digits = digits, big.mark = big.mark, decimal.mark = decimal.mark, scale = scale, prefix = prefix, suffix = suffix, na = na, inf = inf, nan = nan, ...)
 }
