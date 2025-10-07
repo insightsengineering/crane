@@ -1,4 +1,8 @@
-# crane 0.2.0.9006
+# crane 0.2.0.9010
+
+* Added `list("assign_summary_type-arg:cat_threshold" = 0L)` to `theme_gtsummary_roche()`. Numeric variables with few levels will no longer default to summary type `'categorical'` in `gtsummary::tbl_summary()` and `tbl_roche_summary()`. (#79)
+
+* Added `tbl_null_report()` for cases without any information to display. (#11)
 
 * Updated variable processing in `tbl_baseline_chg()` to allow for non-string input. (#114)
 

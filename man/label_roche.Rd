@@ -76,6 +76,7 @@ style_roche_number(
   suffix = "",
   na = "NE",
   inf = "NE",
+  nan = "NaN",
   ...
 )
 
@@ -88,6 +89,7 @@ label_roche_number(
   suffix = "",
   na = "NE",
   inf = "NE",
+  nan = "NaN",
   ...
 )
 }
@@ -120,10 +122,9 @@ Additional text to display after the number.}
 \item{scale}{(scalar \code{numeric})\cr
 A scaling factor: \code{x} will be multiplied by scale before formatting.}
 
-\item{na}{(\code{NA}/\code{string})\cr
-Character to replace \code{NA} values with. Default is \code{NA_character}}
-
-\item{inf}{character value used to style infinite values in the table.}
+\item{na, inf, nan}{(\code{NA}/\code{string})\cr
+scalar to replace \code{NA}, infinite, and \code{NaN} values with.
+Default is \code{"NE"} for arguments \code{na} and \code{inf}, and \code{"NaN"} for the \code{nan} argument.}
 }
 \value{
 A character vector of rounded p-values
@@ -133,6 +134,7 @@ A character vector of rounded p-values
 \item \code{label_roche_pvalue()} returns formatted p-values.
 \item \code{label_roche_percent()} returns formatted percent values. This function only formats percentages between 0 and 1.
 \item \code{label_roche_ratio()} returns formatted ratios with values below and above a threshold being returned as \verb{< 0.1} and \verb{> 999.9}, for example, when \code{digits=1}.
+\item \code{label_roche_number()} returns formatted numbers.
 }
 }
 \examples{
@@ -153,4 +155,10 @@ x <- c(0.0008, 0.8234, 2.123, 1000)
 
 style_roche_ratio(x)
 label_roche_ratio()(x)
+
+# number formatting
+x <- c(0.0008, 0.8234, 2.123, 1000, NA, Inf, -Inf)
+
+style_roche_number(x)
+label_roche_number()(x)
 }
