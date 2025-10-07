@@ -9,15 +9,6 @@ test_that("tbl_listing() works with default values", {
   )
 })
 
-test_that("tbl_listing(hide_duplicate_keys = FALSE) works with standard values", {
-  w_duplicated_keys <- tbl_listing(tld) |>
-    remove_duplicate_keys(keys = trt)
-  wo_duplicated_keys <- tbl_listing(tld)
-
-  expect_snapshot(w_duplicated_keys$table_body[seq(3), ])
-  expect_snapshot(wo_duplicated_keys$table_body[seq(3), ])
-})
-
 test_that("tbl_listing(add_blanks_rows) works with standard values", {
   expect_no_error(
     out <- tbl_listing(tld, add_blank_rows = list(variable_level = "age"))
@@ -93,4 +84,21 @@ test_that("tbl_listing(split_by_rows + split_by_columns) works with standard val
   expect_snapshot(
     out[[4]]$table_body
   )
+})
+
+test_that("remove_duplicate_keys() works with standard values", {
+  w_duplicated_keys <- tbl_listing(tld) |>
+    remove_duplicate_keys(keys = trt)
+  wo_duplicated_keys <- tbl_listing(tld)
+
+  expect_snapshot(w_duplicated_keys$table_body[seq(3), ])
+  expect_snapshot(wo_duplicated_keys$table_body[seq(3), ])
+})
+
+test_that("remove_duplicate_keys() works with unique and duplicated values", {
+  # Regression test for #129
+  w_duplicated_keys <- tbl_listing(tld) |>
+    remove_duplicate_keys(keys = c(trt, marker)) # marker is unique, trt is not
+
+  expect_snapshot(w_duplicated_keys$table_body[seq(4), ]) # trt has duplicates, marker does not
 })

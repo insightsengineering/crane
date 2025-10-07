@@ -149,10 +149,10 @@ remove_duplicate_keys <- function(x, keys = NULL, value = NA) {
   cards::process_selectors(x$table_body, keys = {{ keys }})
   check_scalar(value)
 
-  # Check if keys are unique
-  if (anyDuplicated(x$table_body[keys]) > 0L) {
-    # Create a new data frame with blank values for duplicates
-    for (kcol in keys) {
+  # Create a new data frame with blank values for duplicates
+  for (kcol in keys) {
+    # Check if keys are unique
+    if (anyDuplicated(x$table_body[kcol]) > 0L) {
       tmp_label_attr <- attr(x$table_body[[kcol]], "label") # not losing the label attribute
       kcol_vec <- as.character(x$table_body[[kcol]])
       attr(kcol_vec, "label") <- tmp_label_attr
