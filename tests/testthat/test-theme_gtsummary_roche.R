@@ -94,3 +94,8 @@ test_that("theme_gtsummary_roche() styles `tbl_hierarchical*()` results", {
     0L
   )
 })
+
+test_that("with assign_summary_type-arg:cat_threshold=0L each data type is always mapped as it is", {
+  # it would be 4 if casted categorical instead of numeric for cyl
+  expect_equal(nrow(gtsummary::tbl_summary(mtcars, include = cyl)$table_body), 1)
+})
