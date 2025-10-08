@@ -15,30 +15,6 @@
       7 Drug A    47  0.266 T2   
       8 Drug A    52  0.719 T2   
 
-# tbl_listing(hide_duplicate_keys = FALSE) works with standard values
-
-    Code
-      w_duplicated_keys$table_body[seq(3), ]
-    Output
-      # A tibble: 3 x 4
-        trt      age marker stage
-        <chr>  <dbl>  <dbl> <fct>
-      1 Drug B     9  1.11  T2   
-      2 <NA>      49  0.157 T2   
-      3 Drug A    NA  2.07  T3   
-
----
-
-    Code
-      wo_duplicated_keys$table_body[seq(3), ]
-    Output
-      # A tibble: 3 x 4
-        trt      age marker stage
-        <chr>  <dbl>  <dbl> <fct>
-      1 Drug B     9  1.11  T2   
-      2 Drug B    49  0.157 T2   
-      3 Drug A    NA  2.07  T3   
-
 # tbl_listing(add_blanks_rows) works with standard values
 
     Code
@@ -102,4 +78,41 @@
       3 <NA>      NA NA     <NA>          NA
       4 Drug B    34  0.205 T3             5
       5 Drug B    63  0.06  T3             6
+
+# remove_duplicate_keys() works with standard values
+
+    Code
+      w_duplicated_keys$table_body[seq(3), ]
+    Output
+      # A tibble: 3 x 4
+        trt      age marker stage
+        <chr>  <dbl>  <dbl> <fct>
+      1 Drug B     9  1.11  T2   
+      2 <NA>      49  0.157 T2   
+      3 Drug A    NA  2.07  T3   
+
+---
+
+    Code
+      wo_duplicated_keys$table_body[seq(3), ]
+    Output
+      # A tibble: 3 x 4
+        trt      age marker stage
+        <chr>  <dbl>  <dbl> <fct>
+      1 Drug B     9  1.11  T2   
+      2 Drug B    49  0.157 T2   
+      3 Drug A    NA  2.07  T3   
+
+# remove_duplicate_keys() works with unique and duplicated values
+
+    Code
+      w_duplicated_keys$table_body[seq(4), ]
+    Output
+      # A tibble: 4 x 4
+        trt      age marker stage
+        <chr>  <dbl>  <dbl> <fct>
+      1 Drug B     9  1.11  T2   
+      2 <NA>      49  0.157 T2   
+      3 Drug A    NA  2.07  T3   
+      4 <NA>      78  0.175 T3   
 

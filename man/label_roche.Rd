@@ -89,7 +89,7 @@ label_roche_number(
   suffix = "",
   na = "NE",
   inf = "NE",
-  nan = "NaN",
+  nan = "NE",
   ...
 )
 }
@@ -124,7 +124,7 @@ A scaling factor: \code{x} will be multiplied by scale before formatting.}
 
 \item{na, inf, nan}{(\code{NA}/\code{string})\cr
 scalar to replace \code{NA}, infinite, and \code{NaN} values with.
-Default is \code{"NE"} for arguments \code{na} and \code{inf}, and \code{"NaN"} for the \code{nan} argument.}
+Default is \code{"NE"} for arguments \code{na}, \code{inf}, and \code{nan} argument.}
 }
 \value{
 A character vector of rounded p-values

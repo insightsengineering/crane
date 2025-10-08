@@ -11,7 +11,7 @@
 #' @inheritParams gtsummary::style_pvalue
 #' @param na,inf,nan (`NA`/`string`)\cr
 #'   scalar to replace `NA`, infinite, and `NaN` values with.
-#'   Default is `"NE"` for arguments `na` and `inf`, and `"NaN"` for the `nan` argument.
+#'   Default is `"NE"` for arguments `na`, `inf`, and `nan` argument.
 #'
 #' @examples
 #' # p-value formatting
@@ -203,7 +203,7 @@ label_roche_number <- function(digits = 0,
                                suffix = "",
                                na = "NE",
                                inf = "NE",
-                               nan = "NaN",
+                               nan = "NE",
                                ...) {
   function(x) style_roche_number(x, digits = digits, big.mark = big.mark, decimal.mark = decimal.mark, scale = scale, prefix = prefix, suffix = suffix, na = na, inf = inf, nan = nan, ...)
 }
