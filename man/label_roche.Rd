@@ -76,7 +76,7 @@ style_roche_number(
   suffix = "",
   na = "NE",
   inf = "NE",
-  nan = "NaN",
+  nan = "NE",
   ...
 )
 

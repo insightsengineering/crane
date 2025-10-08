@@ -178,7 +178,7 @@ style_roche_number <- function(x,
                                suffix = "",
                                na = "NE",
                                inf = "NE",
-                               nan = "NaN",
+                               nan = "NE",
                                ...) {
   set_cli_abort_call()
 
