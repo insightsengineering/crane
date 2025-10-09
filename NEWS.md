@@ -12,6 +12,8 @@
 
 * Added functions `style_roche_number()` and `label_roche_number()` to replace their respective gtsummary versions, with additional `inf` argument for customization of `Inf`/`-Inf`/`NaN` values.
 
+* Fixed remove_duplicate_keys() to remove non-unique column values when the key columns are a mix of unique and duplicated entries. (#129)
+
 # crane 0.2.0
 
 ## New Functions and Functionality
