@@ -40,12 +40,13 @@ NULL
 
 #' @rdname tbl_survfit_times
 #' @export
+#' @order 1
 tbl_survfit_times <- function(data,
                               times,
                               y = "survival::Surv(time = AVAL, event = 1 - CNSR, type = 'right', origin = 0)",
                               by = NULL,
                               label = "Time {time}",
-                              statistic = c("{n.risk}", "{estimate}%", "{conf.low}%, {conf.high}%"),
+                              statistic = c("{n.risk}", "{estimate}", "({conf.low}, {conf.high})"),
                               estimate_fun = label_roche_number(digits = 1, scale = 100),
                               method.args = list(conf.int = 0.95)) {
   # check inputs ---------------------------------------------------------------
@@ -136,8 +137,8 @@ tbl_survfit_times <- function(data,
         dplyr::mutate(
           label = dplyr::case_when(
             .data$label == "Number of Subjects at Risk" ~ "Patients remaining at risk",
-            .data$label == "Survival Probability%" ~ "Event Free Rate (%)",
-            .data$label == "CI Lower Bound%, CI Upper Bound%" ~ glue("{style_roche_number(conf.level, scale = 100)}% CI"),
+            .data$label == "Survival Probability" ~ "Event Free Rate (%)",
+            .data$label == "(CI Lower Bound, CI Upper Bound)" ~ glue("{style_roche_number(conf.level, scale = 100)}% CI"),
             .default = .data$label
           )
         )
