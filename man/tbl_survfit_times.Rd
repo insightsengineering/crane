@@ -20,11 +20,10 @@ tbl_survfit_times(
 \method{add_difference_row}{tbl_survfit_times}(
   x,
   reference,
-  times = everything(),
-  statistic = everything() ~ c("{estimate}", "({conf.low}, {conf.high})", "{p.value}"),
+  statistic = c("{estimate}", "({conf.low}, {conf.high})", "{p.value}"),
   header = NULL,
   conf.level = 0.95,
-  pvalue_fun = label_roche_pvalue(digits = 4),
+  pvalue_fun = label_roche_pvalue(),
   estimate_fun = label_roche_number(digits = 2, scale = 100),
   ...
 )
@@ -76,7 +75,7 @@ function.}
 \item{x}{(\code{tbl_survfit_times})\cr
 A stratified 'tbl_survfit_times' object}
 
-\item{reference}{(\code{scalar})\cr
+\item{reference}{(\code{string})\cr
 Value of the \code{tbl_survfit_times(by)} variable value that is the reference for
 each of the difference calculations. For factors, use the character
 level.}

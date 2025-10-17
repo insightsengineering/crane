@@ -9,12 +9,10 @@
 #' `by` variable's specified reference level.
 #'
 #' @inheritParams gtsummary::add_difference.tbl_summary
-#' @param reference (`scalar`)\cr
+#' @param reference (`string`)\cr
 #'   Value of the `tbl_survfit_times(by)` variable value that is the reference for
 #'   each of the difference calculations. For factors, use the character
 #'   level.
-#' @param header (`string`)\cr
-#'   When supplied, a header row will appear above the difference statistics.
 #' @param statistic ([`formula-list-selector`][gtsummary::syntax])\cr
 #'   Specifies summary statistics to display for each time.  The default is
 #'   `everything() ~ c("{estimate}", "({conf.low}, {conf.high})", "{p.value}")`.
@@ -39,195 +37,27 @@ NULL
 #' @rdname tbl_survfit_times
 #' @export
 add_difference_row.tbl_survfit_times <- function(x,
-                                                 # y = "survival::Surv(time = AVAL, event = 1 - CNSR, type = 'right', origin = 0)",
                                                  reference,
-                                                 times = everything(),
-                                                 statistic = everything() ~ c("{estimate}", "({conf.low}, {conf.high})", "{p.value}"),
-                                                 header = NULL,
+                                                 statistic = c("{estimate}", "({conf.low}, {conf.high})", "{p.value}"),
                                                  conf.level = 0.95,
-                                                 pvalue_fun = label_roche_pvalue(digits = 4),
+                                                 pvalue_fun = label_roche_pvalue(),
                                                  estimate_fun = label_roche_number(digits = 2, scale = 100),
                                                  ...) {
   # check inputs ---------------------------------------------------------------
-  browser()
   set_cli_abort_call()
   check_dots_empty(call = get_cli_abort_call())
-  updated_call_list <- c(x$call_list, list(add_difference = match.call()))
   check_not_missing(reference)
-  check_scalar(reference)
-  if (inherits(reference, "factor")) {
-    cli::cli_abort(
-      c("The scalar in the {.arg reference} argument cannot be a {.cls factor}.",
-        i = "Use the {.cls character} level instead.")
-    )
-  }
+  check_string(reference)
+  check_range(conf.level, range = c(0, 1))
+  check_class(statistic, "character")
+  check_class(pvalue_fun, "function")
+  check_class(estimate_fun, "function")
 
-  # checking that input x has a by var and it has two levels
+  # check that input `x` has a `by` var and it has 2+ levels
   if (is_empty(x$inputs$by)) {
-    "Cannot run {.fun add_difference_row} when {.code tbl_summary()} does not include a {.arg by} argument." |>
+    "Cannot run {.fun add_difference_row} when {.code tbl_survfit_times()} does not include a {.arg by} argument." |>
       cli::cli_abort(call = get_cli_abort_call())
   }
-
-  # if `pvalue_fun` not modified, check if we need to use a theme p-value
-  if (missing(pvalue_fun)) {
-    pvalue_fun <-
-      get_theme_element("pkgwide-fn:pvalue_fun") %||%
-      pvalue_fun
-  }
-  pvalue_fun <- as_function(pvalue_fun)
-
-  cards::process_selectors(
-    scope_table_body(x$table_body, x$inputs$data[x$inputs$include]),
-    include = {{ include }}
-  )
-
-  # checking for `tbl_summary(percent = c("cell", "row"))`, which don't apply
-  if (!x$inputs$percent %in% "column" &&
-      any(unlist(x$inputs$type[include]) %in% c("categorical", "dichotomous"))) {
-    cli::cli_warn(c(
-      "The {.code add_difference_row()} results for categorical variables may not
-       compatible with {.code tbl_summary(percent = c('cell', 'row'))}.",
-      i = "Use column percentages instead, {.code tbl_summary(percent = 'column')}."
-    ))
-  }
-
-  cards::process_selectors(x$inputs$data, group = {{ group }}, adj.vars = {{ adj.vars }})
-  check_scalar(group, allow_empty = TRUE)
-
-  cards::process_formula_selectors(
-    scope_table_body(x$table_body, x$inputs$data[include]),
-    test = test,
-    include_env = TRUE
-  )
-  # add the calling env to the test
-  test <- .add_env_to_list_elements(test, env = caller_env())
-
-  cards::process_formula_selectors(
-    scope_table_body(x$table_body, x$inputs$data[include]),
-    statistic = statistic
-  )
-  cards::check_list_elements(
-    statistic,
-    predicate = \(x) is.character(x) && !is_empty(.extract_glue_elements(x)),
-    error_msg =
-      c("Each element passed in the {.arg statistic} argument must be a character vector with at least one glue element.",
-        "i" = "For example, {.code everything() ~ c('{{estimate}}', '{{conf.low}}, {{conf.high}}', '{{p.value}}')}"),
-  )
-
-  # calculate survival difference ----------------------------------------------------------------
-  # calculate ARD for by vars
-  if (!is_empty(by)) {
-    ard_by <- cards::ard_tabulate(data, variables = all_of(by))
-  }
-  ard_n <- cards::ard_total_n(data)
-
-  # get the confidence level
-  conf.level <-
-    ard_surv_times |>
-    dplyr::filter(.data$stat_name == "conf.level") |>
-    dplyr::pull("stat") |>
-    unlist()
-
-  # survival difference
-  surv_diff <-
-    cardx::ard_survival_survfit_diff(
-      x = rlang::inject(survival::survfit(!!form, data = data)),
-      times = times,
-      conf.level = conf.level
-    ) |>
-    dplyr::filter(!.data$stat_name %in% c("method", "reference_level")) |>
-    cards::update_ard_fmt_fun(
-      stat_names = c("estimate", "conf.low", "conf.high"),
-      fmt_fun = estimate_fun
-    )
-
-  # build gtsummary table ------------------------------------------------------
-  tbl <-
-    dplyr::bind_rows(
-      surv_diff |>
-      # remove model-wide stats
-      dplyr::filter(.data$variable == "time") |>
-      dplyr::mutate(
-        variable = paste0(.data$variable, unlist(.data$variable_level)),
-        variable_level = NULL
-      ),
-      case_switch(!is_empty(by) ~ ard_by),
-      ard_n
-    ) |>
-    gtsummary::tbl_ard_summary(
-      by = any_of(by),
-      type = starts_with("time") ~ "continuous2",
-      statistic = starts_with("time") ~ statistic,
-      label =
-        map(times, ~ glue::glue_data(list(time = .x), label)) |>
-        set_names(paste0("time", times))
-    ) |>
-    gtsummary::modify_header(
-      gtsummary::all_stat_cols() ~ "{level}  \n(N = {n})",
-      label = ""
-    ) |>
-    gtsummary::modify_table_body(
-      ~ .x |>
-        dplyr::mutate(
-          label = dplyr::case_when(
-            .data$label == "Number of Subjects at Risk" ~ "Patients remaining at risk",
-            .data$label == "Survival Probability" ~ "Event Free Rate (%)",
-            .data$label == "(CI Lower Bound, CI Upper Bound)" ~ glue("{style_roche_number(conf.level, scale = 100)}% CI"),
-            .default = .data$label
-          )
-        )
-    )
-
-  # add all available test meta data to a data frame ---------------------------
-  df_test_meta_data <-
-    imap(
-      test,
-      ~ dplyr::tibble(variable = .y, fun_to_run = list(.x), test_name = attr(.x, "test_name") %||% NA_character_)
-    ) |>
-    dplyr::bind_rows()
-
-  # add test names to `.$table_body` so it can be used in selectors ------------
-  if (!"test_name" %in% names(x$table_body)) {
-    x$table_body <-
-      dplyr::left_join(
-        x$table_body,
-        df_test_meta_data[c("variable", "test_name")],
-        by = "variable"
-      ) |>
-      dplyr::relocate("test_name", .after = "variable")
-  } else {
-    x$table_body <-
-      dplyr::rows_update(
-        x$table_body,
-        df_test_meta_data[c("variable", "test_name")],
-        by = "variable",
-        unmatched = "ignore"
-      ) |>
-      dplyr::relocate("test_name", .after = "variable")
-  }
-
-  # now process the `test.args` and `estimate_fun` arguments -------------------
-  cards::process_formula_selectors(
-    scope_table_body(x$table_body, x$inputs$data[include]),
-    estimate_fun = estimate_fun
-  )
-  # fill in unspecified variables
-  cards::fill_formula_selectors(
-    scope_table_body(x$table_body, x$inputs$data[include]),
-    estimate_fun = eval(formals(asNamespace("gtsummary")[["add_difference.tbl_summary"]])[["estimate_fun"]])
-  )
-
-  cards::process_formula_selectors(
-    scope_table_body(x$table_body, x$inputs$data[include]),
-    test.args = test.args
-  )
-  cards::check_list_elements(
-    test.args,
-    predicate = \(x) is.list(x) && is_named(x),
-    error_msg = c("Error in the argument {.arg {arg_name}} for variable {.val {variable}}.",
-                  i = "Value must be a named list."
-    )
-  )
 
   # check reference level is appropriate
   lst_by_levels <-
@@ -243,179 +73,87 @@ add_difference_row.tbl_survfit_times <- function(x,
     )
   }
 
-  # prep data for tests, by adding reference level to the first position in factor
+  func_inputs <- as.list(environment())
+  by <- x$inputs$by
+  y <- x$inputs$y
+  times <- x$inputs$times
   data <- x$inputs$data
-  data[[x$inputs$by]] <- fct_relevel(data[[x$inputs$by]], reference, after = 0L)
+  form <- glue("{y} ~ {ifelse(is_empty(by), 1, cardx::bt(by))}") |> stats::as.formula()
 
-  # create data frame that is one line per test to be calculated
-  df_results <-
-    tidyr::expand_grid(
-      variable = include,
-      reference_level = reference,
-      compare_level = unlist(lst_by_levels) |> setdiff(reference)
-    ) |>
-    # merge in table_body column name and subsetted data frame
-    dplyr::left_join(
-      enframe(unlist(lst_by_levels), "column", "compare_level") |>
-        dplyr::filter(!.data$compare_level %in% .env$reference) |>
-        dplyr::mutate(
-          data =
-            map(
-              .data$compare_level,
-              \(.x, .y) {
-                .env$data |>
-                  dplyr::filter(.data[[x$inputs$by]] %in% c(.x, .env$reference)) |>
-                  dplyr::mutate("{x$inputs$by}" := factor(.data[[x$inputs$by]])) # this removes unobserved levels of a factor
-              }
-            )
-        ),
-      by = "compare_level"
+  # subset data on complete row ------------------------------------------------
+  data <- data[stats::complete.cases(data[all.vars(form)]), ]
+
+  # add reference level to the first position in factor
+  data[[by]] <- fct_relevel(data[[by]], reference, after = 0L)
+  ref_col <- names(lst_by_levels)[lst_by_levels == reference]
+
+  # move reference column to first position
+  x <- x |>
+    gtsummary::modify_table_body(
+      ~ .x |>
+        dplyr::relocate(ref_col, .after = label)
     )
 
-  df_results$result <-
-    pmap(
-      list(df_results$variable,
-           df_results$data),
-      \(variable, data) {
-        .calculate_one_test(
-          data = data,
-          variable = variable,
-          x = x,
-          df_test_meta_data = df_test_meta_data,
-          estimate_fun = estimate_fun,
-          pvalue_fun = pvalue_fun,
-          group = group,
-          test.args = test.args,
-          adj.vars = adj.vars,
-          conf.level = conf.level,
-          apply_fmt_fun = TRUE
-        )
-      }
-    )
-
-  # create vector of results
-  df_results$result_fmt <-
-    pmap(
-      list(df_results$variable, df_results$result),
-      \(variable, result) {
-        lst_results <-
-          result |>
-          dplyr::filter(map_lgl(.data$stat_fmt, Negate(is.null))) |>
-          cards::get_ard_statistics(.column = "stat_fmt")
-
-        map(
-          statistic[[variable]],
-          ~ glue::glue_data(.x = lst_results, .x)
-        )
-      }
-    )
-
-  # create label for new statistics
-  df_results$result_lbl <-
-    pmap(
-      list(df_results$variable, df_results$result),
-      \(variable, result) {
-        lst_results <-
-          result |>
-          dplyr::filter(map_lgl(.data$stat_fmt, Negate(is.null))) |>
-          cards::get_ard_statistics(.column = "stat_label")
-
-        map(
-          statistic[[variable]],
-          ~ ifelse(
-            .x == "{conf.low}, {conf.high}",
-            glue::glue("{style_number(conf.level, scale = 100)}% CI"), # replace {conf.low}, {conf.high} with "95% CI"
-            glue::glue_data(.x = lst_results, .x)
-          )
-        )
-      }
-    )
-
-  # prep results to place them in table_body
-  df_results_wide <-
-    df_results |>
-    dplyr::left_join(
-      df_test_meta_data[c("variable", "test_name")],
-      by = "variable"
-    ) |>
-    dplyr::select("variable", "test_name", "column", "result_fmt", label = "result_lbl") |>
-    tidyr::unnest(cols = c("result_fmt", "label")) |>
-    dplyr::mutate(across(c("result_fmt", "label"), unlist)) |>
-    tidyr::pivot_wider(
-      id_cols = c("variable", "test_name", "label"),
-      values_from = "result_fmt",
-      names_from = "column"
-    ) |>
-    dplyr::mutate(row_type = "difference_row")
-
-  # get index values where new lines are to be inserted
-  variable_index <-
-    x$table_body |>
-    dplyr::select("variable") |>
-    dplyr::mutate(row_number = dplyr::row_number()) |>
-    dplyr::filter(
-      .by = "variable",
-      dplyr::n() == dplyr::row_number(),
-      .data$variable %in% .env$include
-    ) |>
-    dplyr::slice_tail(by = "variable", n = 1L) |>
-    deframe()
-
-  # add each of the rows to table_body
-  for (v in rev(names(variable_index))) {
-    x$table_body <-
-      x$table_body |>
-      dplyr::add_row(
-        dplyr::bind_rows(
-          if (!is_empty(.env$header)) {
-            data.frame(variable = paste0(v, "-row_difference"), row_type = "label", label = header)
-          },
-          dplyr::filter(df_results_wide, .data$variable == .env$v) |>
-            dplyr::mutate(variable = paste0(.data$variable, "-row_difference"))
-        ),
-        .after = variable_index[[v]]
-      )
-  }
-
-  # prepping ARD to return with result -----------------------------------------
+  # calculate survival difference ----------------------------------------------------------------
   card <-
-    df_results |>
-    dplyr::rowwise() |>
+    cardx::ard_survival_survfit_diff(
+      x = rlang::inject(survival::survfit(!!form, data = data)),
+      times = times,
+      conf.level = conf.level
+    ) |>
+    dplyr::filter(!.data$stat_name %in% c("method", "reference_level")) |>
+    cards::update_ard_fmt_fun(
+      stat_names = c("estimate", "conf.low", "conf.high"),
+      fmt_fun = estimate_fun
+    ) |>
+    cards::update_ard_fmt_fun(
+      stat_names = "p.value",
+      fmt_fun = pvalue_fun
+    ) |>
     dplyr::mutate(
-      result_lst =
-        list(.data$result) |>
-        set_names(nm = paste(shQuote(.data$reference_level, type = "sh"), shQuote(.data$compare_level, type = "sh"), sep = " vs. "))
-    ) |>
-    dplyr::select("variable", "result_lst") |>
-    tidyr::nest(result_nested = "result_lst") |>
-    dplyr::rowwise() |>
-    dplyr::mutate(
-      result_final =
-        list(.data$result_nested[[1]]) |>
-        set_names(nm = .data$variable)
+      variable = paste0(.data$variable, unlist(.data$variable_level)),
+      variable_level = NULL
+    )
 
-    ) |>
-    dplyr::pull("result_final")
+  ard_surv_diff <-
+    cards::bind_ard(
+      card |>
+        dplyr::filter(
+          unlist(.data$group1_level) == unlist(card$group1_level)[1]
+        ) |>
+        dplyr::mutate(
+          group1_level = as.list(factor(reference, levels = levels(data[[by]]))),
+          stat = list(NULL)
+        ),
+      card
+    )
 
-  # add info to table ----------------------------------------------------------
-  x$call_list[["add_difference_row"]] <- match.call()
-  x$cards[["add_difference_row"]] <- card
-  # print warnings/errors from calculations
-  x$cards[["add_difference_row"]] |>
-    map(dplyr::bind_rows) |>
-    dplyr::bind_rows() |>
-    dplyr::filter(.data$stat_name %in% c("estimate", "std.error", "parameter",
-                                         "statistic", "conf.low", "conf.high", "p.value")) |>
-    cards::print_ard_conditions()
-
-  # add final styling to table -------------------------------------------------
-  x |>
-    .modify_indent(
-      columns = "label",
-      rows = .data$row_type == "difference_row",
-      indent = 4L
+  # build gtsummary table ------------------------------------------------------
+  tbl_surv_diff <-
+    ard_surv_diff |>
+    gtsummary::tbl_ard_summary(
+      by = any_of(by),
+      type = starts_with("time") ~ "continuous2",
+      statistic = starts_with("time") ~ statistic
     ) |>
-    .modify_missing_symbol(
+    gtsummary::remove_row_type(type = "header") |>
+    gtsummary::modify_table_body(
+      ~ .x |>
+        dplyr::mutate(
+          label = dplyr::case_when(
+            .data$label == "Survival Difference" ~ "Difference in Event Free Rate",
+            .data$label == "(CI Lower Bound, CI Upper Bound)" ~ glue("{style_roche_number(conf.level, scale = 100)}% CI"),
+            .data$label == "p-value" ~ "p-value (Z-test)",
+            .default = .data$label
+          ),
+          # update row_type
+          row_type = "difference_row",
+          !!ref_col := NA
+        )
+    ) |>
+    gtsummary::modify_indent(columns = label, rows = row_type == "difference_row", indent = 8L) |>
+    gtsummary::modify_indent(columns = label, rows = label == "Difference in Event Free Rate", indent = 4L) |>
+    gtsummary::modify_missing_symbol(
       columns =
         x$table_styling$header |>
         dplyr::filter(.data$modify_stat_level == .env$reference) |>
@@ -423,4 +161,31 @@ add_difference_row.tbl_survfit_times <- function(x,
       rows = .data$row_type == "difference_row",
       symbol = "\U2014"
     )
+
+  x <-
+    tbl_stack(
+      tbls = list(x, tbl_surv_diff),
+      quiet = TRUE
+    ) |>
+    # move survival difference sections under each section for each matching survival time
+    gtsummary::modify_table_body(
+      ~ .x |>
+        dplyr::mutate(
+          variable = as.factor(variable),
+          idx_row = dplyr::row_number()
+        ) |>
+        dplyr::arrange(variable, idx_row) |>
+        dplyr::mutate(
+          variable = as.character(variable)
+        )
+    )
+
+  # add info to table ----------------------------------------------------------
+  x$call_list[["add_difference_row"]] <- match.call()
+  x$cards[["add_difference_row"]] <- card
+
+  # print warnings/errors from calculations
+  x$cards[["add_difference_row"]] |> cards::print_ard_conditions()
+
+  x
 }
