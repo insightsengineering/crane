@@ -4,7 +4,7 @@ tbl <-
   tbl_survfit_times(
     data = cards::ADTTE,
     by = TRTA,
-    times = c(30, 60)
+    times = c(60, 120)
   )
 
 test_that("add_difference_row.tbl_survfit_times() works", {

@@ -144,7 +144,7 @@ add_difference_row.tbl_survfit_times <- function(x,
         dplyr::mutate(
           # add default labels
           label = dplyr::case_when(
-            .data$label == "Survival Difference" ~ "Difference in Event Free Rate",
+            .data$label == "Survival Difference" ~ "Difference in Event Free Rates",
             .data$label == "(CI Lower Bound, CI Upper Bound)" ~ glue("{style_roche_number(conf.level, scale = 100)}% CI"),
             .data$label == "p-value" ~ "p-value (Z-test)",
             .default = .data$label
@@ -156,7 +156,7 @@ add_difference_row.tbl_survfit_times <- function(x,
     ) |>
     # indent rows
     gtsummary::modify_indent(columns = "label", rows = .data$row_type == "difference_row", indent = 8L) |>
-    gtsummary::modify_indent(columns = "label", rows = .data$label == "Difference in Event Free Rate", indent = 4L) |>
+    gtsummary::modify_indent(columns = "label", rows = .data$label == "Difference in Event Free Rates", indent = 4L) |>
     # use — symbol as placeholder in reference column
     gtsummary::modify_missing_symbol(
       columns =
@@ -177,7 +177,7 @@ add_difference_row.tbl_survfit_times <- function(x,
     gtsummary::modify_table_body(
       ~ .x |>
         dplyr::mutate(
-          variable_f = as.factor(variable),
+          variable_f = factor(variable, levels = unique(.data$variable)),
           idx_row = dplyr::row_number()
         ) |>
         dplyr::arrange(variable_f, idx_row) |>
