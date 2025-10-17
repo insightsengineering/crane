@@ -13,7 +13,10 @@
 #'   Character vector of the statistics to report.
 #'   May use any of the following statistics:
 #'   `c(n.risk, estimate, std.error, conf.low, conf.high)`,
-#'   Default is `c("{n.risk}", "{estimate}%", "{conf.low}%, {conf.high}%")`
+#'   Default is `c("{n.risk}", "{estimate}", "({conf.low}, {conf.high})")`
+#'
+#'   Statistics available to include when using `add_difference_row()` are:
+#'   `"estimate"`, `"std.error"`, `"statistic"`, `"conf.low"`, `"conf.high"`, `"p.value"`.
 #' @param estimate_fun (`function`) \cr
 #'   Function used to style/round the `c(estimate, conf.low, conf.high)` statistics.
 #' @param x (`tbl_survfit_times`)\cr
@@ -26,6 +29,7 @@
 #'
 #' @returns a gtsummary table
 #' @name tbl_survfit_times
+#' @order 1
 #'
 #' @examples
 #' # Example 1 ----------------------------------
@@ -40,7 +44,7 @@ NULL
 
 #' @rdname tbl_survfit_times
 #' @export
-#' @order 1
+#' @order 2
 tbl_survfit_times <- function(data,
                               times,
                               y = "survival::Surv(time = AVAL, event = 1 - CNSR, type = 'right', origin = 0)",

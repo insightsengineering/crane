@@ -1,9 +1,11 @@
-#' Add difference rows between groups
+#' @describeIn tbl_survfit_times
 #'
-#' @description
-#' `r lifecycle::badge('experimental')`\cr
-#' Adds difference to tables created by [`tbl_survfit_times()`] as additional rows.
-#' This function is often useful when there are more than two groups to compare.
+#' Adds difference between groups to tables created by [`tbl_survfit_times()`] as additional rows.
+#'
+#' Difference statistics are calculated using [cardx::ard_survival_survfit_diff()]
+#' for all `tbl_survfit_times(times)` variable values, using `survfit` formula
+#' `survival::survfit(y ~ by, data = data)` where `y`, `by` and `data` are
+#' the inputs of the same names to the `tbl_survfit_times()` object `x`.
 #'
 #' Pairwise differences are calculated relative to the specified
 #' `by` variable's specified reference level.
@@ -12,16 +14,14 @@
 #' @param reference (`string`)\cr
 #'   Value of the `tbl_survfit_times(by)` variable value that is the reference for
 #'   each of the difference calculations. For factors, use the character
-#'   level.
-#' @param statistic ([`formula-list-selector`][gtsummary::syntax])\cr
-#'   Specifies summary statistics to display for each time.  The default is
-#'   `everything() ~ c("{estimate}", "({conf.low}, {conf.high})", "{p.value}")`.
-#'   The statistics available to include are `"estimate"`, `"std.error"`,
-#'   `"statistic"`, `"conf.low"`, `"conf.high"`, `"p.value"`.
+#'   level. The reference column will appear as the leftmost column in the table.
+#' @param pvalue_fun (`function`)\cr
+#'   Function to round and format the `p.value` statistic. Default is [label_roche_pvalue()].
+#'   The function must have a numeric vector input, and return a string that is the
+#'   rounded/formatted p-value (e.g. `pvalue_fun = label_style_pvalue(digits = 4)`).
 #'
 #' @export
-#' @return a gtsummary table
-#' @name tbl_survfit_times
+#' @order 3
 #'
 #' @examples
 #' # Example 2 - Survival Differences -----------
@@ -32,10 +32,6 @@
 #'   label = "Day {time}"
 #' ) |>
 #'   add_difference_row(reference = "Placebo")
-NULL
-
-#' @rdname tbl_survfit_times
-#' @export
 add_difference_row.tbl_survfit_times <- function(x,
                                                  reference,
                                                  statistic = c("{estimate}", "({conf.low}, {conf.high})", "{p.value}"),
@@ -78,7 +74,7 @@ add_difference_row.tbl_survfit_times <- function(x,
   y <- x$inputs$y
   times <- x$inputs$times
   data <- x$inputs$data
-  form <- glue("{y} ~ {ifelse(is_empty(by), 1, cardx::bt(by))}") |> stats::as.formula()
+  form <- glue("{y} ~ {cardx::bt(by)}") |> stats::as.formula()
 
   # subset data on complete row ------------------------------------------------
   data <- data[stats::complete.cases(data[all.vars(form)]), ]

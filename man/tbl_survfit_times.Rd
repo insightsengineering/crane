@@ -4,7 +4,7 @@
 \alias{tbl_survfit_times}
 \alias{add_difference_row.tbl_survfit_times}
 \alias{add_overall.tbl_survfit_times}
-\title{Add difference rows between groups}
+\title{Survival Times}
 \usage{
 tbl_survfit_times(
   data,
@@ -21,7 +21,6 @@ tbl_survfit_times(
   x,
   reference,
   statistic = c("{estimate}", "({conf.low}, {conf.high})", "{p.value}"),
-  header = NULL,
   conf.level = 0.95,
   pvalue_fun = label_roche_pvalue(),
   estimate_fun = label_roche_number(digits = 2, scale = 100),
@@ -59,7 +58,10 @@ the glue syntax injects the time estimate into the label.}
 Character vector of the statistics to report.
 May use any of the following statistics:
 \code{c(n.risk, estimate, std.error, conf.low, conf.high)},
-Default is \code{c("{n.risk}", "{estimate}\%", "{conf.low}\%, {conf.high}\%")}}
+Default is \code{c("{n.risk}", "{estimate}", "({conf.low}, {conf.high})")}
+
+Statistics available to include when using \code{add_difference_row()} are:
+\code{"estimate"}, \code{"std.error"}, \code{"statistic"}, \code{"conf.low"}, \code{"conf.high"}, \code{"p.value"}.}
 
 \item{estimate_fun}{(\code{function}) \cr
 Function used to style/round the \code{c(estimate, conf.low, conf.high)} statistics.}
@@ -78,18 +80,15 @@ A stratified 'tbl_survfit_times' object}
 \item{reference}{(\code{string})\cr
 Value of the \code{tbl_survfit_times(by)} variable value that is the reference for
 each of the difference calculations. For factors, use the character
-level.}
-
-\item{header}{(\code{string})\cr
-When supplied, a header row will appear above the difference statistics.}
+level. The reference column will appear as the leftmost column in the table.}
 
 \item{conf.level}{(\code{numeric})\cr
 a scalar in the interval \verb{(0, 1)} indicating the confidence level. Default is 0.95}
 
 \item{pvalue_fun}{(\code{function})\cr
-Function to round and format p-values. Default is \code{label_style_pvalue()}.
-The function must have a numeric vector input, and return a string that is
-the rounded/formatted p-value (e.g. \code{pvalue_fun = label_style_pvalue(digits = 2)}).}
+Function to round and format the \code{p.value} statistic. Default is \code{\link[=label_roche_pvalue]{label_roche_pvalue()}}.
+The function must have a numeric vector input, and return a string that is the
+rounded/formatted p-value (e.g. \code{pvalue_fun = label_style_pvalue(digits = 4)}).}
 
 \item{...}{These dots are for future extensions and must be empty.}
 
@@ -102,17 +101,8 @@ String indicating the column label. Default is \code{"**Overall**  \nN = {style_
 }
 \value{
 a gtsummary table
-
-a gtsummary table
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}\cr
-Adds difference to tables created by \code{\link[=tbl_survfit_times]{tbl_survfit_times()}} as additional rows.
-This function is often useful when there are more than two groups to compare.
-
-Pairwise differences are calculated relative to the specified
-\code{by} variable's specified reference level.
-
 Create a gtsummary table with Kaplan-Meier estimated survival estimates
 and specified times.
 }
@@ -121,15 +111,20 @@ When the \code{statistic} argument is modified, the statistic labels will likely
 also need to be updated. To change the label, call the \code{modify_table_body()}
 function to directly update the underlying \code{x$table_body} data frame.
 }
+\section{Methods (by generic)}{
+\itemize{
+\item \code{add_difference_row(tbl_survfit_times)}: Adds difference between groups to tables created by \code{\link[=tbl_survfit_times]{tbl_survfit_times()}} as additional rows.
+
+Difference statistics are calculated using \code{\link[cardx:ard_survival_survfit_diff]{cardx::ard_survival_survfit_diff()}}
+for all \code{tbl_survfit_times(times)} variable values, using \code{survfit} formula
+\code{survival::survfit(y ~ by, data = data)} where \code{y}, \code{by} and \code{data} are
+the inputs of the same names to the \code{tbl_survfit_times()} object \code{x}.
+
+Pairwise differences are calculated relative to the specified
+\code{by} variable's specified reference level.
+
+}}
 \examples{
-# Example 2 - Survival Differences -----------
-tbl_survfit_times(
-  data = cards::ADTTE,
-  by = "TRTA",
-  times = c(30, 60),
-  label = "Day {time}"
-) |>
-  add_difference_row(reference = "Placebo")
 # Example 1 ----------------------------------
 tbl_survfit_times(
   data = cards::ADTTE,
@@ -138,4 +133,12 @@ tbl_survfit_times(
   label = "Day {time}"
 ) |>
   add_overall()
+# Example 2 - Survival Differences -----------
+tbl_survfit_times(
+  data = cards::ADTTE,
+  by = "TRTA",
+  times = c(30, 60),
+  label = "Day {time}"
+) |>
+  add_difference_row(reference = "Placebo")
 }
