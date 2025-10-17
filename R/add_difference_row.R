@@ -91,7 +91,7 @@ add_difference_row.tbl_survfit_times <- function(x,
   # move reference column to first position in `x`
   x <- x |>
     gtsummary::modify_table_body(
-      ~ .x |> dplyr::relocate(all_of(ref_col), .after = label)
+      ~ .x |> dplyr::relocate(all_of(ref_col), .after = "label")
     )
 
   # calculate survival difference ----------------------------------------------
@@ -155,8 +155,8 @@ add_difference_row.tbl_survfit_times <- function(x,
         )
     ) |>
     # indent rows
-    gtsummary::modify_indent(columns = label, rows = row_type == "difference_row", indent = 8L) |>
-    gtsummary::modify_indent(columns = label, rows = label == "Difference in Event Free Rate", indent = 4L) |>
+    gtsummary::modify_indent(columns = "label", rows = .data$row_type == "difference_row", indent = 8L) |>
+    gtsummary::modify_indent(columns = "label", rows = .data$label == "Difference in Event Free Rate", indent = 4L) |>
     # use — symbol as placeholder in reference column
     gtsummary::modify_missing_symbol(
       columns =
@@ -169,7 +169,7 @@ add_difference_row.tbl_survfit_times <- function(x,
 
   # add difference rows into tbl_survfit_times table
   x <-
-    tbl_stack(
+    gtsummary::tbl_stack(
       tbls = list(x, tbl_surv_diff),
       quiet = TRUE
     ) |>
