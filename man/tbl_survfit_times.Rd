@@ -88,7 +88,7 @@ a scalar in the interval \verb{(0, 1)} indicating the confidence level. Default 
 \item{pvalue_fun}{(\code{function})\cr
 Function to round and format the \code{p.value} statistic. Default is \code{\link[=label_roche_pvalue]{label_roche_pvalue()}}.
 The function must have a numeric vector input, and return a string that is the
-rounded/formatted p-value (e.g. \code{pvalue_fun = label_style_pvalue(digits = 4)}).}
+rounded/formatted p-value (e.g. \code{pvalue_fun = label_style_pvalue(digits = 3)}).}
 
 \item{...}{These dots are for future extensions and must be empty.}
 

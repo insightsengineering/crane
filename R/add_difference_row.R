@@ -19,7 +19,7 @@
 #' @param pvalue_fun (`function`)\cr
 #'   Function to round and format the `p.value` statistic. Default is [label_roche_pvalue()].
 #'   The function must have a numeric vector input, and return a string that is the
-#'   rounded/formatted p-value (e.g. `pvalue_fun = label_style_pvalue(digits = 4)`).
+#'   rounded/formatted p-value (e.g. `pvalue_fun = label_style_pvalue(digits = 3)`).
 #'
 #' @export
 #' @order 3
@@ -50,19 +50,22 @@ add_difference_row.tbl_survfit_times <- function(x,
   check_class(pvalue_fun, "function")
   check_class(estimate_fun, "function")
 
-  # check that input `x` has a `by` var and it has 2+ levels
+  # check that input `x` has a `by` var with 2+ levels
   if (is_empty(x$inputs$by)) {
-    "Cannot run {.fun add_difference_row} when {.code tbl_survfit_times()} does not include a {.arg by} argument." |>
-      cli::cli_abort(call = get_cli_abort_call())
+    cli::cli_abort(
+      "Cannot run {.fun add_difference_row} when {.code tbl_survfit_times()} does not include a {.arg by} argument.",
+      call = get_cli_abort_call()
+    )
   }
 
-  # check reference level is appropriate
   lst_by_levels <-
     x$table_styling$header |>
     dplyr::filter(grepl(pattern = "^stat_\\d*[1-9]\\d*$", x = .data$column)) |>
     dplyr::select("column", "modify_stat_level") |>
     deframe() |>
     lapply(FUN = as.character)
+
+  # check reference level is appropriate
   if (!as.character(reference) %in% unlist(lst_by_levels)) {
     cli::cli_abort(
       "The {.arg reference} argument must be one of {.val {unlist(lst_by_levels)}}.",
@@ -70,6 +73,7 @@ add_difference_row.tbl_survfit_times <- function(x,
     )
   }
 
+  # get function inputs --------------------------------------------------------
   func_inputs <- as.list(environment())
   by <- x$inputs$by
   y <- x$inputs$y
@@ -77,21 +81,20 @@ add_difference_row.tbl_survfit_times <- function(x,
   data <- x$inputs$data
   form <- glue("{y} ~ {cardx::bt(by)}") |> stats::as.formula()
 
-  # subset data on complete row ------------------------------------------------
+  # subset data on complete row
   data <- data[stats::complete.cases(data[all.vars(form)]), ]
 
   # add reference level to the first position in factor
   data[[by]] <- fct_relevel(data[[by]], reference, after = 0L)
   ref_col <- names(lst_by_levels)[lst_by_levels == reference]
 
-  # move reference column to first position
+  # move reference column to first position in `x`
   x <- x |>
     gtsummary::modify_table_body(
-      ~ .x |>
-        dplyr::relocate(ref_col, .after = label)
+      ~ .x |> dplyr::relocate(all_of(ref_col), .after = label)
     )
 
-  # calculate survival difference ----------------------------------------------------------------
+  # calculate survival difference ----------------------------------------------
   card <-
     cardx::ard_survival_survfit_diff(
       x = rlang::inject(survival::survfit(!!form, data = data)),
@@ -112,6 +115,7 @@ add_difference_row.tbl_survfit_times <- function(x,
       variable_level = NULL
     )
 
+  # add statistics to create an empty column for the reference level
   ard_surv_diff <-
     cards::bind_ard(
       card |>
@@ -133,10 +137,12 @@ add_difference_row.tbl_survfit_times <- function(x,
       type = starts_with("time") ~ "continuous2",
       statistic = starts_with("time") ~ statistic
     ) |>
+    # remove time labels
     gtsummary::remove_row_type(type = "header") |>
     gtsummary::modify_table_body(
       ~ .x |>
         dplyr::mutate(
+          # add default labels
           label = dplyr::case_when(
             .data$label == "Survival Difference" ~ "Difference in Event Free Rate",
             .data$label == "(CI Lower Bound, CI Upper Bound)" ~ glue("{style_roche_number(conf.level, scale = 100)}% CI"),
@@ -148,8 +154,10 @@ add_difference_row.tbl_survfit_times <- function(x,
           !!ref_col := NA
         )
     ) |>
+    # indent rows
     gtsummary::modify_indent(columns = label, rows = row_type == "difference_row", indent = 8L) |>
     gtsummary::modify_indent(columns = label, rows = label == "Difference in Event Free Rate", indent = 4L) |>
+    # use — symbol as placeholder in reference column
     gtsummary::modify_missing_symbol(
       columns =
         x$table_styling$header |>
@@ -159,22 +167,21 @@ add_difference_row.tbl_survfit_times <- function(x,
       symbol = "\U2014"
     )
 
+  # add difference rows into tbl_survfit_times table
   x <-
     tbl_stack(
       tbls = list(x, tbl_surv_diff),
       quiet = TRUE
     ) |>
-    # move survival difference sections under each section for each matching survival time
+    # move survival difference rows under each section for each matching survival time
     gtsummary::modify_table_body(
       ~ .x |>
         dplyr::mutate(
-          variable = as.factor(variable),
+          variable_f = as.factor(variable),
           idx_row = dplyr::row_number()
         ) |>
-        dplyr::arrange(variable, idx_row) |>
-        dplyr::mutate(
-          variable = as.character(variable)
-        )
+        dplyr::arrange(variable_f, idx_row) |>
+        dplyr::select(-variable_f, -idx_row)
     )
 
   # add info to table ----------------------------------------------------------
