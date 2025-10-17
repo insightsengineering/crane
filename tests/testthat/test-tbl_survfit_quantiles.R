@@ -1,4 +1,4 @@
-skip_if_not(is_pkg_installed(c("survival", "withr")))
+skip_if_pkg_not_installed(c("survival", "withr"))
 
 test_that("tbl_survfit_quantiles() works", {
   withr::local_options(list(width = 120))

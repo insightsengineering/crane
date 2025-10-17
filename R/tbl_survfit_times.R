@@ -13,7 +13,10 @@
 #'   Character vector of the statistics to report.
 #'   May use any of the following statistics:
 #'   `c(n.risk, estimate, std.error, conf.low, conf.high)`,
-#'   Default is `c("{n.risk}", "{estimate}%", "{conf.low}%, {conf.high}%")`
+#'   Default is `c("{n.risk}", "{estimate}", "({conf.low}, {conf.high})")`
+#'
+#'   Statistics available to include when using `add_difference_row()` are:
+#'   `"estimate"`, `"std.error"`, `"statistic"`, `"conf.low"`, `"conf.high"`, `"p.value"`.
 #' @param estimate_fun (`function`) \cr
 #'   Function used to style/round the `c(estimate, conf.low, conf.high)` statistics.
 #' @param x (`tbl_survfit_times`)\cr
@@ -26,6 +29,7 @@
 #'
 #' @returns a gtsummary table
 #' @name tbl_survfit_times
+#' @order 1
 #'
 #' @examples
 #' # Example 1 ----------------------------------
@@ -40,12 +44,13 @@ NULL
 
 #' @rdname tbl_survfit_times
 #' @export
+#' @order 2
 tbl_survfit_times <- function(data,
                               times,
                               y = "survival::Surv(time = AVAL, event = 1 - CNSR, type = 'right', origin = 0)",
                               by = NULL,
                               label = "Time {time}",
-                              statistic = c("{n.risk}", "{estimate}%", "{conf.low}%, {conf.high}%"),
+                              statistic = c("{n.risk}", "{estimate}", "({conf.low}, {conf.high})"),
                               estimate_fun = label_roche_number(digits = 1, scale = 100),
                               method.args = list(conf.int = 0.95)) {
   # check inputs ---------------------------------------------------------------
@@ -136,8 +141,8 @@ tbl_survfit_times <- function(data,
         dplyr::mutate(
           label = dplyr::case_when(
             .data$label == "Number of Subjects at Risk" ~ "Patients remaining at risk",
-            .data$label == "Survival Probability%" ~ "Event Free Rate (%)",
-            .data$label == "CI Lower Bound%, CI Upper Bound%" ~ glue("{style_roche_number(conf.level, scale = 100)}% CI"),
+            .data$label == "Survival Probability" ~ "Event Free Rate (%)",
+            .data$label == "(CI Lower Bound, CI Upper Bound)" ~ glue("{style_roche_number(conf.level, scale = 100)}% CI"),
             .default = .data$label
           )
         )
