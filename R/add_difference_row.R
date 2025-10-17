@@ -1,14 +1,15 @@
 #' @describeIn tbl_survfit_times
 #'
-#' Adds difference between groups to tables created by [`tbl_survfit_times()`] as additional rows.
+#' Adds survival differences between groups as additional rows to tables created by [`tbl_survfit_times()`].
 #'
 #' Difference statistics are calculated using [cardx::ard_survival_survfit_diff()]
-#' for all `tbl_survfit_times(times)` variable values, using `survfit` formula
-#' `survival::survfit(y ~ by, data = data)` where `y`, `by` and `data` are
-#' the inputs of the same names to the `tbl_survfit_times()` object `x`.
+#' for all `tbl_survfit_times(times)` variable values, using `survfit` formula:
+#' ```r
+#' survival::survfit(y ~ by, data = data)
+#' ```
+#' where `y`, `by` and `data` are the inputs of the same names to the `tbl_survfit_times()` object `x`.
 #'
-#' Pairwise differences are calculated relative to the specified
-#' `by` variable's specified reference level.
+#' Pairwise differences are calculated relative to the specified `by` variable's specified reference level.
 #'
 #' @inheritParams gtsummary::add_difference.tbl_summary
 #' @param reference (`string`)\cr

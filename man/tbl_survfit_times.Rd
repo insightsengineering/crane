@@ -113,15 +113,17 @@ function to directly update the underlying \code{x$table_body} data frame.
 }
 \section{Methods (by generic)}{
 \itemize{
-\item \code{add_difference_row(tbl_survfit_times)}: Adds difference between groups to tables created by \code{\link[=tbl_survfit_times]{tbl_survfit_times()}} as additional rows.
+\item \code{add_difference_row(tbl_survfit_times)}: Adds survival differences between groups as additional rows to tables created by \code{\link[=tbl_survfit_times]{tbl_survfit_times()}}.
 
 Difference statistics are calculated using \code{\link[cardx:ard_survival_survfit_diff]{cardx::ard_survival_survfit_diff()}}
-for all \code{tbl_survfit_times(times)} variable values, using \code{survfit} formula
-\code{survival::survfit(y ~ by, data = data)} where \code{y}, \code{by} and \code{data} are
-the inputs of the same names to the \code{tbl_survfit_times()} object \code{x}.
+for all \code{tbl_survfit_times(times)} variable values, using \code{survfit} formula:
 
-Pairwise differences are calculated relative to the specified
-\code{by} variable's specified reference level.
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{survival::survfit(y ~ by, data = data)
+}\if{html}{\out{</div>}}
+
+where \code{y}, \code{by} and \code{data} are the inputs of the same names to the \code{tbl_survfit_times()} object \code{x}.
+
+Pairwise differences are calculated relative to the specified \code{by} variable's specified reference level.
 
 }}
 \examples{
