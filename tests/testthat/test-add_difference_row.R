@@ -1,4 +1,4 @@
-skip_if_not(is_pkg_installed(c("survival", "withr")))
+skip_if_pkg_not_installed(c("survival", "withr"))
 
 tbl <-
   tbl_survfit_times(

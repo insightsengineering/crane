@@ -1,4 +1,4 @@
-skip_if_not(is_pkg_installed("withr"))
+skip_if_pkg_not_installed("withr")
 
 test_that("tbl_roche_summary() works", {
   expect_silent(
