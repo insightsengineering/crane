@@ -161,8 +161,8 @@ add_difference_row.tbl_survfit_times <- function(x,
     gtsummary::modify_missing_symbol(
       columns =
         x$table_styling$header |>
-        dplyr::filter(.data$modify_stat_level == .env$reference) |>
-        dplyr::pull("column"),
+          dplyr::filter(.data$modify_stat_level == .env$reference) |>
+          dplyr::pull("column"),
       rows = .data$row_type == "difference_row",
       symbol = "\U2014"
     )
