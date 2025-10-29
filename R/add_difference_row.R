@@ -81,9 +81,6 @@ add_difference_row.tbl_survfit_times <- function(x,
   data <- x$inputs$data
   form <- glue("{y} ~ {cardx::bt(by)}") |> stats::as.formula()
 
-  # subset data on complete row
-  data <- data[stats::complete.cases(data[all.vars(form)]), ]
-
   # add reference level to the first position in factor
   data[[by]] <- fct_relevel(data[[by]], reference, after = 0L)
   ref_col <- names(lst_by_levels)[lst_by_levels == reference]
@@ -95,77 +92,58 @@ add_difference_row.tbl_survfit_times <- function(x,
     )
 
   # calculate survival difference ----------------------------------------------
-  card <-
+  survfit_diff_ard_fun <- function(data, variable, ...) {
     cardx::ard_survival_survfit_diff(
       x = rlang::inject(survival::survfit(!!form, data = data)),
-      times = times,
+      times = as.numeric(variable),
       conf.level = conf.level
     ) |>
-    dplyr::filter(!.data$stat_name %in% c("method", "reference_level")) |>
-    cards::update_ard_fmt_fun(
-      stat_names = c("estimate", "conf.low", "conf.high"),
-      fmt_fun = estimate_fun
-    ) |>
-    cards::update_ard_fmt_fun(
-      stat_names = "p.value",
-      fmt_fun = pvalue_fun
-    ) |>
-    dplyr::mutate(
-      variable = paste0(.data$variable, unlist(.data$variable_level)),
-      variable_level = NULL
-    )
+      dplyr::filter(!.data$stat_name %in% c("method", "reference_level"))
+  }
 
-  # add statistics to create an empty column for the reference level
-  ard_surv_diff <-
-    cards::bind_ard(
-      card |>
-        dplyr::filter(
-          unlist(.data$group1_level) == unlist(card$group1_level)[1]
-        ) |>
-        dplyr::mutate(
-          group1_level = as.list(factor(reference, levels = levels(data[[by]]))),
-          stat = list(NULL)
-        ),
-      card
+  # difference to be calculated for each time
+  for (t in times) data[[as.character(t)]] <- NA
+
+  # create difference rows
+  tbl_surv_diff <-
+    data |>
+    # create dummy table to add difference rows to
+    tbl_summary(by = any_of(by), include = as.character(times), missing = "no") |>
+    gtsummary::add_difference_row(
+      reference = reference,
+      statistic = everything() ~ statistic,
+      test = everything() ~ survfit_diff_ard_fun,
+      conf.level = conf.level,
+      pvalue_fun = pvalue_fun,
+      estimate_fun = everything() ~ estimate_fun
     )
 
   # build gtsummary table ------------------------------------------------------
   tbl_surv_diff <-
-    ard_surv_diff |>
-    gtsummary::tbl_ard_summary(
-      by = any_of(by),
-      type = starts_with("time") ~ "continuous2",
-      statistic = starts_with("time") ~ statistic
-    ) |>
+    tbl_surv_diff |>
     # remove time labels
-    gtsummary::remove_row_type(type = "header") |>
     gtsummary::modify_table_body(
       ~ .x |>
+        # remove dummy table label rows
+        dplyr::filter(row_type != "label") |>
         dplyr::mutate(
+          # match variable names to `x`
+          variable = paste0("time", .data$variable),
           # add default labels
           label = dplyr::case_when(
             .data$label == "Survival Difference" ~ "Difference in Event Free Rates",
             .data$label == "(CI Lower Bound, CI Upper Bound)" ~ glue("{style_roche_number(conf.level, scale = 100)}% CI"),
             .data$label == "p-value" ~ "p-value (Z-test)",
             .default = .data$label
-          ),
-          # update row_type
-          row_type = "difference_row",
-          !!ref_col := NA
+          )
         )
     ) |>
     # indent rows
     gtsummary::modify_indent(columns = "label", rows = .data$row_type == "difference_row", indent = 8L) |>
-    gtsummary::modify_indent(columns = "label", rows = .data$label == "Difference in Event Free Rates", indent = 4L) |>
-    # use — symbol as placeholder in reference column
-    gtsummary::modify_missing_symbol(
-      columns =
-        x$table_styling$header |>
-          dplyr::filter(.data$modify_stat_level == .env$reference) |>
-          dplyr::pull("column"),
-      rows = .data$row_type == "difference_row",
-      symbol = "\U2014"
-    )
+    gtsummary::modify_indent(columns = "label", rows = .data$label == "Difference in Event Free Rates", indent = 4L)
+
+  # remove ARD for dummy table rows
+  tbl_surv_diff$cards$tbl_summary <- NULL
 
   # add difference rows into tbl_survfit_times table
   x <-
@@ -175,21 +153,28 @@ add_difference_row.tbl_survfit_times <- function(x,
     ) |>
     # move survival difference rows under each section for each matching survival time
     gtsummary::modify_table_body(
-      ~ .x |>
-        dplyr::mutate(
-          variable_f = factor(variable, levels = unique(.data$variable)),
-          idx_row = dplyr::row_number()
-        ) |>
-        dplyr::arrange(variable_f, idx_row) |>
-        dplyr::select(-variable_f, -idx_row)
+      \(x) {
+        x |>
+          dplyr::mutate(
+            variable_f = factor(gsub("-row_difference", "", variable), levels = unique(x$variable)),
+            idx_row = dplyr::row_number()
+          ) |>
+          dplyr::arrange(variable_f, idx_row) |>
+          dplyr::select(-variable_f, -idx_row)
+      }
     )
 
   # add info to table ----------------------------------------------------------
-  x$call_list[["add_difference_row"]] <- match.call()
-  x$cards[["add_difference_row"]] <- card
+  x$call_list <- list(
+    "tbl_survfit_times" = x$tbls[[1]]$call_list,
+    "add_difference_row" = match.call()
+  )
+  x$cards <- lapply(x$tbls, \(x) x$cards) |> unlist(recursive = FALSE)
+  x$inputs <- list(
+    "tbl_survfit_times" = x$tbls[[1]]$inputs,
+    "add_difference_row" = func_inputs
+  )
 
-  # print warnings/errors from calculations
-  x$cards[["add_difference_row"]] |> cards::print_ard_conditions()
-
-  x
+  x |>
+    structure(class = c("tbl_survfit_times", "gtsummary"))
 }

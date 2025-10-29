@@ -29,14 +29,14 @@
       2                                Patients remaining at risk                  59                               14                              20
       3                                       Event Free Rate (%)                76.8                             24.3                            31.1
       4                                                    95% CI        (68.2, 86.6)                     (15.8, 37.3)                    (21.9, 44.1)
-      5  Survival Difference (Survival Difference Standard Error)                <NA>                       52.5 (0.1)                      45.8 (0.1)
-      6                                 z statistic (p = p-value)                <NA>                 7.4 (p = <0.001)                6.3 (p = <0.001)
+      5  Survival Difference (Survival Difference Standard Error)                <NA>                       52.5 (7.1)                      45.8 (7.2)
+      6                                 z statistic (p = p-value)                <NA>               741.5 (p = <0.001)              631.8 (p = <0.001)
       7                                                  Time 120                <NA>                             <NA>                            <NA>
       8                                Patients remaining at risk                  45                                4                               8
       9                                       Event Free Rate (%)                64.3                              9.2                            14.7
       10                                                   95% CI        (54.5, 76.0)                      (3.8, 22.1)                     (8.0, 27.1)
-      11 Survival Difference (Survival Difference Standard Error)                <NA>                       55.2 (0.1)                      49.7 (0.1)
-      12                                z statistic (p = p-value)                <NA>                 8.1 (p = <0.001)                7.0 (p = <0.001)
+      11 Survival Difference (Survival Difference Standard Error)                <NA>                       55.2 (6.8)                      49.7 (7.1)
+      12                                z statistic (p = p-value)                <NA>               806.8 (p = <0.001)              696.7 (p = <0.001)
 
 # add_difference_row.tbl_survfit_times() error messaging works
 
