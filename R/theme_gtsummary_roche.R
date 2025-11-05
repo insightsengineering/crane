@@ -53,6 +53,10 @@ theme_gtsummary_roche <- function(font_size = NULL,
         "pkgwide-fn:pvalue_fun" = label_roche_pvalue(),
         "add_overall.tbl_summary-arg:col_label" = "All Participants  \n(N = {style_roche_number(N)})",
         "pkgwide-str:print_engine" = print_engine,
+        "tbl_strata-fn:addnl-fn-to-run" =
+          \(x) {
+            crane::modify_header_rm_md(x, md = "bold", type = "star")
+          },
         "tbl_hierarchical-fn:addnl-fn-to-run" =
           \(x) {
             gtsummary::remove_footnote_header(x) |>
