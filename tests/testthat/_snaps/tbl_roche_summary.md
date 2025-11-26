@@ -6,8 +6,8 @@
                    All Participants  \n(N = 200) Drug A  \n(N = 98) Drug B  \n(N = 102)
       1        Age                          <NA>               <NA>                <NA>
       2          n                           189                 91                  98
-      3  Mean (SD)                       47 (14)            47 (15)             47 (14)
-      4     Median                            47                 46                  48
+      3  Mean (SD)                   47.2 (14.3)        47.0 (14.7)         47.4 (14.0)
+      4     Median                          47.0               46.0                48.0
       5  Min - Max                        6 - 83             6 - 78              9 - 83
       6      Grade                          <NA>               <NA>                <NA>
       7          n                           200                 98                 102

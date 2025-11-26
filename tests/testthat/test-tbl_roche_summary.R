@@ -18,7 +18,6 @@ test_that("tbl_roche_summary() |> add_overall() works", {
       gtsummary::trial,
       by = trt,
       include = c(age, grade),
-      digits = list(grade = list(p = 1)),
       nonmissing = "no"
     ) |>
       add_overall() |>
@@ -29,7 +28,7 @@ test_that("tbl_roche_summary() |> add_overall() works", {
       include = c(age, grade),
       type = list(age = "continuous2"),
       statistic = list(age = c("{mean} ({sd})", "{median}", "{min} - {max}")),
-      digits = list(grade = list(p = 1)),
+      digits = list(grade = list(p = 1), age = list(mean = 1, sd = 1, median = 1)),
       missing = "no"
     ) |>
       add_overall(col_label = "All Participants  \n(N = {style_roche_number(N)})") |>

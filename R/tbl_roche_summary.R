@@ -128,9 +128,11 @@ tbl_roche_summary_theme <- function(data, include) {
   )
 }
 
-# estimate default decimal places to display
+# estimate default decimal places to display -----------------------------------
 .guess_roche_summary_digits <- function(data, include) {
+  set_cli_abort_call()
   cards::process_selectors(data, include = {{ include }})
+
   digits <- list()
   stat_meas <- c("mean", "sd", "var", "median", "sum", "p25", "p50", "p75") # dp = max(DP) + 1
   stat_fixed_cts <- c("min", "max", "n") # dp = max(DP)
@@ -142,7 +144,7 @@ tbl_roche_summary_theme <- function(data, include) {
       # continuous variables
       if (is.numeric(data[[var]])) {
         # get max digits for variable
-        max_dp <- max(vapply(data[[var]], count_dp, FUN.VALUE = numeric(1)))
+        max_dp <- max(vapply(data[[var]], .count_dp, FUN.VALUE = numeric(1)))
 
         digits[[var]] <- c(
           rep(list(label_roche_number(digits = max_dp + 1)), length(stat_meas)),
@@ -162,8 +164,8 @@ tbl_roche_summary_theme <- function(data, include) {
   digits
 }
 
-# function to count number of decimal places in a number
-count_dp <- function(x) {
+# function to count decimal places in a number
+.count_dp <- function(x) {
   if (is.na(x)) {
     return(0)
   } else if (abs(x - round(x)) > .Machine$double.eps^0.5) {
