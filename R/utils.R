@@ -32,14 +32,14 @@ case_switch <- function(..., .default = NULL) {
           rep(list(label_roche_number(digits = max_dp + 1)), length(stat_meas)),
           rep(list(label_roche_number(digits = max_dp)), length(stat_fixed_cts))
         ) |>
-          setNames(c(stat_meas, stat_fixed_cts))
+          stats::setNames(c(stat_meas, stat_fixed_cts))
         # non-continuous variables
       } else {
         digits[[var]] <- c(
           rep(list(label_roche_number(digits = 0)), length(stat_fixed_cat)),
           rep(list(label_roche_percent(digits = 1, scale = 100)), length(stat_pct))
         ) |>
-          setNames(c(stat_fixed_cat, stat_pct))
+          stats::setNames(c(stat_fixed_cat, stat_pct))
       }
     }
   }
