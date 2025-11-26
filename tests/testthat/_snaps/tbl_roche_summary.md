@@ -15,3 +15,22 @@
       9         II                    68 (34.0%)         32 (32.7%)          36 (35.3%)
       10       III                    64 (32.0%)         31 (31.6%)          33 (32.4%)
 
+# tbl_roche_summary() digit estimation works
+
+    Code
+      as.data.frame(tbl)
+    Output
+                              Drug A  \n(N = 98) Drug B  \n(N = 102)
+      1                   Age               <NA>                <NA>
+      2             Mean (SD)        47.0 (14.7)         47.4 (14.0)
+      3                Median               46.0                48.0
+      4             Min - Max             6 - 78              9 - 83
+      5  Marker Level (ng/mL)               <NA>                <NA>
+      6             Mean (SD)    1.0173 (0.8852)     0.8208 (0.8275)
+      7                Median             0.8390              0.5220
+      8             Min - Max      0.003 - 3.874       0.005 - 3.642
+      9                 Grade               <NA>                <NA>
+      10                    I         35 (35.7%)          33 (32.4%)
+      11                   II         32 (32.7%)          36 (35.3%)
+      12                  III         31 (31.6%)          33 (32.4%)
+

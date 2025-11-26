@@ -81,3 +81,15 @@ test_that("tbl_roche_summary() recode counts for all NA column", {
     "0"
   )
 })
+
+test_that("tbl_roche_summary() digit estimation works", {
+  expect_silent(
+    tbl <-
+      gtsummary::trial |>
+      tbl_roche_summary(
+        by = trt,
+        include = c(age, marker, grade)
+      )
+  )
+  expect_snapshot(tbl |> as.data.frame())
+})

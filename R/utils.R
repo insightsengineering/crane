@@ -15,35 +15,34 @@ case_switch <- function(..., .default = NULL) {
   set_cli_abort_call()
   cards::process_selectors(data, include = {{ include }})
 
-  digits <- list()
   stat_meas <- c("mean", "sd", "var", "median", "sum", "p25", "p50", "p75") # dp = max(DP) + 1
   stat_fixed_cts <- c("min", "max", "n") # dp = max(DP)
   stat_fixed_cat <- c("n", "N", "N_obs", "N_miss", "N_nonmiss") # dp = 0
   stat_pct <- c("p", "p_miss", "p_nonmiss") # dp = 1
 
-  for (var in include) {
-    if (var %in% names(data)) {
+  lapply(
+    include,
+    function(var) {
       # continuous variables
       if (is.numeric(data[[var]])) {
         # get max digits for variable
         max_dp <- max(vapply(data[[var]], .count_dp, FUN.VALUE = numeric(1)))
-
-        digits[[var]] <- c(
+        c(
           rep(list(label_roche_number(digits = max_dp + 1)), length(stat_meas)),
           rep(list(label_roche_number(digits = max_dp)), length(stat_fixed_cts))
         ) |>
           stats::setNames(c(stat_meas, stat_fixed_cts))
         # non-continuous variables
       } else {
-        digits[[var]] <- c(
+        c(
           rep(list(label_roche_number(digits = 0)), length(stat_fixed_cat)),
           rep(list(label_roche_percent(digits = 1, scale = 100)), length(stat_pct))
         ) |>
           stats::setNames(c(stat_fixed_cat, stat_pct))
       }
     }
-  }
-  digits
+  ) |>
+    stats::setNames(include)
 }
 
 # function to count decimal places in a number
