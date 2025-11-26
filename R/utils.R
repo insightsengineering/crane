@@ -15,8 +15,8 @@ case_switch <- function(..., .default = NULL) {
   set_cli_abort_call()
   cards::process_selectors(data, include = {{ include }})
 
-  stat_meas <- c("mean", "sd", "var", "median", "sum", "p25", "p50", "p75") # dp = max(DP) + 1
-  stat_fixed_cts <- c("min", "max", "n") # dp = max(DP)
+  stat_meas <- c("mean", "sd", "var", "median", "p25", "p50", "p75") # dp = max(DP) + 1
+  stat_fixed_cts <- c("min", "max", "sum", "n") # dp = max(DP)
   stat_fixed_cat <- c("n", "N", "N_obs", "N_miss", "N_nonmiss") # dp = 0
   stat_pct <- c("p", "p_miss", "p_nonmiss") # dp = 1
 
