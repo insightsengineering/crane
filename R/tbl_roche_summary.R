@@ -121,4 +121,17 @@ tbl_roche_summary <- function(data,
 }
 
 # creating theme for tbl_roche_summary summaries -------------------------------
-tbl_roche_summary_theme <- list("tbl_summary-str:default_con_type" = "continuous2")
+tbl_roche_summary_theme <- list(
+  "tbl_summary-str:default_con_type" = "continuous2",
+  "tbl_summary-arg:digits" = list(
+    all_categorical() ~ list(
+      n = label_roche_number(digits = 0),
+      N_miss = label_roche_number(digits = 0),
+      N_nonmiss = label_roche_number(digits = 0),
+      p = label_roche_percent(digits = 1, scale = 100),
+      p_miss = label_roche_percent(digits = 1, scale = 100),
+      p_nonmiss = label_roche_percent(digits = 1, scale = 100)
+    ),
+    all_continuous() ~ label_roche_number(digits = 1)
+  )
+)
