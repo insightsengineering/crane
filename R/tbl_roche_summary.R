@@ -54,7 +54,7 @@ tbl_roche_summary <- function(data,
   # execute `tbl_summary()` code with theme/defaults ---------------------------
   x <-
     gtsummary::with_gtsummary_theme(
-      x = tbl_roche_summary_theme,
+      x = tbl_roche_summary_theme(data, {{ include }}),
       expr =
         gtsummary::tbl_summary(
           data = data,
@@ -121,17 +121,54 @@ tbl_roche_summary <- function(data,
 }
 
 # creating theme for tbl_roche_summary summaries -------------------------------
-tbl_roche_summary_theme <- list(
-  "tbl_summary-str:default_con_type" = "continuous2",
-  "tbl_summary-arg:digits" = list(
-    all_categorical() ~ list(
-      n = label_roche_number(digits = 0),
-      N_miss = label_roche_number(digits = 0),
-      N_nonmiss = label_roche_number(digits = 0),
-      p = label_roche_percent(digits = 1, scale = 100),
-      p_miss = label_roche_percent(digits = 1, scale = 100),
-      p_nonmiss = label_roche_percent(digits = 1, scale = 100)
-    ),
-    all_continuous() ~ label_roche_number(digits = 1)
+tbl_roche_summary_theme <- function(data, include) {
+  list(
+    "tbl_summary-str:default_con_type" = "continuous2",
+    "tbl_summary-arg:digits" = .guess_roche_summary_digits(data, {{ include }})
   )
-)
+}
+
+# estimate default decimal places to display
+.guess_roche_summary_digits <- function(data, include) {
+  cards::process_selectors(data, include = {{ include }})
+  digits <- list()
+  stat_meas <- c("mean", "sd", "var", "median", "sum", "p25", "p50", "p75") # dp = max(DP) + 1
+  stat_fixed_cts <- c("min", "max", "n") # dp = max(DP)
+  stat_fixed_cat <- c("n", "N", "N_obs", "N_miss", "N_nonmiss") # dp = 0
+  stat_pct <- c("p", "p_miss", "p_nonmiss") # dp = 1
+
+  for (var in include) {
+    if (var %in% names(data)) {
+      # continuous variables
+      if (is.numeric(data[[var]])) {
+        # get max digits for variable
+        max_dp <- max(vapply(data[[var]], count_dp, FUN.VALUE = numeric(1)))
+
+        digits[[var]] <- c(
+          rep(list(label_roche_number(digits = max_dp + 1)), length(stat_meas)),
+          rep(list(label_roche_number(digits = max_dp)), length(stat_fixed_cts))
+        ) |>
+          setNames(c(stat_meas, stat_fixed_cts))
+      # non-continuous variables
+      } else {
+        digits[[var]] <- c(
+          rep(list(label_roche_number(digits = 0)), length(stat_fixed_cat)),
+          rep(list(label_roche_percent(digits = 1, scale = 100)), length(stat_pct))
+        ) |>
+          setNames(c(stat_fixed_cat, stat_pct))
+      }
+    }
+  }
+  digits
+}
+
+# function to count number of decimal places in a number
+count_dp <- function(x) {
+  if (is.na(x)) {
+    return(0)
+  } else if (abs(x - round(x)) > .Machine$double.eps^0.5) {
+    nchar(strsplit(format(x, scientific = FALSE, trim = FALSE), ".", fixed = TRUE)[[1]][[2]])
+  } else {
+    return(0)
+  }
+}
