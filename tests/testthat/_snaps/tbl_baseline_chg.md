@@ -99,8 +99,6 @@
     Code
       tbl <- add_overall(tbl_baseline_chg(data = df, baseline_level = "Baseline", denominator = cards::ADSL))
     Message
-      The number rows in the tables to be merged do not match, which may result in rows appearing out of order.
-      i See `tbl_merge()` (`?gtsummary::tbl_merge()`) help file for details. Use `quiet=TRUE` to silence message.
       Original table was not stratified, and overall columns cannot be added.
       i Table has been returned unaltered.
 
@@ -109,13 +107,7 @@
     Code
       tbl <- add_overall(modify_table_body(tbl_baseline_chg(data = df, by = "TRTA", baseline_level = "Baseline", denominator = cards::ADSL), ~ dplyr::filter(.x, dplyr::row_number() %in% 1:5)))
     Message
-      The number rows in the tables to be merged do not match, which may result in rows appearing out of order.
-      i See `tbl_merge()` (`?gtsummary::tbl_merge()`) help file for details. Use `quiet=TRUE` to silence message.
-      The number rows in the tables to be merged do not match, which may result in rows appearing out of order.
-      i See `tbl_merge()` (`?gtsummary::tbl_merge()`) help file for details. Use `quiet=TRUE` to silence message.
       ! The structures of the original table and the overall table are not identical, and the resulting table may be malformed.
-      The number rows in the tables to be merged do not match, which may result in rows appearing out of order.
-      i See `tbl_merge()` (`?gtsummary::tbl_merge()`) help file for details. Use `quiet=TRUE` to silence message.
 
 # tbl_baseline_chg() throws error when required arguments are missing
 
@@ -133,8 +125,6 @@
       tbl <- tbl_baseline_chg(data = dplyr::mutate(df, TRTA = as.character(TRTA)), baseline_level = "Baseline", by = "TRTA", denominator = cards::ADSL)
     Message
       i Converting column "TRTA" to a factor.
-      The number rows in the tables to be merged do not match, which may result in rows appearing out of order.
-      i See `tbl_merge()` (`?gtsummary::tbl_merge()`) help file for details. Use `quiet=TRUE` to silence message.
 
 # gather_ard() works on output table
 

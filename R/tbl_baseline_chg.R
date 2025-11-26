@@ -171,7 +171,7 @@ tbl_baseline_chg <- function(data,
   # Merge tables together
   baseline_chg_tbl <-
     list(tbl_aval, tbl_chg) |>
-    gtsummary::tbl_merge(tab_spanner = FALSE) |>
+    gtsummary::tbl_merge(tab_spanner = FALSE, quiet = TRUE) |>
     gtsummary::modify_header(
       gtsummary::all_stat_cols() & ends_with("_1") ~ "Value at Visit",
       gtsummary::all_stat_cols() & ends_with("_2") ~ "Change from Baseline",
@@ -280,13 +280,15 @@ add_overall.tbl_baseline_chg <- function(x,
     gtsummary::tbl_merge(
       tbls = list(x, tbl_overall),
       tab_spanner = FALSE,
-      merge_vars = c("variable", "row_type", "var_label", "label0", "label")
+      merge_vars = c("variable", "row_type", "var_label", "label0", "label"),
+      quiet = TRUE
     )
   } else {
     gtsummary::tbl_merge(
       tbls = list(tbl_overall, x),
       tab_spanner = FALSE,
-      merge_vars = c("variable", "row_type", "var_label", "label0", "label")
+      merge_vars = c("variable", "row_type", "var_label", "label0", "label"),
+      quiet = TRUE
     )
   }
 
