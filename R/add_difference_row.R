@@ -108,7 +108,7 @@ add_difference_row.tbl_survfit_times <- function(x,
   tbl_surv_diff <-
     data |>
     # create dummy table to add difference rows to
-    tbl_summary(by = any_of(by), include = as.character(times), missing = "no") |>
+    gtsummary::tbl_summary(by = any_of(by), include = as.character(times), missing = "no") |>
     gtsummary::add_difference_row(
       reference = reference,
       statistic = everything() ~ statistic,
@@ -156,11 +156,11 @@ add_difference_row.tbl_survfit_times <- function(x,
       \(x) {
         x |>
           dplyr::mutate(
-            variable_f = factor(gsub("-row_difference", "", variable), levels = unique(x$variable)),
+            variable_f = factor(gsub("-row_difference", "", .data$variable), levels = unique(x$variable)),
             idx_row = dplyr::row_number()
           ) |>
-          dplyr::arrange(variable_f, idx_row) |>
-          dplyr::select(-variable_f, -idx_row)
+          dplyr::arrange(dplyr::pick("variable_f", "idx_row")) |>
+          dplyr::select(-"variable_f", -"idx_row")
       }
     )
 
