@@ -41,7 +41,8 @@ Suggests:
     testthat (>= 3.0.0),
     withr (>= 3.0.1)
 Remotes: 
-    ddsjoberg/gtsummary
+    ddsjoberg/gtsummary@main,
+    insightsengineering/cardx@main
 Config/Needs/check: hms
 Config/Needs/website: rmarkdown, yaml
 Config/testthat/edition: 3
