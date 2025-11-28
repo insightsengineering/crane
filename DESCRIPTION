@@ -1,6 +1,6 @@
 Package: crane
 Title: Supplements the 'gtsummary' Package for Pharmaceutical Reporting
-Version: 0.2.0.9012
+Version: 0.2.0.9013
 Authors@R: c(
     person("Daniel D.", "Sjoberg", , "danield.sjoberg@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-0862-2018")),
@@ -41,7 +41,8 @@ Suggests:
     testthat (>= 3.0.0),
     withr (>= 3.0.1)
 Remotes: 
-    ddsjoberg/gtsummary
+    ddsjoberg/gtsummary@main,
+    insightsengineering/cardx@main
 Config/Needs/check: hms
 Config/Needs/website: rmarkdown, yaml
 Config/testthat/edition: 3
