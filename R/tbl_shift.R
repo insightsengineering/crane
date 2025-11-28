@@ -307,6 +307,7 @@ add_overall.tbl_shift <- function(x,
   gtsummary::tbl_merge(
     tbls = list(x, tbl_overall),
     tab_spanner = FALSE,
-    merge_vars = c("variable", "row_type", "var_label", "label0", "label")
+    merge_vars = c("variable", "row_type", "var_label", "label0", "label"),
+    quiet = TRUE
   )
 }
