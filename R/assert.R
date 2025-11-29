@@ -1,3 +1,7 @@
+# styler: off
+# nocov start
+
+
 assert_proportion_value <- function(x, include_boundaries = FALSE) {
   checkmate::assert_number(x, lower = 0, upper = 1)
   checkmate::assert_flag(include_boundaries)
@@ -101,3 +105,6 @@ assert_valid_factor <- function(x, min.levels = 1, max.levels = NULL, null.ok = 
   )
   checkmate::makeAssertion(x, res, .var.name, add)
 }
+
+# nocov end
+# styler: on

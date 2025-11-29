@@ -1,6 +1,6 @@
 # ## Changelog
-# nocov start
 # styler: off
+# nocov start
 
 setGeneric("obj_label", function(obj) standardGeneric("obj_label"))
 
