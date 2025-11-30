@@ -1,15 +1,3 @@
-#' @title Control parameters for Cox Proportional Hazards model
-#'
-#' @description Creates a list of control parameters for Cox Proportional Hazards (Cox-PH)
-#' analysis, used by functions like \code{\link{h_tbl_coxph_pairwise}}.
-#'
-#' @param pval_method A character string specifying the method for calculating the p-value.
-#'   Must be one of \code{"log-rank"}, \code{"wald"}, or \code{"likelihood"}.
-#' @param ties A character string specifying the method for handling tied failure times.
-#'   Must be one of \code{"efron"}, \code{"breslow"}, or \code{"exact"}.
-#' @param conf_level A numeric value between 0 and 1, specifying the confidence level.
-#'
-#' @return A list with elements \code{pval_method}, \code{ties}, and \code{conf_level}.
 control_coxph <- function(pval_method = c("log-rank", "wald", "likelihood"),
                           ties = c("efron", "breslow", "exact"), conf_level = 0.95) {
   pval_method <- match.arg(pval_method)
@@ -18,18 +6,6 @@ control_coxph <- function(pval_method = c("log-rank", "wald", "likelihood"),
   list(pval_method = pval_method, ties = ties, conf_level = conf_level)
 }
 
-#' @title Control parameters for Median Survival Annotation Box
-#'
-#' @description Creates a list of control parameters for positioning and styling the
-#' median survival annotation box on a plot.
-#'
-#' @param x A numeric value (0 to 1) for the x-coordinate of the box center (relative to plot area).
-#' @param y A numeric value (0 to 1) for the y-coordinate of the box center (relative to plot area).
-#' @param w A numeric value (0 to 1) for the width of the box (relative to plot area).
-#' @param h A numeric value (0 to 1) for the height of the box (relative to plot area).
-#' @param fill A logical value (\code{TRUE} for a default light gray fill) or a color string for the box background.
-#'
-#' @return A list with elements \code{x}, \code{y}, \code{w}, \code{h}, and \code{fill}.
 control_surv_med_annot <- function(x = 0.8, y = 0.85, w = 0.32, h = 0.16, fill = TRUE) {
   assert_proportion_value(x)
   assert_proportion_value(y)
@@ -39,19 +15,6 @@ control_surv_med_annot <- function(x = 0.8, y = 0.85, w = 0.32, h = 0.16, fill =
   list(x = x, y = y, w = w, h = h, fill = fill)
 }
 
-#' @title Control parameters for Cox-PH Annotation Box
-#'
-#' @description Creates a list of control parameters for positioning and styling the
-#' Cox Proportional Hazards annotation box on a plot.
-#'
-#' @param x A numeric value (0 to 1) for the x-coordinate of the box center (relative to plot area).
-#' @param y A numeric value (0 to 1) for the y-coordinate of the box center (relative to plot area).
-#' @param w A numeric value (0 to 1) for the width of the box (relative to plot area).
-#' @param h A numeric value (0 to 1) for the height of the box (relative to plot area).
-#' @param fill A logical value (\code{TRUE} for a default light gray fill) or a color string for the box background.
-#' @param ref_lbls A logical flag indicating whether to append "vs. ref group" to row names.
-#'
-#' @return A list with elements \code{x}, \code{y}, \code{w}, \code{h}, \code{fill}, and \code{ref_lbls}.
 control_coxph_annot <- function(x = 0.29, y = 0.51, w = 0.4, h = 0.125, fill = TRUE, ref_lbls = FALSE) {
   checkmate::assert_logical(ref_lbls, any.missing = FALSE)
 
@@ -60,12 +23,6 @@ control_coxph_annot <- function(x = 0.29, y = 0.51, w = 0.4, h = 0.125, fill = T
 }
 
 
-## Helper Functions (Formatting, Data Preparation, Plotting Utilities)
-
-#' @title Format Confidence Level String
-#' @description Converts a confidence level (e.g., 0.95) to a formatted string (e.g., "95% CI").
-#' @param conf_level A numeric confidence level (proportion, 0 to 1).
-#' @return A character string.
 f_conf_level <- function(conf_level) {
   assert_proportion_value(conf_level) # Assuming assert_proportion_value is defined elsewhere
   paste0(conf_level * 100, "% CI")
@@ -82,7 +39,7 @@ f_conf_level <- function(conf_level) {
 #' @param col_lab_fontface Character string for the font face of column labels (e.g., "bold").
 #' @param hline Logical, whether to draw a horizontal line below the column labels.
 #' @param bg_fill Optional color string for the plot background.
-#'
+#' @keywords internal
 #' @return A \code{ggplot2} object representing the table.
 #' @importFrom ggplot2 ggplot theme_void scale_x_continuous scale_y_continuous theme element_rect annotate element_text .pt
 df2gg <- function(df, colwidths = NULL, font_size = 10, col_labels = TRUE,
@@ -146,7 +103,7 @@ df2gg <- function(df, colwidths = NULL, font_size = 10, col_labels = TRUE,
 #' @param data A data frame containing a \code{time} column.
 #' @param xticks A numeric vector of specific tick positions, a single number for the interval, or \code{NULL} for auto-calculation.
 #' @param max_time Optional numeric value specifying the maximum time to consider for tick range.
-#'
+#' @keywords internal
 #' @return A numeric vector of x-axis tick positions.
 h_xticks <- function(data, xticks = NULL, max_time = NULL) {
   # ... (function body remains the same)
@@ -182,7 +139,7 @@ h_xticks <- function(data, xticks = NULL, max_time = NULL) {
 #'
 #' @param fit_km A fitted Kaplan-Meier object of class \code{survfit}.
 #' @param armval Character string to use as the row name if \code{fit_km} has no strata (e.g., "All").
-#'
+#' @keywords internal
 #' @return A data frame with columns "N", "Median", and the confidence interval label.
 h_tbl_median_surv <- function(fit_km, armval = "All") {
   # ... (function body remains the same)
@@ -342,7 +299,7 @@ h_data_plot <- function(fit_km,
 #' @param strata Optional character vector of stratification variable names.
 #' @param control A list of control parameters from \code{\link{control_coxph}}.
 #' @param ... Additional arguments (not used).
-#'
+#' @keywords internal
 #' @return A list containing the p-value, Hazard Ratio (HR), confidence interval (HR\_CI),
 #'   and total counts.
 #' @importFrom survival Surv coxph survdiff
@@ -792,7 +749,7 @@ annot_at_risk <- function(gg_plt, fit_km, font_size = 10, annot_at_risk_title = 
   #' @param conf_level A numeric value (0 to 1) for the confidence level.
   #' @param conf_type A character string specifying the type of confidence interval.
   #'   Must be one of \code{"plain"}, \code{"log"}, or \code{"log-log"}.
-  #'
+  #' @keywords internal
   #' @return A list with elements \code{conf_level} and \code{conf_type}.
   control_surv_timepoint <- function(conf_level = 0.95, conf_type = c("plain", "log", "log-log")) {
     conf_type <- match.arg(conf_type)
@@ -814,7 +771,7 @@ annot_at_risk <- function(gg_plt, fit_km, font_size = 10, annot_at_risk_title = 
 #' @param control_surv A list of control parameters for the \code{survival::survfit} function,
 #'   typically generated by \code{\link{control_surv_timepoint}}, controlling confidence level
 #'   and confidence interval type.
-#'
+#' @keywords internal
 #' @return An object of class \code{survfit} from the \code{survival} package, containing
 #'   the fitted Kaplan-Meier curves.
 #' @importFrom survival survfit Surv
