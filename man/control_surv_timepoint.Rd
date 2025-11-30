@@ -22,3 +22,4 @@ A list with elements \code{conf_level} and \code{conf_type}.
 Creates a list of control parameters for \code{survival::survfit} when used
 for timepoint estimation.
 }
+\keyword{internal}

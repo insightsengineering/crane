@@ -35,3 +35,4 @@ A \code{ggplot2} object representing the table.
 \description{
 Creates a \code{ggplot2} object that renders a data frame as a table graphic.
 }
+\keyword{internal}

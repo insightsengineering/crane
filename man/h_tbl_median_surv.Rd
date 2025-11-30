@@ -18,3 +18,4 @@ A data frame with columns "N", "Median", and the confidence interval label.
 Extracts and formats the median survival time and its confidence interval
 from a fitted Kaplan-Meier object.
 }
+\keyword{internal}

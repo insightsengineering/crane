@@ -41,3 +41,4 @@ Performs a Cox Proportional Hazards model calculation comparing two groups
 (a reference group and a comparison group). This is an internal function used by
 \code{\link{h_tbl_coxph_pairwise}}.
 }
+\keyword{internal}

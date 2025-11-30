@@ -26,3 +26,4 @@ This helper function fits a Kaplan-Meier survival curve model
 using the formula \code{survival::Surv(tte, is_event) ~ arm}.
 It is designed to be a prerequisite for plotting functions like \code{\link{g_km}}.
 }
+\keyword{internal}
