@@ -1,3 +1,7 @@
+f_conf_level <- function(conf_level) {
+  # assert_proportion_value(conf_level) # Assuming assert_proportion_value is defined elsewhere
+  paste0(conf_level * 100, "% CI")
+}
 
 control_surv_med_annot <- function(x = 0.8, y = 0.85, w = 0.32, h = 0.16, fill = TRUE) {
   # assert_proportion_value(x)
@@ -176,48 +180,51 @@ h_tbl_median_surv <- function(fit_km, armval = "All") {
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' # Example data setup (assuming 'time' is event time, 'status' is event indicator (1=event),
 #' # and 'arm' is the treatment group)
-#' # library(survival)
-#' # data(lung)
-#' # lung$arm <- factor(sample(c("A", "B", "C"), nrow(lung), replace = TRUE))
-#' # lung$status <- lung$status - 1 # Convert status to 0/1
-#' # lung <- na.omit(lung)
+#' library(survival)
+#' data(lung)
+#' lung$arm <- factor(sample(c("A", "B", "C"), nrow(lung), replace = TRUE))
+#' lung$status <- lung$status - 1 # Convert status to 0/1
+#' lung <- na.omit(lung)
 #'
-#' ormula <- Surv(time, status) ~ arm
-#' results_tbl <- get_cox_pairwise_tbl(model_formula = formula,
-#' data = lung,
-#' arm = "arm",
-#' ref_group = "A")
-#'  print(results_tbl)
-#' }
-get_cox_pairwise_tbl <- function(model_formula, data, arm, ref_group = NULL){
+#' formula <- Surv(time, status) ~ arm
+#' results_tbl <- get_cox_pairwise_tbl(
+#'   model_formula = formula,
+#'   data = lung,
+#'   arm = "arm",
+#'   ref_group = "A"
+#' )
+#' print(results_tbl)
+get_cox_pairwise_tbl <- function(model_formula, data, arm, ref_group = NULL) {
   ref_group <- if (!is.null(ref_group)) ref_group else unique(data[[arm]])[1]
   comp_group <- setdiff(unique(data[[arm]]), ref_group)
 
   ret <- c()
-  for (current_arm in comp_group){
+  for (current_arm in comp_group) {
     comp_df <- data[data[[arm]] %in% c(ref_group, current_arm), ]
     suppressWarnings(
-      coxph_ans <- coxph(formula = model_formula, data = comp_df) %>% summary())
+      coxph_ans <- coxph(formula = model_formula, data = comp_df) %>% summary()
+    )
     orginal_survdiff <- survdiff(formula = model_formula, data = comp_df)
     log_rank_pvalue <- 1 - stats::pchisq(orginal_survdiff$chisq, length(orginal_survdiff$n) -
-                                           1)
+      1)
     current_row <- data.frame(
-      arm = current_arm,
-      hr = sprintf("%.2f", coxph_ans$conf.int[1,1]),
-      ci = paste0("(",
-                 sprintf("%.2f", coxph_ans$conf.int[1,3]),
-                 ", ",
-                 sprintf("%.2f", coxph_ans$conf.int[1,4]),
-                 ")"),
+      hr = sprintf("%.2f", coxph_ans$conf.int[1, 1]),
+      ci = paste0(
+        "(",
+        sprintf("%.2f", coxph_ans$conf.int[1, 3]),
+        ", ",
+        sprintf("%.2f", coxph_ans$conf.int[1, 4]),
+        ")"
+      ),
       pval = log_rank_pvalue
     )
+    rownames(current_row) <- current_arm
     ret <- rbind(ret, current_row)
   }
 
-  return (ret)
+  return(ret)
 }
 
 

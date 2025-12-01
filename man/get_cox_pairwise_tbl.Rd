@@ -31,20 +31,20 @@ This function performs a pairwise comparison of treatment arms using the \strong
 The function iterates through each unique arm (excluding the reference group), filters the data to include only the current comparison arm and the reference arm, and then fits a Cox model (\code{\link[survival]{coxph}}) and performs a log-rank test (\code{\link[survival]{survdiff}}). The Hazard Ratio and its 95\\% confidence interval are extracted from the Cox model summary, and the p-value is calculated from the log-rank test.
 }
 \examples{
-\dontrun{
 # Example data setup (assuming 'time' is event time, 'status' is event indicator (1=event),
 # and 'arm' is the treatment group)
-# library(survival)
-# data(lung)
-# lung$arm <- factor(sample(c("A", "B", "C"), nrow(lung), replace = TRUE))
-# lung$status <- lung$status - 1 # Convert status to 0/1
-# lung <- na.omit(lung)
+library(survival)
+data(lung)
+lung$arm <- factor(sample(c("A", "B", "C"), nrow(lung), replace = TRUE))
+lung$status <- lung$status - 1 # Convert status to 0/1
+lung <- na.omit(lung)
 
-ormula <- Surv(time, status) ~ arm
-results_tbl <- get_cox_pairwise_tbl(model_formula = formula,
-data = lung,
-arm = "arm",
-ref_group = "A")
- print(results_tbl)
-}
+formula <- Surv(time, status) ~ arm
+results_tbl <- get_cox_pairwise_tbl(
+  model_formula = formula,
+  data = lung,
+  arm = "arm",
+  ref_group = "A"
+)
+print(results_tbl)
 }
