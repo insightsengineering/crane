@@ -34,15 +34,15 @@ The function iterates through each unique arm (excluding the reference group), f
 # Example data setup (assuming 'time' is event time, 'status' is event indicator (1=event),
 # and 'arm' is the treatment group)
 library(survival)
-data(lung)
-lung$arm <- factor(sample(c("A", "B", "C"), nrow(lung), replace = TRUE))
-lung$status <- lung$status - 1 # Convert status to 0/1
-lung <- na.omit(lung)
+use_lung <- lung
+use_lung$arm <- factor(sample(c("A", "B", "C"), nrow(use_lung), replace = TRUE))
+use_lung$status <- use_lung$status - 1 # Convert status to 0/1
+use_lung <- na.omit(use_lung)
 
 formula <- Surv(time, status) ~ arm
 results_tbl <- get_cox_pairwise_tbl(
   model_formula = formula,
-  data = lung,
+  data = use_lung,
   arm = "arm",
   ref_group = "A"
 )

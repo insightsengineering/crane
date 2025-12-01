@@ -22,7 +22,8 @@ BugReports: https://github.com/insightsengineering/crane/issues
 Depends: 
     gtsummary (>= 2.4.0.9009),
     R (>= 4.2)
-Imports: 
+Imports:
+    assertthat (>= 0.2.1),
     broom (>= 1.0.8),
     cards (>= 0.7.0),
     cardx (>= 0.3.0),
