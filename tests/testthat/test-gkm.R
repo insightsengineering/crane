@@ -10,7 +10,7 @@ anl[[by]] = factor(anl[[by]], levels = c(
 ))
 
 test_that("test gkm() works", {
-  GROUP_SYM <- rlang::ensym(by)
+  GROUP_SYM <- rlang::sym(by)
   model_formula <- rlang::new_formula(
     lhs = rlang::expr(Surv(AVAL, is_event)),
     rhs = rlang::expr(!!GROUP_SYM)
