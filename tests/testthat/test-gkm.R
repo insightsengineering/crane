@@ -2,7 +2,7 @@ skip_on_cran()
 
 anl <- cards::ADTTE |>
   dplyr::mutate(is_event = CNSR == 0)
-by = "TRTP"
+by <- "TRTP"
 
 test_that("test gkm() works", {
   GROUP_SYM <- rlang::ensym(by)
