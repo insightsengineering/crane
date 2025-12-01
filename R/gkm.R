@@ -197,12 +197,14 @@ h_tbl_median_surv <- function(fit_km, armval = "All") {
 #' )
 #' print(results_tbl)
 get_cox_pairwise_tbl <- function(model_formula, data, arm, ref_group = NULL) {
-  ref_group <- if (!is.null(ref_group)) ref_group else unique(data[[arm]])[1]
-  comp_group <- setdiff(unique(data[[arm]]), ref_group)
+  ref_group <- if (!is.null(ref_group)) ref_group else levels(data[[arm]])[1]
+  comp_group <- setdiff(levels(data[[arm]]), ref_group)
 
   ret <- c()
   for (current_arm in comp_group) {
-    comp_df <- data[data[[arm]] %in% c(ref_group, current_arm), ]
+    subset_arm <- c(ref_group, current_arm)
+    assertthat::assert_that(length(subset_arm) == 2, msg = "Make sure 2 arms")
+    comp_df <- data[as.character(data[[arm]]) %in% subset_arm, ]
     suppressWarnings(
       coxph_ans <- coxph(formula = model_formula, data = comp_df) %>% summary()
     )
