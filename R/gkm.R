@@ -20,7 +20,6 @@ control_coxph_annot <- function(x = 0.29, y = 0.51, w = 0.4, h = 0.125, fill = T
 }
 
 
-
 #' @title Convert Data Frame to ggplot2 Table Graphic
 #'
 #' @description Creates a \code{ggplot2} object that renders a data frame as a table graphic.
@@ -285,7 +284,6 @@ h_data_plot <- function(fit_km,
 }
 
 
-
 ## Core Plotting and Annotation Functions
 
 #' @title Generate a Kaplan-Meier Plot
@@ -319,25 +317,26 @@ h_data_plot <- function(fit_km,
 #' @importFrom rlang .data
 #' @export
 g_km <- function(
-    surv_plot_data,
-    col = NULL,
-    lty = NULL,
-    lwd = 0.5,
-    censor_show = TRUE,
-    pch = 3,
-    size = 2,
-    max_time = NULL,
-    xticks = NULL,
-    xlab = "Days",
-    yval = c("Survival", "Failure"),
-    ylab = paste(yval, "Probability"),
-    ylim = NULL,
-    title = NULL,
-    footnotes = NULL,
-    font_size = 10,
-    ci_ribbon = FALSE,
-    legend_pos = NULL,
-    ggtheme = NULL) {
+  surv_plot_data,
+  col = NULL,
+  lty = NULL,
+  lwd = 0.5,
+  censor_show = TRUE,
+  pch = 3,
+  size = 2,
+  max_time = NULL,
+  xticks = NULL,
+  xlab = "Days",
+  yval = c("Survival", "Failure"),
+  ylab = paste(yval, "Probability"),
+  ylim = NULL,
+  title = NULL,
+  footnotes = NULL,
+  font_size = 10,
+  ci_ribbon = FALSE,
+  legend_pos = NULL,
+  ggtheme = NULL
+) {
   # ... (function body remains the same)
   checkmate::assert_data_frame(surv_plot_data, min.cols = 7, min.rows = 1)
   data <- surv_plot_data
