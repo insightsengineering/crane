@@ -3,6 +3,11 @@ skip_on_cran()
 anl <- cards::ADTTE |>
   dplyr::mutate(is_event = CNSR == 0)
 by <- "TRTP"
+anl[[by]] = factor(anl[[by]], levels = c(
+  "Placebo",
+  "Xanomeline Low Dose",
+  "Xanomeline High Dose"
+))
 
 test_that("test gkm() works", {
   GROUP_SYM <- rlang::ensym(by)

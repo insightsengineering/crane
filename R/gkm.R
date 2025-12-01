@@ -178,7 +178,7 @@ h_tbl_median_surv <- function(fit_km, armval = "All") {
 #' @importFrom survival coxph Surv survdiff
 #' @importFrom stats pchisq
 #' @export
-#'
+#' @importFrom rlang ensym
 #' @examples
 #' # Example data setup (assuming 'time' is event time, 'status' is event indicator (1=event),
 #' # and 'arm' is the treatment group)
@@ -197,7 +197,10 @@ h_tbl_median_surv <- function(fit_km, armval = "All") {
 #' )
 #' print(results_tbl)
 get_cox_pairwise_tbl <- function(model_formula, data, arm, ref_group = NULL) {
-  ref_group <- if (!is.null(ref_group)) ref_group else levels(data[[arm]])[1]
+  msg = paste0(rlang::ensym(data), "[['", rlang::ensym(arm), "']] is not a factor")
+  assertthat::assert_that(is.factor(data[[arm]]), msg = msg)
+  ref_group <- if (!is.null(ref_group)) {
+    ref_group } else {levels(data[[arm]])[1]}
   comp_group <- setdiff(levels(data[[arm]]), ref_group)
 
   ret <- c()
