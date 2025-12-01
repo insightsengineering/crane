@@ -1,22 +1,27 @@
 skip_on_cran()
 
 anl <- cards::ADTTE |>
-  dplyr::mutate(is_event = CNSR == 0) %>%
-  dplyr::mutate(TRTP = as.factor(TRTP))
-
-variables <- list(tte = "AVAL", is_event = "is_event", arm = "TRTP")
+  dplyr::mutate(is_event = CNSR == 0)
+by = "TRTP"
 
 test_that("test gkm() works", {
-  fit_kmg01 <- survfit(ggsurvfit::Surv_CNSR(AVAL, CNSR) ~ TRTP, anl)
-  variables <- list(tte = "AVAL", is_event = "is_event", arm = "TRTP")
+  GROUP_SYM <- rlang::ensym(by)
+  model_formula <- rlang::new_formula(
+    lhs = rlang::expr(Surv(AVAL, is_event)),
+    rhs = rlang::expr(!!GROUP_SYM)
+  )
+
+  fit_kmg01 <- survival::survfit(model_formula, anl)
+
 
   expect_no_error(surv_plot_data <- h_data_plot(fit_kmg01))
 
   expect_no_error(
     suppressWarnings(
-      coxph_tbl <- h_tbl_coxph_pairwise(
-        df = anl,
-        variables = variables
+      coxph_tbl <- get_cox_pairwise_tbl(
+        model_formula,
+        data = anl,
+        arm = by
       )
     )
   )
