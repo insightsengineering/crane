@@ -3,10 +3,21 @@
 
 # crane <a href="https://insightsengineering.github.io/crane/"><img src='man/figures/logo.png' align="right" height="120" /></a>
 
-<!-- badges: start -->
+<!-- start badges -->
 
-[![Codecov test
-coverage](https://codecov.io/gh/insightsengineering/crane/graph/badge.svg)](https://app.codecov.io/gh/insightsengineering/crane)
+[![Check
+🛠](https://github.com/insightsengineering/crane/actions/workflows/check.yaml/badge.svg)](https://github.com/insightsengineering/crane/actions/workflows/check.yaml)
+[![Docs
+📚](https://github.com/insightsengineering/crane/actions/workflows/docs.yaml/badge.svg)](https://insightsengineering.github.io/crane/)
+[![Code Coverage
+📔](https://raw.githubusercontent.com/insightsengineering/crane/_xml_coverage_reports/data/main/badge.svg)](https://raw.githubusercontent.com/insightsengineering/crane/_xml_coverage_reports/data/main/coverage.xml)
+
+[![CRAN
+Version](https://www.r-pkg.org/badges/version/crane)](https://CRAN.R-project.org/package=crane)
+[![Current
+Version](https://img.shields.io/github/r-package/v/insightsengineering/crane/main?color=purple&label=Development%20Version)](https://github.com/insightsengineering/crane/tree/main)
+<!-- end badges -->
+
 <!-- badges: end -->
 
 The {crane} package provides supplementary functions to the {gtsummary}
