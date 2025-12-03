@@ -150,7 +150,6 @@ h_tbl_median_surv <- function(fit_km, armval = "All") {
 #' }
 #'
 #' @details The function iterates through each unique arm (excluding the reference group), filters the data to include only the current comparison arm and the reference arm, and then fits a Cox model (\code{\link[survival]{coxph}}) and performs a log-rank test (\code{\link[survival]{survdiff}}). The Hazard Ratio and its 95\% confidence interval are extracted from the Cox model summary, and the p-value is calculated from the log-rank test.
-#'
 #' @export
 #' @examples
 #' # Example data setup (assuming 'time' is event time, 'status' is event indicator (1=event),
@@ -170,6 +169,8 @@ h_tbl_median_surv <- function(fit_km, armval = "All") {
 #' )
 #' print(results_tbl)
 get_cox_pairwise_tbl <- function(model_formula, data, arm, ref_group = NULL) {
+  msg <- paste0(rlang::ensym(model_formula), " is not a formula")
+  assertthat::assert_that(rlang::is_formula(model_formula), msg = msg)
   msg <- paste0(rlang::ensym(data), "[['", rlang::ensym(arm), "']] is not a factor")
   assertthat::assert_that(is.factor(data[[arm]]), msg = msg)
   ref_group <- if (!is.null(ref_group)) {
@@ -209,9 +210,9 @@ get_cox_pairwise_tbl <- function(model_formula, data, arm, ref_group = NULL) {
 }
 
 
-#' @title Prepare Kaplan-Meier Data for Plotting
+#' @title Generate a Kaplan-Meier Plot
 #'
-#' @description Takes a fitted \code{survfit} object and processes it into a data frame
+#' @description The function \code{h_data_plot} takes a fitted \code{survfit} object and processes it into a data frame
 #' suitable for plotting a Kaplan-Meier curve with \code{ggplot2}, including extending
 #' the curve to time zero.
 #'
@@ -219,7 +220,21 @@ get_cox_pairwise_tbl <- function(model_formula, data, arm, ref_group = NULL) {
 #' @param armval Character string for the strata level if \code{fit_km} has no strata (e.g., "All").
 #' @param max_time Numeric, the maximum time point to include in the data, or \code{NULL} for no limit.
 #'
-#' @return A data frame containing the survival curve steps, confidence intervals, and censoring info.
+#' @return The function \code{h_data_plot} returns a data frame containing the survival curve steps, confidence intervals, and censoring info.
+#' @rdname gkm
+#' @examples
+#' # Example data setup (assuming 'time' is event time, 'status' is event indicator (1=event),
+#' # and 'arm' is the treatment group)
+#' library(survival)
+#' use_lung <- lung
+#' use_lung$arm <- factor(sample(c("A", "B", "C"), nrow(use_lung), replace = TRUE))
+#' use_lung$status <- use_lung$status - 1 # Convert status to 0/1
+#' use_lung <- na.omit(use_lung)
+#' formula <- Surv(time, status) ~ arm
+#' fit_kmg01 <- survfit(formula, use_lung)
+#' surv_plot_data <- h_data_plot(fit_kmg01)
+#' head(surv_plot_data)
+#'
 #' @export
 h_data_plot <- function(fit_km,
                         armval = "All",
@@ -265,15 +280,11 @@ h_data_plot <- function(fit_km,
 }
 
 
-## Core Plotting and Annotation Functions
-
-#' @title Generate a Kaplan-Meier Plot
-#'
-#' @description This function creates a comprehensive \code{ggplot2} object for a Kaplan-Meier
+#' @description The function \code{g_km} creates a comprehensive \code{ggplot2} object for a Kaplan-Meier
 #' survival curve, with support for various customizations like censoring marks, CIs, and axis control.
 #'
 #' @param surv_plot_data A data frame containing the pre-processed survival data, ready for plotting.
-#'   This data should be equivalent to the output of \code{\link{h_data_plot}}.
+#'   This data should be equivalent to the output of \code{h_data_plot}.
 #' @param col A character vector of colors for the survival curves. Length should match number of arms.
 #' @param lty A vector of line types for the survival curves, or \code{NULL} for default.
 #' @param lwd Numeric value specifying line width for the survival curves.
@@ -293,7 +304,14 @@ h_data_plot <- function(fit_km,
 #' @param legend_pos Numeric vector of length 2 for legend position (x, y) relative to the plot area (0 to 1), or \code{NULL} for auto-placement.
 #' @param ggtheme An optional \code{ggplot2} theme to apply.
 #'
-#' @return A \code{ggplot2} object of the KM plot.
+#' @return The function \code{g_km} returns a \code{ggplot2} object of the KM plot.
+#' @rdname gkm
+#' @examples
+#' # Example of making the KM plot
+#' plt_kmg01 <- g_km(surv_plot_data,
+#'   xlab = "Time (Days)"
+#' )
+#'
 #' @export
 g_km <- function(
   surv_plot_data,
@@ -316,7 +334,6 @@ g_km <- function(
   legend_pos = NULL,
   ggtheme = NULL
 ) {
-  # ... (function body remains the same)
   checkmate::assert_data_frame(surv_plot_data, min.cols = 7, min.rows = 1)
   data <- surv_plot_data
 
@@ -435,13 +452,10 @@ g_km <- function(
   }
   if (!is.null(ggtheme)) gg_plt <- gg_plt + ggtheme
 
-
   gg_plt
 }
 
-#' @title Annotate Kaplan-Meier Plot with Median Survival Table
-#'
-#' @description Adds a median survival time summary table as an annotation box on a
+#' @description The \code{annot_surv_med} function adds a median survival time summary table as an annotation box on a
 #' Kaplan-Meier plot using \code{cowplot}.
 #'
 #' @param gg_plt A \code{ggplot2} or \code{cowplot} object of the Kaplan-Meier plot.
@@ -449,7 +463,12 @@ g_km <- function(
 #' @param control_annot_surv_med A list of control parameters for the annotation box.
 #' @param font_size Numeric, base font size for the annotation table.
 #'
-#' @return A \code{cowplot} object with the median survival table annotation added.
+#' @return The \code{annot_surv_med} function returns a \code{cowplot} object with the median survival table annotation added.
+#' @rdname gkm
+#' @examples
+#' # Annotate Kaplan-Meier Plot with Median Survival Table
+#' annot_surv_med(plt_kmg01, fit_kmg01)
+#'
 #' @export
 annot_surv_med <- function(gg_plt, fit_km, control_annot_surv_med = control_surv_med_annot(), font_size = 10) {
   # Determine armval for h_tbl_median_surv, assuming it's available in the calling environment or logic should be updated
@@ -480,9 +499,7 @@ annot_surv_med <- function(gg_plt, fit_km, control_annot_surv_med = control_surv
   gg_plt
 }
 
-#' @title Annotate Kaplan-Meier Plot with Cox-PH Table
-#'
-#' @description Adds a Cox Proportional Hazards summary table as an annotation box on a
+#' @description The function \code{annot_cox_ph} adds a Cox Proportional Hazards summary table created by the function \code{\link{get_cox_pairwise_tbl}} as an annotation box on a
 #' Kaplan-Meier plot using \code{cowplot}.
 #'
 #' @param gg_plt A \code{ggplot2} or \code{cowplot} object of the Kaplan-Meier plot.
@@ -490,8 +507,14 @@ annot_surv_med <- function(gg_plt, fit_km, control_annot_surv_med = control_surv
 #' @param control_annot_coxph A list of control parameters for the annotation box.
 #' @param font_size Numeric, base font size for the annotation table.
 #'
-#' @return A \code{cowplot} object with the Cox-PH table annotation added.
+#' @return The function \code{annot_surv_med} returns a \code{cowplot} object with the Cox-PH table annotation added.
+#' @rdname gkm
 #' @export
+#' @examples
+#' # Annotate Kaplan-Meier Plot with Cox-PH Table
+#' coxph_tbl <- get_cox_pairwise_tbl(formula, data = use_lung, arm = "arm", ref_group = "A")
+#' annot_surv_med(plt_kmg01, coxph_tbl)
+#'
 annot_cox_ph <- function(gg_plt, coxph_tbl, control_annot_coxph = control_coxph_annot(), font_size = 10) {
   # ... (function body remains the same)
   bg_fill <- if (isTRUE(control_annot_coxph[["fill"]])) "#00000020" else control_annot_coxph[["fill"]]
@@ -517,9 +540,8 @@ annot_cox_ph <- function(gg_plt, coxph_tbl, control_annot_coxph = control_coxph_
   gg_plt
 }
 
-#' @title Annotate Plot with Numbers at Risk Table
-#'
-#' @description Adds a "Numbers at Risk" table below a Kaplan-Meier plot using \code{cowplot::plot_grid}.
+
+#' @description The function \code{annot_at_risk} adds a "Numbers at Risk" table below a Kaplan-Meier plot using \code{cowplot::plot_grid}.
 #'
 #' @param gg_plt A \code{ggplot2} or \code{cowplot} object of the Kaplan-Meier plot.
 #' @param fit_km A fitted Kaplan-Meier object of class \code{survfit}, used to generate the table data.
@@ -527,11 +549,14 @@ annot_cox_ph <- function(gg_plt, coxph_tbl, control_annot_coxph = control_coxph_
 #' @param annot_at_risk_title Logical, whether to include the title "Patients at Risk:".
 #' @param rel_height_plot Numeric, relative height of the main plot area compared to the 'at-risk' table (0 to 1).
 #' @param xlab Character string for the x-axis label on the 'at-risk' table (typically time).
-#'
-#' @return A \code{cowplot} object combining the KM plot and the 'Numbers at Risk' table.
+#' @rdname gkm
+#' @return The function \code{annot_at_risk} returns a \code{cowplot} object combining the KM plot and the 'Numbers at Risk' table.
 #' @export
+#' @examples
+#' # Annotate Plot with Numbers at Risk Table
+#' annot_at_risk(plt_kmg01, fit_kmg01)
+#'
 annot_at_risk <- function(gg_plt, fit_km, font_size = 10, annot_at_risk_title = TRUE, rel_height_plot = 0.75, xlab = "Days") {
-  # ... (function body remains the same)
   data <- broom::tidy(fit_km)
   xticks <- h_xticks(data = data)
   annot_tbl <- summary(fit_km, times = xticks, extend = TRUE)
