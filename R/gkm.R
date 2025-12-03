@@ -513,7 +513,7 @@ annot_surv_med <- function(gg_plt, fit_km, control_annot_surv_med = control_surv
 #' @examples
 #' # Annotate Kaplan-Meier Plot with Cox-PH Table
 #' coxph_tbl <- get_cox_pairwise_tbl(formula, data = use_lung, arm = "arm", ref_group = "A")
-#' annot_surv_med(plt_kmg01, coxph_tbl)
+#' annot_cox_ph(plt_kmg01, coxph_tbl)
 #'
 annot_cox_ph <- function(gg_plt, coxph_tbl, control_annot_coxph = control_coxph_annot(), font_size = 10) {
   # ... (function body remains the same)

@@ -161,7 +161,7 @@ annot_surv_med(plt_kmg01, fit_kmg01)
 
 # Annotate Kaplan-Meier Plot with Cox-PH Table
 coxph_tbl <- get_cox_pairwise_tbl(formula, data = use_lung, arm = "arm", ref_group = "A")
-annot_surv_med(plt_kmg01, coxph_tbl)
+annot_cox_ph(plt_kmg01, coxph_tbl)
 
 # Annotate Plot with Numbers at Risk Table
 annot_at_risk(plt_kmg01, fit_kmg01)
