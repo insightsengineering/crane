@@ -1,21 +1,3 @@
-f_conf_level <- function(conf_level) {
-  # assert_proportion_value(conf_level) # Assuming assert_proportion_value is defined elsewhere
-  paste0(conf_level * 100, "% CI")
-}
-
-control_surv_med_annot <- function(x = 0.8, y = 0.85, w = 0.32, h = 0.16, fill = TRUE) {
-
-  list(x = x, y = y, w = w, h = h, fill = fill)
-}
-
-control_coxph_annot <- function(x = 0.29, y = 0.51, w = 0.4, h = 0.125, fill = TRUE, ref_lbls = FALSE) {
-  checkmate::assert_logical(ref_lbls, any.missing = FALSE)
-
-  res <- c(control_surv_med_annot(x = x, y = y, w = w, h = h), list(ref_lbls = ref_lbls))
-  res
-}
-
-
 #' @title Convert Data Frame to ggplot2 Table Graphic
 #'
 #' @description Creates a \code{ggplot2} object that renders a data frame as a table graphic.
@@ -29,7 +11,6 @@ control_coxph_annot <- function(x = 0.29, y = 0.51, w = 0.4, h = 0.125, fill = T
 #' @param bg_fill Optional color string for the plot background.
 #' @keywords internal
 #' @return A \code{ggplot2} object representing the table.
-#' @importFrom ggplot2 ggplot theme_void scale_x_continuous scale_y_continuous theme element_rect annotate element_text .pt
 df2gg <- function(df, colwidths = NULL, font_size = 10, col_labels = TRUE,
                   col_lab_fontface = "bold", hline = TRUE, bg_fill = NULL) {
   # ... (function body remains the same)
@@ -92,7 +73,6 @@ df2gg <- function(df, colwidths = NULL, font_size = 10, col_labels = TRUE,
 #' @param xticks A numeric vector of specific tick positions, a single number for the interval, or \code{NULL} for auto-calculation.
 #' @param max_time Optional numeric value specifying the maximum time to consider for tick range.
 #' @keywords internal
-#' @importFrom labeling extended
 #' @return A numeric vector of x-axis tick positions.
 h_xticks <- function(data, xticks = NULL, max_time = NULL) {
   # ... (function body remains the same)
@@ -171,11 +151,7 @@ h_tbl_median_surv <- function(fit_km, armval = "All") {
 #'
 #' @details The function iterates through each unique arm (excluding the reference group), filters the data to include only the current comparison arm and the reference arm, and then fits a Cox model (\code{\link[survival]{coxph}}) and performs a log-rank test (\code{\link[survival]{survdiff}}). The Hazard Ratio and its 95\% confidence interval are extracted from the Cox model summary, and the p-value is calculated from the log-rank test.
 #'
-#' @importFrom survival coxph Surv survdiff
-#' @importFrom stats pchisq
 #' @export
-#' @importFrom rlang ensym
-#' @importFrom assertthat assert_that
 #' @examples
 #' # Example data setup (assuming 'time' is event time, 'status' is event indicator (1=event),
 #' # and 'arm' is the treatment group)
@@ -244,7 +220,6 @@ get_cox_pairwise_tbl <- function(model_formula, data, arm, ref_group = NULL) {
 #' @param max_time Numeric, the maximum time point to include in the data, or \code{NULL} for no limit.
 #'
 #' @return A data frame containing the survival curve steps, confidence intervals, and censoring info.
-#' @importFrom broom tidy
 #' @export
 h_data_plot <- function(fit_km,
                         armval = "All",
@@ -319,8 +294,6 @@ h_data_plot <- function(fit_km,
 #' @param ggtheme An optional \code{ggplot2} theme to apply.
 #'
 #' @return A \code{ggplot2} object of the KM plot.
-#' @importFrom ggplot2 ggplot aes theme_bw scale_y_continuous labs theme element_text element_blank element_rect element_line geom_step geom_point scale_shape_manual guides guide_legend geom_ribbon scale_color_manual scale_fill_manual scale_linetype_manual coord_cartesian
-#' @importFrom rlang .data
 #' @export
 g_km <- function(
   surv_plot_data,
@@ -477,8 +450,6 @@ g_km <- function(
 #' @param font_size Numeric, base font size for the annotation table.
 #'
 #' @return A \code{cowplot} object with the median survival table annotation added.
-#' @importFrom cowplot ggdraw draw_plot
-#' @importFrom ggplot2 theme element_text coord_cartesian scale_x_continuous scale_y_continuous margin
 #' @export
 annot_surv_med <- function(gg_plt, fit_km, control_annot_surv_med = control_surv_med_annot(), font_size = 10) {
   # Determine armval for h_tbl_median_surv, assuming it's available in the calling environment or logic should be updated
@@ -520,8 +491,6 @@ annot_surv_med <- function(gg_plt, fit_km, control_annot_surv_med = control_surv
 #' @param font_size Numeric, base font size for the annotation table.
 #'
 #' @return A \code{cowplot} object with the Cox-PH table annotation added.
-#' @importFrom cowplot ggdraw draw_plot
-#' @importFrom ggplot2 theme element_text coord_cartesian scale_x_continuous scale_y_continuous margin
 #' @export
 annot_cox_ph <- function(gg_plt, coxph_tbl, control_annot_coxph = control_coxph_annot(), font_size = 10) {
   # ... (function body remains the same)
@@ -560,10 +529,6 @@ annot_cox_ph <- function(gg_plt, coxph_tbl, control_annot_coxph = control_coxph_
 #' @param xlab Character string for the x-axis label on the 'at-risk' table (typically time).
 #'
 #' @return A \code{cowplot} object combining the KM plot and the 'Numbers at Risk' table.
-#' @importFrom broom tidy
-#' @importFrom tidyr pivot_wider
-#' @importFrom cowplot plot_grid
-#' @importFrom ggplot2 labs theme_bw theme element_text element_blank element_line coord_cartesian scale_x_continuous scale_y_continuous
 #' @export
 annot_at_risk <- function(gg_plt, fit_km, font_size = 10, annot_at_risk_title = TRUE, rel_height_plot = 0.75, xlab = "Days") {
   # ... (function body remains the same)
