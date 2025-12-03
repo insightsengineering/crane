@@ -4,10 +4,6 @@ f_conf_level <- function(conf_level) {
 }
 
 control_surv_med_annot <- function(x = 0.8, y = 0.85, w = 0.32, h = 0.16, fill = TRUE) {
-  # assert_proportion_value(x)
-  # assert_proportion_value(y)
-  # assert_proportion_value(w)
-  # assert_proportion_value(h)
 
   list(x = x, y = y, w = w, h = h, fill = fill)
 }
