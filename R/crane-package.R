@@ -1,9 +1,18 @@
 #' @keywords internal
 #' @import rlang
+#' @import ggplot2
 #' @import glue glue
-#' @importFrom utils tail
+#' @importFrom assertthat assert_that
+#' @importFrom broom tidy
+#' @importFrom cowplot plot_grid
+#' @importFrom cowplot ggdraw draw_plot
 #' @importFrom dplyr across starts_with ends_with contains matches num_range
 #'                   all_of any_of everything last_col where
+#' @importFrom labeling extended
+#' @importFrom survival coxph Surv survdiff
+#' @importFrom stats pchisq
+#' @importFrom tidyr pivot_wider
+#' @importFrom utils tail
 "_PACKAGE"
 
 ## usethis namespace: start
