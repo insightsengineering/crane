@@ -1,6 +1,17 @@
-# update this, use usethis to improt
-# usethis::use_standalone("ddsjoberg/gtforester", "tbl_subgroups")
+# This file is a direct copy from ddsjoberg/gtforester
+# usethis::use_github_file("ddsjoberg/gtforester", "R/tbl_subgroups.R")
 
+#' Subgroup Analyses
+#'
+#' @param data data frame
+#' @param subgroups character vector of column names to perform stratified analyses among
+#' @inheritParams gtsummary::tbl_strata
+#'
+#' @return a gt table
+#' @export
+#'
+#' @examples
+#' # add example
 tbl_subgroups <- function(data, subgroups, .tbl_fun, ...) {
   tbl <-
     subgroups %>%
