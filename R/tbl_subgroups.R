@@ -45,7 +45,7 @@ tbl_subgroups <- function(data, subgroups, .tbl_fun, ...) {
   tbl <-
     subgroups %>%
     purrr::map(
-      ~gtsummary::tbl_strata(
+      ~ gtsummary::tbl_strata(
         data = data,
         strata = .x,
         .tbl_fun = .tbl_fun,

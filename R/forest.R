@@ -36,23 +36,22 @@ create_forest_plot <- function(data,
                                xlim = c(0.1, 10),
                                logx = TRUE,
                                vline = 1) {
-
-  forest_header = c("Comparison\nBetter", "Treatment\nBetter")
+  forest_header <- c("Comparison\nBetter", "Treatment\nBetter")
   # Calculate y positions (reverse order for top-to-bottom display)
   data <- data %>%
     mutate(y_pos = rev(row_number()))
 
   # Apply log transformation if needed
   if (logx) {
-  #   data <- data %>%
-  #     mutate(
-  #       estimate_log = log(estimate),
-  #       ci_lower_log = log(ci_lower),
-  #       ci_upper_log = log(ci_upper)
-  #     )
-  #   x_aesthetic_vars <- aes(x = estimate_log, xend = ci_lower_log, yend = ci_upper_log)
-  #   x_scale <- scale_x_log10(limits = xlim, expand = c(0.01, 0))
-  # } else {
+    #   data <- data %>%
+    #     mutate(
+    #       estimate_log = log(estimate),
+    #       ci_lower_log = log(ci_lower),
+    #       ci_upper_log = log(ci_upper)
+    #     )
+    #   x_aesthetic_vars <- aes(x = estimate_log, xend = ci_lower_log, yend = ci_upper_log)
+    #   x_scale <- scale_x_log10(limits = xlim, expand = c(0.01, 0))
+    # } else {
     data <- data %>%
       mutate(
         estimate_log = estimate,
@@ -66,26 +65,36 @@ create_forest_plot <- function(data,
   # Create plot
   ggplot(data) +
     # Background rectangle
-    annotate("rect", xmin = xlim[1], xmax = xlim[2], ymin = 0.5, ymax = nrow(data) + 0.5,
-             fill = "grey92", alpha = 0.5) +
+    annotate("rect",
+      xmin = xlim[1], xmax = xlim[2], ymin = 0.5, ymax = nrow(data) + 0.5,
+      fill = "grey92", alpha = 0.5
+    ) +
     # CI lines with arrows
     geom_errorbarh(aes(xmin = ci_lower_log, xmax = ci_upper_log, y = y_pos),
-                   height = 0.2, color = "black") +
+      height = 0.2, color = "black"
+    ) +
     # Points
     geom_point(aes(x = estimate_log, y = y_pos, size = n),
-               color = "#343cff", shape = 19) +
+      color = "#343cff", shape = 19
+    ) +
     # Reference line
     geom_vline(xintercept = vline, linewidth = 1) +
     # Forest header text
-    annotate("text", x = mean(c(xlim[1], vline)), y = nrow(data) + 1.25,
-             label = forest_header[1], size = 3.5) +
-    annotate("text", x = mean(c(vline, xlim[2])), y = nrow(data) + 1.25,
-             label = forest_header[2], size = 3.5) +
+    annotate("text",
+      x = mean(c(xlim[1], vline)), y = nrow(data) + 1.25,
+      label = forest_header[1], size = 3.5
+    ) +
+    annotate("text",
+      x = mean(c(vline, xlim[2])), y = nrow(data) + 1.25,
+      label = forest_header[2], size = 3.5
+    ) +
     # Scales and theme
     x_scale +
-    scale_y_continuous(limits = c(0, nrow(data) + 1.5), breaks = data$y_pos,
-                       labels = data$group, expand = c(0, 0)) +
-    theme_minimal()  +
+    scale_y_continuous(
+      limits = c(0, nrow(data) + 1.5), breaks = data$y_pos,
+      labels = data$group, expand = c(0, 0)
+    ) +
+    theme_minimal() +
     theme(
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
@@ -116,13 +125,15 @@ create_forest_plot <- function(data,
 #' # Assuming 'gtsummary_tbl' is a gtsummary object:
 #' plot_data <- extract_plot_data(gtsummary_tbl)
 #' }
-extract_plot_data <- function(tbl){
+extract_plot_data <- function(tbl) {
   ret <- tbl$table_body %>%
-    select(group = term,
-           estimate = estimate,
-           ci_lower = conf.low,
-           ci_upper = conf.high,
-           n = N_obs)
+    select(
+      group = term,
+      estimate = estimate,
+      ci_lower = conf.low,
+      ci_upper = conf.high,
+      n = N_obs
+    )
   return(ret)
 }
 
@@ -147,7 +158,7 @@ extract_plot_data <- function(tbl){
 #' final_plot
 #' }
 #' @export
-g_forest <- function(tbl){
+g_forest <- function(tbl) {
   table_plot <- gtsummary2gg(tbl)
   forest_data <- extract_plot_data(tbl)
   forest_plot <- create_forest_plot(forest_data)
@@ -201,7 +212,7 @@ gtsummary2gg <- function(tbl, fontsize = 12, header_line_color = "gray30") {
   #   tidyr::unite("label_col", everything(), sep = " ") %>%
   #   pull(label_col)
   #
-  label_strings <- tbl_df_raw[,1]
+  label_strings <- tbl_df_raw[, 1]
   print("here1")
 
   # Combine label column and body
@@ -264,7 +275,7 @@ gtsummary2gg <- function(tbl, fontsize = 12, header_line_color = "gray30") {
 
     # Calculate x position: use the start of the column for left-aligned text,
     # and the end of the column for right-aligned text.
-    x_val <- if (i == 1) x_boundaries[i] else x_boundaries[i+1]
+    x_val <- if (i == 1) x_boundaries[i] else x_boundaries[i + 1]
 
     res <- res +
       annotate(
@@ -281,4 +292,3 @@ gtsummary2gg <- function(tbl, fontsize = 12, header_line_color = "gray30") {
   # Return the final ggplot object
   return(res)
 }
-
