@@ -1,4 +1,37 @@
-
+#' Create a Custom Forest Plot
+#'
+#' Generates a forest plot using \code{ggplot2} from a data frame containing
+#' estimates, confidence intervals, and sample sizes. This function is designed
+#' to be a component of a combined table/plot output (e.g., used by \code{g_forest}).
+#'
+#' @param data A data frame (tibble) containing the plot data. It must include
+#'   columns: \code{group} (for y-axis labels), \code{estimate}, \code{ci_lower},
+#'   \code{ci_upper}, and \code{n} (for point size).
+#' @param xlim A numeric vector of length 2 specifying the limits of the x-axis
+#'   (e.g., \code{c(0.1, 10)}).
+#' @param logx A logical value indicating whether the x-axis should be log-transformed
+#'   (i.e., using \code{scale_x_log10}). The default is \code{TRUE}, which is typical
+#'   for effect measures like Odds Ratios or Hazard Ratios.
+#' @param vline A numeric value specifying the x-intercept for the vertical
+#'   reference line (line of no effect). The default is \code{1}.
+#'
+#' @return A \code{ggplot} object representing the forest plot.
+#'
+#'
+#' @examples
+#' \dontrun{
+#' # Assuming 'forest_data' is structured correctly:
+#' forest_data <- data.frame(
+#'   group = c("A vs B", "C vs D"),
+#'   estimate = c(0.5, 2.0),
+#'   ci_lower = c(0.2, 1.5),
+#'   ci_upper = c(0.9, 3.5),
+#'   n = c(100, 250)
+#' )
+#'
+#' create_forest_plot(forest_data)
+#' create_forest_plot(forest_data, xlim = c(0.05, 50), vline = 1)
+#' }
 create_forest_plot <- function(data,
                                xlim = c(0.1, 10),
                                logx = TRUE,
@@ -63,6 +96,26 @@ create_forest_plot <- function(data,
     )
 }
 
+#' Extract Data for Forest Plot from gtsummary Table
+#'
+#' Converts the table body (\code{tbl$table_body}) of a \code{gtsummary} object
+#' into a data frame suitable for plotting with \code{create_forest_plot}.
+#' It selects and renames the necessary columns for the plot.
+#'
+#' @param tbl A \code{gtsummary} object (e.g., from \code{tbl_regression} or \code{tbl_uvregression}).
+#'
+#' @return A data frame (tibble) with the columns:
+#'   \code{group} (from \code{term}), \code{estimate}, \code{ci_lower} (from \code{conf.low}),
+#'   \code{ci_upper} (from \code{conf.high}), and \code{n} (from \code{N_obs}).
+#'
+#' @importFrom dplyr select
+#' @importFrom rlang .data
+#'
+#' @examples
+#' \dontrun{
+#' # Assuming 'gtsummary_tbl' is a gtsummary object:
+#' plot_data <- extract_plot_data(gtsummary_tbl)
+#' }
 extract_plot_data <- function(tbl){
   ret <- tbl$table_body %>%
     select(group = term,
@@ -73,7 +126,27 @@ extract_plot_data <- function(tbl){
   return(ret)
 }
 
-
+#' Create a Combined gtsummary Table and Forest Plot
+#'
+#' This is the main wrapper function that takes a \code{gtsummary} object,
+#' converts it to a \code{ggplot} table, extracts the necessary data, creates
+#' a forest plot, and combines the two plots side-by-side using \code{+}.
+#' This likely relies on the \code{patchwork} package for plot combination.
+#'
+#' @param tbl A \code{gtsummary} object (e.g., from \code{tbl_regression}).
+#'
+#' @return A combined \code{ggplot} object (likely a \code{patchwork} object)
+#'   showing the table on the left and the forest plot on the right.
+#'
+#' @seealso \code{\link{gtsummary2gg}}, \code{\link{extract_plot_data}}, \code{\link{create_forest_plot}}
+#'
+#' @examples
+#' \dontrun{
+#' # Example usage, assuming 'gtsummary_tbl' is a gtsummary object:
+#' final_plot <- g_forest(gtsummary_tbl)
+#' final_plot
+#' }
+#' @export
 g_forest <- function(tbl){
   table_plot <- gtsummary2gg(tbl)
   forest_data <- extract_plot_data(tbl)
@@ -81,7 +154,31 @@ g_forest <- function(tbl){
   table_plot + forest_plot
 }
 
-
+#' Convert gtsummary Object into a ggplot Table
+#'
+#' Renders the formatted content of a \code{gtsummary} object as a
+#' \code{ggplot} object. This allows the text-based table to be combined
+#' seamlessly with a plot (like a forest plot) using \code{patchwork} or \code{cowplot}.
+#'
+#' NOTE: The current implementation of this function includes commented-out code
+#' for drawing the header labels and separating line. As written, it only draws
+#' the table body content.
+#'
+#' @param tbl A \code{gtsummary} object.
+#' @param fontsize The size of the text used in the table (in points). Default is 12.
+#' @param header_line_color The color of the line to be drawn under the header (if uncommented).
+#'
+#' @return A \code{ggplot} object representing the formatted table.
+#'
+#' @import ggplot2
+#' @importFrom tibble as_tibble
+#' @importFrom dplyr select starts_with mutate across everything
+#'
+#' @examples
+#' \dontrun{
+#' # Assuming 'gtsummary_tbl' is a gtsummary object:
+#' table_plot <- gtsummary2gg(gtsummary_tbl)
+#' }
 gtsummary2gg <- function(tbl, fontsize = 12, header_line_color = "gray30") {
   .pt <- 2.834646
 
