@@ -2,7 +2,7 @@
 #'
 #' @description
 #' This set of functions facilitates the creation of Kaplan-Meier survival plots using `ggplot2`. Use
-#' `process_survfit_data()` to prepare the survival data from a fitted `survfit` object, and then
+#' `process_survfit()` to prepare the survival data from a fitted `survfit` object, and then
 #' `gg_km()` to generate the Kaplan-Meier plot with various customization options. Additional functions
 #' like `annot_surv_med()`, `annot_cox_ph()`, and `annot_at_risk()` allow for adding summary tables and
 #' annotations to the plot.
@@ -21,7 +21,7 @@ NULL
 #'   A single numeric value defining the **maximum time point** to include in the data,
 #'   or `NULL` for no time limit.
 #'
-#' @return The function `process_survfit_data` returns a data frame containing the survival
+#' @return The function `process_survfit` returns a data frame containing the survival
 #'   curve steps, confidence intervals, and censoring info.
 #'
 #' @details
@@ -40,11 +40,11 @@ NULL
 #' fit_kmg01 <- survfit(formula, use_lung)
 #'
 #' # Process survfit data for plotting
-#' surv_plot_data <- process_survfit_data(fit_kmg01)
+#' surv_plot_data <- process_survfit(fit_kmg01)
 #' head(surv_plot_data)
 #'
 #' @export
-process_survfit_data <- function(fit_km,
+process_survfit <- function(fit_km,
                                  armval = "All",
                                  max_time = NULL) {
   set_cli_abort_call()
@@ -110,7 +110,7 @@ process_survfit_data <- function(fit_km,
 #'
 #' @param surv_plot_data (`data.frame`)\cr
 #'   A data frame containing the pre-processed survival data, ready for plotting.
-#'   This data should be equivalent to the output of `process_survfit_data`.
+#'   This data should be equivalent to the output of `process_survfit`.
 #' @param lty (`numeric` or `NULL`)\cr
 #'   A numeric vector of **line types** (e.g., `1` for solid, `2` for dashed) for the survival curves, or `NULL` for `ggplot2` defaults.
 #'   The length should match the number of arms/groups.

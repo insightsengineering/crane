@@ -3,8 +3,7 @@
 #' @import ggplot2
 #' @import glue glue
 #' @importFrom broom tidy
-#' @importFrom cowplot plot_grid
-#' @importFrom cowplot ggdraw draw_plot
+#' @importFrom cowplot plot_grid ggdraw draw_plot
 #' @importFrom dplyr across starts_with ends_with contains matches num_range
 #'                   all_of any_of everything last_col where
 #' @importFrom labeling extended
@@ -18,7 +17,7 @@
 ## usethis namespace: end
 NULL
 
-utils::globalVariables(c(".", "obj"))
+utils::globalVariables(c("."))
 
 # using pkgs to silence NOTE
 .silence <- function() {

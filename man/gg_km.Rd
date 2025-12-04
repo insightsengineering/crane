@@ -2,13 +2,13 @@
 % Please edit documentation in R/gg_km.R
 \name{gg_km}
 \alias{gg_km}
-\alias{process_survfit_data}
+\alias{process_survfit}
 \alias{annot_surv_med}
 \alias{annot_cox_ph}
 \alias{annot_at_risk}
 \title{Kaplan-Meier Plot}
 \usage{
-process_survfit_data(fit_km, armval = "All", max_time = NULL)
+process_survfit(fit_km, armval = "All", max_time = NULL)
 
 gg_km(
   surv_plot_data,
@@ -62,7 +62,7 @@ A single numeric value defining the \strong{maximum time point} to display on th
 
 \item{surv_plot_data}{(\code{data.frame})\cr
 A data frame containing the pre-processed survival data, ready for plotting.
-This data should be equivalent to the output of \code{process_survfit_data}.}
+This data should be equivalent to the output of \code{process_survfit}.}
 
 \item{lty}{(\code{numeric} or \code{NULL})\cr
 A numeric vector of \strong{line types} (e.g., \code{1} for solid, \code{2} for dashed) for the survival curves, or \code{NULL} for \code{ggplot2} defaults.
@@ -112,7 +112,7 @@ A \strong{numeric vector of length 2} defining the \strong{legend position} as (
 \item{rel_height_plot}{Numeric, relative height of the main plot area compared to the 'at-risk' table (0 to 1).}
 }
 \value{
-The function \code{process_survfit_data} returns a data frame containing the survival
+The function \code{process_survfit} returns a data frame containing the survival
 curve steps, confidence intervals, and censoring info.
 
 The function \code{gg_km} returns a \code{ggplot2} object of the KM plot.
@@ -125,7 +125,7 @@ The function \code{annot_at_risk} returns a \code{cowplot} object combining the 
 }
 \description{
 This set of functions facilitates the creation of Kaplan-Meier survival plots using \code{ggplot2}. Use
-\code{process_survfit_data()} to prepare the survival data from a fitted \code{survfit} object, and then
+\code{process_survfit()} to prepare the survival data from a fitted \code{survfit} object, and then
 \code{gg_km()} to generate the Kaplan-Meier plot with various customization options. Additional functions
 like \code{annot_surv_med()}, \code{annot_cox_ph()}, and \code{annot_at_risk()} allow for adding summary tables and
 annotations to the plot.
@@ -136,7 +136,7 @@ while \code{"arm"} is the treatment group.
 }
 \section{Functions}{
 \itemize{
-\item \code{process_survfit_data()}: takes a fitted \link[survival:survfit]{survival::survfit} object and processes it into a data frame
+\item \code{process_survfit()}: takes a fitted \link[survival:survfit]{survival::survfit} object and processes it into a data frame
 suitable for plotting a Kaplan-Meier curve with \code{ggplot2}. Time zero is also added to the data.
 
 \item \code{gg_km()}: creates a Kaplan-Meier survival curve, with
@@ -163,7 +163,7 @@ formula <- Surv(time, status) ~ arm
 fit_kmg01 <- survfit(formula, use_lung)
 
 # Process survfit data for plotting
-surv_plot_data <- process_survfit_data(fit_kmg01)
+surv_plot_data <- process_survfit(fit_kmg01)
 head(surv_plot_data)
 
 # Example of making the KM plot

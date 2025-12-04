@@ -19,7 +19,7 @@ test_that("test gkm() works", {
   fit_kmg01 <- survival::survfit(model_formula, anl)
 
 
-  expect_no_error(surv_plot_data <- process_survfit_data(fit_kmg01))
+  expect_no_error(surv_plot_data <- process_survfit(fit_kmg01))
 
   expect_no_error(
     suppressWarnings(
