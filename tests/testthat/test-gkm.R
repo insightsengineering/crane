@@ -19,7 +19,7 @@ test_that("test gkm() works", {
   fit_kmg01 <- survival::survfit(model_formula, anl)
 
 
-  expect_no_error(surv_plot_data <- h_data_plot(fit_kmg01))
+  expect_no_error(surv_plot_data <- process_survfit_data(fit_kmg01))
 
   expect_no_error(
     suppressWarnings(
@@ -32,7 +32,7 @@ test_that("test gkm() works", {
   )
 
   expect_no_error(
-    plt_kmg01 <- g_km(surv_plot_data,
+    plt_kmg01 <- gg_km(surv_plot_data,
       xlab = "Time (Days)",
       ylim = c(0.9, 1)
     ) %>%
