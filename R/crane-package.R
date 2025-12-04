@@ -2,7 +2,6 @@
 #' @import rlang
 #' @import ggplot2
 #' @import glue glue
-#' @importFrom assertthat assert_that
 #' @importFrom broom tidy
 #' @importFrom cowplot plot_grid
 #' @importFrom cowplot ggdraw draw_plot

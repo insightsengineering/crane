@@ -1,5 +1,4 @@
 f_conf_level <- function(conf_level) {
-  # assert_proportion_value(conf_level) # Assuming assert_proportion_value is defined elsewhere
   paste0(conf_level * 100, "% CI")
 }
 
@@ -8,7 +7,15 @@ control_surv_med_annot <- function(x = 0.8, y = 0.85, w = 0.32, h = 0.16, fill =
 }
 
 control_coxph_annot <- function(x = 0.29, y = 0.51, w = 0.4, h = 0.125, fill = TRUE, ref_lbls = FALSE) {
-  checkmate::assert_logical(ref_lbls, any.missing = FALSE)
+  set_cli_abort_call()
+
+  check_logical(ref_lbls)
+  if ((!anyNA(ref_lbls) && length(ref_lbls) >= 1)) {
+    cli::cli_abort(
+      "{.arg ref_lbls} must be a single {.cls logical} value (TRUE or FALSE).",
+      call = get_cli_abort_call()
+    )
+  }
 
   res <- c(control_surv_med_annot(x = x, y = y, w = w, h = h), list(ref_lbls = ref_lbls))
   res
@@ -58,9 +65,9 @@ df2gg <- function(df, colwidths = NULL, font_size = 10, col_labels = TRUE,
   }
   if (hline) {
     res <- res + ggplot2::annotate("segment",
-                                   x = 0 + 0.2 * colwidths[2],
-                                   xend = tot_width - 0.1 * tail(colwidths, 1), y = nrow(df) -
-                                     0.5, yend = nrow(df) - 0.5
+      x = 0 + 0.2 * colwidths[2],
+      xend = tot_width - 0.1 * tail(colwidths, 1), y = nrow(df) -
+        0.5, yend = nrow(df) - 0.5
     )
   }
   for (i in seq_len(ncol(df))) {
@@ -68,15 +75,15 @@ df2gg <- function(df, colwidths = NULL, font_size = 10, col_labels = TRUE,
       0
     } else {
       sum(colwidths[1:(i -
-                         1)])
+        1)])
     }, sum(colwidths[1:i]))
     res <- res + ggplot2::annotate("text",
-                                   x = mean(line_pos), y = rev(seq_len(nrow(df))),
-                                   label = df[, i], size = font_size / .pt, fontface = if (col_labels) {
-                                     c(col_lab_fontface, rep("plain", nrow(df) - 1))
-                                   } else {
-                                     rep("plain", nrow(df))
-                                   }
+      x = mean(line_pos), y = rev(seq_len(nrow(df))),
+      label = df[, i], size = font_size / .pt, fontface = if (col_labels) {
+        c(col_lab_fontface, rep("plain", nrow(df) - 1))
+      } else {
+        rep("plain", nrow(df))
+      }
     )
   }
   res
@@ -191,10 +198,23 @@ h_tbl_median_surv <- function(fit_km, armval = "All") {
 #'
 #' @export
 get_cox_pairwise_tbl <- function(model_formula, data, arm, ref_group = NULL) {
-  msg <- paste0(rlang::ensym(model_formula), " is not a formula")
-  assertthat::assert_that(rlang::is_formula(model_formula), msg = msg)
-  msg <- paste0(rlang::ensym(data), "[['", rlang::ensym(arm), "']] is not a factor")
-  assertthat::assert_that(is.factor(data[[arm]]), msg = msg)
+  set_cli_abort_call()
+
+  # Input checks
+  if (!rlang::is_formula(model_formula)) {
+    cli::cli_abort(
+      "{.arg model_formula} must be a {.cls formula}.",
+      call = get_cli_abort_call()
+    )
+  }
+  if (!is.factor(data[[arm]])) {
+    cli::cli_abort(
+      "Column {.arg {data}[[\"{.var {arm}}\"]]} must be a {.cls factor}.",
+      call = get_cli_abort_call()
+    )
+  }
+
+  # Determine reference and comparison groups
   ref_group <- if (!is.null(ref_group)) {
     ref_group
   } else {
@@ -205,14 +225,19 @@ get_cox_pairwise_tbl <- function(model_formula, data, arm, ref_group = NULL) {
   ret <- c()
   for (current_arm in comp_group) {
     subset_arm <- c(ref_group, current_arm)
-    assertthat::assert_that(length(subset_arm) == 2, msg = "Make sure 2 arms")
+    if (length(subset_arm) != 2) {
+      cli::cli_abort(
+        "{.arg subset_arm} must contain exactly 2 arms/groups (current length is {length(subset_arm)}).",
+        call = get_cli_abort_call()
+      )
+    }
     comp_df <- data[as.character(data[[arm]]) %in% subset_arm, ]
     suppressWarnings(
       coxph_ans <- coxph(formula = model_formula, data = comp_df) %>% summary()
     )
     orginal_survdiff <- survdiff(formula = model_formula, data = comp_df)
     log_rank_pvalue <- 1 - stats::pchisq(orginal_survdiff$chisq, length(orginal_survdiff$n) -
-                                           1)
+      1)
     current_row <- data.frame(
       hr = sprintf("%.2f", coxph_ans$conf.int[1, 1]),
       ci = paste0(
@@ -230,4 +255,3 @@ get_cox_pairwise_tbl <- function(model_formula, data, arm, ref_group = NULL) {
 
   return(ret)
 }
-

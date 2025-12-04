@@ -1,7 +1,11 @@
-#' Kaplan-Meier Plot with ggplot2
+#' Kaplan-Meier Plot
 #'
 #' @description
-#' The function `process_survfit_data`
+#' This set of functions facilitates the creation of Kaplan-Meier survival plots using `ggplot2`. Use
+#' `process_survfit_data()` to prepare the survival data from a fitted `survfit` object, and then
+#' `gg_km()` to generate the Kaplan-Meier plot with various customization options. Additional functions
+#' like `annot_surv_med()`, `annot_cox_ph()`, and `annot_at_risk()` allow for adding summary tables and
+#' annotations to the plot.
 #'
 #' @name gg_km
 NULL
@@ -107,9 +111,6 @@ process_survfit_data <- function(fit_km,
 #' @param surv_plot_data (`data.frame`)\cr
 #'   A data frame containing the pre-processed survival data, ready for plotting.
 #'   This data should be equivalent to the output of `process_survfit_data`.
-#' @param col (`character`)\cr
-#'   A character vector of colors (e.g., color names or hexadecimal codes) for the survival curves.
-#'   The **length must match the number of arms/groups** being plotted.
 #' @param lty (`numeric` or `NULL`)\cr
 #'   A numeric vector of **line types** (e.g., `1` for solid, `2` for dashed) for the survival curves, or `NULL` for `ggplot2` defaults.
 #'   The length should match the number of arms/groups.
@@ -133,14 +134,8 @@ process_survfit_data <- function(fit_km,
 #'   A single character string for the **y-axis label**.
 #' @param ylim (`numeric`)\cr
 #'   A **numeric vector of length 2** defining the lower and upper limits of the y-axis (e.g., `c(0, 1)`).
-#' @param title (`character`)\cr
-#'   A single character string for the **plot title**.
-#' @param footnotes (`character`)\cr
-#'   A single character string for plot **footnotes or caption**.
 #' @param font_size (`numeric`)\cr
 #'   A single numeric value specifying the **base font size** for the plot theme elements.
-#' @param ci_ribbon (`logical`)\cr
-#'   A single logical value indicating whether to display **confidence intervals** as a ribbon (shaded area) around the survival curve. Defaults to `TRUE`.
 #' @param legend_pos (`numeric` or `NULL`)\cr
 #'   A **numeric vector of length 2** defining the **legend position** as (x, y) coordinates relative to the plot area (ranging from 0 to 1), or `NULL` for external, automatic placement.
 #'
@@ -152,9 +147,16 @@ process_survfit_data <- function(fit_km,
 #'   xlab = "Time (Days)"
 #' )
 #'
+#' # Confidence Interval as Ribbon
+#' plt_kmg01 +
+#'   ggplot2::geom_ribbon(alpha = 0.3, lty = 0, na.rm = TRUE)
+#'
+#' # Adding Title and Footnotes
+#' plt_kmg01 +
+#'   ggplot2::labs(title = "title", caption = "footnotes")
+#'
 #' @export
 gg_km <- function(surv_plot_data,
-                  col = NULL,
                   lty = NULL,
                   lwd = 0.5,
                   censor_show = TRUE,
@@ -166,17 +168,30 @@ gg_km <- function(surv_plot_data,
                   yval = c("Survival", "Failure"),
                   ylab = paste(yval, "Probability"),
                   ylim = NULL,
-                  title = NULL,
-                  footnotes = NULL,
                   font_size = 10,
-                  ci_ribbon = FALSE,
-                  legend_pos = NULL,
-                  ggtheme = NULL) {
-  checkmate::assert_data_frame(surv_plot_data, min.cols = 7, min.rows = 1)
+                  legend_pos = NULL) {
+  set_cli_abort_call()
+
+  # Input checks
+  check_data_frame(surv_plot_data)
+  needed_cols <- c("time", "estimate", "conf.low", "conf.high", "strata", "n.censor", "censor")
+  if (!all(needed_cols %in% colnames(surv_plot_data))) {
+    cli::cli_abort(
+      "The input {.arg surv_plot_data} must contain the following columns: ",
+      "{.code time}, {.code estimate}, {.code conf.low}, {.code conf.high}, {.code strata}, {.code n.censor}, and {.code censor}.",
+      call = get_cli_abort_call()
+    )
+  }
+  if (nrow(surv_plot_data) < 1) {
+    cli::cli_abort(
+      "The input {.arg surv_plot_data} must contain at least one row of data.",
+      call = get_cli_abort_call()
+    )
+  }
+
   data <- surv_plot_data
 
   armval <- levels(data$strata)
-  checkmate::assert_vector(col, len = length(armval), null.ok = TRUE)
 
   yval <- match.arg(yval)
 
@@ -208,13 +223,17 @@ gg_km <- function(surv_plot_data,
   ) +
     ggplot2::theme_bw(base_size = font_size) +
     ggplot2::scale_y_continuous(limits = ylim, expand = c(0.025, 0)) +
-    ggplot2::labs(title = title, x = xlab, y = ylab, caption = footnotes) +
+    ggplot2::labs(x = xlab, y = ylab) +
     ggplot2::theme(
-      axis.text = ggplot2::element_text(size = font_size), axis.title = ggplot2::element_text(size = font_size),
-      legend.title = ggplot2::element_blank(), legend.text = ggplot2::element_text(size = font_size),
+      axis.text = ggplot2::element_text(size = font_size),
+      axis.title = ggplot2::element_text(size = font_size),
+      legend.title = ggplot2::element_blank(),
+      legend.text = ggplot2::element_text(size = font_size),
       legend.box.background = ggplot2::element_rect(fill = "white", linewidth = 0.5),
-      legend.background = ggplot2::element_blank(), legend.position = "inside",
-      legend.spacing.y = ggplot2::unit(-0.02, "npc"), panel.grid.major = ggplot2::element_blank(),
+      legend.background = ggplot2::element_blank(),
+      legend.position = "inside",
+      legend.spacing.y = ggplot2::unit(-0.02, "npc"),
+      panel.grid.major = ggplot2::element_blank(),
       panel.grid.minor = ggplot2::element_blank()
     )
 
@@ -279,14 +298,6 @@ gg_km <- function(surv_plot_data,
     ) +
       ggplot2::scale_shape_manual(name = NULL, values = pch) +
       ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(shape = NA)))
-  }
-
-  if (ci_ribbon) gg_plt <- gg_plt + ggplot2::geom_ribbon(alpha = 0.3, lty = 0, na.rm = TRUE)
-
-  if (!is.null(col)) {
-    gg_plt <- gg_plt +
-      ggplot2::scale_color_manual(values = col) +
-      ggplot2::scale_fill_manual(values = col)
   }
 
   gg_plt

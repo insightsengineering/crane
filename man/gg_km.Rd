@@ -6,13 +6,12 @@
 \alias{annot_surv_med}
 \alias{annot_cox_ph}
 \alias{annot_at_risk}
-\title{Kaplan-Meier Plot with ggplot2}
+\title{Kaplan-Meier Plot}
 \usage{
 process_survfit_data(fit_km, armval = "All", max_time = NULL)
 
 gg_km(
   surv_plot_data,
-  col = NULL,
   lty = NULL,
   lwd = 0.5,
   censor_show = TRUE,
@@ -24,12 +23,8 @@ gg_km(
   yval = c("Survival", "Failure"),
   ylab = paste(yval, "Probability"),
   ylim = NULL,
-  title = NULL,
-  footnotes = NULL,
   font_size = 10,
-  ci_ribbon = FALSE,
-  legend_pos = NULL,
-  ggtheme = NULL
+  legend_pos = NULL
 )
 
 annot_surv_med(
@@ -69,10 +64,6 @@ A single numeric value defining the \strong{maximum time point} to display on th
 A data frame containing the pre-processed survival data, ready for plotting.
 This data should be equivalent to the output of \code{process_survfit_data}.}
 
-\item{col}{(\code{character})\cr
-A character vector of colors (e.g., color names or hexadecimal codes) for the survival curves.
-The \strong{length must match the number of arms/groups} being plotted.}
-
 \item{lty}{(\code{numeric} or \code{NULL})\cr
 A numeric vector of \strong{line types} (e.g., \code{1} for solid, \code{2} for dashed) for the survival curves, or \code{NULL} for \code{ggplot2} defaults.
 The length should match the number of arms/groups.}
@@ -103,16 +94,7 @@ A single character string for the \strong{y-axis label}.}
 \item{ylim}{(\code{numeric})\cr
 A \strong{numeric vector of length 2} defining the lower and upper limits of the y-axis (e.g., \code{c(0, 1)}).}
 
-\item{title}{(\code{character})\cr
-A single character string for the \strong{plot title}.}
-
-\item{footnotes}{(\code{character})\cr
-A single character string for plot \strong{footnotes or caption}.}
-
 \item{font_size}{Numeric, base font size for the table.}
-
-\item{ci_ribbon}{(\code{logical})\cr
-A single logical value indicating whether to display \strong{confidence intervals} as a ribbon (shaded area) around the survival curve. Defaults to \code{TRUE}.}
 
 \item{legend_pos}{(\code{numeric} or \code{NULL})\cr
 A \strong{numeric vector of length 2} defining the \strong{legend position} as (x, y) coordinates relative to the plot area (ranging from 0 to 1), or \code{NULL} for external, automatic placement.}
@@ -142,7 +124,11 @@ The function \code{annot_surv_med} returns a \code{cowplot} object with the Cox-
 The function \code{annot_at_risk} returns a \code{cowplot} object combining the KM plot and the 'Numbers at Risk' table.
 }
 \description{
-The function \code{process_survfit_data}
+This set of functions facilitates the creation of Kaplan-Meier survival plots using \code{ggplot2}. Use
+\code{process_survfit_data()} to prepare the survival data from a fitted \code{survfit} object, and then
+\code{gg_km()} to generate the Kaplan-Meier plot with various customization options. Additional functions
+like \code{annot_surv_med()}, \code{annot_cox_ph()}, and \code{annot_at_risk()} allow for adding summary tables and
+annotations to the plot.
 }
 \details{
 Data setup assumes \code{"time"} is event time, \code{"status"} is event indicator (\code{1} represents an event),
@@ -184,6 +170,14 @@ head(surv_plot_data)
 plt_kmg01 <- gg_km(surv_plot_data,
   xlab = "Time (Days)"
 )
+
+# Confidence Interval as Ribbon
+plt_kmg01 +
+  ggplot2::geom_ribbon(alpha = 0.3, lty = 0, na.rm = TRUE)
+
+# Adding Title and Footnotes
+plt_kmg01 +
+  ggplot2::labs(title = "title", caption = "footnotes")
 
 # Annotate Kaplan-Meier Plot with Median Survival Table
 annot_surv_med(plt_kmg01, fit_kmg01)
