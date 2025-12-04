@@ -41,3 +41,11 @@ reference:
       - modify_zero_recode
       - add_blank_rows
       - label_roche
+  - title: "Kaplan-Meier Plot"
+    contents:
+      - process_survfit
+      - gg_km
+      - annot_surv_med
+      - annot_at_risk
+      - get_cox_pairwise_tbl
+      - annot_cox_ph
