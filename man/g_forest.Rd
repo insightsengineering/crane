@@ -19,7 +19,19 @@ converts it to a \code{ggplot} table, extracts the necessary data, creates
 a forest plot, and combines the two plots side-by-side using \code{+}.
 This likely relies on the \code{patchwork} package for plot combination.
 }
+\examples{
+tbl <-
+  trial \%>\%
+  tbl_subgroups(
+    subgroups = c("grade", "stage"),
+    ~ glm(response ~ trt, data = .x) \%>\%
+      gtsummary::tbl_regression(
+        show_single_row = trt,
+        exponentiate = TRUE
+      )
+  )
+g_forest(tbl)
+}
 \seealso{
 \code{\link{gtsummary2gg}}, \code{\link{extract_plot_data}}, \code{\link{create_forest_plot}}
 }
-\keyword{internal}

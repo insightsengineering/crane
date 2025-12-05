@@ -1,6 +1,7 @@
 #' @keywords internal
 #' @import rlang
 #' @import glue glue
+#' @import ggplot2
 #' @import patchwork
 #' @importFrom dplyr across starts_with ends_with contains matches num_range
 #'                   all_of any_of everything last_col where
