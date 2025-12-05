@@ -26,9 +26,4 @@ NOTE: The current implementation of this function includes commented-out code
 for drawing the header labels and separating line. As written, it only draws
 the table body content.
 }
-\examples{
-\dontrun{
-# Assuming 'gtsummary_tbl' is a gtsummary object:
-table_plot <- gtsummary2gg(gtsummary_tbl)
-}
-}
+\keyword{internal}

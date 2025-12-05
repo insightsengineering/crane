@@ -19,13 +19,7 @@ converts it to a \code{ggplot} table, extracts the necessary data, creates
 a forest plot, and combines the two plots side-by-side using \code{+}.
 This likely relies on the \code{patchwork} package for plot combination.
 }
-\examples{
-\dontrun{
-# Example usage, assuming 'gtsummary_tbl' is a gtsummary object:
-final_plot <- g_forest(gtsummary_tbl)
-final_plot
-}
-}
 \seealso{
 \code{\link{gtsummary2gg}}, \code{\link{extract_plot_data}}, \code{\link{create_forest_plot}}
 }
+\keyword{internal}

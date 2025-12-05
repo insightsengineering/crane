@@ -16,10 +16,9 @@
 #'   reference line (line of no effect). The default is \code{1}.
 #'
 #' @return A \code{ggplot} object representing the forest plot.
-#'
+#' @keywords internal
 #'
 #' @examples
-#' \dontrun{
 #' # Assuming 'forest_data' is structured correctly:
 #' forest_data <- data.frame(
 #'   group = c("A vs B", "C vs D"),
@@ -31,7 +30,6 @@
 #'
 #' create_forest_plot(forest_data)
 #' create_forest_plot(forest_data, xlim = c(0.05, 50), vline = 1)
-#' }
 create_forest_plot <- function(data,
                                xlim = c(0.1, 10),
                                logx = TRUE,
@@ -39,7 +37,7 @@ create_forest_plot <- function(data,
   forest_header <- c("Comparison\nBetter", "Treatment\nBetter")
   # Calculate y positions (reverse order for top-to-bottom display)
   data <- data %>%
-    mutate(y_pos = rev(row_number()))
+    mutate(y_pos = rev(dplyr::row_number()))
 
   # Apply log transformation if needed
   if (logx) {
@@ -116,15 +114,7 @@ create_forest_plot <- function(data,
 #' @return A data frame (tibble) with the columns:
 #'   \code{group} (from \code{term}), \code{estimate}, \code{ci_lower} (from \code{conf.low}),
 #'   \code{ci_upper} (from \code{conf.high}), and \code{n} (from \code{N_obs}).
-#'
-#' @importFrom dplyr select
-#' @importFrom rlang .data
-#'
-#' @examples
-#' \dontrun{
-#' # Assuming 'gtsummary_tbl' is a gtsummary object:
-#' plot_data <- extract_plot_data(gtsummary_tbl)
-#' }
+#' @keywords internal
 extract_plot_data <- function(tbl) {
   ret <- tbl$table_body %>%
     select(
@@ -150,14 +140,7 @@ extract_plot_data <- function(tbl) {
 #'   showing the table on the left and the forest plot on the right.
 #'
 #' @seealso \code{\link{gtsummary2gg}}, \code{\link{extract_plot_data}}, \code{\link{create_forest_plot}}
-#'
-#' @examples
-#' \dontrun{
-#' # Example usage, assuming 'gtsummary_tbl' is a gtsummary object:
-#' final_plot <- g_forest(gtsummary_tbl)
-#' final_plot
-#' }
-#' @export
+#' @keywords internal
 g_forest <- function(tbl) {
   table_plot <- gtsummary2gg(tbl)
   forest_data <- extract_plot_data(tbl)
@@ -180,16 +163,7 @@ g_forest <- function(tbl) {
 #' @param header_line_color The color of the line to be drawn under the header (if uncommented).
 #'
 #' @return A \code{ggplot} object representing the formatted table.
-#'
-#' @import ggplot2
-#' @importFrom tibble as_tibble
-#' @importFrom dplyr select starts_with mutate across everything
-#'
-#' @examples
-#' \dontrun{
-#' # Assuming 'gtsummary_tbl' is a gtsummary object:
-#' table_plot <- gtsummary2gg(gtsummary_tbl)
-#' }
+#' @keywords internal
 gtsummary2gg <- function(tbl, fontsize = 12, header_line_color = "gray30") {
   .pt <- 2.834646
 

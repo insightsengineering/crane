@@ -30,7 +30,6 @@ estimates, confidence intervals, and sample sizes. This function is designed
 to be a component of a combined table/plot output (e.g., used by \code{g_forest}).
 }
 \examples{
-\dontrun{
 # Assuming 'forest_data' is structured correctly:
 forest_data <- data.frame(
   group = c("A vs B", "C vs D"),
@@ -43,4 +42,4 @@ forest_data <- data.frame(
 create_forest_plot(forest_data)
 create_forest_plot(forest_data, xlim = c(0.05, 50), vline = 1)
 }
-}
+\keyword{internal}

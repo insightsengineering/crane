@@ -19,9 +19,4 @@ Converts the table body (\code{tbl$table_body}) of a \code{gtsummary} object
 into a data frame suitable for plotting with \code{create_forest_plot}.
 It selects and renames the necessary columns for the plot.
 }
-\examples{
-\dontrun{
-# Assuming 'gtsummary_tbl' is a gtsummary object:
-plot_data <- extract_plot_data(gtsummary_tbl)
-}
-}
+\keyword{internal}
