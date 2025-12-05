@@ -1,4 +1,4 @@
-# crane 0.2.0.9016
+# crane 0.3.0
 
 ## New Functions and Functionality
 
