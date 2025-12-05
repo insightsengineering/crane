@@ -3,7 +3,7 @@
 #' This function creates a null report for tables or listings without any statistics.
 #'
 #' @param label (`string`)\cr label to display in the header of the null report. It defaults to
-#'   "Null Report: no observations met the reporting criteria for inclusion in this output."
+#'   "No observations met the reporting criteria for this output."
 #'
 #' @examples
 #' tbl_null_report(label = "No data available for the selected criteria.")
@@ -11,7 +11,7 @@
 #' @export
 #' @rdname tbl_null_report
 tbl_null_report <- function(
-    label = "Null Report: no observations met the reporting criteria for inclusion in this output.") {
+    label = "No observations met the reporting criteria for this output.") {
   set_cli_abort_call()
 
   # Check input label ----------------------------------------------------------
