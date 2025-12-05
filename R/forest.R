@@ -19,6 +19,7 @@
 #' @keywords internal
 #'
 #' @examples
+#' \dontrun{
 #' # Assuming 'forest_data' is structured correctly:
 #' forest_data <- data.frame(
 #'   group = c("A vs B", "C vs D"),
@@ -30,6 +31,7 @@
 #'
 #' create_forest_plot(forest_data)
 #' create_forest_plot(forest_data, xlim = c(0.05, 50), vline = 1)
+#' }
 create_forest_plot <- function(data,
                                xlim = c(0.1, 10),
                                logx = TRUE,
