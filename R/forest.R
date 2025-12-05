@@ -140,7 +140,20 @@ extract_plot_data <- function(tbl) {
 #'   showing the table on the left and the forest plot on the right.
 #'
 #' @seealso \code{\link{gtsummary2gg}}, \code{\link{extract_plot_data}}, \code{\link{create_forest_plot}}
-#' @keywords internal
+#'
+#' @export
+#' @examples
+#' tbl <-
+#'   trial %>%
+#'   tbl_subgroups(
+#'     subgroups = c("grade", "stage"),
+#'     ~ glm(response ~ trt, data = .x) %>%
+#'       gtsummary::tbl_regression(
+#'         show_single_row = trt,
+#'         exponentiate = TRUE
+#'       )
+#'   )
+#' g_forest(tbl)
 g_forest <- function(tbl) {
   table_plot <- gtsummary2gg(tbl)
   forest_data <- extract_plot_data(tbl)
