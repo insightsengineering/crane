@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0.9015</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0.9016</span>
       </span>
     </div>
 
@@ -61,15 +61,24 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.2.0.9015" id="crane-0209015">crane 0.2.0.9015<a class="anchor" aria-label="anchor" href="#crane-0209015"></a></h2>
-<ul><li><p>Added <code>list("assign_summary_type-arg:cat_threshold" = 0L)</code> to <code><a href="../reference/theme_gtsummary_roche.html">theme_gtsummary_roche()</a></code>. Numeric variables with few levels will no longer default to summary type <code>'categorical'</code> in <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html" class="external-link">gtsummary::tbl_summary()</a></code> and <code><a href="../reference/tbl_roche_summary.html">tbl_roche_summary()</a></code>. (<a href="https://github.com/insightsengineering/crane/issues/79" class="external-link">#79</a>)</p></li>
-<li><p>Added <code><a href="../reference/tbl_null_report.html">tbl_null_report()</a></code> for cases without any information to display. (<a href="https://github.com/insightsengineering/crane/issues/11" class="external-link">#11</a>)</p></li>
-<li><p>Updated variable processing in <code><a href="../reference/tbl_baseline_chg.html">tbl_baseline_chg()</a></code> to allow for non-string input. (<a href="https://github.com/insightsengineering/crane/issues/114" class="external-link">#114</a>)</p></li>
+<h2 class="page-header" data-toc-text="0.2.0.9016" id="crane-0209016">crane 0.2.0.9016<a class="anchor" aria-label="anchor" href="#crane-0209016"></a></h2>
+<div class="section level3">
+<h3 id="new-functions-and-functionality-0-2-0-9016">New Functions and Functionality<a class="anchor" aria-label="anchor" href="#new-functions-and-functionality-0-2-0-9016"></a></h3>
+<ul><li><p>Added <code><a href="../reference/tbl_null_report.html">tbl_null_report()</a></code> for cases without any information to display. (<a href="https://github.com/insightsengineering/crane/issues/11" class="external-link">#11</a>)</p></li>
+<li><p>Added functions <code><a href="../reference/label_roche.html">style_roche_number()</a></code> and <code><a href="../reference/label_roche.html">label_roche_number()</a></code> to replace their respective gtsummary versions, with additional <code>inf</code> argument for customization of <code>Inf</code>/<code>-Inf</code>/<code>NaN</code> values.</p></li>
+<li><p>Added <code>list("assign_summary_type-arg:cat_threshold" = 0L)</code> to <code><a href="../reference/theme_gtsummary_roche.html">theme_gtsummary_roche()</a></code>. Numeric variables with few levels will no longer default to summary type <code>'categorical'</code> in <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html" class="external-link">gtsummary::tbl_summary()</a></code> and <code><a href="../reference/tbl_roche_summary.html">tbl_roche_summary()</a></code>. (<a href="https://github.com/insightsengineering/crane/issues/79" class="external-link">#79</a>)</p></li>
+</ul><div class="section level4">
+<h4 id="other-updates-0-2-0-9016">Other Updates<a class="anchor" aria-label="anchor" href="#other-updates-0-2-0-9016"></a></h4>
+<ul><li><p>Updated variable processing in <code><a href="../reference/tbl_baseline_chg.html">tbl_baseline_chg()</a></code> to allow for non-string input. (<a href="https://github.com/insightsengineering/crane/issues/114" class="external-link">#114</a>)</p></li>
 <li><p>Updated details about the <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/sort_hierarchical.html" class="external-link">sort_hierarchical()</a></code> and <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/filter_hierarchical.html" class="external-link">filter_hierarchical()</a></code> functions in the hierarchical tables article. (<a href="https://github.com/insightsengineering/crane/issues/116" class="external-link">#116</a>)</p></li>
 <li><p>Added the <code>label</code> argument to <code><a href="../reference/tbl_hierarchical_rate_and_count.html">tbl_hierarchical_rate_and_count()</a></code> to set hierarchy variables labels in the table header. (<a href="https://github.com/insightsengineering/crane/issues/118" class="external-link">#118</a>)</p></li>
-<li><p>Added functions <code><a href="../reference/label_roche.html">style_roche_number()</a></code> and <code><a href="../reference/label_roche.html">label_roche_number()</a></code> to replace their respective gtsummary versions, with additional <code>inf</code> argument for customization of <code>Inf</code>/<code>-Inf</code>/<code>NaN</code> values.</p></li>
-<li><p>Fixed remove_duplicate_keys() to remove non-unique column values when the key columns are a mix of unique and duplicated entries. (<a href="https://github.com/insightsengineering/crane/issues/129" class="external-link">#129</a>)</p></li>
 </ul></div>
+<div class="section level4">
+<h4 id="bug-fixes-0-2-0-9016">Bug Fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-2-0-9016"></a></h4>
+<ul><li>Fixed <code><a href="../reference/tbl_listing.html">remove_duplicate_keys()</a></code> to remove non-unique column values when the key columns are a mix of unique and duplicated entries. (<a href="https://github.com/insightsengineering/crane/issues/129" class="external-link">#129</a>)</li>
+</ul></div>
+</div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.2.0" id="crane-020">crane 0.2.0<small>2025-08-29</small><a class="anchor" aria-label="anchor" href="#crane-020"></a></h2>
 <div class="section level3">
