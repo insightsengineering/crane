@@ -11,7 +11,8 @@
 #' @export
 #' @rdname tbl_null_report
 tbl_null_report <- function(
-    label = "Null Report: no observations met the reporting criteria for inclusion in this output.") {
+  label = "Null Report: no observations met the reporting criteria for inclusion in this output."
+) {
   set_cli_abort_call()
 
   # Check input label ----------------------------------------------------------
