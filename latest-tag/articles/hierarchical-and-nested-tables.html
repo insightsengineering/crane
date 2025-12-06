@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0.9015</span>
       </span>
     </div>
 
@@ -88,7 +88,7 @@
       <h1 data-toc-skip>Hierarchical and Stratified Nested Tables</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/crane/blob/v0.2.0/vignettes/articles/hierarchical-and-nested-tables.Rmd" class="external-link"><code>vignettes/articles/hierarchical-and-nested-tables.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/crane/blob/v0.3.0/vignettes/articles/hierarchical-and-nested-tables.Rmd" class="external-link"><code>vignettes/articles/hierarchical-and-nested-tables.Rmd</code></a></small>
       <div class="hidden name"><code>hierarchical-and-nested-tables.Rmd</code></div>
 
     </div>
@@ -666,7 +666,7 @@ N = 84</span><span class="gt_footnote_marks" style="white-space:nowrap;font-styl
 <td headers="stat_3" class="gt_row gt_center">0 (0%)</td>
 </tr>
 </tbody>
-<tfoot class="gt_footnotes"><tr>
+<tfoot><tr class="gt_footnotes">
 <td class="gt_footnote" colspan="4">
 <span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span> <span class="gt_from_md">n (%)</span>
 </td>
@@ -1284,7 +1284,7 @@ N = 84</span><span class="gt_footnote_marks" style="white-space:nowrap;font-styl
 <td headers="stat_3" class="gt_row gt_center">0 (0%)</td>
 </tr>
 </tbody>
-<tfoot class="gt_footnotes"><tr>
+<tfoot><tr class="gt_footnotes">
 <td class="gt_footnote" colspan="5">
 <span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span> <span class="gt_from_md">n (%)</span>
 </td>
@@ -1860,7 +1860,7 @@ N = 84</span><span class="gt_footnote_marks" style="white-space:nowrap;font-styl
 <td headers="stat_3" class="gt_row gt_center">0</td>
 </tr>
 </tbody>
-<tfoot class="gt_footnotes"><tr>
+<tfoot><tr class="gt_footnotes">
 <td class="gt_footnote" colspan="4">
 <span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span> <span class="gt_from_md">n</span>
 </td>
@@ -2433,7 +2433,7 @@ N = 84</span><span class="gt_footnote_marks" style="white-space:nowrap;font-styl
 <td headers="stat_3" class="gt_row gt_center">2 (2.4%)</td>
 </tr>
 </tbody>
-<tfoot class="gt_footnotes"><tr>
+<tfoot><tr class="gt_footnotes">
 <td class="gt_footnote" colspan="4">
 <span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span> <span class="gt_from_md">n (%)</span>
 </td>
@@ -3083,7 +3083,7 @@ N = 84</span><span class="gt_footnote_marks" style="white-space:nowrap;font-styl
 <td headers="stat_3" class="gt_row gt_center">0 (0.0%)</td>
 </tr>
 </tbody>
-<tfoot class="gt_footnotes"><tr>
+<tfoot><tr class="gt_footnotes">
 <td class="gt_footnote" colspan="4">
 <span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span> <span class="gt_from_md">n (%)</span>
 </td>
@@ -3581,7 +3581,7 @@ as follows using <code><a href="https://www.danieldsjoberg.com/gtsummary/referen
 <td headers="stat_2" class="gt_row gt_center">8 (9.5%)</td>
 <td headers="stat_3" class="gt_row gt_center">5 (6.0%)</td>
 </tr></tbody>
-<tfoot class="gt_footnotes"><tr>
+<tfoot><tr class="gt_footnotes">
 <td class="gt_footnote" colspan="4">
 <span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span> <span class="gt_from_md">n (%)</span>
 </td>
@@ -4207,7 +4207,7 @@ N = 84</span><span class="gt_footnote_marks" style="white-space:nowrap;font-styl
 <td headers="stat_3" class="gt_row gt_center">0 (0.0%)</td>
 </tr>
 </tbody>
-<tfoot class="gt_footnotes"><tr>
+<tfoot><tr class="gt_footnotes">
 <td class="gt_footnote" colspan="4">
 <span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span> <span class="gt_from_md">n (%)</span>
 </td>
@@ -4226,19 +4226,35 @@ respectively.</p>
 <p>By default, hierarchical tables are sorted alphanumerically at each
 level of the hierarchy.</p>
 <p>By applying the <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/sort_hierarchical.html" class="external-link">sort_hierarchical()</a></code> function to an
-existing hierarchical table the sort order can be changed to
-“descending” - sorting rows by descending event rate/count sum at each
-level of the hierarchy such that the most prevalent events will be
-listed first.</p>
+existing hierarchical table the sort order can be changed at each level
+of the hierarchy to “descending” - sorting rows by descending event
+rate/count sum such that the most prevalent events will be listed
+first.</p>
+<p>The <code>sort</code> argument to <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/sort_hierarchical.html" class="external-link">sort_hierarchical()</a></code>
+can accept either:</p>
+<ul>
+<li>a string specifying the sorting criteria (<code>"descending"</code>
+or <code>"alphanumeric"</code>) to apply at all levels of the hierarchy,
+or</li>
+<li>a named list, a list of formulas, or a single formula specifying the
+sorting criteria to apply at specific levels of the hierarchy.</li>
+</ul>
+<p>By default <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/sort_hierarchical.html" class="external-link">sort_hierarchical()</a></code> changes the sorting
+criteria to “descending” at all levels of the hierarchy.</p>
 <p>In addition to sorting, hierarchical tables can also be filtered
 using <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/filter_hierarchical.html" class="external-link">filter_hierarchical()</a></code>, which uses a given expression
 to filter out rows of the table.</p>
 <p>For examples of possible filters please see the documentation for the
 <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/filter_hierarchical.html" class="external-link">filter_hierarchical()</a></code> function.</p>
-<p>Filtering is only applied at the innermost hierarchy level, with all
-summary rows from outer hierarchy levels kept. If all rows of a section
-are filtered out then the summary row for that section is also removed
-unless <code>keep_empty = TRUE</code> is specified.</p>
+<p>Filtering can be applied at any hierarchy level, but defaults to the
+innermost level of the hierarchy with all summary rows from
+corresponding outer hierarchy levels kept.</p>
+<p>To change the variable level of the hierarchy at which filtering is
+applied you can specify the <code>var</code> argument to
+<code><a href="https://www.danieldsjoberg.com/gtsummary/reference/filter_hierarchical.html" class="external-link">filter_hierarchical()</a></code>.</p>
+<p>If all rows of a section are filtered out then the summary row for
+that section is also removed unless <code>keep_empty = TRUE</code> is
+specified.</p>
 <p>If the table contains an overall column then this column is ignored
 when filtering.</p>
 <p>See the following example where a hierarchy table is sorted in
@@ -4257,8 +4273,8 @@ recorded across all treatment groups are kept.</p>
 <span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_overall.html" class="external-link">add_overall</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">tbl</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/sort_hierarchical.html" class="external-link">sort_hierarchical</a></span><span class="op">(</span><span class="st">"descending"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/filter_hierarchical.html" class="external-link">filter_hierarchical</a></span><span class="op">(</span>filter <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">n</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/sort_hierarchical.html" class="external-link">sort_hierarchical</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html" class="external-link">everything</a></span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="st">"descending"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/filter_hierarchical.html" class="external-link">filter_hierarchical</a></span><span class="op">(</span>filter <span class="op">=</span> <span class="va">n_overall</span> <span class="op">&gt;</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
 <div id="vzwshwbqqi" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#vzwshwbqqi table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -4801,7 +4817,7 @@ N = 84</span><span class="gt_footnote_marks" style="white-space:nowrap;font-styl
 <td headers="stat_3" class="gt_row gt_center">1 (1.2%)</td>
 </tr>
 </tbody>
-<tfoot class="gt_footnotes"><tr>
+<tfoot><tr class="gt_footnotes">
 <td class="gt_footnote" colspan="5">
 <span class="gt_footnote_marks" style="white-space:nowrap;font-style:italic;font-weight:normal;line-height:0;"><sup>1</sup></span> <span class="gt_from_md">n (%)</span>
 </td>
@@ -5330,21 +5346,21 @@ laboratory results table which reports summary statistics of the
 </tr>
 <tr>
 <td headers="label" class="gt_row gt_left">            Mean (SD)</td>
-<td headers="stat_1" class="gt_row gt_center">39.84 (2.81)</td>
-<td headers="stat_2" class="gt_row gt_center">40.40 (2.74)</td>
-<td headers="stat_3" class="gt_row gt_center">39.74 (2.67)</td>
+<td headers="stat_1" class="gt_row gt_center">39.8 (2.8)</td>
+<td headers="stat_2" class="gt_row gt_center">40.4 (2.7)</td>
+<td headers="stat_3" class="gt_row gt_center">39.7 (2.7)</td>
 </tr>
 <tr>
 <td headers="label" class="gt_row gt_left">            Median</td>
-<td headers="stat_1" class="gt_row gt_center">40.00</td>
-<td headers="stat_2" class="gt_row gt_center">40.00</td>
-<td headers="stat_3" class="gt_row gt_center">40.00</td>
+<td headers="stat_1" class="gt_row gt_center">40.0</td>
+<td headers="stat_2" class="gt_row gt_center">40.0</td>
+<td headers="stat_3" class="gt_row gt_center">40.0</td>
 </tr>
 <tr>
 <td headers="label" class="gt_row gt_left">            Min - Max</td>
-<td headers="stat_1" class="gt_row gt_center">32.00 - 46.00</td>
-<td headers="stat_2" class="gt_row gt_center">35.00 - 49.00</td>
-<td headers="stat_3" class="gt_row gt_center">32.00 - 46.00</td>
+<td headers="stat_1" class="gt_row gt_center">32 - 46</td>
+<td headers="stat_2" class="gt_row gt_center">35 - 49</td>
+<td headers="stat_3" class="gt_row gt_center">32 - 46</td>
 </tr>
 <tr>
 <td headers="label" class="gt_row gt_left">    Week 2</td>
@@ -5378,9 +5394,9 @@ laboratory results table which reports summary statistics of the
 </tr>
 <tr>
 <td headers="label" class="gt_row gt_left">            Min - Max</td>
-<td headers="stat_1" class="gt_row gt_center">31.0 - 46.0</td>
-<td headers="stat_2" class="gt_row gt_center">33.0 - 46.0</td>
-<td headers="stat_3" class="gt_row gt_center">31.0 - 46.0</td>
+<td headers="stat_1" class="gt_row gt_center">31 - 46</td>
+<td headers="stat_2" class="gt_row gt_center">33 - 46</td>
+<td headers="stat_3" class="gt_row gt_center">31 - 46</td>
 </tr>
 <tr>
 <td headers="label" class="gt_row gt_left">    Week 4</td>
@@ -5414,9 +5430,9 @@ laboratory results table which reports summary statistics of the
 </tr>
 <tr>
 <td headers="label" class="gt_row gt_left">            Min - Max</td>
-<td headers="stat_1" class="gt_row gt_center">29.0 - 47.0</td>
-<td headers="stat_2" class="gt_row gt_center">30.0 - 48.0</td>
-<td headers="stat_3" class="gt_row gt_center">31.0 - 45.0</td>
+<td headers="stat_1" class="gt_row gt_center">29 - 47</td>
+<td headers="stat_2" class="gt_row gt_center">30 - 48</td>
+<td headers="stat_3" class="gt_row gt_center">31 - 45</td>
 </tr>
 <tr>
 <td headers="label" class="gt_row gt_left">Alkaline Phosphatase (U/L)</td>
@@ -5444,15 +5460,15 @@ laboratory results table which reports summary statistics of the
 </tr>
 <tr>
 <td headers="label" class="gt_row gt_left">            Mean (SD)</td>
-<td headers="stat_1" class="gt_row gt_center">78 (58)</td>
-<td headers="stat_2" class="gt_row gt_center">72 (41)</td>
-<td headers="stat_3" class="gt_row gt_center">72 (20)</td>
+<td headers="stat_1" class="gt_row gt_center">77.7 (58.1)</td>
+<td headers="stat_2" class="gt_row gt_center">72.0 (41.2)</td>
+<td headers="stat_3" class="gt_row gt_center">72.3 (20.3)</td>
 </tr>
 <tr>
 <td headers="label" class="gt_row gt_left">            Median</td>
-<td headers="stat_1" class="gt_row gt_center">70</td>
-<td headers="stat_2" class="gt_row gt_center">66</td>
-<td headers="stat_3" class="gt_row gt_center">71</td>
+<td headers="stat_1" class="gt_row gt_center">70.0</td>
+<td headers="stat_2" class="gt_row gt_center">66.0</td>
+<td headers="stat_3" class="gt_row gt_center">71.0</td>
 </tr>
 <tr>
 <td headers="label" class="gt_row gt_left">            Min - Max</td>
@@ -5480,15 +5496,15 @@ laboratory results table which reports summary statistics of the
 </tr>
 <tr>
 <td headers="label" class="gt_row gt_left">            Mean (SD)</td>
-<td headers="stat_1" class="gt_row gt_center">78 (70)</td>
-<td headers="stat_2" class="gt_row gt_center">72 (42)</td>
-<td headers="stat_3" class="gt_row gt_center">73 (22)</td>
+<td headers="stat_1" class="gt_row gt_center">77.7 (69.5)</td>
+<td headers="stat_2" class="gt_row gt_center">72.3 (42.1)</td>
+<td headers="stat_3" class="gt_row gt_center">72.8 (21.5)</td>
 </tr>
 <tr>
 <td headers="label" class="gt_row gt_left">            Median</td>
-<td headers="stat_1" class="gt_row gt_center">67</td>
-<td headers="stat_2" class="gt_row gt_center">66</td>
-<td headers="stat_3" class="gt_row gt_center">69</td>
+<td headers="stat_1" class="gt_row gt_center">67.0</td>
+<td headers="stat_2" class="gt_row gt_center">66.0</td>
+<td headers="stat_3" class="gt_row gt_center">69.0</td>
 </tr>
 <tr>
 <td headers="label" class="gt_row gt_left">            Min - Max</td>
@@ -5516,15 +5532,15 @@ laboratory results table which reports summary statistics of the
 </tr>
 <tr>
 <td headers="label" class="gt_row gt_left">            Mean (SD)</td>
-<td headers="stat_1" class="gt_row gt_center">78 (69)</td>
-<td headers="stat_2" class="gt_row gt_center">71 (41)</td>
-<td headers="stat_3" class="gt_row gt_center">73 (23)</td>
+<td headers="stat_1" class="gt_row gt_center">78.0 (69.4)</td>
+<td headers="stat_2" class="gt_row gt_center">71.3 (40.7)</td>
+<td headers="stat_3" class="gt_row gt_center">73.2 (23.2)</td>
 </tr>
 <tr>
 <td headers="label" class="gt_row gt_left">            Median</td>
-<td headers="stat_1" class="gt_row gt_center">68</td>
-<td headers="stat_2" class="gt_row gt_center">65</td>
-<td headers="stat_3" class="gt_row gt_center">71</td>
+<td headers="stat_1" class="gt_row gt_center">68.0</td>
+<td headers="stat_2" class="gt_row gt_center">65.0</td>
+<td headers="stat_3" class="gt_row gt_center">71.0</td>
 </tr>
 <tr>
 <td headers="label" class="gt_row gt_left">            Min - Max</td>
@@ -5553,7 +5569,7 @@ laboratory results table which reports summary statistics of the
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer>

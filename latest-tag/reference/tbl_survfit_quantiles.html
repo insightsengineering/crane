@@ -19,7 +19,7 @@ see the Details section below for the full details."><meta property="og:image" c
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0.9015</span>
       </span>
     </div>
 
@@ -59,7 +59,7 @@ see the Details section below for the full details."><meta property="og:image" c
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Survival Quantiles</h1>
-    <small class="dont-index">Source: <a href="https://github.com/insightsengineering/crane/blob/v0.2.0/R/tbl_survfit_quantiles.R" class="external-link"><code>R/tbl_survfit_quantiles.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/insightsengineering/crane/blob/v0.3.0/R/tbl_survfit_quantiles.R" class="external-link"><code>R/tbl_survfit_quantiles.R</code></a></small>
     <div class="hidden name"><code>tbl_survfit_quantiles.Rd</code></div>
     </div>
 
@@ -75,7 +75,7 @@ see the Details section below for the full details.</p>
 <span>  y <span class="op">=</span> <span class="st">"survival::Surv(time = AVAL, event = 1 - CNSR, type = 'right', origin = 0)"</span>,</span>
 <span>  by <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  header <span class="op">=</span> <span class="st">"Time to event"</span>,</span>
-<span>  estimate_fun <span class="op">=</span> <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/label_style.html" class="external-link">label_style_number</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">1</span>, na <span class="op">=</span> <span class="st">"NE"</span><span class="op">)</span>,</span>
+<span>  estimate_fun <span class="op">=</span> <span class="fu"><a href="label_roche.html">label_roche_number</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">1</span>, na <span class="op">=</span> <span class="st">"NE"</span><span class="op">)</span>,</span>
 <span>  method.args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>conf.int <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
@@ -83,7 +83,7 @@ see the Details section below for the full details.</p>
 <span><span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_overall.html" class="external-link">add_overall</a></span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  last <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  col_label <span class="op">=</span> <span class="st">"All Participants  \nN = {gtsummary::style_number(N)}"</span>,</span>
+<span>  col_label <span class="op">=</span> <span class="st">"All Participants  \nN = {style_roche_number(N)}"</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -119,7 +119,7 @@ Default is <code>"Time to event"</code>.</p></dd>
 <dt id="arg-estimate-fun">estimate_fun<a class="anchor" aria-label="anchor" href="#arg-estimate-fun"></a></dt>
 <dd><p>(<code>function</code>)<br>
 Function used to round and format the estimates in the table.
-Default is <code>label_style_number(digits = 1)</code>.</p></dd>
+Default is <code>label_roche_number(digits = 1)</code>.</p></dd>
 
 
 <dt id="arg-method-args">method.args<a class="anchor" aria-label="anchor" href="#arg-method-args"></a></dt>
@@ -232,7 +232,7 @@ it from ARDs.</p>
 <span class="r-in"><span><span class="fu">tbl_survfit_quantiles</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://insightsengineering.github.io/cards/latest-tag/reference/adam.html" class="external-link">ADTTE</a></span>,</span></span>
 <span class="r-in"><span>  by <span class="op">=</span> <span class="st">"TRTA"</span>,</span></span>
-<span class="r-in"><span>  estimate_fun <span class="op">=</span> <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/label_style.html" class="external-link">label_style_number</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">1</span>, na <span class="op">=</span> <span class="st">"NE"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  estimate_fun <span class="op">=</span> <span class="fu"><a href="label_roche.html">label_roche_number</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">1</span>, na <span class="op">=</span> <span class="st">"NE"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_overall.html" class="external-link">add_overall</a></span><span class="op">(</span>last <span class="op">=</span> <span class="cn">TRUE</span>, col_label <span class="op">=</span> <span class="st">"**All Participants**  \nN = {n}"</span><span class="op">)</span></span></span>
 <div class="gt-table"><div id="ecijtgluus" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
@@ -293,7 +293,7 @@ N = 254</span></th>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer></div>

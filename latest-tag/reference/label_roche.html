@@ -4,6 +4,7 @@
 label_roche_pvalue() returns formatted p-values.
 label_roche_percent() returns formatted percent values. This function only formats percentages between 0 and 1.
 label_roche_ratio() returns formatted ratios with values below and above a threshold being returned as &amp;lt; 0.1 and &amp;gt; 999.9, for example, when digits=1.
+label_roche_number() returns formatted numbers.
 
 "><meta property="og:image" content="https://insightsengineering.github.io/crane/logo.png"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -23,7 +24,7 @@ label_roche_ratio() returns formatted ratios with values below and above a thres
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0.9015</span>
       </span>
     </div>
 
@@ -63,7 +64,7 @@ label_roche_ratio() returns formatted ratios with values below and above a thres
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Formatting percent and p-values</h1>
-    <small class="dont-index">Source: <a href="https://github.com/insightsengineering/crane/blob/v0.2.0/R/label_roche.R" class="external-link"><code>R/label_roche.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/insightsengineering/crane/blob/v0.3.0/R/label_roche.R" class="external-link"><code>R/label_roche.R</code></a></small>
     <div class="hidden name"><code>label_roche.Rd</code></div>
     </div>
 
@@ -72,6 +73,7 @@ label_roche_ratio() returns formatted ratios with values below and above a thres
 <ul><li><p><code>label_roche_pvalue()</code> returns formatted p-values.</p></li>
 <li><p><code>label_roche_percent()</code> returns formatted percent values. This function only formats percentages between 0 and 1.</p></li>
 <li><p><code>label_roche_ratio()</code> returns formatted ratios with values below and above a threshold being returned as <code>&lt; 0.1</code> and <code>&gt; 999.9</code>, for example, when <code>digits=1</code>.</p></li>
+<li><p><code>label_roche_number()</code> returns formatted numbers.</p></li>
 </ul></div>
 
     <div id="ref-usage">
@@ -127,6 +129,33 @@ label_roche_ratio() returns formatted ratios with values below and above a thres
 <span>  big.mark <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">decimal.mark</span> <span class="op">==</span> <span class="st">","</span>, <span class="st">" "</span>, <span class="st">","</span><span class="op">)</span>,</span>
 <span>  decimal.mark <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"OutDec"</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">style_roche_number</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  digits <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  big.mark <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">decimal.mark</span> <span class="op">==</span> <span class="st">","</span>, <span class="st">" "</span>, <span class="st">","</span><span class="op">)</span>,</span>
+<span>  decimal.mark <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"OutDec"</span><span class="op">)</span>,</span>
+<span>  scale <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  prefix <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  suffix <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  na <span class="op">=</span> <span class="st">"NE"</span>,</span>
+<span>  inf <span class="op">=</span> <span class="st">"NE"</span>,</span>
+<span>  nan <span class="op">=</span> <span class="st">"NE"</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">label_roche_number</span><span class="op">(</span></span>
+<span>  digits <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  big.mark <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">decimal.mark</span> <span class="op">==</span> <span class="st">","</span>, <span class="st">" "</span>, <span class="st">","</span><span class="op">)</span>,</span>
+<span>  decimal.mark <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/options.html" class="external-link">getOption</a></span><span class="op">(</span><span class="st">"OutDec"</span><span class="op">)</span>,</span>
+<span>  scale <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  prefix <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  suffix <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  na <span class="op">=</span> <span class="st">"NE"</span>,</span>
+<span>  inf <span class="op">=</span> <span class="st">"NE"</span>,</span>
+<span>  nan <span class="op">=</span> <span class="st">"NE"</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -177,6 +206,12 @@ Additional text to display after the number.</p></dd>
 <dd><p>(scalar <code>numeric</code>)<br>
 A scaling factor: <code>x</code> will be multiplied by scale before formatting.</p></dd>
 
+
+<dt id="arg-na-inf-nan">na, inf, nan<a class="anchor" aria-label="anchor" href="#arg-na-inf-nan"></a></dt>
+<dd><p>(<code>NA</code>/<code>string</code>)<br>
+scalar to replace <code>NA</code>, infinite, and <code>NaN</code> values with.
+Default is <code>"NE"</code> for arguments <code>na</code>, <code>inf</code>, and <code>nan</code> argument.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -208,6 +243,14 @@ A scaling factor: <code>x</code> will be multiplied by scale before formatting.<
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "&lt;0.01"   "0.82"    "2.12"    "&gt;999.99"</span>
 <span class="r-in"><span><span class="fu">label_roche_ratio</span><span class="op">(</span><span class="op">)</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "&lt;0.01"   "0.82"    "2.12"    "&gt;999.99"</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># number formatting</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.0008</span>, <span class="fl">0.8234</span>, <span class="fl">2.123</span>, <span class="fl">1000</span>, <span class="cn">NA</span>, <span class="cn">Inf</span>, <span class="op">-</span><span class="cn">Inf</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">style_roche_number</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0"     "1"     "2"     "1,000" "NE"    "NE"    "NE"   </span>
+<span class="r-in"><span><span class="fu">label_roche_number</span><span class="op">(</span><span class="op">)</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "0"     "1"     "2"     "1,000" "NE"    "NE"    "NE"   </span>
 </code></pre></div>
     </div>
   </div>
@@ -222,7 +265,7 @@ A scaling factor: <code>x</code> will be multiplied by scale before formatting.<
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer></div>

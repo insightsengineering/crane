@@ -25,7 +25,7 @@ gtsummary::filter_hierarchical()."><meta property="og:image" content="https://in
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.0.9015</span>
       </span>
     </div>
 
@@ -65,7 +65,7 @@ gtsummary::filter_hierarchical()."><meta property="og:image" content="https://in
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Hierarchical Rates and Counts</h1>
-    <small class="dont-index">Source: <a href="https://github.com/insightsengineering/crane/blob/v0.2.0/R/tbl_hierarchical_rate_and_count.R" class="external-link"><code>R/tbl_hierarchical_rate_and_count.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/insightsengineering/crane/blob/v0.3.0/R/tbl_hierarchical_rate_and_count.R" class="external-link"><code>R/tbl_hierarchical_rate_and_count.R</code></a></small>
     <div class="hidden name"><code>tbl_hierarchical_rate_and_count.Rd</code></div>
     </div>
 
@@ -88,6 +88,7 @@ When creating a filtered summary, use <code><a href="https://www.danieldsjoberg.
 <span>  <span class="va">denominator</span>,</span>
 <span>  by <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  id <span class="op">=</span> <span class="st">"USUBJID"</span>,</span>
+<span>  label <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  digits <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  sort <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  label_overall_rate <span class="op">=</span> <span class="st">"Total number of participants with at least one adverse event"</span>,</span>
@@ -100,7 +101,7 @@ When creating a filtered summary, use <code><a href="https://www.danieldsjoberg.
 <span><span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_overall.html" class="external-link">add_overall</a></span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
 <span>  last <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  col_label <span class="op">=</span> <span class="st">"All Participants  \n(N = {style_number(N)})"</span>,</span>
+<span>  col_label <span class="op">=</span> <span class="st">"All Participants  \n(N = {style_roche_number(N)})"</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -139,6 +140,13 @@ Default is <code>NULL</code>.</p></dd>
 <dd><p>(<code><a href="https://dplyr.tidyverse.org/reference/dplyr_tidy_select.html" class="external-link">tidy-select</a></code>)<br>
 argument used to subset <code>data</code> to identify rows in <code>data</code> to calculate
 event rates in <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_hierarchical.html" class="external-link">tbl_hierarchical()</a></code>.</p></dd>
+
+
+<dt id="arg-label">label<a class="anchor" aria-label="anchor" href="#arg-label"></a></dt>
+<dd><p>(<code><a href="https://www.danieldsjoberg.com/gtsummary/reference/syntax.html" class="external-link">formula-list-selector</a></code>)<br>
+used to override default labels in hierarchical table, e.g. <code>list(AESOC = "System Organ Class")</code>.
+The default for each variable is the column label attribute, <code>attr(., 'label')</code>.
+If no label has been set, the column name is used.</p></dd>
 
 
 <dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
@@ -295,7 +303,7 @@ String indicating the column label. Default is <code>"**Overall**  \nN = {style_
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
       </footer></div>
