@@ -36,7 +36,7 @@ create_forest_plot <- function(data,
                                xlim = c(0.1, 10),
                                logx = TRUE,
                                vline = 1) {
-  forest_header <- c("Comparison\nBetter", "Treatment\nBetter")
+  forest_header <- paste0(data$group, "\nBetter")
   # Calculate y positions (reverse order for top-to-bottom display)
   data <- data %>%
     mutate(y_pos = rev(dplyr::row_number()))
@@ -92,7 +92,7 @@ create_forest_plot <- function(data,
     x_scale +
     scale_y_continuous(
       limits = c(0, nrow(data) + 1.5), breaks = data$y_pos,
-      labels = data$group, expand = c(0, 0)
+      labels = rep("", length(data$group)), expand = c(0, 0)
     ) +
     theme_minimal() +
     theme(
