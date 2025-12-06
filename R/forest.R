@@ -120,7 +120,7 @@ create_forest_plot <- function(data,
 extract_plot_data <- function(tbl) {
   ret <- tbl$table_body %>%
     select(
-      group = term,
+      group = label,
       estimate = estimate,
       ci_lower = conf.low,
       ci_upper = conf.high,
@@ -160,7 +160,21 @@ g_forest <- function(tbl) {
   table_plot <- gtsummary2gg(tbl)
   forest_data <- extract_plot_data(tbl)
   forest_plot <- create_forest_plot(forest_data)
-  table_plot + forest_plot
+  table_plot + forest_plot + plot_layout(widths = c(3, 1))
+}
+
+
+extract_tbl_from_gtsummry <- function(tbl){
+  ret <- tbl$table_body %>%
+    mutate(or = round(estimate, 2)) %>%
+    select(
+      `label` = label,
+     `Total n` = N,
+     `Odds ratio` = or,
+     `95% CI` = ci
+    ) %>%
+    as_tibble()
+  print(ret)
 }
 
 #' Convert gtsummary Object into a ggplot Table
@@ -184,17 +198,16 @@ gtsummary2gg <- function(tbl, fontsize = 12, header_line_color = "gray30") {
 
   # 1. Convert gtsummary object to a tibble with formatting
   tbl_df_raw <- as_tibble(tbl)
-  print(tbl_df_raw)
+  # tbl_df_raw <- extract_tbl_from_gtsummry(tbl)
+  # print(tbl_df_raw)
   # 2. Extract column names (final header labels) and body strings
   # The table body contains the cell content, the column headers are in the column names.
   body_strings <- tbl_df_raw %>%
-    select(-starts_with("label")) %>%
+    # select(-starts_with("label")) %>%
     mutate(across(everything(), as.character))
 
   # Extract final column labels for the header
-  header_labels <- names(body_strings)
-  print("here2")
-
+  header_labels <- names(body_strings)[-1]
   # Extract the row labels and make them the first column for plotting
   # label_strings <- tbl_df_raw %>%
   #   select(starts_with("label")) %>%
@@ -202,11 +215,10 @@ gtsummary2gg <- function(tbl, fontsize = 12, header_line_color = "gray30") {
   #   pull(label_col)
   #
   label_strings <- tbl_df_raw[, 1]
-  print("here1")
 
   # Combine label column and body
-  plot_df <- cbind(data.frame(label_col = label_strings), body_strings)
-
+  plot_df <- cbind(data.frame(label_col = ""), body_strings)
+  # plot_df <- as.data.frame(body_strings)
   # 3. Determine Layout and Dimensions
   n_rows <- nrow(plot_df)
   n_cols <- ncol(plot_df)
@@ -215,11 +227,13 @@ gtsummary2gg <- function(tbl, fontsize = 12, header_line_color = "gray30") {
   col_widths <- apply(plot_df, 2, function(x) max(nchar(x), na.rm = TRUE)) + 2
 
   # Set the first column (labels) to a wider width for better spacing
-  col_widths[1] <- max(col_widths[1] + 10, 30)
-
+  # col_widths[1] <- max(col_widths[1] + 10, 30)
+  # col_widths[1] <- max(col_widths[1] + 3)
+  col_widths[1] <- 0
   # Calculate cumulative positions for text placement
   # The x-position will be the midpoint of each column's width
   x_pos <- cumsum(col_widths) - col_widths / 2
+  # x_pos <- x_pos[-1]
 
   # Calculate the x-position for the column boundaries (for vertical lines, if desired)
   x_boundaries <- cumsum(col_widths)
@@ -238,24 +252,26 @@ gtsummary2gg <- function(tbl, fontsize = 12, header_line_color = "gray30") {
     scale_x_continuous(limits = c(0, tot_width)) +
     scale_y_continuous(limits = c(0, n_rows + 1.5))
 
+  # print(length(x_pos))
+  # print(length(header_labels))
+  header_labels <- c("", "", header_labels)
   # 5. Add **Header Labels**
-  # res <- res +
-  #   annotate(
-  #     "text",
-  #     x = x_pos,
-  #     y = y_pos[1], # Top row
-  #     label = header_labels,
-  #     fontface = "bold",
-  #     size = fontsize / .pt
-  #   )
-  # +
-  #   # Add a horizontal line under the header
-  #   annotate(
-  #     "segment",
-  #     x = 0, xend = tot_width,
-  #     y = y_pos[1] - 0.5, yend = y_pos[1] - 0.5,
-  #     color = header_line_color
-  #   )
+  res <- res +
+  annotate(
+    "text",
+    x = x_pos,
+    y = y_pos[1], # Top row
+    label = header_labels,
+    fontface = "bold",
+    size = fontsize / .pt
+  ) +
+    # Add a horizontal line under the header
+    annotate(
+      "segment",
+      x = 0, xend = tot_width,
+      y = y_pos[1] - 0.5, yend = y_pos[1] - 0.5,
+      color = header_line_color
+    )
   print(res)
   # 6. Add **Table Body Content** (Row by Row, Column by Column)
   for (i in seq_len(n_cols)) {
@@ -264,8 +280,8 @@ gtsummary2gg <- function(tbl, fontsize = 12, header_line_color = "gray30") {
 
     # Calculate x position: use the start of the column for left-aligned text,
     # and the end of the column for right-aligned text.
-    x_val <- if (i == 1) x_boundaries[i] else x_boundaries[i + 1]
-
+    # x_val <- if (i == 1) x_boundaries[i] else x_boundaries[i + 1]
+    x_val <- x_boundaries[i + 1]
     res <- res +
       annotate(
         "text",
