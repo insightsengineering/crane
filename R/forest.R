@@ -157,7 +157,8 @@ extract_plot_data <- function(tbl) {
 #'   )
 #' g_forest(tbl)
 g_forest <- function(tbl) {
-  table_plot <- gtsummary2gg(tbl)
+  # table_plot <- gtsummary2gg(tbl)
+  table_plot <- wrap_table(tbl, space="fixed")
   forest_data <- extract_plot_data(tbl)
   forest_plot <- create_forest_plot(forest_data)
   table_plot + forest_plot + plot_layout(widths = c(3, 1))
