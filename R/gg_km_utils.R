@@ -1,26 +1,3 @@
-f_conf_level <- function(conf_level) {
-  paste0(conf_level * 100, "% CI")
-}
-
-control_surv_med_annot <- function(x = 0.8, y = 0.85, w = 0.32, h = 0.16, fill = TRUE) {
-  list(x = x, y = y, w = w, h = h, fill = fill)
-}
-
-control_coxph_annot <- function(x = 0.29, y = 0.51, w = 0.4, h = 0.125, fill = TRUE, ref_lbls = FALSE) {
-  set_cli_abort_call()
-
-  check_logical(ref_lbls)
-  if ((!anyNA(ref_lbls) && length(ref_lbls) >= 1)) {
-    cli::cli_abort(
-      "{.arg ref_lbls} must be a single {.cls logical} value (TRUE or FALSE).",
-      call = get_cli_abort_call()
-    )
-  }
-
-  res <- c(control_surv_med_annot(x = x, y = y, w = w, h = h), list(ref_lbls = ref_lbls))
-  res
-}
-
 #' Convert Data Frame to ggplot2 Table Graphic
 #'
 #' @description Creates a `ggplot2` object that renders a data frame as a table graphic.
@@ -71,12 +48,14 @@ df2gg <- function(df, colwidths = NULL, font_size = 10, col_labels = TRUE,
     )
   }
   for (i in seq_len(ncol(df))) {
-    line_pos <- c(if (i == 1) {
-      0
-    } else {
-      sum(colwidths[1:(i -
-        1)])
-    }, sum(colwidths[1:i]))
+    line_pos <- c(
+      if (i == 1) {
+        0
+      } else {
+        sum(colwidths[1:(i - 1)])
+      },
+      sum(colwidths[1:i])
+    )
     res <- res + ggplot2::annotate("text",
       x = mean(line_pos), y = rev(seq_len(nrow(df))),
       label = df[, i], size = font_size / .pt, fontface = if (col_labels) {
@@ -102,7 +81,6 @@ df2gg <- function(df, colwidths = NULL, font_size = 10, col_labels = TRUE,
 #'
 #' @keywords internal
 h_xticks <- function(data, xticks = NULL, max_time = NULL) {
-  # ... (function body remains the same)
   if (is.null(xticks)) {
     if (is.null(max_time)) {
       labeling::extended(range(data$time)[1], range(data$time)[2], m = 5)
@@ -133,14 +111,14 @@ h_xticks <- function(data, xticks = NULL, max_time = NULL) {
 #' @description Extracts and formats the median survival time and its confidence interval
 #' from a fitted Kaplan-Meier object.
 #'
-#' @param fit_km A fitted Kaplan-Meier object of class \code{survfit}.
-#' @param armval Character string to use as the row name if \code{fit_km} has no strata (e.g., "All").
-#' @keywords internal
+#' @inheritParams gg_km
+#'
 #' @return A data frame with columns "N", "Median", and the confidence interval label.
-h_tbl_median_surv <- function(fit_km, armval = "All") {
-  # ... (function body remains the same)
+#'
+#' @keywords internal
+h_tbl_median_surv <- function(fit_km, strata_levels = "All") {
   y <- if (is.null(fit_km$strata)) {
-    as.data.frame(t(summary(fit_km)$table), row.names = armval)
+    as.data.frame(t(summary(fit_km)$table), row.names = strata_levels)
   } else {
     tbl <- summary(fit_km)$table
     rownames_lst <- strsplit(sub("=", "equals", rownames(tbl)), "equals")
@@ -155,103 +133,6 @@ h_tbl_median_surv <- function(fit_km, armval = "All") {
   )
   stats::setNames(
     y[c("records", "median", "CI")],
-    c("N", "Median", f_conf_level(conf.int))
+    c("N", "Median", paste0(conf.int * 100, "% CI"))
   )
-}
-
-#' Perform Pairwise Cox Proportional Hazards Regression
-#'
-#' This function performs a pairwise comparison of treatment arms using the **Cox proportional hazards model** and calculates the corresponding **log-rank p-value**. Each comparison is made between a specified reference group and all other comparison groups in the dataset.
-#'
-#' @param model_formula A [stats::formula] object specifying the survival model, typically in the form \code{Surv(time, status) ~ arm + covariates}.
-#' @param data A `data.frame` containing the survival data, including time, status, and the arm variable.
-#' @param arm A character string specifying the name of the column in \code{data} that contains the grouping/treatment arm variable (must be a factor-like variable).
-#' @param ref_group A character string specifying the level of the \code{arm} variable to be used as the **reference group** for all pairwise comparisons. If \code{NULL} (the default), the **first unique level** of the \code{arm} column is used as the reference group.
-#'
-#' @return A `data.frame` with the results of the pairwise comparisons. The columns include:
-#' \itemize{
-#'   \item \code{arm}: The comparison arm being tested against the reference group.
-#'   \item \code{hr}: The Hazard Ratio (HR) for the comparison arm vs. the reference arm, formatted to two decimal places.
-#'   \item \code{ci}: The 95\% confidence interval for the HR, presented as a string in the format "(lower, upper)", with values formatted to two decimal places.
-#'   \item \code{pval}: The log-rank p-value for the comparison.
-#' }
-#'
-#' @details The function iterates through each unique arm (excluding the reference group), filters the data to include only the current comparison arm and the reference arm, and then fits a Cox model (\code{\link[survival]{coxph}}) and performs a log-rank test (\code{\link[survival]{survdiff}}). The Hazard Ratio and its 95\% confidence interval are extracted from the Cox model summary, and the p-value is calculated from the log-rank test.
-#'
-#' @examples
-#' # Example data setup (assuming 'time' is event time, 'status' is event indicator (1=event),
-#' # and 'arm' is the treatment group)
-#' library(survival)
-#' use_lung <- lung
-#' use_lung$arm <- factor(sample(c("A", "B", "C"), nrow(use_lung), replace = TRUE))
-#' use_lung$status <- use_lung$status - 1 # Convert status to 0/1
-#' use_lung <- na.omit(use_lung)
-#'
-#' formula <- Surv(time, status) ~ arm
-#' results_tbl <- get_cox_pairwise_tbl(
-#'   model_formula = formula,
-#'   data = use_lung,
-#'   arm = "arm",
-#'   ref_group = "A"
-#' )
-#' print(results_tbl)
-#'
-#' @export
-get_cox_pairwise_tbl <- function(model_formula, data, arm, ref_group = NULL) {
-  set_cli_abort_call()
-
-  # Input checks
-  if (!rlang::is_formula(model_formula)) {
-    cli::cli_abort(
-      "{.arg model_formula} must be a {.cls formula}.",
-      call = get_cli_abort_call()
-    )
-  }
-  if (!is.factor(data[[arm]])) {
-    cli::cli_abort(
-      "Column {.arg {data}[[\"{.var {arm}}\"]]} must be a {.cls factor}.",
-      call = get_cli_abort_call()
-    )
-  }
-
-  # Determine reference and comparison groups
-  ref_group <- if (!is.null(ref_group)) {
-    ref_group
-  } else {
-    levels(data[[arm]])[1]
-  }
-  comp_group <- setdiff(levels(data[[arm]]), ref_group)
-
-  ret <- c()
-  for (current_arm in comp_group) {
-    subset_arm <- c(ref_group, current_arm)
-    if (length(subset_arm) != 2) {
-      cli::cli_abort(
-        "{.arg subset_arm} must contain exactly 2 arms/groups (current length is {length(subset_arm)}).",
-        call = get_cli_abort_call()
-      )
-    }
-    comp_df <- data[as.character(data[[arm]]) %in% subset_arm, ]
-    suppressWarnings(
-      coxph_ans <- coxph(formula = model_formula, data = comp_df) %>% summary()
-    )
-    orginal_survdiff <- survdiff(formula = model_formula, data = comp_df)
-    log_rank_pvalue <- 1 - stats::pchisq(orginal_survdiff$chisq, length(orginal_survdiff$n) -
-      1)
-    current_row <- data.frame(
-      hr = sprintf("%.2f", coxph_ans$conf.int[1, 1]),
-      ci = paste0(
-        "(",
-        sprintf("%.2f", coxph_ans$conf.int[1, 3]),
-        ", ",
-        sprintf("%.2f", coxph_ans$conf.int[1, 4]),
-        ")"
-      ),
-      pval = log_rank_pvalue
-    )
-    rownames(current_row) <- current_arm
-    ret <- rbind(ret, current_row)
-  }
-
-  return(ret)
 }

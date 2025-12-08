@@ -3,12 +3,9 @@
 \name{gg_km}
 \alias{gg_km}
 \alias{process_survfit}
-\alias{annot_surv_med}
-\alias{annot_cox_ph}
-\alias{annot_at_risk}
 \title{Kaplan-Meier Plot}
 \usage{
-process_survfit(fit_km, armval = "All", max_time = NULL)
+process_survfit(fit_km, strata_levels = "All", max_time = NULL)
 
 gg_km(
   surv_plot_data,
@@ -19,54 +16,29 @@ gg_km(
   size = 2,
   max_time = NULL,
   xticks = NULL,
-  xlab = "Days",
   yval = c("Survival", "Failure"),
-  ylab = paste(yval, "Probability"),
   ylim = NULL,
   font_size = 10,
   legend_pos = NULL
 )
-
-annot_surv_med(
-  gg_plt,
-  fit_km,
-  control_annot_surv_med = control_surv_med_annot(),
-  font_size = 10
-)
-
-annot_cox_ph(
-  gg_plt,
-  coxph_tbl,
-  control_annot_coxph = control_coxph_annot(),
-  font_size = 10
-)
-
-annot_at_risk(
-  gg_plt,
-  fit_km,
-  font_size = 10,
-  annot_at_risk_title = TRUE,
-  rel_height_plot = 0.75,
-  xlab = "Days"
-)
 }
 \arguments{
-\item{fit_km}{A fitted Kaplan-Meier object of class \code{survfit}, used to generate the table data.}
+\item{fit_km}{A fitted Kaplan-Meier object of class \code{survfit}.}
 
-\item{armval}{(\code{string})\cr
+\item{strata_levels}{(\code{string})\cr
 A single character string used as the strata level if the input \code{fit_km} object
 has no strata (e.g., \code{"All"}).}
 
 \item{max_time}{(\code{numeric})\cr
-A single numeric value defining the \strong{maximum time point} to display on the x-axis. Data points beyond this time will be clipped.}
+A single numeric value defining the \strong{maximum time point} to display on the x-axis.}
 
 \item{surv_plot_data}{(\code{data.frame})\cr
 A data frame containing the pre-processed survival data, ready for plotting.
 This data should be equivalent to the output of \code{process_survfit}.}
 
 \item{lty}{(\code{numeric} or \code{NULL})\cr
-A numeric vector of \strong{line types} (e.g., \code{1} for solid, \code{2} for dashed) for the survival curves, or \code{NULL} for \code{ggplot2} defaults.
-The length should match the number of arms/groups.}
+A numeric vector of \strong{line types} (e.g., \code{1} for solid, \code{2} for dashed) for the survival curves, or \code{NULL} for
+\code{ggplot2} defaults. The length should match the number of arms/groups.}
 
 \item{lwd}{(\code{numeric})\cr
 A single numeric value specifying the \strong{line width} for the survival curves.}
@@ -81,53 +53,33 @@ A single numeric value specifying the \strong{plotting character} (point shape c
 A single numeric value specifying the \strong{size} of the censoring marks.}
 
 \item{xticks}{(\code{numeric} or \code{NULL})\cr
-A numeric vector of explicit \strong{x-axis tick positions}, or a single numeric value representing the \strong{interval} between ticks, or \code{NULL} for automatic \code{ggplot2} scaling.}
-
-\item{xlab}{Character string for the x-axis label on the 'at-risk' table (typically time).}
+A numeric vector of explicit \strong{x-axis tick positions}, or a single numeric value representing the \strong{interval}
+between ticks, or \code{NULL} for automatic \code{ggplot2} scaling.}
 
 \item{yval}{(\code{character})\cr
-A single character string, either \code{"Survival"} or \code{"Failure"} to plot the corresponding probability. Case sensitive.}
-
-\item{ylab}{(\code{character})\cr
-A single character string for the \strong{y-axis label}.}
+A single character string, either \code{"Survival"} or \code{"Failure"} to plot the corresponding probability.}
 
 \item{ylim}{(\code{numeric})\cr
 A \strong{numeric vector of length 2} defining the lower and upper limits of the y-axis (e.g., \code{c(0, 1)}).}
 
-\item{font_size}{Numeric, base font size for the table.}
+\item{font_size}{(\code{numeric})\cr
+A single numeric value specifying the \strong{base font size} for the plot theme elements.}
 
 \item{legend_pos}{(\code{numeric} or \code{NULL})\cr
-A \strong{numeric vector of length 2} defining the \strong{legend position} as (x, y) coordinates relative to the plot area (ranging from 0 to 1), or \code{NULL} for external, automatic placement.}
-
-\item{gg_plt}{A \code{ggplot2} or \code{cowplot} object of the Kaplan-Meier plot.}
-
-\item{control_annot_surv_med}{A list of control parameters for the annotation box.}
-
-\item{coxph_tbl}{A data frame containing pre-calculated Cox-PH results.}
-
-\item{control_annot_coxph}{A list of control parameters for the annotation box.}
-
-\item{annot_at_risk_title}{Logical, whether to include the title "Patients at Risk:".}
-
-\item{rel_height_plot}{Numeric, relative height of the main plot area compared to the 'at-risk' table (0 to 1).}
+A \strong{numeric vector of length 2} defining the \strong{legend position} as (x, y) coordinates relative to the plot
+area (ranging from 0 to 1), or \code{NULL} for automatic placement.}
 }
 \value{
 The function \code{process_survfit} returns a data frame containing the survival
 curve steps, confidence intervals, and censoring info.
 
 The function \code{gg_km} returns a \code{ggplot2} object of the KM plot.
-
-The \code{annot_surv_med} function returns a \code{cowplot} object with the median survival table annotation added.
-
-The function \code{annot_surv_med} returns a \code{cowplot} object with the Cox-PH table annotation added.
-
-The function \code{annot_at_risk} returns a \code{cowplot} object combining the KM plot and the 'Numbers at Risk' table.
 }
 \description{
 This set of functions facilitates the creation of Kaplan-Meier survival plots using \code{ggplot2}. Use
 \code{process_survfit()} to prepare the survival data from a fitted \code{survfit} object, and then
 \code{gg_km()} to generate the Kaplan-Meier plot with various customization options. Additional functions
-like \code{annot_surv_med()}, \code{annot_cox_ph()}, and \code{annot_at_risk()} allow for adding summary tables and
+like \code{annot_surv_med()}, \code{annot_cox_ph()}, and \code{annotate_risk()} allow for adding summary tables and
 annotations to the plot.
 }
 \details{
@@ -141,14 +93,6 @@ suitable for plotting a Kaplan-Meier curve with \code{ggplot2}. Time zero is als
 
 \item \code{gg_km()}: creates a Kaplan-Meier survival curve, with
 support for various customizations like censoring marks, Confidence  Intervals (CIs), and axis control.
-
-\item \code{annot_surv_med()}: The \code{annot_surv_med} function adds a median survival time summary table as an annotation box on a
-Kaplan-Meier plot using \code{cowplot}.
-
-\item \code{annot_cox_ph()}: The function \code{annot_cox_ph} adds a Cox Proportional Hazards summary table created by the function \code{\link{get_cox_pairwise_tbl}} as an annotation box on a
-Kaplan-Meier plot using \code{cowplot}.
-
-\item \code{annot_at_risk()}: The function \code{annot_at_risk} adds a "Numbers at Risk" table below a Kaplan-Meier plot using \code{cowplot::plot_grid}.
 
 }}
 \examples{
@@ -167,9 +111,7 @@ surv_plot_data <- process_survfit(fit_kmg01)
 head(surv_plot_data)
 
 # Example of making the KM plot
-plt_kmg01 <- gg_km(surv_plot_data,
-  xlab = "Time (Days)"
-)
+plt_kmg01 <- gg_km(surv_plot_data)
 
 # Confidence Interval as Ribbon
 plt_kmg01 +
@@ -179,14 +121,9 @@ plt_kmg01 +
 plt_kmg01 +
   ggplot2::labs(title = "title", caption = "footnotes")
 
-# Annotate Kaplan-Meier Plot with Median Survival Table
-annot_surv_med(plt_kmg01, fit_kmg01)
-
-# Annotate Kaplan-Meier Plot with Cox-PH Table
-coxph_tbl <- get_cox_pairwise_tbl(formula, data = use_lung, arm = "arm", ref_group = "A")
-annot_cox_ph(plt_kmg01, coxph_tbl)
-
-# Annotate Plot with Numbers at Risk Table
-annot_at_risk(plt_kmg01, fit_kmg01)
+# Changing xlab and ylab
+plt_kmg01 +
+  xlab("Another Day") +
+  ylab("THE Survival Probability")
 
 }

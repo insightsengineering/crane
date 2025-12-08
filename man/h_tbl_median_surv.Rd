@@ -4,12 +4,14 @@
 \alias{h_tbl_median_surv}
 \title{Median Survival Summary Table}
 \usage{
-h_tbl_median_surv(fit_km, armval = "All")
+h_tbl_median_surv(fit_km, strata_levels = "All")
 }
 \arguments{
 \item{fit_km}{A fitted Kaplan-Meier object of class \code{survfit}.}
 
-\item{armval}{Character string to use as the row name if \code{fit_km} has no strata (e.g., "All").}
+\item{strata_levels}{(\code{string})\cr
+A single character string used as the strata level if the input \code{fit_km} object
+has no strata (e.g., \code{"All"}).}
 }
 \value{
 A data frame with columns "N", "Median", and the confidence interval label.

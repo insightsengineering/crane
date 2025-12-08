@@ -263,7 +263,7 @@ tbl_shift <- function(data,
   x$inputs <- tbl_shift_inputs
   x$call_list <- list(tbl_shift = match.call())
 
-  x %>%
+  x |>
     structure(., class = c("tbl_shift", class(.)))
 }
 

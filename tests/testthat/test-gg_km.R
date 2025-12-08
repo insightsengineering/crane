@@ -1,0 +1,38 @@
+test_that("gg_km() works with default inputs", {
+  anl <- cards::ADTTE |>
+    dplyr::mutate(is_event = CNSR == 0)
+  by <- "TRTP"
+  anl[[by]] <- factor(anl[[by]], levels = c(
+    "Placebo",
+    "Xanomeline Low Dose",
+    "Xanomeline High Dose"
+  ))
+  group_sym <- rlang::sym(by)
+  model_formula <- rlang::new_formula(
+    lhs = rlang::expr(Surv(AVAL, is_event)),
+    rhs = rlang::expr(!!group_sym)
+  )
+
+  fit_kmg01 <- survival::survfit(model_formula, anl)
+
+  expect_no_error(
+    surv_plot_data <- process_survfit(fit_kmg01)
+  )
+
+  expect_no_error(
+    suppressWarnings(
+      coxph_tbl <- get_cox_pairwise_df(
+        model_formula,
+        data = anl,
+        arm = by
+      )
+    )
+  )
+
+  expect_no_error(
+    plt_kmg01 <- gg_km(surv_plot_data) |>
+      annotate_surv_med(fit_kmg01) |>
+      annotate_coxph(coxph_tbl) |>
+      annotate_risk(fit_kmg01)
+  )
+})
