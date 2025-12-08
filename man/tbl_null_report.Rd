@@ -5,13 +5,12 @@
 \title{Creates null report}
 \usage{
 tbl_null_report(
-  label =
-    "Null Report: no observations met the reporting criteria for inclusion in this output."
+  label = "No observations met the reporting criteria for this output."
 )
 }
 \arguments{
 \item{label}{(\code{string})\cr label to display in the header of the null report. It defaults to
-"Null Report: no observations met the reporting criteria for inclusion in this output."}
+"No observations met the reporting criteria for this output."}
 }
 \description{
 This function creates a null report for tables or listings without any statistics.
