@@ -6,7 +6,7 @@ test_that("tbl_null_report() works correctly", {
 
   expect_identical(
     tbl_null_report()$table_styling$header$label,
-    "Null Report: no observations met the reporting criteria for inclusion in this output."
+    "No observations met the reporting criteria for this output."
   )
 
   expect_error(
