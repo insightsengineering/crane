@@ -9,7 +9,7 @@
 #'
 #' @examples
 #' # Preparing the Kaplan-Meier Plot
-#' use_lung <- lung
+#' use_lung <- survival::lung
 #' use_lung$arm <- factor(sample(c("A", "B", "C"), nrow(use_lung), replace = TRUE))
 #' use_lung$status <- use_lung$status - 1 # Convert status to 0/1
 #' use_lung <- na.omit(use_lung)

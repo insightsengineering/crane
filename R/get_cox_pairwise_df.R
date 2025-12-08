@@ -44,7 +44,7 @@
 #' library(dplyr) # For better data handling
 #'
 #' # Prepare data in a modern dplyr-friendly way
-#' surv_data <- lung |>
+#' surv_data <- survival::lung |>
 #'   mutate(
 #'     arm = factor(sample(c("A", "B", "C"), n(), replace = TRUE)),
 #'     status = status - 1 # Convert status to 0/1
