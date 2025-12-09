@@ -87,7 +87,7 @@ h_xticks <- function(data, xticks = NULL, max_time = NULL) {
     } else {
       labeling::extended(range(data$time)[1], max(range(data$time)[2], max_time), m = 5)
     }
-  } else if (checkmate::test_number(xticks)) {
+  } else if (is.numeric(xticks) && length(xticks) == 1 && !is.na(xticks)) {
     if (is.null(max_time)) {
       seq(0, max(data$time), xticks)
     } else {
