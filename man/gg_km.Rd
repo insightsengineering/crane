@@ -123,7 +123,7 @@ plt_kmg01 +
 
 # Changing xlab and ylab
 plt_kmg01 +
-  xlab("Another Day") +
-  ylab("THE Survival Probability")
+  ggplot2::xlab("Another Day") +
+  ggplot2::ylab("THE Survival Probability")
 
 }

@@ -153,8 +153,8 @@ process_survfit <- function(fit_km,
 #'
 #' # Changing xlab and ylab
 #' plt_kmg01 +
-#'   xlab("Another Day") +
-#'   ylab("THE Survival Probability")
+#'   ggplot2::xlab("Another Day") +
+#'   ggplot2::ylab("THE Survival Probability")
 #'
 #' @export
 gg_km <- function(surv_plot_data,
