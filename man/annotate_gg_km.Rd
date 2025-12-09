@@ -89,7 +89,7 @@ use_lung$arm <- factor(sample(c("A", "B", "C"), nrow(use_lung), replace = TRUE))
 use_lung$status <- use_lung$status - 1 # Convert status to 0/1
 use_lung <- na.omit(use_lung)
 
-fit_kmg01 <- survfit(Surv(time, status) ~ arm, use_lung)
+fit_kmg01 <- survival::survfit(survival::Surv(time, status) ~ arm, use_lung)
 surv_plot_data <- process_survfit(fit_kmg01)
 
 plt_kmg01 <- gg_km(surv_plot_data)

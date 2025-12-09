@@ -36,8 +36,8 @@ NULL
 #' use_lung <- na.omit(use_lung)
 #'
 #' # Fit Kaplan-Meier model
-#' formula <- Surv(time, status) ~ arm
-#' fit_kmg01 <- survfit(formula, use_lung)
+#' formula <- survival::Surv(time, status) ~ arm
+#' fit_kmg01 <- survival::survfit(formula, use_lung)
 #'
 #' # Process survfit data for plotting
 #' surv_plot_data <- process_survfit(fit_kmg01)

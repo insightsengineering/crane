@@ -51,7 +51,7 @@
 #'   ) |>
 #'   filter(if_all(everything(), ~ !is.na(.)))
 #'
-#' formula <- Surv(time, status) ~ arm
+#' formula <- survival::Surv(time, status) ~ arm
 #' results_tbl <- get_cox_pairwise_df(
 #'   model_formula = formula,
 #'   data = surv_data,
