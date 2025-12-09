@@ -3,7 +3,7 @@ skip_on_cran()
 test_that("test g_forest() works", {
   expect_no_error(tbl <-
    trial %>%
-     tbl_subgroups(
+     tbl_roche_subgroups(
        subgroups = c("grade", "stage"),
        ~ glm(response ~ trt, data = .x) %>%
          gtsummary::tbl_regression(

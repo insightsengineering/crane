@@ -7,31 +7,36 @@
 g_forest(tbl)
 }
 \arguments{
-\item{tbl}{A \code{gtsummary} object (e.g., from \code{tbl_regression}).}
+\item{tbl}{(\code{gtsummary})\cr
+A 'gtsummary' object (e.g., from \code{\link[gtsummary:tbl_regression]{gtsummary::tbl_regression()}}).}
 }
 \value{
-A combined \code{ggplot} object (likely a \code{patchwork} object)
+A combined 'ggplot' object (likely a 'patchwork' object)
 showing the table on the left and the forest plot on the right.
 }
 \description{
-This is the main wrapper function that takes a \code{gtsummary} object,
-converts it to a \code{ggplot} table, extracts the necessary data, creates
+This is the main wrapper function that takes a 'gtsummary' object,
+converts it to a 'ggplot' table, extracts the necessary data, creates
 a forest plot, and combines the two plots side-by-side using \code{+}.
-This likely relies on the \code{patchwork} package for plot combination.
+This likely relies on the {patchwork} package for plot combination.
 }
 \examples{
 tbl <-
   trial \%>\%
-  tbl_subgroups(
+  tbl_roche_subgroups(
+    rsp = "response",
+    by = "trt",
     subgroups = c("grade", "stage"),
     ~ glm(response ~ trt, data = .x) \%>\%
       gtsummary::tbl_regression(
         show_single_row = trt,
-        exponentiate = TRUE
+        exponentiate = TRUE,
+        tidy_fun = broom.helpers::tidy_parameters
       )
   )
+
 g_forest(tbl)
 }
 \seealso{
-\code{\link{gtsummary2gg}}, \code{\link{extract_plot_data}}, \code{\link{create_forest_plot}}
+\code{\link[=gtsummary2gg]{gtsummary2gg()}}, \code{\link[=extract_plot_data]{extract_plot_data()}}, \code{\link[=create_forest_plot]{create_forest_plot()}}
 }

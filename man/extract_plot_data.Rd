@@ -7,7 +7,8 @@
 extract_plot_data(tbl)
 }
 \arguments{
-\item{tbl}{A \code{gtsummary} object (e.g., from \code{tbl_regression} or \code{tbl_uvregression}).}
+\item{tbl}{(\code{gtsummary})\cr
+A 'gtsummary' object (e.g., from \code{\link[gtsummary:tbl_regression]{gtsummary::tbl_regression()}} or \code{\link[gtsummary:tbl_uvregression]{gtsummary::tbl_uvregression()}}).}
 }
 \value{
 A data frame (tibble) with the columns:
@@ -15,8 +16,8 @@ A data frame (tibble) with the columns:
 \code{ci_upper} (from \code{conf.high}), and \code{n} (from \code{N_obs}).
 }
 \description{
-Converts the table body (\code{tbl$table_body}) of a \code{gtsummary} object
-into a data frame suitable for plotting with \code{create_forest_plot}.
+Converts the table body (\code{tbl$table_body}) of a 'gtsummary' object
+into a data frame suitable for plotting with \code{\link[=create_forest_plot]{create_forest_plot()}}.
 It selects and renames the necessary columns for the plot.
 }
 \keyword{internal}

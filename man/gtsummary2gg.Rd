@@ -7,19 +7,22 @@
 gtsummary2gg(tbl, fontsize = 12, header_line_color = "gray30")
 }
 \arguments{
-\item{tbl}{A \code{gtsummary} object.}
+\item{tbl}{(\code{gtsummary})\cr
+A 'gtsummary' object.}
 
-\item{fontsize}{The size of the text used in the table (in points). Default is 12.}
+\item{fontsize}{(\code{numeric(1)})\cr
+The size of the text used in the table (in points). Default is 12.}
 
-\item{header_line_color}{The color of the line to be drawn under the header (if uncommented).}
+\item{header_line_color}{(\code{string})\cr
+The color of the line to be drawn under the header (if uncommented).}
 }
 \value{
-A \code{ggplot} object representing the formatted table.
+A 'ggplot' object representing the formatted table.
 }
 \description{
-Renders the formatted content of a \code{gtsummary} object as a
-\code{ggplot} object. This allows the text-based table to be combined
-seamlessly with a plot (like a forest plot) using \code{patchwork} or \code{cowplot}.
+Renders the formatted content of a 'gtsummary' object as a
+'ggplot' object. This allows the text-based table to be combined
+seamlessly with a plot (like a forest plot) using {patchwork} or {cowplot}.
 }
 \details{
 NOTE: The current implementation of this function includes commented-out code

@@ -7,27 +7,31 @@
 create_forest_plot(data, xlim = c(0.1, 10), logx = TRUE, vline = 1)
 }
 \arguments{
-\item{data}{A data frame (tibble) containing the plot data. It must include
+\item{data}{(\code{data.frame})\cr
+A data frame (tibble) containing the plot data. It must include
 columns: \code{group} (for y-axis labels), \code{estimate}, \code{ci_lower},
 \code{ci_upper}, and \code{n} (for point size).}
 
-\item{xlim}{A numeric vector of length 2 specifying the limits of the x-axis
+\item{xlim}{(\code{numeric(2)})\cr
+A numeric vector of length 2 specifying the limits of the x-axis
 (e.g., \code{c(0.1, 10)}).}
 
-\item{logx}{A logical value indicating whether the x-axis should be log-transformed
-(i.e., using \code{scale_x_log10}). The default is \code{TRUE}, which is typical
+\item{logx}{(\code{logical(1)})\cr
+A logical value indicating whether the x-axis should be log-transformed
+(i.e., using \code{\link[ggplot2:scale_continuous]{ggplot2::scale_x_log10()}}). The default is \code{TRUE}, which is typical
 for effect measures like Odds Ratios or Hazard Ratios.}
 
-\item{vline}{A numeric value specifying the x-intercept for the vertical
+\item{vline}{(\code{numeric(1)})\cr
+A numeric value specifying the x-intercept for the vertical
 reference line (line of no effect). The default is \code{1}.}
 }
 \value{
-A \code{ggplot} object representing the forest plot.
+A 'ggplot' object representing the forest plot.
 }
 \description{
-Generates a forest plot using \code{ggplot2} from a data frame containing
+Generates a forest plot using {ggplot2} from a data frame containing
 estimates, confidence intervals, and sample sizes. This function is designed
-to be a component of a combined table/plot output (e.g., used by \code{g_forest}).
+to be a component of a combined table/plot output (e.g., used by \code{\link[=g_forest]{g_forest()}}).
 }
 \examples{
 \dontrun{
