@@ -37,10 +37,11 @@
 #' create_forest_plot(forest_data, xlim = c(0.05, 50), vline = 1)
 #' }
 create_forest_plot <- function(data,
+                               groups = "",
                                xlim = c(0.1, 10),
                                logx = TRUE,
                                vline = 1) {
-  forest_header <- paste0(data$group, "\nBetter")
+  forest_header <- paste0(groups, "\nBetter")
   # Calculate y positions (reverse order for top-to-bottom display)
   data <- data %>%
     mutate(y_pos = rev(dplyr::row_number()))
@@ -96,7 +97,7 @@ create_forest_plot <- function(data,
     x_scale +
     scale_y_continuous(
       limits = c(0, nrow(data) + 1.5), breaks = data$y_pos,
-      labels = rep("", length(data$group)), expand = c(0, 0)
+      labels = rep("", length(data$estimate)), expand = c(0, 0)
     ) +
     theme_minimal() +
     theme(
@@ -125,11 +126,11 @@ create_forest_plot <- function(data,
 extract_plot_data <- function(tbl) {
   ret <- tbl$table_body %>%
     select(
-      group = label,
-      estimate = estimate,
-      ci_lower = conf.low,
-      ci_upper = conf.high,
-      n = N_obs
+      # group = termc("Drug A", "Drug B"),
+      estimate = starts_with("estimate"),
+      ci_lower = starts_with("conf.low"),
+      ci_upper = starts_with("conf.high"),
+      n = starts_with("N_obs", ignore.case = FALSE)
     )
   return(ret)
 }
@@ -166,11 +167,11 @@ extract_plot_data <- function(tbl) {
 #'   )
 #'
 #' g_forest(tbl)
-g_forest <- function(tbl) {
-  # table_plot <- gtsummary2gg(tbl)
-  table_plot <- wrap_table(tbl, space = "fixed")
+g_forest <- function(tbl, groups = c("Drug A", "Drug B")) {
+  table_plot <- gtsummary2gg(tbl)
+  # table_plot <- wrap_table(tbl, space = "fixed")
   forest_data <- extract_plot_data(tbl)
-  forest_plot <- create_forest_plot(forest_data)
+  forest_plot <- create_forest_plot(forest_data, groups)
   table_plot + forest_plot + plot_layout(widths = c(3, 1))
 }
 
@@ -211,7 +212,8 @@ gtsummary2gg <- function(tbl, fontsize = 12, header_line_color = "gray30") {
   .pt <- 2.834646
 
   # 1. Convert gtsummary object to a tibble with formatting
-  tbl_df_raw <- as_tibble(tbl)
+  tbl_df_raw <- as_tibble(tbl, col_labels = FALSE)
+
   # tbl_df_raw <- extract_tbl_from_gtsummry(tbl)
   # print(tbl_df_raw)
   # 2. Extract column names (final header labels) and body strings
@@ -221,7 +223,7 @@ gtsummary2gg <- function(tbl, fontsize = 12, header_line_color = "gray30") {
     mutate(across(everything(), as.character))
 
   # Extract final column labels for the header
-  header_labels <- names(body_strings)[-1]
+  header_labels <- names(as_tibble(tbl))[-1]
   # Extract the row labels and make them the first column for plotting
   # label_strings <- tbl_df_raw %>%
   #   select(starts_with("label")) %>%
@@ -258,7 +260,7 @@ gtsummary2gg <- function(tbl, fontsize = 12, header_line_color = "gray30") {
 
   # Total width for the plot canvas
   tot_width <- max(x_boundaries)
-  print("here")
+
   # 4. Initialize ggplot
   res <- ggplot() +
     theme_void() +
@@ -286,7 +288,7 @@ gtsummary2gg <- function(tbl, fontsize = 12, header_line_color = "gray30") {
       y = y_pos[1] - 0.5, yend = y_pos[1] - 0.5,
       color = header_line_color
     )
-  print(res)
+
   # 6. Add **Table Body Content** (Row by Row, Column by Column)
   for (i in seq_len(n_cols)) {
     # Assuming the first column (label_col) is left-aligned and the rest are right-aligned
