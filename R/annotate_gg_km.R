@@ -189,7 +189,8 @@ annotate_risk <- function(gg_plt, fit_km, title = "Patients at Risk:",
   gg_at_risk <- df2gg(
     at_risk_tbl,
     font_size = eargs$font_size, col_labels = FALSE, hline = FALSE,
-    colwidths = rep(1, ncol(at_risk_tbl))
+    colwidths = rep(1, ncol(at_risk_tbl)),
+    add_proper_xaxis = TRUE
   ) +
     ggplot2::labs(title = if (!is.null(title)) title else NULL, x = xlab) +
     ggplot2::theme_bw(base_size = eargs$font_size) +
@@ -204,15 +205,10 @@ annotate_risk <- function(gg_plt, fit_km, title = "Patients at Risk:",
       axis.line.x = ggplot2::element_line()
     ) +
     ggplot2::coord_cartesian(clip = "off", ylim = c(0.5, nrow(at_risk_tbl)))
-  gg_at_risk <- suppressMessages(
-    gg_at_risk +
-      ggplot2::scale_x_continuous(expand = c(0.1, 0), breaks = seq_along(at_risk_tbl) - 0.5, labels = xticks) +
-      ggplot2::scale_y_continuous(labels = rev(levels(annot_tbl$strata)), breaks = seq_len(nrow(at_risk_tbl)))
-  )
 
   gg_plt <- cowplot::plot_grid(
     gg_plt, gg_at_risk,
-    align = "v", axis = "tblr", ncol = 1,
+    align = "vh", axis = "b", ncol = 1,
     rel_heights = c(rel_height_plot, 1 - rel_height_plot)
   )
   gg_plt

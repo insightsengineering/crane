@@ -9,12 +9,13 @@
 #' @param col_lab_fontface Character string for the font face of column labels (e.g., "bold").
 #' @param hline Logical, whether to draw a horizontal line below the column labels.
 #' @param bg_fill Optional color string for the plot background.
+#' @param add_proper_xaxis Logical, whether to add a proper x-axis with column values.
 #'
 #' @return A \code{ggplot2} object representing the table.
 #'
 #' @keywords internal
 df2gg <- function(df, colwidths = NULL, font_size = 10, col_labels = TRUE,
-                  col_lab_fontface = "bold", hline = TRUE, bg_fill = NULL) {
+                  col_lab_fontface = "bold", hline = TRUE, bg_fill = NULL, add_proper_xaxis = FALSE) {
   df <- as.data.frame(apply(df, 1:2, function(x) {
     if (is.na(x)) {
       "NA"
@@ -30,41 +31,63 @@ df2gg <- function(df, colwidths = NULL, font_size = 10, col_labels = TRUE,
     colwidths <- apply(df, 2, function(x) max(nchar(x), na.rm = TRUE))
   }
   tot_width <- sum(colwidths)
-  res <- ggplot2::ggplot(data = df) +
-    ggplot2::theme_void() +
-    ggplot2::scale_x_continuous(limits = c(
-      0,
-      tot_width
-    )) +
-    ggplot2::scale_y_continuous(limits = c(1, nrow(df)))
-  if (!is.null(bg_fill)) {
-    res <- res + ggplot2::theme(plot.background = ggplot2::element_rect(fill = bg_fill))
+  if (add_proper_xaxis) {
+    df_long <- df |>
+      # 1. Ensure the row names ('A', 'B', 'C') are a column named 'row_name'
+      tibble::rownames_to_column("row_name") |>
+      # 2. Pivot the remaining columns (starting from '0' to the end) longer
+      tidyr::pivot_longer(
+        cols = -row_name, # Select all columns EXCEPT 'row_name'
+        names_to = "col_name", # Name the new column containing the old column headers
+        values_to = "value" # Name the new column containing the data values
+      ) |>
+      dplyr::arrange(row_name, col_name) |>
+      mutate(
+        col_name = as.numeric(col_name),
+        row_name = factor(row_name, levels = unique(row_name))
+      )
+    res <- ggplot2::ggplot(data = df_long) +
+      ggplot2::theme_void() +
+      ggplot2::annotate("text", x = df_long$col_name, y = df_long$row_name, label = df_long$value, size = font_size / .pt)
+
+  } else {
+    res <- ggplot2::ggplot(data = df) +
+      ggplot2::theme_void() +
+      ggplot2::scale_x_continuous(limits = c(
+        0,
+        tot_width
+      )) +
+      ggplot2::scale_y_continuous(limits = c(1, nrow(df)))
+    if (!is.null(bg_fill)) {
+      res <- res + ggplot2::theme(plot.background = ggplot2::element_rect(fill = bg_fill))
+    }
+    if (hline) {
+      res <- res + ggplot2::annotate("segment",
+        x = 0 + 0.2 * colwidths[2],
+        xend = tot_width - 0.1 * tail(colwidths, 1), y = nrow(df) -
+          0.5, yend = nrow(df) - 0.5
+      )
+    }
+    for (i in seq_len(ncol(df))) {
+      line_pos <- c(
+        if (i == 1) {
+          0
+        } else {
+          sum(colwidths[1:(i - 1)])
+        },
+        sum(colwidths[1:i])
+      )
+      res <- res + ggplot2::annotate("text",
+        x = mean(line_pos), y = rev(seq_len(nrow(df))),
+        label = df[, i], size = font_size / .pt, fontface = if (col_labels) {
+          c(col_lab_fontface, rep("plain", nrow(df) - 1))
+        } else {
+          rep("plain", nrow(df))
+        }
+      )
+    }
   }
-  if (hline) {
-    res <- res + ggplot2::annotate("segment",
-      x = 0 + 0.2 * colwidths[2],
-      xend = tot_width - 0.1 * tail(colwidths, 1), y = nrow(df) -
-        0.5, yend = nrow(df) - 0.5
-    )
-  }
-  for (i in seq_len(ncol(df))) {
-    line_pos <- c(
-      if (i == 1) {
-        0
-      } else {
-        sum(colwidths[1:(i - 1)])
-      },
-      sum(colwidths[1:i])
-    )
-    res <- res + ggplot2::annotate("text",
-      x = mean(line_pos), y = rev(seq_len(nrow(df))),
-      label = df[, i], size = font_size / .pt, fontface = if (col_labels) {
-        c(col_lab_fontface, rep("plain", nrow(df) - 1))
-      } else {
-        rep("plain", nrow(df))
-      }
-    )
-  }
+
   res
 }
 

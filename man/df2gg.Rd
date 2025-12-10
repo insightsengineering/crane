@@ -11,7 +11,8 @@ df2gg(
   col_labels = TRUE,
   col_lab_fontface = "bold",
   hline = TRUE,
-  bg_fill = NULL
+  bg_fill = NULL,
+  add_proper_xaxis = FALSE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ df2gg(
 \item{hline}{Logical, whether to draw a horizontal line below the column labels.}
 
 \item{bg_fill}{Optional color string for the plot background.}
+
+\item{add_proper_xaxis}{Logical, whether to add a proper x-axis with column values.}
 }
 \value{
 A \code{ggplot2} object representing the table.
