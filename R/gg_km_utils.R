@@ -44,12 +44,14 @@ df2gg <- function(df, colwidths = NULL, font_size = 10, col_labels = TRUE,
       dplyr::arrange(row_name, col_name) |>
       mutate(
         col_name = as.numeric(col_name),
-        row_name = factor(row_name, levels = unique(row_name))
+        row_name = factor(row_name, levels = row.names(df))
       )
     res <- ggplot2::ggplot(data = df_long) +
       ggplot2::theme_void() +
-      ggplot2::annotate("text", x = df_long$col_name, y = df_long$row_name, label = df_long$value, size = font_size / .pt)
-
+      ggplot2::annotate("text",
+        x = df_long$col_name, y = rev(df_long$row_name), # why rev?
+        label = df_long$value, size = font_size / .pt
+      )
   } else {
     res <- ggplot2::ggplot(data = df) +
       ggplot2::theme_void() +
