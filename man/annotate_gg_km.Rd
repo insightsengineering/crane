@@ -101,6 +101,12 @@ annotate_surv_med(plt_kmg01, fit_kmg01)
 # Annotate Plot with Numbers at Risk Table
 annotate_risk(plt_kmg01, fit_kmg01)
 
+# Change order of y-axis (arm)
+use_lung2 <- use_lung
+use_lung2$arm <- factor(use_lung2$arm, levels = c("C", "B", "A"))
+fit_kmg01 <- survival::survfit(formula, use_lung2)
+annotate_risk(plt_kmg01, fit_kmg01) # rerun gg_km to change legend order
+
 # Annotate Kaplan-Meier Plot with Cox-PH Table
 coxph_tbl <- get_cox_pairwise_df(formula, data = use_lung, arm = "arm", ref_group = "A")
 annotate_coxph(plt_kmg01, coxph_tbl)

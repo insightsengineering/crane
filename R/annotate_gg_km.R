@@ -133,6 +133,12 @@ annotate_surv_med <- function(gg_plt, fit_km, ...) {
 #' # Annotate Plot with Numbers at Risk Table
 #' annotate_risk(plt_kmg01, fit_kmg01)
 #'
+#' # Change order of y-axis (arm)
+#' use_lung2 <- use_lung
+#' use_lung2$arm <- factor(use_lung2$arm, levels = c("C", "B", "A"))
+#' fit_kmg01 <- survival::survfit(formula, use_lung2)
+#' annotate_risk(plt_kmg01, fit_kmg01) # rerun gg_km to change legend order
+#'
 #' @export
 annotate_risk <- function(gg_plt, fit_km, title = "Patients at Risk:",
                           rel_height_plot = 0.75, xlab = "Days",
