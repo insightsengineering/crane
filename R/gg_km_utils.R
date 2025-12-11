@@ -34,7 +34,7 @@ df2gg <- function(df, colwidths = NULL, font_size = 10, col_labels = TRUE,
   if (add_proper_xaxis) {
     df_long <- df |>
       # 1. Ensure the row names ('A', 'B', 'C') are a column named 'row_name'
-      tibble::rownames_to_column("row_name") |>
+      mutate(row_name = row.names(df)) |>
       # 2. Pivot the remaining columns (starting from '0' to the end) longer
       tidyr::pivot_longer(
         cols = -row_name, # Select all columns EXCEPT 'row_name'
