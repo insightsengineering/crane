@@ -5,33 +5,8 @@
 #' including median survival times, numbers at risk, and cox proportional hazards results.
 #' The annotations are added using the `cowplot` package for flexible placement.
 #'
-#' @seealso [gg_km()], [process_survfit()], and [get_cox_pairwise_df()] for related functionalities.
-#'
-#' @examples
-#' # Preparing the Kaplan-Meier Plot
-#' use_lung <- survival::lung
-#' use_lung$arm <- factor(sample(c("A", "B", "C"), nrow(use_lung), replace = TRUE))
-#' use_lung$status <- use_lung$status - 1 # Convert status to 0/1
-#' use_lung <- na.omit(use_lung)
-#'
-#' formula <- survival::Surv(time, status) ~ arm
-#' fit_kmg01 <- survival::survfit(formula, use_lung)
-#' surv_plot_data <- process_survfit(fit_kmg01)
-#'
-#' plt_kmg01 <- gg_km(surv_plot_data)
-#'
-#' @name annotate_gg_km
-NULL
-
-#' @describeIn annotate_gg_km The `annotate_surv_med` function adds a median survival time summary table as an
-#'   annotation box.
-#'
 #' @param gg_plt (`ggplot2` or `cowplot`)\cr
-#'   The primary plot object (either a `ggplot2` or `cowplot` object) of the Kaplan-Meier plot to which the median
-#'   survival table annotation will be added.
-#' @param fit_km (`survfit`)\cr
-#'   A fitted Kaplan-Meier object of class `survfit` (from the `survival` package). This object contains the necessary
-#'   survival data used to calculate and generate the content displayed in the annotation table.
+#'   The primary plot object (either a `ggplot2` or `cowplot` object) of the Kaplan-Meier plot.
 #' @param ... Additional arguments passed to the control list for the annotation box.
 #'   These arguments override the default values.
 #'   Accepted arguments include:
@@ -50,73 +25,31 @@ NULL
 #'       is \code{10}.
 #'   }
 #'
-#' @return The function `annotate_surv_med` returns a `cowplot` object with the median survival table annotation
-#'   added, ready for final display or saving.
+#' @seealso [gg_km()], [process_survfit()], and [get_cox_pairwise_df()] for related functionalities.
 #'
 #' @examples
-#' # Annotate Kaplan-Meier Plot with Median Survival Table
-#' annotate_surv_med(plt_kmg01, fit_kmg01)
+#' # Preparing the Kaplan-Meier Plot
+#' use_lung <- survival::lung
+#' use_lung$arm <- factor(sample(c("A", "B", "C"), nrow(use_lung), replace = TRUE))
+#' use_lung$status <- use_lung$status - 1 # Convert status to 0/1
+#' use_lung <- na.omit(use_lung)
 #'
-#' @export
-annotate_surv_med <- function(gg_plt, fit_km, ...) {
-  set_cli_abort_call()
-  default_eargs <- list(
-    x = 0.8,
-    y = 0.85,
-    w = 0.32,
-    h = 0.16,
-    font_size = 10,
-    fill = TRUE
-  )
-  eargs <- list(...)
-  eargs <- utils::modifyList(default_eargs, eargs)
+#' formula <- survival::Surv(time, status) ~ arm
+#' fit_kmg01 <- survival::survfit(formula, use_lung)
+#' surv_plot_data <- process_survfit(fit_kmg01)
+#'
+#' plt_kmg01 <- gg_km(surv_plot_data)
+#'
+#' @name annotate_gg_km
+NULL
 
-  # Checks
-  check_class(fit_km, "survfit")
-  check_class(gg_plt, c("gg", "ggplot", "cowplot"))
-
-  # Check position/size (x, y, w, h, font_size) - Must be single non-missing numeric
-  for (arg_name in c("x", "y", "w", "h", "font_size")) {
-    check_numeric(eargs[[arg_name]])
-  }
-  check_logical(eargs[["fill"]])
-
-  # Determine strata_levels for h_tbl_median_surv, assuming it's available in the calling environment or logic should
-  # be updated. For now, keeping as is, but this typically requires strata_levels or inferring it from fit_km
-  strata_levels <- if (is.null(fit_km$strata)) "All" else levels(fit_km$strata) # Placeholder for strata_levels
-
-  surv_med_tbl <- h_tbl_median_surv(fit_km = fit_km, strata_levels = strata_levels)
-  bg_fill <- if (isTRUE(eargs[["fill"]])) "#00000020" else eargs[["fill"]]
-
-  gg_surv_med <- df2gg(surv_med_tbl, font_size = eargs[["font_size"]], colwidths = c(1, 1, 2), bg_fill = bg_fill) +
-    ggplot2::theme(
-      axis.text.y = ggplot2::element_text(size = eargs[["font_size"]], face = "italic", hjust = 1),
-      plot.margin = ggplot2::margin(0, 2, 0, 5)
-    ) +
-    ggplot2::coord_cartesian(clip = "off", ylim = c(0.5, nrow(surv_med_tbl) + 1.5))
-  gg_surv_med <- suppressMessages(
-    gg_surv_med +
-      ggplot2::scale_x_continuous(expand = c(0.025, 0)) +
-      ggplot2::scale_y_continuous(labels = rev(rownames(surv_med_tbl)), breaks = seq_len(nrow(surv_med_tbl)))
-  )
-
-  gg_plt <- cowplot::ggdraw(gg_plt) +
-    cowplot::draw_plot(
-      gg_surv_med, eargs[["x"]], eargs[["y"]],
-      width = eargs[["w"]], height = eargs[["h"]],
-      vjust = 0.5, hjust = 0.5
-    )
-  gg_plt
-}
 
 #' @describeIn annotate_gg_km The function `annotate_risk` adds a "Numbers at Risk" table below a
 #'   Kaplan-Meier plot ([gg_km()]) using `cowplot::plot_grid`.
 #'
-#' @param gg_plt (`ggplot2` or `cowplot`)\cr
-#'   The primary plot object (either a `ggplot2` or `cowplot` object) of the Kaplan-Meier plot.
 #' @param fit_km (`survfit`)\cr
-#'   A fitted Kaplan-Meier object of class `survfit` (from the `survival` package). This object contains
-#'   the necessary survival data used to calculate the numbers at risk.
+#'   A fitted Kaplan-Meier object of class `survfit` (from the `survival` package). This object contains the necessary
+#'   survival data used to calculate and generate the content displayed in the annotation table.
 #' @param title (`string`)\cr
 #'   A single logical value indicating whether to include a above the table. Defaults to
 #'   `""Patients at Risk:""`. If `NULL`, no title is added.
@@ -129,6 +62,7 @@ annotate_surv_med <- function(gg_plt, fit_km, ...) {
 #'   time (e.g., "Time (Days)").
 #' @return The function `annotate_risk` returns a `cowplot` object combining the KM plot and the 'Numbers at Risk'
 #'   table.
+#'
 #' @examples
 #' # Annotate Plot with Numbers at Risk Table
 #' annotate_risk(plt_kmg01, fit_kmg01)
@@ -220,13 +154,71 @@ annotate_risk <- function(gg_plt, fit_km, title = "Patients at Risk:",
   gg_plt
 }
 
+#' @describeIn annotate_gg_km The `annotate_surv_med` function adds a median survival time summary table as an
+#'   annotation box.
+#'
+#' @return The function `annotate_surv_med` returns a `cowplot` object with the median survival table annotation
+#'   added, ready for final display or saving.
+#'
+#' @examples
+#' # Annotate Kaplan-Meier Plot with Median Survival Table
+#' annotate_surv_med(plt_kmg01, fit_kmg01)
+#'
+#' @export
+annotate_surv_med <- function(gg_plt, fit_km, ...) {
+  set_cli_abort_call()
+  default_eargs <- list(
+    x = 0.8,
+    y = 0.85,
+    w = 0.32,
+    h = 0.16,
+    font_size = 10,
+    fill = TRUE
+  )
+  eargs <- list(...)
+  eargs <- utils::modifyList(default_eargs, eargs)
+
+  # Checks
+  check_class(fit_km, "survfit")
+  check_class(gg_plt, c("gg", "ggplot", "cowplot"))
+
+  # Check position/size (x, y, w, h, font_size) - Must be single non-missing numeric
+  for (arg_name in c("x", "y", "w", "h", "font_size")) {
+    check_numeric(eargs[[arg_name]])
+  }
+  check_logical(eargs[["fill"]])
+
+  # Determine strata_levels for h_tbl_median_surv, assuming it's available in the calling environment or logic should
+  # be updated. For now, keeping as is, but this typically requires strata_levels or inferring it from fit_km
+  strata_levels <- if (is.null(fit_km$strata)) "All" else levels(fit_km$strata) # Placeholder for strata_levels
+
+  surv_med_tbl <- h_tbl_median_surv(fit_km = fit_km, strata_levels = strata_levels)
+  bg_fill <- if (isTRUE(eargs[["fill"]])) "#00000020" else eargs[["fill"]]
+
+  gg_surv_med <- df2gg(surv_med_tbl, font_size = eargs[["font_size"]], colwidths = c(1, 1, 2), bg_fill = bg_fill) +
+    ggplot2::theme(
+      axis.text.y = ggplot2::element_text(size = eargs[["font_size"]], face = "italic", hjust = 1),
+      plot.margin = ggplot2::margin(0, 2, 0, 5)
+    ) +
+    ggplot2::coord_cartesian(clip = "off", ylim = c(0.5, nrow(surv_med_tbl) + 1.5))
+  gg_surv_med <- suppressMessages(
+    gg_surv_med +
+      ggplot2::scale_x_continuous(expand = c(0.025, 0)) +
+      ggplot2::scale_y_continuous(labels = rev(rownames(surv_med_tbl)), breaks = seq_len(nrow(surv_med_tbl)))
+  )
+
+  gg_plt <- cowplot::ggdraw(gg_plt) +
+    cowplot::draw_plot(
+      gg_surv_med, eargs[["x"]], eargs[["y"]],
+      width = eargs[["w"]], height = eargs[["h"]],
+      vjust = 0.5, hjust = 0.5
+    )
+  gg_plt
+}
 
 #' @describeIn annotate_gg_km The function `annotate_coxph()` adds a Cox Proportional Hazards summary table created by
 #' the function [get_cox_pairwise_df()] as an annotation box.
 #'
-#' @param gg_plt (`ggplot2` or `cowplot`)\cr
-#'   The primary plot object (either a `ggplot2` or `cowplot` object) of the Kaplan-Meier plot to which
-#'   the Cox-PH annotation table will be added.
 #' @param coxph_tbl (`data.frame`)\cr
 #'   A data frame containing the pre-calculated Cox-PH results, typically from a function like `get_cox_pairwise_df`.
 #'   This data is used to generate the annotation table content.
