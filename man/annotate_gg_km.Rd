@@ -2,12 +2,12 @@
 % Please edit documentation in R/annotate_gg_km.R
 \name{annotate_gg_km}
 \alias{annotate_gg_km}
-\alias{annotate_risk}
+\alias{annotate_riskdf}
 \alias{annotate_surv_med}
 \alias{annotate_coxph}
 \title{Annotate Kaplan-Meier Plot}
 \usage{
-annotate_risk(
+annotate_riskdf(
   gg_plt,
   fit_km,
   title = "Patients at Risk:",
@@ -56,7 +56,7 @@ A data frame containing the pre-calculated Cox-PH results, typically from a func
 This data is used to generate the annotation table content.}
 }
 \value{
-The function \code{annotate_risk} returns a \code{cowplot} object combining the KM plot and the 'Numbers at Risk'
+The function \code{annotate_riskdf} returns a \code{cowplot} object combining the KM plot and the 'Numbers at Risk'
 table.
 
 The function \code{annotate_surv_med} returns a \code{cowplot} object with the median survival table annotation
@@ -71,7 +71,7 @@ The annotations are added using the \code{cowplot} package for flexible placemen
 }
 \section{Functions}{
 \itemize{
-\item \code{annotate_risk()}: The function \code{annotate_risk} adds a "Numbers at Risk" table below a
+\item \code{annotate_riskdf()}: The function \code{annotate_riskdf} adds a "Numbers at Risk" table below a
 Kaplan-Meier plot (\code{\link[=gg_km]{gg_km()}}) using \code{cowplot::plot_grid}.
 
 \item \code{annotate_surv_med()}: The \code{annotate_surv_med} function adds a median survival time summary table as an
@@ -95,13 +95,13 @@ surv_plot_data <- process_survfit(fit_kmg01)
 plt_kmg01 <- gg_km(surv_plot_data)
 
 # Annotate Plot with Numbers at Risk Table
-annotate_risk(plt_kmg01, fit_kmg01)
+annotate_riskdf(plt_kmg01, fit_kmg01)
 
 # Change order of y-axis (arm)
 use_lung2 <- use_lung
 use_lung2$arm <- factor(use_lung2$arm, levels = c("C", "B", "A"))
 fit_kmg01 <- survival::survfit(formula, use_lung2)
-annotate_risk(plt_kmg01, fit_kmg01) # rerun gg_km to change legend order
+annotate_riskdf(plt_kmg01, fit_kmg01) # rerun gg_km to change legend order
 
 # Annotate Kaplan-Meier Plot with Median Survival Table
 annotate_surv_med(plt_kmg01, fit_kmg01)

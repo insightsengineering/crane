@@ -4,7 +4,7 @@
 #' This set of functions facilitates the creation of Kaplan-Meier survival plots using `ggplot2`. Use
 #' `process_survfit()` to prepare the survival data from a fitted `survfit` object, and then
 #' `gg_km()` to generate the Kaplan-Meier plot with various customization options. Additional functions
-#' like `annot_surv_med()`, `annot_cox_ph()`, and `annotate_risk()` allow for adding summary tables and
+#' like `annot_surv_med()`, `annot_cox_ph()`, and `annotate_riskdf()` allow for adding summary tables and
 #' annotations to the plot.
 #'
 #' @name gg_km

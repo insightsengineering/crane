@@ -33,6 +33,6 @@ test_that("gg_km() works with default inputs", {
     plt_kmg01 <- gg_km(surv_plot_data) |>
       annotate_surv_med(fit_kmg01) |>
       annotate_coxph(coxph_tbl) |>
-      annotate_risk(fit_kmg01)
+      annotate_riskdf(fit_kmg01)
   )
 })

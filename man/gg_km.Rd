@@ -79,7 +79,7 @@ The function \code{gg_km} returns a \code{ggplot2} object of the KM plot.
 This set of functions facilitates the creation of Kaplan-Meier survival plots using \code{ggplot2}. Use
 \code{process_survfit()} to prepare the survival data from a fitted \code{survfit} object, and then
 \code{gg_km()} to generate the Kaplan-Meier plot with various customization options. Additional functions
-like \code{annot_surv_med()}, \code{annot_cox_ph()}, and \code{annotate_risk()} allow for adding summary tables and
+like \code{annot_surv_med()}, \code{annot_cox_ph()}, and \code{annotate_riskdf()} allow for adding summary tables and
 annotations to the plot.
 }
 \details{

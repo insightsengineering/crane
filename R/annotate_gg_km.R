@@ -44,7 +44,7 @@
 NULL
 
 
-#' @describeIn annotate_gg_km The function `annotate_risk` adds a "Numbers at Risk" table below a
+#' @describeIn annotate_gg_km The function `annotate_riskdf` adds a "Numbers at Risk" table below a
 #'   Kaplan-Meier plot ([gg_km()]) using `cowplot::plot_grid`.
 #'
 #' @param fit_km (`survfit`)\cr
@@ -60,21 +60,21 @@ NULL
 #' @param xlab (`character`)\cr
 #'   A single character string for the **x-axis label** on the 'at-risk' table. This typically represents
 #'   time (e.g., "Time (Days)").
-#' @return The function `annotate_risk` returns a `cowplot` object combining the KM plot and the 'Numbers at Risk'
+#' @return The function `annotate_riskdf` returns a `cowplot` object combining the KM plot and the 'Numbers at Risk'
 #'   table.
 #'
 #' @examples
 #' # Annotate Plot with Numbers at Risk Table
-#' annotate_risk(plt_kmg01, fit_kmg01)
+#' annotate_riskdf(plt_kmg01, fit_kmg01)
 #'
 #' # Change order of y-axis (arm)
 #' use_lung2 <- use_lung
 #' use_lung2$arm <- factor(use_lung2$arm, levels = c("C", "B", "A"))
 #' fit_kmg01 <- survival::survfit(formula, use_lung2)
-#' annotate_risk(plt_kmg01, fit_kmg01) # rerun gg_km to change legend order
+#' annotate_riskdf(plt_kmg01, fit_kmg01) # rerun gg_km to change legend order
 #'
 #' @export
-annotate_risk <- function(gg_plt, fit_km, title = "Patients at Risk:",
+annotate_riskdf <- function(gg_plt, fit_km, title = "Patients at Risk:",
                           rel_height_plot = 0.75, xlab = "Days",
                           ...) {
   check_class(gg_plt, c("gg", "ggplot", "cowplot"))
