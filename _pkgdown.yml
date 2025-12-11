@@ -41,3 +41,9 @@ reference:
       - modify_zero_recode
       - add_blank_rows
       - label_roche
+  - title: "Kaplan-Meier Plot"
+    contents:
+      - process_survfit
+      - gg_km
+      - annotate_gg_km
+      - get_cox_pairwise_df
