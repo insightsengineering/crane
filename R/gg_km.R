@@ -186,6 +186,7 @@ gg_km <- function(surv_plot_data,
     )
   }
   check_numeric(ylim, allow_empty = TRUE)
+  check_scalar_logical(censor_show)
 
   data <- surv_plot_data
   strata_levels <- levels(data$strata)
@@ -285,7 +286,7 @@ gg_km <- function(surv_plot_data,
       ggplot2::scale_linetype_manual(values = lty)
   }
 
-  if (censor_show) {
+  if (isTRUE(censor_show)) {
     gg_plt <- gg_plt + ggplot2::geom_point(
       data = data[data$n.censor != 0, ],
       ggplot2::aes(x = .data[["time"]], y = .data[["censor"]], shape = "Censored"),
