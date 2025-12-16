@@ -38,4 +38,23 @@ A \code{ggplot2} object representing the table.
 \description{
 Creates a \code{ggplot2} object that renders a data frame as a table graphic.
 }
+\examples{
+# Example using proper x-axis
+df <- as.data.frame(matrix(c(
+  #  0,  250, 500, 750, 1000  <-- (Reference)
+  54,  28,  10,   3,    0,
+  59,  35,  16,   5,    1,
+  54,  25,   4,   0,    0
+), nrow = 3, byrow = TRUE))
+
+# Set names manually
+colnames(df) <- c("0", "250", "500", "750", "1000")
+rownames(df) <- c("A", "B", "C")
+
+df2gg(df, font_size = 8, add_proper_xaxis = TRUE)
+
+# Example without proper x-axis
+df2gg(df, font_size = 8, add_proper_xaxis = FALSE, hline = FALSE)
+
+}
 \keyword{internal}

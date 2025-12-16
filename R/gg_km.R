@@ -118,8 +118,6 @@ process_survfit <- function(fit_km,
 #'   A single numeric value specifying the **line width** for the survival curves.
 #' @param censor_show (`logical`)\cr
 #'   A single logical value indicating whether to display **censoring marks** on the plot. Defaults to `TRUE`.
-#' @param pch (`numeric`)\cr
-#'   A single numeric value specifying the **plotting character** (point shape code) for censoring marks.
 #' @param size (`numeric`)\cr
 #'   A single numeric value specifying the **size** of the censoring marks.
 #' @param max_time (`numeric`)\cr
@@ -161,7 +159,6 @@ gg_km <- function(surv_plot_data,
                   lty = NULL,
                   lwd = 0.5,
                   censor_show = TRUE,
-                  pch = 3,
                   size = 2,
                   max_time = NULL,
                   xticks = NULL,
@@ -295,7 +292,7 @@ gg_km <- function(surv_plot_data,
       size = size,
       na.rm = TRUE
     ) +
-      ggplot2::scale_shape_manual(name = NULL, values = pch) +
+      ggplot2::scale_shape_manual(values = 3) +
       ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(shape = NA)))
   }
 

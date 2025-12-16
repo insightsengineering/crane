@@ -12,7 +12,6 @@ gg_km(
   lty = NULL,
   lwd = 0.5,
   censor_show = TRUE,
-  pch = 3,
   size = 2,
   max_time = NULL,
   xticks = NULL,
@@ -45,9 +44,6 @@ A single numeric value specifying the \strong{line width} for the survival curve
 
 \item{censor_show}{(\code{logical})\cr
 A single logical value indicating whether to display \strong{censoring marks} on the plot. Defaults to \code{TRUE}.}
-
-\item{pch}{(\code{numeric})\cr
-A single numeric value specifying the \strong{plotting character} (point shape code) for censoring marks.}
 
 \item{size}{(\code{numeric})\cr
 A single numeric value specifying the \strong{size} of the censoring marks.}

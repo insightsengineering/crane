@@ -13,9 +13,28 @@
 #'
 #' @return A \code{ggplot2} object representing the table.
 #'
+#' @examples
+#' # Example using proper x-axis
+#' df <- as.data.frame(matrix(c(
+#'   #  0,  250, 500, 750, 1000  <-- (Reference)
+#'   54,  28,  10,   3,    0,
+#'   59,  35,  16,   5,    1,
+#'   54,  25,   4,   0,    0
+#' ), nrow = 3, byrow = TRUE))
+#'
+#' # Set names manually
+#' colnames(df) <- c("0", "250", "500", "750", "1000")
+#' rownames(df) <- c("A", "B", "C")
+#'
+#' df2gg(df, font_size = 8, add_proper_xaxis = TRUE)
+#'
+#' # Example without proper x-axis
+#' df2gg(df, font_size = 8, add_proper_xaxis = FALSE, hline = FALSE)
+#'
 #' @keywords internal
 df2gg <- function(df, colwidths = NULL, font_size = 10, col_labels = TRUE,
                   col_lab_fontface = "bold", hline = TRUE, bg_fill = NULL, add_proper_xaxis = FALSE) {
+  # Convert all values to character, replacing NAs with "NA"
   df <- as.data.frame(apply(df, 1:2, function(x) {
     if (is.na(x)) {
       "NA"
@@ -23,28 +42,37 @@ df2gg <- function(df, colwidths = NULL, font_size = 10, col_labels = TRUE,
       as.character(x)
     }
   }))
+
+  # Add column labels as first row if specified
   if (col_labels) {
     df <- as.matrix(df)
     df <- rbind(colnames(df), df)
   }
-  if (is.null(colwidths)) {
-    colwidths <- apply(df, 2, function(x) max(nchar(x), na.rm = TRUE))
-  }
-  tot_width <- sum(colwidths)
+
+  # Create ggplot2 object with x-axis specified in df
   if (add_proper_xaxis) {
+    # Determine column widths if not provided
+    if (is.null(colwidths)) {
+      tot_width <- max(colnames(df) |> as.numeric(), na.rm = TRUE)
+      colwidths <- rep(floor(tot_width / ncol(df)), ncol(df))
+    } else {
+      tot_width <- sum(colwidths)
+    }
+
     df_long <- df |>
+      as.data.frame() |>
       # 1. Ensure the row names ('A', 'B', 'C') are a column named 'row_name'
-      mutate(row_name = row.names(df)) |>
+      dplyr::mutate(row_name = row.names(df)) |>
       # 2. Pivot the remaining columns (starting from '0' to the end) longer
       tidyr::pivot_longer(
-        cols = -row_name, # Select all columns EXCEPT 'row_name'
+        cols = -.data$row_name, # Select all columns EXCEPT 'row_name'
         names_to = "col_name", # Name the new column containing the old column headers
         values_to = "value" # Name the new column containing the data values
       ) |>
-      dplyr::arrange(row_name, col_name) |>
-      mutate(
-        col_name = as.numeric(col_name),
-        row_name = factor(row_name, levels = row.names(df))
+      dplyr::arrange(.data$row_name, .data$col_name) |>
+      dplyr::mutate(
+        col_name = as.numeric(.data$col_name),
+        row_name = factor(.data$row_name, levels = row.names(df))
       )
     res <- ggplot2::ggplot(data = df_long) +
       ggplot2::theme_void() +
@@ -52,24 +80,21 @@ df2gg <- function(df, colwidths = NULL, font_size = 10, col_labels = TRUE,
         x = df_long$col_name, y = rev(df_long$row_name), # why rev?
         label = df_long$value, size = font_size / .pt
       )
+
+  # Create ggplot2 object with a specific x-axis based on column widths
   } else {
+    # Determine column widths if not provided
+    if (is.null(colwidths)) {
+      colwidths <- apply(df, 2, function(x) max(nchar(x), na.rm = TRUE))
+    }
+    tot_width <- sum(colwidths)
+
     res <- ggplot2::ggplot(data = df) +
       ggplot2::theme_void() +
-      ggplot2::scale_x_continuous(limits = c(
-        0,
-        tot_width
-      )) +
+      ggplot2::scale_x_continuous(limits = c(0, tot_width)) +
       ggplot2::scale_y_continuous(limits = c(1, nrow(df)))
-    if (!is.null(bg_fill)) {
-      res <- res + ggplot2::theme(plot.background = ggplot2::element_rect(fill = bg_fill))
-    }
-    if (hline) {
-      res <- res + ggplot2::annotate("segment",
-        x = 0 + 0.2 * colwidths[2],
-        xend = tot_width - 0.1 * tail(colwidths, 1), y = nrow(df) -
-          0.5, yend = nrow(df) - 0.5
-      )
-    }
+
+
     for (i in seq_len(ncol(df))) {
       line_pos <- c(
         if (i == 1) {
@@ -88,6 +113,20 @@ df2gg <- function(df, colwidths = NULL, font_size = 10, col_labels = TRUE,
         }
       )
     }
+  }
+
+  # Add horizontal line if specified
+  if (hline) {
+    res <- res + ggplot2::annotate(
+      "segment",
+      x = 0 + 0.2 * colwidths[2], xend = tot_width - 0.1 * tail(colwidths, 1),
+      y = nrow(df) - 0.5, yend = nrow(df) - 0.5
+    )
+  }
+
+  # Set background fill if specified
+  if (!is.null(bg_fill)) {
+    res <- res + ggplot2::theme(plot.background = ggplot2::element_rect(fill = bg_fill))
   }
 
   res
