@@ -13,24 +13,6 @@
 #'
 #' @return A \code{ggplot2} object representing the table.
 #'
-#' @examples
-#' # Example using proper x-axis
-#' df <- as.data.frame(matrix(c(
-#'   #  0,  250, 500, 750, 1000  <-- (Reference)
-#'   54,  28,  10,   3,    0,
-#'   59,  35,  16,   5,    1,
-#'   54,  25,   4,   0,    0
-#' ), nrow = 3, byrow = TRUE))
-#'
-#' # Set names manually
-#' colnames(df) <- c("0", "250", "500", "750", "1000")
-#' rownames(df) <- c("A", "B", "C")
-#'
-#' df2gg(df, font_size = 8, add_proper_xaxis = TRUE)
-#'
-#' # Example without proper x-axis
-#' df2gg(df, font_size = 8, add_proper_xaxis = FALSE, hline = FALSE)
-#'
 #' @keywords internal
 df2gg <- function(df, colwidths = NULL, font_size = 10, col_labels = TRUE,
                   col_lab_fontface = "bold", hline = TRUE, bg_fill = NULL, add_proper_xaxis = FALSE) {
@@ -81,7 +63,7 @@ df2gg <- function(df, colwidths = NULL, font_size = 10, col_labels = TRUE,
         label = df_long$value, size = font_size / .pt
       )
 
-  # Create ggplot2 object with a specific x-axis based on column widths
+    # Create ggplot2 object with a specific x-axis based on column widths
   } else {
     # Determine column widths if not provided
     if (is.null(colwidths)) {

@@ -36,3 +36,27 @@ test_that("gg_km() works with default inputs", {
       annotate_riskdf(fit_kmg01)
   )
 })
+
+test_that("df2gg() works with proper x-axis and without", {
+  # Example using proper x-axis
+  df <- as.data.frame(matrix(c(
+    #  0,  250, 500, 750, 1000  <-- (Reference)
+    54,  28,  10,   3,    0,
+    59,  35,  16,   5,    1,
+    54,  25,   4,   0,    0
+  ), nrow = 3, byrow = TRUE))
+
+  # Set names manually
+  colnames(df) <- c("0", "250", "500", "750", "1000")
+  rownames(df) <- c("A", "B", "C")
+
+  # Example with proper x-axis
+  expect_no_error(
+    null <- df2gg(df, font_size = 8, add_proper_xaxis = TRUE)
+  )
+
+  # Example without proper x-axis
+  expect_no_error(
+    null <- df2gg(df, font_size = 8, add_proper_xaxis = FALSE, hline = FALSE)
+  )
+})

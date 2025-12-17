@@ -75,8 +75,8 @@ NULL
 #'
 #' @export
 annotate_riskdf <- function(gg_plt, fit_km, title = "Patients at Risk:",
-                          rel_height_plot = 0.75, xlab = "Days",
-                          ...) {
+                            rel_height_plot = 0.75, xlab = "Days",
+                            ...) {
   check_class(gg_plt, c("gg", "ggplot", "cowplot"))
   check_class(fit_km, "survfit")
   check_string(title, allow_empty = TRUE)
