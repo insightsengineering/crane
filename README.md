@@ -18,8 +18,6 @@ Version](https://www.r-pkg.org/badges/version/crane)](https://CRAN.R-project.org
 Version](https://img.shields.io/github/r-package/v/insightsengineering/crane/main?color=purple&label=Development%20Version)](https://github.com/insightsengineering/crane/tree/main)
 <!-- end badges -->
 
-<!-- badges: end -->
-
 The {crane} package provides supplementary functions to the {gtsummary}
 specifically for trial reporting in the pharmaceutical industry.
 
