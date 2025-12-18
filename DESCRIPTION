@@ -1,6 +1,6 @@
 Package: crane
 Title: Supplements the 'gtsummary' Package for Pharmaceutical Reporting
-Version: 0.3.0.9000
+Version: 0.3.0.9001
 Authors@R: c(
     person("Daniel D.", "Sjoberg", , "danield.sjoberg@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-0862-2018")),
@@ -26,8 +26,8 @@ Imports:
     broom (>= 1.0.8),
     cards (>= 0.7.0),
     cardx (>= 0.3.0),
-    cowplot (>= 1.2.0),
     cli (>= 3.6.4),
+    cowplot (>= 1.2.0),
     dplyr (>= 1.1.4),
     flextable (>= 0.9.7),
     ggplot2 (>= 4.0.0),
