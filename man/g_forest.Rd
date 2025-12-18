@@ -4,7 +4,7 @@
 \alias{g_forest}
 \title{Create a Combined gtsummary Table and Forest Plot}
 \usage{
-g_forest(tbl)
+g_forest(tbl, groups = c("Drug A", "Drug B"))
 }
 \arguments{
 \item{tbl}{(\code{gtsummary})\cr

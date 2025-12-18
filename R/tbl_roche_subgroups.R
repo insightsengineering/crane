@@ -1,6 +1,6 @@
 #' Subgroup Analyses
 #'
-#' Function adapted from [gtforester::tbl_subgroups()].
+#' Function adapted from `gtforester::tbl_subgroups()`.
 #'
 #' @inheritParams gtsummary::tbl_strata
 #' @param rsp ([`tidy-select`][dplyr::dplyr_tidy_select])\cr

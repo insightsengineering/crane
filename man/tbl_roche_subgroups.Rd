@@ -25,7 +25,7 @@ The stratified data frame is passed to this function.}
 a 'gtsummary' table
 }
 \description{
-Function adapted from \code{\link[gtforester:tbl_subgroups]{gtforester::tbl_subgroups()}}.
+Function adapted from \code{gtforester::tbl_subgroups()}.
 }
 \examples{
 tbl <-
