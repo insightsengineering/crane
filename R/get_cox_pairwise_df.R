@@ -114,6 +114,8 @@ get_cox_pairwise_df <- function(model_formula, data, arm, ref_group = NULL) {
     rownames(current_row) <- current_arm
     ret <- rbind(ret, current_row)
   }
-
+  names(ret) <- c("HR",
+                  "95% CI",
+                  "p-value (log-rank)")
   ret
 }
