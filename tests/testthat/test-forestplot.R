@@ -5,7 +5,9 @@ test_that("test g_forest() works", {
    trial %>%
      tbl_roche_subgroups(
        subgroups = c("grade", "stage"),
-       ~ glm(response ~ trt, data = .x) %>%
+       rsp = "response",
+       by = "trt",
+       ~ glm(response ~ trt, data = .x) |>
          gtsummary::tbl_regression(
            show_single_row = trt,
            exponentiate = TRUE

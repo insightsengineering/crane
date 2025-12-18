@@ -3,6 +3,7 @@
 #' Function adapted from `gtforester::tbl_subgroups()`.
 #'
 #' @inheritParams gtsummary::tbl_strata
+#' @importFrom cards ard_tabulate_value
 #' @param rsp ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   Variable to use in responder rate calculations.
 #' @param subgroups ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
