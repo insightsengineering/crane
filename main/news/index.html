@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.0.9001</span>
       </span>
     </div>
 
@@ -61,11 +61,15 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.3.0" id="crane-030">crane 0.3.0<a class="anchor" aria-label="anchor" href="#crane-030"></a></h2>
+<h2 class="page-header" data-toc-text="0.3.0.9001" id="crane-0309001">crane 0.3.0.9001<a class="anchor" aria-label="anchor" href="#crane-0309001"></a></h2>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.3.0" id="crane-030">crane 0.3.0<small>2025-12-06</small><a class="anchor" aria-label="anchor" href="#crane-030"></a></h2>
 <div class="section level3">
 <h3 id="new-functions-and-functionality-0-3-0">New Functions and Functionality<a class="anchor" aria-label="anchor" href="#new-functions-and-functionality-0-3-0"></a></h3>
 <ul><li><p>Added <code><a href="../reference/tbl_null_report.html">tbl_null_report()</a></code> for cases without any information to display. (<a href="https://github.com/insightsengineering/crane/issues/11" class="external-link">#11</a>)</p></li>
 <li><p>Added functions <code><a href="../reference/label_roche.html">style_roche_number()</a></code> and <code><a href="../reference/label_roche.html">label_roche_number()</a></code> to replace their respective gtsummary versions, with additional <code>inf</code> argument for customization of <code>Inf</code>/<code>-Inf</code>/<code>NaN</code> values.</p></li>
+<li><p>Added <code><a href="../reference/gg_km.html">gg_km()</a></code> function for creating Kaplan-Meier plots.</p></li>
 <li><p>Added <code>list("assign_summary_type-arg:cat_threshold" = 0L)</code> to <code><a href="../reference/theme_gtsummary_roche.html">theme_gtsummary_roche()</a></code>. Numeric variables with few levels will no longer default to summary type <code>'categorical'</code> in <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html" class="external-link">gtsummary::tbl_summary()</a></code> and <code><a href="../reference/tbl_roche_summary.html">tbl_roche_summary()</a></code>. (<a href="https://github.com/insightsengineering/crane/issues/79" class="external-link">#79</a>)</p></li>
 </ul><div class="section level4">
 <h4 id="other-updates-0-3-0">Other Updates<a class="anchor" aria-label="anchor" href="#other-updates-0-3-0"></a></h4>
