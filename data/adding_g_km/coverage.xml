@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0.953108535300316" branch-rate="0" lines-covered="1809" lines-valid="1898" branches-covered="0" branches-valid="0" complexity="0" version="3.6.5" timestamp="2025-12-17 14:40:44.430114">
+<coverage line-rate="0.953182535507628" branch-rate="0" lines-covered="1812" lines-valid="1901" branches-covered="0" branches-valid="0" complexity="0" version="3.6.5" timestamp="2025-12-18 03:30:08.489658">
   <sources>
     <source>/__w/crane/crane/crane</source>
   </sources>
   <packages>
-    <package name="crane" line-rate="0.953108535300316" branch-rate="0" complexity="0">
+    <package name="crane" line-rate="0.953182535507628" branch-rate="0" complexity="0">
       <classes>
         <class name="add_blank_rows.R" filename="R/add_blank_rows.R" line-rate="1" branch-rate="0" complexity="0">
           <methods>
@@ -759,9 +759,9 @@
             <line number="21" hits="0" branch="false"/>
           </lines>
         </class>
-        <class name="get_cox_pairwise_df.R" filename="R/get_cox_pairwise_df.R" line-rate="0.711111111111111" branch-rate="0" complexity="0">
+        <class name="get_cox_pairwise_df.R" filename="R/get_cox_pairwise_df.R" line-rate="0.729166666666667" branch-rate="0" complexity="0">
           <methods>
-            <method name="get_cox_pairwise_df" signature="" line-rate="0.711111111111111" branch-rate="0" complexity="0">
+            <method name="get_cox_pairwise_df" signature="" line-rate="0.729166666666667" branch-rate="0" complexity="0">
               <lines>
                 <line number="65" hits="1" branch="false"/>
                 <line number="67" hits="1" branch="false"/>
@@ -807,7 +807,10 @@
                 <line number="113" hits="2" branch="false"/>
                 <line number="114" hits="2" branch="false"/>
                 <line number="115" hits="2" branch="false"/>
+                <line number="117" hits="1" branch="false"/>
                 <line number="118" hits="1" branch="false"/>
+                <line number="119" hits="1" branch="false"/>
+                <line number="120" hits="1" branch="false"/>
               </lines>
             </method>
           </methods>
@@ -856,7 +859,10 @@
             <line number="113" hits="2" branch="false"/>
             <line number="114" hits="2" branch="false"/>
             <line number="115" hits="2" branch="false"/>
+            <line number="117" hits="1" branch="false"/>
             <line number="118" hits="1" branch="false"/>
+            <line number="119" hits="1" branch="false"/>
+            <line number="120" hits="1" branch="false"/>
           </lines>
         </class>
         <class name="gg_km_utils.R" filename="R/gg_km_utils.R" line-rate="0.843137254901961" branch-rate="0" complexity="0">
