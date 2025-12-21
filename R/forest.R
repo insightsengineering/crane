@@ -75,8 +75,8 @@ create_forest_plot <- function(data,
       fill = "grey92", alpha = 0.5
     ) +
     # CI lines with arrows
-    geom_errorbarh(aes(xmin = ci_lower_log, xmax = ci_upper_log, y = y_pos),
-      height = 0.2, color = "black"
+    geom_errorbar(aes(xmin = ci_lower_log, xmax = ci_upper_log, y = y_pos),
+      height = 0.2, color = "black", orientation = "y"
     ) +
     # Points
     geom_point(aes(x = estimate_log, y = y_pos, size = n),
