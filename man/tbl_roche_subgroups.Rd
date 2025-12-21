@@ -31,16 +31,16 @@ Function adapted from \code{gtforester::tbl_subgroups()}.
 tbl <-
   trial |>
   tbl_roche_subgroups(
-  rsp = "response",
-  by = "trt",
-  subgroups = c("grade", "stage"),
-  .tbl_fun =
-    ~ glm(response ~ trt, data = .x) |>
-      tbl_regression(
-        show_single_row = trt,
-        exponentiate = TRUE,
-        tidy_fun = broom.helpers::tidy_parameters
-      )
+    rsp = "response",
+    by = "trt",
+    subgroups = c("grade", "stage"),
+    .tbl_fun =
+      ~ glm(response ~ trt, data = .x) |>
+        tbl_regression(
+          show_single_row = trt,
+          exponentiate = TRUE,
+          tidy_fun = broom.helpers::tidy_parameters
+        )
   )
 
 tbl

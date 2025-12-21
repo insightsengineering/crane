@@ -4,6 +4,7 @@
 #' @import glue glue
 #' @import patchwork
 #' @importFrom broom tidy
+#' @importFrom broom.helpers .assert_package
 #' @importFrom cowplot plot_grid ggdraw draw_plot
 #' @importFrom dplyr across starts_with ends_with contains matches num_range
 #'                   all_of any_of everything last_col where
