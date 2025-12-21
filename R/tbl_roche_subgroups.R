@@ -16,16 +16,16 @@
 #' tbl <-
 #'   trial |>
 #'   tbl_roche_subgroups(
-#'   rsp = "response",
-#'   by = "trt",
-#'   subgroups = c("grade", "stage"),
-#'   .tbl_fun =
-#'     ~ glm(response ~ trt, data = .x) |>
-#'       tbl_regression(
-#'         show_single_row = trt,
-#'         exponentiate = TRUE,
-#'         tidy_fun = broom.helpers::tidy_parameters
-#'       )
+#'     rsp = "response",
+#'     by = "trt",
+#'     subgroups = c("grade", "stage"),
+#'     .tbl_fun =
+#'       ~ glm(response ~ trt, data = .x) |>
+#'         tbl_regression(
+#'           show_single_row = trt,
+#'           exponentiate = TRUE,
+#'           tidy_fun = broom.helpers::tidy_parameters
+#'         )
 #'   )
 #'
 #' tbl
@@ -98,7 +98,7 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
             data = data,
             strata = x,
             .tbl_fun =
-              ~ .x |> tbl_summary(include = rsp, statistic = everything() ~ "{N}", missing = "no") ,
+              ~ .x |> tbl_summary(include = rsp, statistic = everything() ~ "{N}", missing = "no"),
             .combine_with = "tbl_stack",
             .combine_args = list(quiet = TRUE)
           ) |>
@@ -109,18 +109,18 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
             strata = x,
             .tbl_fun =
               ~ .x |>
-              tbl_strata(
-                strata = by,
-                .tbl_fun = ~ .x |>
-                  ard_tabulate_value(
-                    variables = rsp,
-                    stat_label = everything() ~ list(N = "n", n = "Responders", p = "Response (%)")
-                  ) |>
-                  tbl_ard_wide_summary(
-                    include = rsp,
-                    statistic = c("{N}", "{n}", "{p}")
-                  )
-              ),
+                tbl_strata(
+                  strata = by,
+                  .tbl_fun = ~ .x |>
+                    ard_tabulate_value(
+                      variables = rsp,
+                      stat_label = everything() ~ list(N = "n", n = "Responders", p = "Response (%)")
+                    ) |>
+                    tbl_ard_wide_summary(
+                      include = rsp,
+                      statistic = c("{N}", "{n}", "{p}")
+                    )
+                ),
             .combine_with = "tbl_stack"
           ),
           # comparison statistics

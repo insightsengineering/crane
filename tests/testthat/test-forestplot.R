@@ -2,16 +2,16 @@ skip_on_cran()
 
 test_that("test g_forest() works", {
   expect_no_error(tbl <-
-   trial %>%
-     tbl_roche_subgroups(
-       subgroups = c("grade", "stage"),
-       rsp = "response",
-       by = "trt",
-       ~ glm(response ~ trt, data = .x) |>
-         gtsummary::tbl_regression(
-           show_single_row = trt,
-           exponentiate = TRUE
-         )
-     ))
+    trial %>%
+    tbl_roche_subgroups(
+      subgroups = c("grade", "stage"),
+      rsp = "response",
+      by = "trt",
+      ~ glm(response ~ trt, data = .x) |>
+        gtsummary::tbl_regression(
+          show_single_row = trt,
+          exponentiate = TRUE
+        )
+    ))
   expect_no_error(g_forest(tbl))
 })

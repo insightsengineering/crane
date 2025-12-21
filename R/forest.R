@@ -176,14 +176,14 @@ g_forest <- function(tbl, groups = c("Drug A", "Drug B")) {
 }
 
 
-extract_tbl_from_gtsummry <- function(tbl){
+extract_tbl_from_gtsummry <- function(tbl) {
   ret <- tbl$table_body %>%
     mutate(or = round(estimate, 2)) %>%
     select(
       `label` = label,
-     `Total n` = N,
-     `Odds ratio` = or,
-     `95% CI` = ci
+      `Total n` = N,
+      `Odds ratio` = or,
+      `95% CI` = ci
     ) %>%
     as_tibble()
   print(ret)
@@ -273,14 +273,14 @@ gtsummary2gg <- function(tbl, fontsize = 12, header_line_color = "gray30") {
   header_labels <- c("", "", header_labels)
   # 5. Add **Header Labels**
   res <- res +
-  annotate(
-    "text",
-    x = x_pos,
-    y = y_pos[1], # Top row
-    label = header_labels,
-    fontface = "bold",
-    size = fontsize / .pt
-  ) +
+    annotate(
+      "text",
+      x = x_pos,
+      y = y_pos[1], # Top row
+      label = header_labels,
+      fontface = "bold",
+      size = fontsize / .pt
+    ) +
     # Add a horizontal line under the header
     annotate(
       "segment",
