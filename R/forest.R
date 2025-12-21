@@ -96,7 +96,7 @@ create_forest_plot <- function(data,
     # Scales and theme
     x_scale +
     scale_y_continuous(
-      limits = c(0, nrow(data) + 1.5), breaks = data$y_pos,
+      limits = c(0, nrow(data) + 2.5), breaks = data$y_pos,
       labels = rep("", length(data$estimate)), expand = c(0, 0)
     ) +
     theme_minimal() +
@@ -166,8 +166,8 @@ extract_plot_data <- function(tbl) {
 #'       )
 #'   )
 #'
-#' g_forest(tbl)
-g_forest <- function(tbl, groups = c("Drug A", "Drug B")) {
+#' g_forest(tbl, groups = levels(factor(trial$trt)))
+g_forest <- function(tbl, groups) {
   # table_plot <- gtsummary2gg(tbl)
   table_plot <- as_ggplot(tbl)
   # table_plot <- wrap_table(tbl, space = "fixed")
