@@ -8,6 +8,7 @@
 #'   A data frame (tibble) containing the plot data. It must include
 #'   columns: `estimate`, `ci_lower`,
 #'   `ci_upper`, and `n` (for point size).
+#' @param header Forest header
 #' @param xlim (`numeric(2)`)\cr
 #'   A numeric vector of length 2 specifying the limits of the x-axis
 #'   (e.g., `c(0.1, 10)`).
@@ -36,11 +37,11 @@
 #' create_forest_plot(forest_data, xlim = c(0.05, 50), vline = 1)
 #' }
 create_forest_plot <- function(data,
-                               by = "",
+                               header = "",
                                xlim = c(0.1, 10),
                                logx = TRUE,
                                vline = 1) {
-  forest_header <- paste0(by, "\nBetter")
+  forest_header <- paste0(header, "\nBetter")
   # Calculate y positions (reverse order for top-to-bottom display)
   data <- data |>
     mutate(y_pos = rev(dplyr::row_number()))
@@ -179,8 +180,8 @@ g_forest <- function(tbl) {
   table_plot <- as_ggplot(tbl)
   # table_plot <- wrap_table(tbl, space = "fixed")
   forest_data <- extract_plot_data(tbl)
-  by <- attr(tbl, "by")
-  forest_plot <- create_forest_plot(forest_data, by)
+  forest_header <- attr(tbl, "by")
+  forest_plot <- create_forest_plot(forest_data, forest_header)
   table_plot + forest_plot + plot_layout(widths = c(3, 1))
 }
 

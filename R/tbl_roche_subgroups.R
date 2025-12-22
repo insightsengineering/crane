@@ -6,6 +6,8 @@
 #' @importFrom cards ard_tabulate_value
 #' @param rsp ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   Variable to use in responder rate calculations.
+#' @param by ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#'   Variable to make comparison between groups.
 #' @param subgroups ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   Variables to perform stratified analyses for.
 #'

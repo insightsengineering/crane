@@ -13,6 +13,9 @@ a data frame or survey object}
 \item{rsp}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 Variable to use in responder rate calculations.}
 
+\item{by}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+Variable to make comparison between groups.}
+
 \item{subgroups}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 Variables to perform stratified analyses for.}
 

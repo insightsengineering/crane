@@ -4,13 +4,21 @@
 \alias{create_forest_plot}
 \title{Create a Custom Forest Plot}
 \usage{
-create_forest_plot(data, by = "", xlim = c(0.1, 10), logx = TRUE, vline = 1)
+create_forest_plot(
+  data,
+  header = "",
+  xlim = c(0.1, 10),
+  logx = TRUE,
+  vline = 1
+)
 }
 \arguments{
 \item{data}{(\code{data.frame})\cr
 A data frame (tibble) containing the plot data. It must include
 columns: \code{estimate}, \code{ci_lower},
 \code{ci_upper}, and \code{n} (for point size).}
+
+\item{header}{Forest header}
 
 \item{xlim}{(\code{numeric(2)})\cr
 A numeric vector of length 2 specifying the limits of the x-axis
