@@ -20,22 +20,22 @@ To use this function you must install the magick R package AND system program
 (see https://docs.ropensci.org/magick/articles/intro.html#installing-magick-1)
 }
 \examples{
-require('patchwork')
+require("patchwork")
 library(ggplot2)
 require(patchwork)
 
 # convert gtsummary table to ggplot
 tbl <-
- trial \%>\%
- select(age, marker, trt) \%>\%
- tbl_summary(by = trt, missing = "no") \%>\%
- as_ggplot()
+  trial \%>\%
+  select(age, marker, trt) \%>\%
+  tbl_summary(by = trt, missing = "no") \%>\%
+  as_ggplot()
 # # create basic ggplot
 
 gg <-
- trial \%>\%
- ggplot(aes(x = age, y = marker, color = trt)) +
- geom_point()
+  trial \%>\%
+  ggplot(aes(x = age, y = marker, color = trt)) +
+  geom_point()
 
 # # stack tables using patchwork
 gg / tbl

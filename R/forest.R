@@ -148,7 +148,7 @@ extract_plot_data <- function(tbl) {
 #' @return A combined 'ggplot' object (likely a 'patchwork' object)
 #'   showing the table on the left and the forest plot on the right.
 #'
-#' @seealso [gtsummary2gg()], [extract_plot_data()], [create_forest_plot()]
+#' @seealso [extract_plot_data()], [create_forest_plot()]
 #'
 #' @export
 #' @examples

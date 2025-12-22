@@ -38,5 +38,5 @@ tbl <-
 g_forest(tbl, groups = levels(factor(trial$trt)))
 }
 \seealso{
-\code{\link[=gtsummary2gg]{gtsummary2gg()}}, \code{\link[=extract_plot_data]{extract_plot_data()}}, \code{\link[=create_forest_plot]{create_forest_plot()}}
+\code{\link[=extract_plot_data]{extract_plot_data()}}, \code{\link[=create_forest_plot]{create_forest_plot()}}
 }
