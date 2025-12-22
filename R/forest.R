@@ -168,7 +168,7 @@ extract_plot_data <- function(tbl) {
 #'
 #' g_forest(tbl, groups = levels(factor(trial$trt)))
 g_forest <- function(tbl, groups) {
-  # table_plot <- gtsummary2gg(tbl)
+  # todo need to make sure tbl does not have wrapped rows
   table_plot <- as_ggplot(tbl)
   # table_plot <- wrap_table(tbl, space = "fixed")
   forest_data <- extract_plot_data(tbl)
@@ -177,140 +177,15 @@ g_forest <- function(tbl, groups) {
 }
 
 
-extract_tbl_from_gtsummry <- function(tbl) {
-  ret <- tbl$table_body %>%
-    mutate(or = round(estimate, 2)) %>%
-    select(
-      `label` = label,
-      `Total n` = N,
-      `Odds ratio` = or,
-      `95% CI` = ci
-    ) %>%
-    as_tibble()
-  print(ret)
-}
-
-#' Convert gtsummary Object into a ggplot Table
-#'
-#' Renders the formatted content of a 'gtsummary' object as a
-#' 'ggplot' object. This allows the text-based table to be combined
-#' seamlessly with a plot (like a forest plot) using {patchwork} or {cowplot}.
-#'
-#' NOTE: The current implementation of this function includes commented-out code
-#' for drawing the header labels and separating line. As written, it only draws
-#' the table body content.
-#'
-#' @param tbl (`gtsummary`)\cr
-#'   A 'gtsummary' object.
-#' @param fontsize (`numeric(1)`)\cr
-#'   The size of the text used in the table (in points). Default is 12.
-#' @param header_line_color (`string`)\cr
-#'   The color of the line to be drawn under the header (if uncommented).
-#'
-#' @return A 'ggplot' object representing the formatted table.
-#' @keywords internal
-gtsummary2gg <- function(tbl, fontsize = 12, header_line_color = "gray30") {
-  .pt <- 2.834646
-
-  # 1. Convert gtsummary object to a tibble with formatting
-  tbl_df_raw <- as_tibble(tbl, col_labels = FALSE)
-
-  # tbl_df_raw <- extract_tbl_from_gtsummry(tbl)
-  # print(tbl_df_raw)
-  # 2. Extract column names (final header labels) and body strings
-  # The table body contains the cell content, the column headers are in the column names.
-  body_strings <- tbl_df_raw %>%
-    # select(-starts_with("label")) %>%
-    mutate(across(everything(), as.character))
-
-  # Extract final column labels for the header
-  header_labels <- names(as_tibble(tbl))[-1]
-  # Extract the row labels and make them the first column for plotting
-  # label_strings <- tbl_df_raw %>%
-  #   select(starts_with("label")) %>%
-  #   tidyr::unite("label_col", everything(), sep = " ") %>%
-  #   pull(label_col)
-  #
-  label_strings <- tbl_df_raw[, 1]
-
-  # Combine label column and body
-  plot_df <- cbind(data.frame(label_col = ""), body_strings)
-  # plot_df <- as.data.frame(body_strings)
-  # 3. Determine Layout and Dimensions
-  n_rows <- nrow(plot_df)
-  n_cols <- ncol(plot_df)
-
-  # Rough approximation of column widths based on max character length
-  col_widths <- apply(plot_df, 2, function(x) max(nchar(x), na.rm = TRUE)) + 2
-
-  # Set the first column (labels) to a wider width for better spacing
-  # col_widths[1] <- max(col_widths[1] + 10, 30)
-  # col_widths[1] <- max(col_widths[1] + 3)
-  col_widths[1] <- 0
-  # Calculate cumulative positions for text placement
-  # The x-position will be the midpoint of each column's width
-  x_pos <- cumsum(col_widths) - col_widths / 2
-  # x_pos <- x_pos[-1]
-
-  # Calculate the x-position for the column boundaries (for vertical lines, if desired)
-  x_boundaries <- cumsum(col_widths)
-  x_boundaries <- c(0, x_boundaries)
-
-  # The y-positions (reversed, so row 1 is at the top of the plot)
-  y_pos <- rev(seq_len(n_rows + 1)) # +1 to account for the header row
-
-  # Total width for the plot canvas
-  tot_width <- max(x_boundaries)
-
-  # 4. Initialize ggplot
-  res <- ggplot() +
-    theme_void() +
-    # Set the limits of the plot area
-    scale_x_continuous(limits = c(0, tot_width)) +
-    scale_y_continuous(limits = c(0, n_rows + 1.5))
-
-  # print(length(x_pos))
-  # print(length(header_labels))
-  header_labels <- c("", "", header_labels)
-  # 5. Add **Header Labels**
-  res <- res +
-    annotate(
-      "text",
-      x = x_pos,
-      y = y_pos[1], # Top row
-      label = header_labels,
-      fontface = "bold",
-      size = fontsize / .pt
-    ) +
-    # Add a horizontal line under the header
-    annotate(
-      "segment",
-      x = 0, xend = tot_width,
-      y = y_pos[1] - 0.5, yend = y_pos[1] - 0.5,
-      color = header_line_color
-    )
-
-  # 6. Add **Table Body Content** (Row by Row, Column by Column)
-  for (i in seq_len(n_cols)) {
-    # Assuming the first column (label_col) is left-aligned and the rest are right-aligned
-    hjust_val <- if (i == 1) 0 else 1
-
-    # Calculate x position: use the start of the column for left-aligned text,
-    # and the end of the column for right-aligned text.
-    # x_val <- if (i == 1) x_boundaries[i] else x_boundaries[i + 1]
-    x_val <- x_boundaries[i + 1]
-    res <- res +
-      annotate(
-        "text",
-        # We need to skip the first row since that is where the header is placed
-        x = x_val,
-        y = y_pos[-1],
-        label = plot_df[, i],
-        hjust = hjust_val,
-        size = fontsize / .pt
-      )
-  }
-
-  # Return the final ggplot object
-  return(res)
-}
+# extract_tbl_from_gtsummry <- function(tbl) {
+#   ret <- tbl$table_body %>%
+#     mutate(or = round(estimate, 2)) %>%
+#     select(
+#       `label` = label,
+#       `Total n` = N,
+#       `Odds ratio` = or,
+#       `95% CI` = ci
+#     ) %>%
+#     as_tibble()
+#   print(ret)
+# }

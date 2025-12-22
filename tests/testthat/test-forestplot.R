@@ -1,4 +1,8 @@
 skip_on_cran()
+skip_if_pkg_not_installed("broom.helpers")
+skip_if_pkg_not_installed("ggtext")
+skip_if_pkg_not_installed("magick")
+skip_if_pkg_not_installed("patchwork")
 
 test_that("test g_forest() works", {
   expect_no_error(tbl <-
@@ -13,5 +17,5 @@ test_that("test g_forest() works", {
           exponentiate = TRUE
         )
     ))
-  expect_no_error(g_forest(tbl))
+  expect_no_error(g_forest(tbl, levels(factor(trial$trt))))
 })
