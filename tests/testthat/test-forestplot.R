@@ -18,5 +18,5 @@ test_that("test g_forest() works", {
           exponentiate = TRUE
         )
     ))
-  expect_no_error(g_forest(tbl, levels(factor(trial$trt))))
+  expect_no_error(g_forest(tbl))
 })

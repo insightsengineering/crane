@@ -35,7 +35,7 @@ tbl <-
   )
 
 \dontrun{
-  g_forest(tbl)
+g_forest(tbl)
 }
 }
 \seealso{

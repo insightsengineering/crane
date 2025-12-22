@@ -9,7 +9,7 @@ create_forest_plot(data, by = "", xlim = c(0.1, 10), logx = TRUE, vline = 1)
 \arguments{
 \item{data}{(\code{data.frame})\cr
 A data frame (tibble) containing the plot data. It must include
-columns: \code{group} (for y-axis labels), \code{estimate}, \code{ci_lower},
+columns: \code{estimate}, \code{ci_lower},
 \code{ci_upper}, and \code{n} (for point size).}
 
 \item{xlim}{(\code{numeric(2)})\cr
@@ -37,7 +37,6 @@ to be a component of a combined table/plot output (e.g., used by \code{\link[=g_
 \dontrun{
 # Assuming 'forest_data' is structured correctly:
 forest_data <- data.frame(
-  group = c("A vs B", "C vs D"),
   estimate = c(0.5, 2.0),
   ci_lower = c(0.2, 1.5),
   ci_upper = c(0.9, 3.5),

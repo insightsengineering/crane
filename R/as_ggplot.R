@@ -27,9 +27,10 @@ as_ggplot <- function(x, ...) {
   gt_table_image <- gt::gtsave(x, filename = path_gt_table_image, ...)
 
   # save image in ggplot -------------------------------------------------------
-  table_img <-
-    magick::image_read(path_gt_table_image) %>%
-    magick::image_ggplot(interpolate = TRUE)
-
+  suppressWarnings(
+    table_img <-
+      magick::image_read(path_gt_table_image) %>%
+      magick::image_ggplot(interpolate = TRUE)
+  )
   table_img
 }
