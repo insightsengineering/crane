@@ -6,7 +6,7 @@
 #'
 #' @param data (`data.frame`)\cr
 #'   A data frame (tibble) containing the plot data. It must include
-#'   columns: `group` (for y-axis labels), `estimate`, `ci_lower`,
+#'   columns: `estimate`, `ci_lower`,
 #'   `ci_upper`, and `n` (for point size).
 #' @param xlim (`numeric(2)`)\cr
 #'   A numeric vector of length 2 specifying the limits of the x-axis
@@ -26,7 +26,6 @@
 #' \dontrun{
 #' # Assuming 'forest_data' is structured correctly:
 #' forest_data <- data.frame(
-#'   group = c("A vs B", "C vs D"),
 #'   estimate = c(0.5, 2.0),
 #'   ci_lower = c(0.2, 1.5),
 #'   ci_upper = c(0.9, 3.5),
@@ -37,11 +36,11 @@
 #' create_forest_plot(forest_data, xlim = c(0.05, 50), vline = 1)
 #' }
 create_forest_plot <- function(data,
-                               groups = "",
+                               by = "",
                                xlim = c(0.1, 10),
                                logx = TRUE,
                                vline = 1) {
-  forest_header <- paste0(groups, "\nBetter")
+  forest_header <- paste0(by, "\nBetter")
   # Calculate y positions (reverse order for top-to-bottom display)
   data <- data |>
     mutate(y_pos = rev(dplyr::row_number()))
@@ -173,14 +172,15 @@ extract_plot_data <- function(tbl) {
 #'   )
 #'
 #' \dontrun{
-#'   g_forest(tbl, groups = levels(factor(trial$trt)))
+#'   g_forest(tbl)
 #' }
-g_forest <- function(tbl, groups) {
+g_forest <- function(tbl) {
   # todo need to make sure tbl does not have wrapped rows
   table_plot <- as_ggplot(tbl)
   # table_plot <- wrap_table(tbl, space = "fixed")
   forest_data <- extract_plot_data(tbl)
-  forest_plot <- create_forest_plot(forest_data, groups)
+  by <- attr(tbl, "by")
+  forest_plot <- create_forest_plot(forest_data, by)
   table_plot + forest_plot + plot_layout(widths = c(3, 1))
 }
 

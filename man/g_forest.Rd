@@ -4,7 +4,7 @@
 \alias{g_forest}
 \title{Create a Combined gtsummary Table and Forest Plot}
 \usage{
-g_forest(tbl, groups)
+g_forest(tbl)
 }
 \arguments{
 \item{tbl}{(\code{gtsummary})\cr
@@ -35,7 +35,7 @@ tbl <-
   )
 
 \dontrun{
-  g_forest(tbl, groups = levels(factor(trial$trt)))
+  g_forest(tbl)
 }
 }
 \seealso{

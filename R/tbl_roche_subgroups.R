@@ -157,9 +157,11 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
     tbl_stack()
 
   # stack analyses and return formatted table
-  list(tbl_overall, tbl_subgp) |>
+  ret <- list(tbl_overall, tbl_subgp) |>
     tbl_stack(attr_order = 2) |>
     modify_header(label_1 ~ "**Baseline Risk Factors**") |>
     remove_footnote_header() |>
     remove_abbreviation()
+  attr(ret, "by") <- levels(factor(data[[by]]))
+  return(ret)
 }

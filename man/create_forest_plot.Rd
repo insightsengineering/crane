@@ -4,13 +4,7 @@
 \alias{create_forest_plot}
 \title{Create a Custom Forest Plot}
 \usage{
-create_forest_plot(
-  data,
-  groups = "",
-  xlim = c(0.1, 10),
-  logx = TRUE,
-  vline = 1
-)
+create_forest_plot(data, by = "", xlim = c(0.1, 10), logx = TRUE, vline = 1)
 }
 \arguments{
 \item{data}{(\code{data.frame})\cr
