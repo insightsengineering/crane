@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0.95702005730659" branch-rate="0" lines-covered="2004" lines-valid="2094" branches-covered="0" branches-valid="0" complexity="0" version="3.6.5" timestamp="2025-12-22 07:23:21.682211">
+<coverage line-rate="0.957122439256789" branch-rate="0" lines-covered="2009" lines-valid="2099" branches-covered="0" branches-valid="0" complexity="0" version="3.6.5" timestamp="2025-12-22 14:46:10.357463">
   <sources>
     <source>/__w/crane/crane/crane</source>
   </sources>
   <packages>
-    <package name="crane" line-rate="0.95702005730659" branch-rate="0" complexity="0">
+    <package name="crane" line-rate="0.957122439256789" branch-rate="0" complexity="0">
       <classes>
         <class name="add_blank_rows.R" filename="R/add_blank_rows.R" line-rate="1" branch-rate="0" complexity="0">
           <methods>
@@ -723,9 +723,9 @@
             <line number="283" hits="1" branch="false"/>
           </lines>
         </class>
-        <class name="as_ggplot.R" filename="R/as_ggplot.R" line-rate="0.9" branch-rate="0" complexity="0">
+        <class name="as_ggplot.R" filename="R/as_ggplot.R" line-rate="0.916666666666667" branch-rate="0" complexity="0">
           <methods>
-            <method name="as_ggplot" signature="" line-rate="0.9" branch-rate="0" complexity="0">
+            <method name="as_ggplot" signature="" line-rate="0.916666666666667" branch-rate="0" complexity="0">
               <lines>
                 <line number="18" hits="0" branch="false"/>
                 <line number="19" hits="1" branch="false"/>
@@ -736,7 +736,9 @@
                 <line number="30" hits="1" branch="false"/>
                 <line number="31" hits="1" branch="false"/>
                 <line number="32" hits="1" branch="false"/>
+                <line number="33" hits="1" branch="false"/>
                 <line number="34" hits="1" branch="false"/>
+                <line number="35" hits="1" branch="false"/>
               </lines>
             </method>
           </methods>
@@ -750,7 +752,9 @@
             <line number="30" hits="1" branch="false"/>
             <line number="31" hits="1" branch="false"/>
             <line number="32" hits="1" branch="false"/>
+            <line number="33" hits="1" branch="false"/>
             <line number="34" hits="1" branch="false"/>
+            <line number="35" hits="1" branch="false"/>
           </lines>
         </class>
         <class name="crane-package.R" filename="R/crane-package.R" line-rate="0" branch-rate="0" complexity="0">
@@ -793,10 +797,11 @@
           <methods>
             <method name="create_forest_plot" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
-                <line number="44" hits="1" branch="false"/>
+                <line number="43" hits="1" branch="false"/>
+                <line number="45" hits="1" branch="false"/>
                 <line number="46" hits="1" branch="false"/>
-                <line number="47" hits="1" branch="false"/>
-                <line number="50" hits="1" branch="false"/>
+                <line number="49" hits="1" branch="false"/>
+                <line number="59" hits="1" branch="false"/>
                 <line number="60" hits="1" branch="false"/>
                 <line number="61" hits="1" branch="false"/>
                 <line number="62" hits="1" branch="false"/>
@@ -804,20 +809,20 @@
                 <line number="64" hits="1" branch="false"/>
                 <line number="65" hits="1" branch="false"/>
                 <line number="66" hits="1" branch="false"/>
-                <line number="67" hits="1" branch="false"/>
-                <line number="71" hits="1" branch="false"/>
+                <line number="70" hits="1" branch="false"/>
+                <line number="72" hits="1" branch="false"/>
                 <line number="73" hits="1" branch="false"/>
                 <line number="74" hits="1" branch="false"/>
                 <line number="75" hits="1" branch="false"/>
-                <line number="76" hits="1" branch="false"/>
+                <line number="77" hits="1" branch="false"/>
                 <line number="78" hits="1" branch="false"/>
                 <line number="79" hits="1" branch="false"/>
-                <line number="80" hits="1" branch="false"/>
+                <line number="81" hits="1" branch="false"/>
                 <line number="82" hits="1" branch="false"/>
                 <line number="83" hits="1" branch="false"/>
-                <line number="84" hits="1" branch="false"/>
-                <line number="86" hits="1" branch="false"/>
-                <line number="88" hits="1" branch="false"/>
+                <line number="85" hits="1" branch="false"/>
+                <line number="87" hits="1" branch="false"/>
+                <line number="89" hits="1" branch="false"/>
                 <line number="90" hits="1" branch="false"/>
                 <line number="91" hits="1" branch="false"/>
                 <line number="92" hits="1" branch="false"/>
@@ -830,7 +835,7 @@
                 <line number="99" hits="1" branch="false"/>
                 <line number="100" hits="1" branch="false"/>
                 <line number="101" hits="1" branch="false"/>
-                <line number="102" hits="1" branch="false"/>
+                <line number="103" hits="1" branch="false"/>
                 <line number="104" hits="1" branch="false"/>
                 <line number="105" hits="1" branch="false"/>
                 <line number="106" hits="1" branch="false"/>
@@ -844,24 +849,24 @@
                 <line number="114" hits="1" branch="false"/>
                 <line number="115" hits="1" branch="false"/>
                 <line number="116" hits="1" branch="false"/>
-                <line number="117" hits="1" branch="false"/>
               </lines>
             </method>
             <method name="extract_plot_data" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
+                <line number="133" hits="1" branch="false"/>
                 <line number="134" hits="1" branch="false"/>
-                <line number="135" hits="1" branch="false"/>
+                <line number="136" hits="1" branch="false"/>
                 <line number="137" hits="1" branch="false"/>
                 <line number="138" hits="1" branch="false"/>
                 <line number="139" hits="1" branch="false"/>
                 <line number="140" hits="1" branch="false"/>
                 <line number="141" hits="1" branch="false"/>
-                <line number="142" hits="1" branch="false"/>
               </lines>
             </method>
             <method name="g_forest" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
-                <line number="180" hits="1" branch="false"/>
+                <line number="179" hits="1" branch="false"/>
+                <line number="181" hits="1" branch="false"/>
                 <line number="182" hits="1" branch="false"/>
                 <line number="183" hits="1" branch="false"/>
                 <line number="184" hits="1" branch="false"/>
@@ -869,10 +874,11 @@
             </method>
           </methods>
           <lines>
-            <line number="44" hits="1" branch="false"/>
+            <line number="43" hits="1" branch="false"/>
+            <line number="45" hits="1" branch="false"/>
             <line number="46" hits="1" branch="false"/>
-            <line number="47" hits="1" branch="false"/>
-            <line number="50" hits="1" branch="false"/>
+            <line number="49" hits="1" branch="false"/>
+            <line number="59" hits="1" branch="false"/>
             <line number="60" hits="1" branch="false"/>
             <line number="61" hits="1" branch="false"/>
             <line number="62" hits="1" branch="false"/>
@@ -880,20 +886,20 @@
             <line number="64" hits="1" branch="false"/>
             <line number="65" hits="1" branch="false"/>
             <line number="66" hits="1" branch="false"/>
-            <line number="67" hits="1" branch="false"/>
-            <line number="71" hits="1" branch="false"/>
+            <line number="70" hits="1" branch="false"/>
+            <line number="72" hits="1" branch="false"/>
             <line number="73" hits="1" branch="false"/>
             <line number="74" hits="1" branch="false"/>
             <line number="75" hits="1" branch="false"/>
-            <line number="76" hits="1" branch="false"/>
+            <line number="77" hits="1" branch="false"/>
             <line number="78" hits="1" branch="false"/>
             <line number="79" hits="1" branch="false"/>
-            <line number="80" hits="1" branch="false"/>
+            <line number="81" hits="1" branch="false"/>
             <line number="82" hits="1" branch="false"/>
             <line number="83" hits="1" branch="false"/>
-            <line number="84" hits="1" branch="false"/>
-            <line number="86" hits="1" branch="false"/>
-            <line number="88" hits="1" branch="false"/>
+            <line number="85" hits="1" branch="false"/>
+            <line number="87" hits="1" branch="false"/>
+            <line number="89" hits="1" branch="false"/>
             <line number="90" hits="1" branch="false"/>
             <line number="91" hits="1" branch="false"/>
             <line number="92" hits="1" branch="false"/>
@@ -906,7 +912,7 @@
             <line number="99" hits="1" branch="false"/>
             <line number="100" hits="1" branch="false"/>
             <line number="101" hits="1" branch="false"/>
-            <line number="102" hits="1" branch="false"/>
+            <line number="103" hits="1" branch="false"/>
             <line number="104" hits="1" branch="false"/>
             <line number="105" hits="1" branch="false"/>
             <line number="106" hits="1" branch="false"/>
@@ -920,16 +926,16 @@
             <line number="114" hits="1" branch="false"/>
             <line number="115" hits="1" branch="false"/>
             <line number="116" hits="1" branch="false"/>
-            <line number="117" hits="1" branch="false"/>
+            <line number="133" hits="1" branch="false"/>
             <line number="134" hits="1" branch="false"/>
-            <line number="135" hits="1" branch="false"/>
+            <line number="136" hits="1" branch="false"/>
             <line number="137" hits="1" branch="false"/>
             <line number="138" hits="1" branch="false"/>
             <line number="139" hits="1" branch="false"/>
             <line number="140" hits="1" branch="false"/>
             <line number="141" hits="1" branch="false"/>
-            <line number="142" hits="1" branch="false"/>
-            <line number="180" hits="1" branch="false"/>
+            <line number="179" hits="1" branch="false"/>
+            <line number="181" hits="1" branch="false"/>
             <line number="182" hits="1" branch="false"/>
             <line number="183" hits="1" branch="false"/>
             <line number="184" hits="1" branch="false"/>
@@ -3320,6 +3326,8 @@
                 <line number="162" hits="1" branch="false"/>
                 <line number="163" hits="1" branch="false"/>
                 <line number="164" hits="1" branch="false"/>
+                <line number="165" hits="1" branch="false"/>
+                <line number="166" hits="1" branch="false"/>
               </lines>
             </method>
           </methods>
@@ -3441,6 +3449,8 @@
             <line number="162" hits="1" branch="false"/>
             <line number="163" hits="1" branch="false"/>
             <line number="164" hits="1" branch="false"/>
+            <line number="165" hits="1" branch="false"/>
+            <line number="166" hits="1" branch="false"/>
           </lines>
         </class>
         <class name="tbl_roche_summary.R" filename="R/tbl_roche_summary.R" line-rate="1" branch-rate="0" complexity="0">
