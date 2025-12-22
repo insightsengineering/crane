@@ -9,7 +9,7 @@
 #'
 #' @param x gt or gtsummary table
 #' @param ... arguments passed to `gt::gtsave()`
-#'
+#' @keywords internal
 #' @return a ggplot object
 #'
 #' @family gtsummary-related functions

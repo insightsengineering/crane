@@ -20,3 +20,4 @@ To use this function you must install the magick R package AND system program
 (see https://docs.ropensci.org/magick/articles/intro.html#installing-magick-1)
 }
 \concept{gtsummary-related functions}
+\keyword{internal}
