@@ -11,7 +11,6 @@
 #' @param ... arguments passed to `gt::gtsave()`
 #'
 #' @return a ggplot object
-#' @export
 #'
 #' @family gtsummary-related functions
 #' @examples require('patchwork')
