@@ -18,7 +18,7 @@ showing the table on the left and the forest plot on the right.
 This is the main wrapper function that takes a 'gtsummary' object,
 converts it to a 'ggplot' table, extracts the necessary data, creates
 a forest plot, and combines the two plots side-by-side using \code{+}.
-This likely relies on the {patchwork} package for plot combination.
+This likely relies on the \code{patchwork} package for plot combination.
 }
 \examples{
 tbl <-

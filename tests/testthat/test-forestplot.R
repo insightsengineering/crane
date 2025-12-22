@@ -3,6 +3,7 @@ skip_if_pkg_not_installed("broom.helpers")
 skip_if_pkg_not_installed("ggtext")
 skip_if_pkg_not_installed("magick")
 skip_if_pkg_not_installed("patchwork")
+skip_if_pkg_not_installed("webshot2")
 
 test_that("test g_forest() works", {
   expect_no_error(tbl <-

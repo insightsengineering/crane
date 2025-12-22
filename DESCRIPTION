@@ -48,7 +48,8 @@ Suggests:
     magick,
     pharmaverseadam,
     testthat (>= 3.0.0),
-    withr (>= 3.0.1)
+    withr (>= 3.0.1),
+    webshot2
 Config/Needs/check: hms
 Config/Needs/website: rmarkdown, yaml
 Config/testthat/edition: 3

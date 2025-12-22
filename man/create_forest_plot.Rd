@@ -35,7 +35,7 @@ reference line (line of no effect). The default is \code{1}.}
 A 'ggplot' object representing the forest plot.
 }
 \description{
-Generates a forest plot using {ggplot2} from a data frame containing
+Generates a forest plot using \code{ggplot2} from a data frame containing
 estimates, confidence intervals, and sample sizes. This function is designed
 to be a component of a combined table/plot output (e.g., used by \code{\link[=g_forest]{g_forest()}}).
 }

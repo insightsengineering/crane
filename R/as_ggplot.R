@@ -13,25 +13,6 @@
 #' @return a ggplot object
 #'
 #' @family gtsummary-related functions
-#' @examples require("patchwork")
-#' library(ggplot2)
-#' require(patchwork)
-#'
-#' # convert gtsummary table to ggplot
-#' tbl <-
-#'   trial %>%
-#'   select(age, marker, trt) %>%
-#'   tbl_summary(by = trt, missing = "no") %>%
-#'   as_ggplot()
-#' # # create basic ggplot
-#'
-#' gg <-
-#'   trial %>%
-#'   ggplot(aes(x = age, y = marker, color = trt)) +
-#'   geom_point()
-#'
-#' # # stack tables using patchwork
-#' gg / tbl
 as_ggplot <- function(x, ...) {
   # checks ---------------------------------------------------------------------
   if (!inherits(x, c("gt_tbl", "gtsummary"))) stop("`x=` must be a 'gt' or 'gtsummary' table", call. = FALSE)

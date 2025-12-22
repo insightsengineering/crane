@@ -1,6 +1,6 @@
 #' Create a Custom Forest Plot
 #'
-#' Generates a forest plot using {ggplot2} from a data frame containing
+#' Generates a forest plot using `ggplot2` from a data frame containing
 #' estimates, confidence intervals, and sample sizes. This function is designed
 #' to be a component of a combined table/plot output (e.g., used by [g_forest()]).
 #'
@@ -140,7 +140,7 @@ extract_plot_data <- function(tbl) {
 #' This is the main wrapper function that takes a 'gtsummary' object,
 #' converts it to a 'ggplot' table, extracts the necessary data, creates
 #' a forest plot, and combines the two plots side-by-side using `+`.
-#' This likely relies on the {patchwork} package for plot combination.
+#' This likely relies on the `patchwork` package for plot combination.
 #'
 #' @param tbl (`gtsummary`)\cr
 #'   A 'gtsummary' object (e.g., from [tbl_regression()]).
