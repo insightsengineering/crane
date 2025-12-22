@@ -63,7 +63,7 @@ create_forest_plot <- function(data,
         ci_lower_log = .data$ci_lower,
         ci_upper_log = .data$ci_upper
       )
-    x_aesthetic_vars <- aes(x = estimate, xend = ci_lower_log, yend = ci_upper_log)
+    x_aesthetic_vars <- aes(x = .data$estimate, xend = .data$ci_lower_log, yend = .data$ci_upper_log)
     x_scale <- scale_x_log10(limits = xlim, expand = c(0.01, 0))
   }
 
@@ -75,7 +75,7 @@ create_forest_plot <- function(data,
       fill = "grey92", alpha = 0.5
     ) +
     # CI lines with arrows
-    geom_errorbar(aes(xmin = ci_lower_log, xmax = ci_upper_log, y = y_pos),
+    geom_errorbar(aes(xmin = .data$ci_lower_log, xmax = .data$ci_upper_log, y = .data$y_pos),
       height = 0.2, color = "black", orientation = "y"
     ) +
     # Points
