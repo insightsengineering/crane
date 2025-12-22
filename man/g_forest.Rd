@@ -22,12 +22,12 @@ This likely relies on the \code{patchwork} package for plot combination.
 }
 \examples{
 tbl <-
-  trial \%>\%
+  trial |>
   tbl_roche_subgroups(
     rsp = "response",
     by = "trt",
     subgroups = c("grade", "stage"),
-    ~ glm(response ~ trt, data = .x) \%>\%
+    ~ glm(response ~ trt, data = .x) |>
       gtsummary::tbl_regression(
         show_single_row = trt,
         exponentiate = TRUE,

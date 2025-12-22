@@ -43,12 +43,12 @@ create_forest_plot <- function(data,
                                vline = 1) {
   forest_header <- paste0(groups, "\nBetter")
   # Calculate y positions (reverse order for top-to-bottom display)
-  data <- data %>%
+  data <- data |>
     mutate(y_pos = rev(dplyr::row_number()))
 
   # Apply log transformation if needed
   if (logx) {
-    #   data <- data %>%
+    #   data <- data |>
     #     mutate(
     #       estimate_log = log(estimate),
     #       ci_lower_log = log(ci_lower),
@@ -57,11 +57,11 @@ create_forest_plot <- function(data,
     #   x_aesthetic_vars <- aes(x = estimate_log, xend = ci_lower_log, yend = ci_upper_log)
     #   x_scale <- scale_x_log10(limits = xlim, expand = c(0.01, 0))
     # } else {
-    data <- data %>%
+    data <- data |>
       mutate(
-        estimate_log = estimate,
-        ci_lower_log = ci_lower,
-        ci_upper_log = ci_upper
+        estimate_log = .data$estimate,
+        ci_lower_log = .data$ci_lower,
+        ci_upper_log = .data$ci_upper
       )
     x_aesthetic_vars <- aes(x = estimate, xend = ci_lower_log, yend = ci_upper_log)
     x_scale <- scale_x_log10(limits = xlim, expand = c(0.01, 0))
@@ -79,7 +79,7 @@ create_forest_plot <- function(data,
       height = 0.2, color = "black", orientation = "y"
     ) +
     # Points
-    geom_point(aes(x = estimate_log, y = y_pos, size = n),
+    geom_point(aes(x = .data$estimate_log, y = .data$y_pos, size = .data$n),
       color = "#343cff", shape = 19
     ) +
     # Reference line
@@ -131,7 +131,7 @@ create_forest_plot <- function(data,
 #'   `ci_upper` (from `conf.high`), and `n` (from `N_obs`).
 #' @keywords internal
 extract_plot_data <- function(tbl) {
-  ret <- tbl$table_body %>%
+  ret <- tbl$table_body |>
     select(
       # group = termc("Drug A", "Drug B"),
       estimate = starts_with("estimate"),
@@ -160,12 +160,12 @@ extract_plot_data <- function(tbl) {
 #' @export
 #' @examples
 #' tbl <-
-#'   trial %>%
+#'   trial |>
 #'   tbl_roche_subgroups(
 #'     rsp = "response",
 #'     by = "trt",
 #'     subgroups = c("grade", "stage"),
-#'     ~ glm(response ~ trt, data = .x) %>%
+#'     ~ glm(response ~ trt, data = .x) |>
 #'       gtsummary::tbl_regression(
 #'         show_single_row = trt,
 #'         exponentiate = TRUE,
@@ -184,14 +184,14 @@ g_forest <- function(tbl, groups) {
 
 
 # extract_tbl_from_gtsummry <- function(tbl) {
-#   ret <- tbl$table_body %>%
-#     mutate(or = round(estimate, 2)) %>%
+#   ret <- tbl$table_body |>
+#     mutate(or = round(estimate, 2)) |>
 #     select(
 #       `label` = label,
 #       `Total n` = N,
 #       `Odds ratio` = or,
 #       `95% CI` = ci
-#     ) %>%
+#     ) |>
 #     as_tibble()
 #   print(ret)
 # }

@@ -10,7 +10,7 @@
 #'                   all_of any_of everything last_col where
 #' @importFrom labeling extended
 #' @importFrom survival coxph Surv survdiff
-#' @importFrom stats pchisq
+#' @importFrom stats pchisq median
 #' @importFrom tidyr pivot_wider
 #' @importFrom utils tail
 "_PACKAGE"
