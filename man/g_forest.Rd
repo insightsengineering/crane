@@ -31,7 +31,6 @@ tbl <-
       gtsummary::tbl_regression(
         show_single_row = trt,
         exponentiate = TRUE,
-        tidy_fun = broom.helpers::tidy_parameters
       )
   )
 

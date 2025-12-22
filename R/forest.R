@@ -86,12 +86,19 @@ create_forest_plot <- function(data,
     geom_vline(xintercept = vline, linewidth = 1) +
     # Forest header text
     annotate("text",
-      x = mean(c(xlim[1], vline)), y = nrow(data) + 1.25,
-      label = forest_header[1], size = 3.5
+             # Use geometric mean for log-scale centering: exp(mean(log(c(x1, x2))))
+             x = 10^(mean(log10(c(xlim[1], vline)))),
+             y = nrow(data) + 1.25,
+             label = forest_header[1],
+             size = 3.5,
+             hjust = 0.5 # Now it will look truly centered
     ) +
     annotate("text",
-      x = mean(c(vline, xlim[2])), y = nrow(data) + 1.25,
-      label = forest_header[2], size = 3.5
+             x = 10^(mean(log10(c(vline, xlim[2])))),
+             y = nrow(data) + 1.25,
+             label = forest_header[2],
+             size = 3.5,
+             hjust = 0.5
     ) +
     # Scales and theme
     x_scale +
@@ -162,7 +169,6 @@ extract_plot_data <- function(tbl) {
 #'       gtsummary::tbl_regression(
 #'         show_single_row = trt,
 #'         exponentiate = TRUE,
-#'         tidy_fun = broom.helpers::tidy_parameters
 #'       )
 #'   )
 #'
