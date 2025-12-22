@@ -168,11 +168,13 @@ extract_plot_data <- function(tbl) {
 #'     ~ glm(response ~ trt, data = .x) |>
 #'       gtsummary::tbl_regression(
 #'         show_single_row = trt,
-#'         exponentiate = TRUE,
+#'         exponentiate = TRUE
 #'       )
 #'   )
 #'
-#' g_forest(tbl, groups = levels(factor(trial$trt)))
+#' \dontrun{
+#'   g_forest(tbl, groups = levels(factor(trial$trt)))
+#' }
 g_forest <- function(tbl, groups) {
   # todo need to make sure tbl does not have wrapped rows
   table_plot <- as_ggplot(tbl)

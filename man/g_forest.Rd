@@ -30,11 +30,13 @@ tbl <-
     ~ glm(response ~ trt, data = .x) |>
       gtsummary::tbl_regression(
         show_single_row = trt,
-        exponentiate = TRUE,
+        exponentiate = TRUE
       )
   )
 
-g_forest(tbl, groups = levels(factor(trial$trt)))
+\dontrun{
+  g_forest(tbl, groups = levels(factor(trial$trt)))
+}
 }
 \seealso{
 \code{\link[=extract_plot_data]{extract_plot_data()}}, \code{\link[=create_forest_plot]{create_forest_plot()}}
