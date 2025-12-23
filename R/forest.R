@@ -1,3 +1,46 @@
+#' Create a Combined gtsummary Table and Forest Plot
+#'
+#' This is the main wrapper function that takes a 'gtsummary' object,
+#' converts it to a 'ggplot' table, extracts the necessary data, creates
+#' a forest plot, and combines the two plots side-by-side using `+`.
+#' This likely relies on the `patchwork` package for plot combination.
+#'
+#' @param tbl (`gtsummary`)\cr
+#'   A 'gtsummary' object (e.g., from [tbl_regression()]).
+#'
+#' @return A combined 'ggplot' object (likely a 'patchwork' object)
+#'   showing the table on the left and the forest plot on the right.
+#'
+#' @seealso [extract_plot_data()], [gg_forest_plot()]
+#'
+#' @export
+#' @examples
+#' tbl <-
+#'   trial |>
+#'   tbl_roche_subgroups(
+#'     rsp = "response",
+#'     by = "trt",
+#'     subgroups = c("grade", "stage"),
+#'     ~ glm(response ~ trt, data = .x) |>
+#'       gtsummary::tbl_regression(
+#'         show_single_row = trt,
+#'         exponentiate = TRUE
+#'       )
+#'   )
+#'
+#' g_forest(tbl)
+g_forest <- function(tbl) {
+  # todo need to make sure tbl does not have wrapped rows
+  suppressMessages(
+    table_plot <- as_ggplot(tbl)
+  )
+  forest_data <- extract_plot_data(tbl)
+  forest_header <- attr(tbl, "by")
+  forest_plot <- gg_forest_plot(forest_data, forest_header)
+  table_plot + forest_plot + plot_layout(widths = c(3, 1))
+}
+
+
 #' Create a Custom Forest Plot
 #'
 #' Generates a forest plot using `ggplot2` from a data frame containing
@@ -33,14 +76,14 @@
 #'   n = c(100, 250)
 #' )
 #'
-#' create_forest_plot(forest_data)
-#' create_forest_plot(forest_data, xlim = c(0.05, 50), vline = 1)
+#' gg_forest_plot(forest_data)
+#' gg_forest_plot(forest_data, xlim = c(0.05, 50), vline = 1)
 #' }
-create_forest_plot <- function(data,
-                               header = "",
-                               xlim = c(0.1, 10),
-                               logx = TRUE,
-                               vline = 1) {
+gg_forest_plot <- function(data,
+                           header = "",
+                           xlim = c(0.1, 10),
+                           logx = TRUE,
+                           vline = 1) {
   forest_header <- paste0(header, "\nBetter")
   # Calculate y positions (reverse order for top-to-bottom display)
   data <- data |>
@@ -48,15 +91,6 @@ create_forest_plot <- function(data,
 
   # Apply log transformation if needed
   if (logx) {
-    #   data <- data |>
-    #     mutate(
-    #       estimate_log = log(estimate),
-    #       ci_lower_log = log(ci_lower),
-    #       ci_upper_log = log(ci_upper)
-    #     )
-    #   x_aesthetic_vars <- aes(x = estimate_log, xend = ci_lower_log, yend = ci_upper_log)
-    #   x_scale <- scale_x_log10(limits = xlim, expand = c(0.01, 0))
-    # } else {
     data <- data |>
       mutate(
         estimate_log = .data$estimate,
@@ -64,7 +98,7 @@ create_forest_plot <- function(data,
         ci_upper_log = .data$ci_upper
       )
     x_aesthetic_vars <- aes(x = .data$estimate, xend = .data$ci_lower_log, yend = .data$ci_upper_log)
-    x_scale <- scale_x_log10(limits = xlim, expand = c(0.01, 0))
+    x_scale <- scale_x_log10(expand = c(0.01, 0))
   }
 
   # Create plot
@@ -76,7 +110,7 @@ create_forest_plot <- function(data,
     ) +
     # CI lines with arrows
     geom_errorbar(aes(xmin = .data$ci_lower_log, xmax = .data$ci_upper_log, y = .data$y_pos),
-      height = 0.2, color = "black", orientation = "y"
+      width = 0.2, color = "black", orientation = "y"
     ) +
     # Points
     geom_point(aes(x = .data$estimate_log, y = .data$y_pos, size = .data$n),
@@ -102,6 +136,7 @@ create_forest_plot <- function(data,
     ) +
     # Scales and theme
     x_scale +
+    coord_cartesian(xlim = xlim) +
     scale_y_continuous(
       limits = c(0, nrow(data) + 2.5), breaks = data$y_pos,
       labels = rep("", length(data$estimate)), expand = c(0, 0)
@@ -120,7 +155,7 @@ create_forest_plot <- function(data,
 #' Extract Data for Forest Plot from gtsummary Table
 #'
 #' Converts the table body (`tbl$table_body`) of a 'gtsummary' object
-#' into a data frame suitable for plotting with [create_forest_plot()].
+#' into a data frame suitable for plotting with [gg_forest_plot()].
 #' It selects and renames the necessary columns for the plot.
 #'
 #' @param tbl (`gtsummary`)\cr
@@ -141,60 +176,3 @@ extract_plot_data <- function(tbl) {
     )
   return(ret)
 }
-
-#' Create a Combined gtsummary Table and Forest Plot
-#'
-#' This is the main wrapper function that takes a 'gtsummary' object,
-#' converts it to a 'ggplot' table, extracts the necessary data, creates
-#' a forest plot, and combines the two plots side-by-side using `+`.
-#' This likely relies on the `patchwork` package for plot combination.
-#'
-#' @param tbl (`gtsummary`)\cr
-#'   A 'gtsummary' object (e.g., from [tbl_regression()]).
-#'
-#' @return A combined 'ggplot' object (likely a 'patchwork' object)
-#'   showing the table on the left and the forest plot on the right.
-#'
-#' @seealso [extract_plot_data()], [create_forest_plot()]
-#'
-#' @export
-#' @examples
-#' tbl <-
-#'   trial |>
-#'   tbl_roche_subgroups(
-#'     rsp = "response",
-#'     by = "trt",
-#'     subgroups = c("grade", "stage"),
-#'     ~ glm(response ~ trt, data = .x) |>
-#'       gtsummary::tbl_regression(
-#'         show_single_row = trt,
-#'         exponentiate = TRUE
-#'       )
-#'   )
-#'
-#' \dontrun{
-#' g_forest(tbl)
-#' }
-g_forest <- function(tbl) {
-  # todo need to make sure tbl does not have wrapped rows
-  table_plot <- as_ggplot(tbl)
-  # table_plot <- wrap_table(tbl, space = "fixed")
-  forest_data <- extract_plot_data(tbl)
-  forest_header <- attr(tbl, "by")
-  forest_plot <- create_forest_plot(forest_data, forest_header)
-  table_plot + forest_plot + plot_layout(widths = c(3, 1))
-}
-
-
-# extract_tbl_from_gtsummry <- function(tbl) {
-#   ret <- tbl$table_body |>
-#     mutate(or = round(estimate, 2)) |>
-#     select(
-#       `label` = label,
-#       `Total n` = N,
-#       `Odds ratio` = or,
-#       `95% CI` = ci
-#     ) |>
-#     as_tibble()
-#   print(ret)
-# }
