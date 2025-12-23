@@ -1,4 +1,5 @@
 skip_on_cran()
+skip_if_pkg_not_installed("parameters")
 skip_if_pkg_not_installed("broom.helpers")
 skip_if_pkg_not_installed("ggtext")
 skip_if_pkg_not_installed("magick")
