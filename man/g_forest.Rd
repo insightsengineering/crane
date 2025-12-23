@@ -33,7 +33,9 @@ tbl <-
         exponentiate = TRUE
       )
   )
+\dontrun{
 g_forest(tbl)
+}
 }
 \seealso{
 \code{\link[=extract_plot_data]{extract_plot_data()}}, \code{\link[=gg_forest_plot]{gg_forest_plot()}}

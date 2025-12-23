@@ -27,7 +27,9 @@
 #'         exponentiate = TRUE
 #'       )
 #'   )
+#' \dontrun{
 #' g_forest(tbl)
+#' }
 g_forest <- function(tbl) {
   # todo need to make sure tbl does not have wrapped rows
   suppressMessages(
