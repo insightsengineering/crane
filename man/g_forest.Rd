@@ -33,7 +33,6 @@ tbl <-
         exponentiate = TRUE
       )
   )
-
 g_forest(tbl)
 }
 \seealso{

@@ -27,11 +27,12 @@
 #'         exponentiate = TRUE
 #'       )
 #'   )
-#'
 #' g_forest(tbl)
 g_forest <- function(tbl) {
   # todo need to make sure tbl does not have wrapped rows
-  table_plot <- as_ggplot(tbl)
+  suppressMessages(
+    table_plot <- as_ggplot(tbl)
+  )
   forest_data <- extract_plot_data(tbl)
   forest_header <- attr(tbl, "by")
   forest_plot <- gg_forest_plot(forest_data, forest_header)

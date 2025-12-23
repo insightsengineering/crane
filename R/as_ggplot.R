@@ -18,12 +18,14 @@ as_ggplot <- function(x, ...) {
   if (!inherits(x, c("gt_tbl", "gtsummary"))) stop("`x=` must be a 'gt' or 'gtsummary' table", call. = FALSE)
   .assert_package("magick", "as_ggplot")
   .assert_package("ggtext", "as_ggplot")
+  .assert_package("fs", "as_ggplot")
 
   # convert gtsummary to gt ----------------------------------------------------
   if (inherits(x, "gtsummary")) x <- gtsummary::as_gt(x)
 
   # save gt as image -----------------------------------------------------------
   path_gt_table_image <- fs::file_temp(ext = "png")
+  on.exit(if (fs::file_exists(path_gt_table_image)) fs::file_delete(path_gt_table_image), add = TRUE)
   gt_table_image <- gt::gtsave(x, filename = path_gt_table_image, ...)
 
   # save image in ggplot -------------------------------------------------------
