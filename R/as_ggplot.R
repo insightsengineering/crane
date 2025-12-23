@@ -23,7 +23,7 @@ as_ggplot <- function(x, ...) {
   if (inherits(x, "gtsummary")) x <- gtsummary::as_gt(x)
 
   # save gt as image -----------------------------------------------------------
-  path_gt_table_image <- tempfile(fileext = "png")
+  path_gt_table_image <- tempfile(fileext = ".png")
   # path_gt_table_image <- fs::file_temp(ext = "png")
   # on.exit(if (fs::file_exists(path_gt_table_image)) fs::file_delete(path_gt_table_image), add = TRUE)
   gt_table_image <- gt::gtsave(x, filename = path_gt_table_image, ...)
