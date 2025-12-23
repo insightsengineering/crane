@@ -10,6 +10,8 @@
 
 * Added `gg_km()` function for creating Kaplan-Meier plots.
 
+* Added `tbl_subgroups` and `g_forest` to make subgroup analysis and forest plots.
+
 * Added `list("assign_summary_type-arg:cat_threshold" = 0L)` to `theme_gtsummary_roche()`. Numeric variables with few levels will no longer default to summary type `'categorical'` in `gtsummary::tbl_summary()` and `tbl_roche_summary()`. (#79)
 
 ### Other Updates
