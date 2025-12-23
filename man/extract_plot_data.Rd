@@ -17,7 +17,7 @@ A data frame (tibble) with the columns:
 }
 \description{
 Converts the table body (\code{tbl$table_body}) of a 'gtsummary' object
-into a data frame suitable for plotting with \code{\link[=create_forest_plot]{create_forest_plot()}}.
+into a data frame suitable for plotting with \code{\link[=gg_forest_plot]{gg_forest_plot()}}.
 It selects and renames the necessary columns for the plot.
 }
 \keyword{internal}

@@ -34,10 +34,8 @@ tbl <-
       )
   )
 
-\dontrun{
 g_forest(tbl)
 }
-}
 \seealso{
-\code{\link[=extract_plot_data]{extract_plot_data()}}, \code{\link[=create_forest_plot]{create_forest_plot()}}
+\code{\link[=extract_plot_data]{extract_plot_data()}}, \code{\link[=gg_forest_plot]{gg_forest_plot()}}
 }
