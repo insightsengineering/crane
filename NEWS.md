@@ -1,5 +1,10 @@
 # crane 0.3.1
 
+## New Functions and Functionality
+
+* Added `tbl_roche_subgroups()` for subgroup analysis.
+
+* Added `g_forest` to create forest plot.
 
 # crane 0.3.0
 
@@ -10,6 +15,8 @@
 * Added functions `style_roche_number()` and `label_roche_number()` to replace their respective gtsummary versions, with additional `inf` argument for customization of `Inf`/`-Inf`/`NaN` values.
 
 * Added `gg_km()` function for creating Kaplan-Meier plots.
+
+* Added `tbl_subgroups` and `g_forest` to make subgroup analysis and forest plots.
 
 * Added `list("assign_summary_type-arg:cat_threshold" = 0L)` to `theme_gtsummary_roche()`. Numeric variables with few levels will no longer default to summary type `'categorical'` in `gtsummary::tbl_summary()` and `tbl_roche_summary()`. (#79)
 
