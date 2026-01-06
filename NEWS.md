@@ -1,4 +1,10 @@
-# crane 0.3.0.9003
+# crane 0.3.1
+
+## New Functions and Functionality
+
+* Added `tbl_roche_subgroups()` for subgroup analysis.
+
+* Added `g_forest` to create forest plot.
 
 # crane 0.3.0
 
