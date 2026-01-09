@@ -1,5 +1,7 @@
 # crane 0.3.0.9003
 
+* Update `theme_gtsummary_roche` so that `flextable` created from `gtsummary` objects have a fixed layout.
+
 # crane 0.3.0
 
 ## New Functions and Functionality
