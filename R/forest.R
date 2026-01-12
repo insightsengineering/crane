@@ -99,7 +99,7 @@ gg_forest_plot <- function(data,
         ci_upper_log = .data$ci_upper
       )
     x_aesthetic_vars <- aes(x = .data$estimate, xend = .data$ci_lower_log, yend = .data$ci_upper_log)
-    x_scale <- scale_x_log10(expand = c(0.01, 0))
+    x_scale <- scale_x_log10()
   }
 
   # Create plot
@@ -140,7 +140,7 @@ gg_forest_plot <- function(data,
     coord_cartesian(xlim = xlim) +
     scale_y_continuous(
       limits = c(0, nrow(data) + 2.5), breaks = data$y_pos,
-      labels = rep("", length(data$estimate)), expand = c(0, 0)
+      labels = rep("", length(data$estimate))
     ) +
     theme_minimal() +
     theme(
