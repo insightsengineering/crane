@@ -155,7 +155,8 @@ annotate_riskdf <- function(gg_plt, fit_km, title = "Patients at Risk:",
   gg_at_risk <- gg_at_risk +
     scale_x_continuous(
       limits = top_range,
-      breaks = top_breaks)
+      breaks = top_breaks
+    )
 
   # 3. Force the top plot to also have no expansion so they match perfectly
   gg_plt <- gg_plt + scale_x_continuous(limits = top_range)
