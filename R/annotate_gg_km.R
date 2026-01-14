@@ -146,6 +146,20 @@ annotate_riskdf <- function(gg_plt, fit_km, title = "Patients at Risk:",
     ) +
     ggplot2::coord_cartesian(clip = "off", ylim = c(0.5, nrow(at_risk_tbl)))
 
+  # 1. Get the exact x-range from the top plot (the 0-1200 range)
+  top_range <- layer_scales(gg_plt)$x$range$range
+  top_breaks <- layer_scales(gg_plt)$x$break_positions()
+
+  # 2. Force the bottom plot (table) to use the SAME range and breaks
+  # This ensures 0 on the top is exactly above 0 on the bottom
+  gg_at_risk <- gg_at_risk +
+    scale_x_continuous(
+      limits = top_range,
+      breaks = top_breaks)
+
+  # 3. Force the top plot to also have no expansion so they match perfectly
+  gg_plt <- gg_plt + scale_x_continuous(limits = top_range)
+
   gg_plt <- cowplot::plot_grid(
     gg_plt, gg_at_risk,
     align = "v", axis = "rl", ncol = 1,
