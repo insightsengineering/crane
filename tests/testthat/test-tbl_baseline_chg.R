@@ -1,12 +1,15 @@
-df <- cards::ADLB |>
+df_2params <- cards::ADLB |>
   dplyr::mutate(
     AVISIT = str_trim(AVISIT),
     TRTA = as.factor(TRTA)
   ) |>
   dplyr::filter(
     AVISIT != "End of Treatment",
-    PARAMCD == "SODIUM"
+    PARAMCD %in% c("SODIUM", "K")
   )
+
+df <- df_2params |>
+  dplyr::filter(PARAMCD == "SODIUM")
 
 
 test_that("tbl_baseline_chg() works", {
@@ -180,5 +183,39 @@ test_that("gather_ard() works on output table", {
 
   expect_snapshot(
     gather_ard(tbl)
+  )
+})
+
+test_that("tbl_baseline_chg(split_by = PARAM) works", {
+  withr::local_options(list(width = 120))
+  expect_no_error(
+    tbl <-
+      tbl_baseline_chg(
+        data = df_2params,
+        baseline_level = "Baseline",
+        by = "TRTA",
+        split_by = "PARAMCD",
+        denominator = cards::ADSL
+      )
+  )
+  expect_equal(length(tbl), 2)
+  expect_snapshot(names(tbl))
+  expect_snapshot(as.data.frame(tbl[[2]])[1:25, 1:5])
+
+  # non-string variable input works
+  expect_no_error(
+    tbl <-
+      tbl_baseline_chg(
+        data = df_2params,
+        baseline_level = "Baseline",
+        by = TRTA,
+        split_by = PARAM,
+        id = USUBJID,
+        visit = AVISIT,
+        visit_number = AVISITN,
+        analysis_variable = AVAL,
+        change_variable = CHG,
+        denominator = cards::ADSL
+      )
   )
 })
