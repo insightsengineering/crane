@@ -90,8 +90,9 @@ test_that("add_blank_rows(row_numbers) error", {
       add_blank_rows(row_numbers = c(1, 2))
   )
 
+  # Change line 93 in test-add_blank_rows.R to:
   expect_equal(
-    out$table_body[, 1] |> dplyr::pull(trt),
+    dplyr::pull(out$table_body[, 1], trt) |> as.character(), 
     c("Drug A", NA, "Drug B", NA, "Drug A")
   )
 })
