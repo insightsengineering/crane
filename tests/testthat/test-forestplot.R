@@ -1,6 +1,10 @@
 test_that("test g_forest() works", {
   skip_on_cran()
   skip_on_os("windows")
+  skip_if_not(
+    nzchar(Sys.which("chromium-browser")),
+    "chromium-browser not available on CI"
+  )
   skip_if_pkg_not_installed("parameters")
   skip_if_pkg_not_installed("broom.helpers")
   skip_if_pkg_not_installed("ggtext")
