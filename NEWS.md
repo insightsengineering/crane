@@ -1,5 +1,9 @@
 # crane 0.3.0.9004
 
+### Other Updates
+
+* Removed bold from headers when using `tbl_strata()`.
+
 # crane 0.3.0
 
 ## New Functions and Functionality

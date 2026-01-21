@@ -99,3 +99,20 @@ test_that("with assign_summary_type-arg:cat_threshold=0L each data type is alway
   # it would be 4 if casted categorical instead of numeric for cyl
   expect_equal(nrow(gtsummary::tbl_summary(mtcars, include = cyl)$table_body), 1)
 })
+
+test_that("theme pre-conversion modifies header not to be bold", {
+  tbl <- with_gtsummary_theme(
+    x = theme_gtsummary_roche(),
+    pharmaverseadam::adsl |>
+      tbl_strata(
+        strata = ETHNIC,
+        ~ .x |>
+          tbl_roche_summary(
+            by = TRT01A,
+            include = SEX
+          )
+      ) |>
+      gtsummary::as_flex_table()
+  )
+  expect_true(all(!grepl(tbl$header$dataset[1, -1], pattern = "\\*")))
+})
