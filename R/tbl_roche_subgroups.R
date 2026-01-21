@@ -14,7 +14,7 @@
 #' @returns a 'gtsummary' table
 #' @export
 #'
-#' @examples
+#' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true")
 #' tbl <-
 #'   trial |>
 #'   tbl_roche_subgroups(
