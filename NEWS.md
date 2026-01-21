@@ -1,5 +1,9 @@
 # crane 0.3.0.9004
 
+## New Functions and Functionality
+
+* Addition of parameter split_by to split tbl_baseline_chg() into a named list of tables.
+
 # crane 0.3.0
 
 ## New Functions and Functionality
