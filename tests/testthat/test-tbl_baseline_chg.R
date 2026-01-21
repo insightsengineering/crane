@@ -200,13 +200,12 @@ test_that("tbl_baseline_chg(split_by = PARAM) works", {
   )
   expect_equal(length(tbl), 2)
   expect_snapshot(names(tbl))
-  expect_snapshot(as.data.frame(tbl[[2]])[1:25, 1:5])
 
   # non-string variable input works
   expect_no_error(
     tbl <-
       tbl_baseline_chg(
-        data = df_2params,
+        data = df_2params |> dplyr::mutate(PARAM = as.factor(PARAM)),
         baseline_level = "Baseline",
         by = TRTA,
         split_by = PARAM,
@@ -216,6 +215,23 @@ test_that("tbl_baseline_chg(split_by = PARAM) works", {
         analysis_variable = AVAL,
         change_variable = CHG,
         denominator = cards::ADSL
-      )
+    )
+  )
+
+  # check that individual tables are the same as filtering the data
+  expect_equal(
+      tbl_baseline_chg(
+        data = df_2params,
+        baseline_level = "Baseline",
+        by = "TRTA",
+        split_by = "PARAMCD",
+        denominator = cards::ADSL
+      )[[1]] |> as.data.frame(),
+      tbl_baseline_chg(
+          data = df_2params |> dplyr::filter(PARAMCD == "SODIUM"),
+          baseline_level = "Baseline",
+          by = "TRTA",
+          denominator = cards::ADSL
+      ) |> as.data.frame()
   )
 })
