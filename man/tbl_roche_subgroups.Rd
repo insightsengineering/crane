@@ -31,6 +31,7 @@ a 'gtsummary' table
 Function adapted from \code{gtforester::tbl_subgroups()}.
 }
 \examples{
+\dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true")) withAutoprint(\{ # examplesIf}
 tbl <-
   trial |>
   tbl_roche_subgroups(
@@ -46,4 +47,5 @@ tbl <-
   )
 
 tbl
+\dontshow{\}) # examplesIf}
 }

@@ -21,6 +21,7 @@ a forest plot, and combines the two plots side-by-side using \code{+}.
 This likely relies on the \code{patchwork} package for plot combination.
 }
 \examples{
+\dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true")) withAutoprint(\{ # examplesIf}
 tbl <-
   trial |>
   tbl_roche_subgroups(
@@ -36,6 +37,7 @@ tbl <-
 \dontrun{
 g_forest(tbl)
 }
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=extract_plot_data]{extract_plot_data()}}, \code{\link[=gg_forest_plot]{gg_forest_plot()}}
