@@ -8,6 +8,10 @@
 
 * Added `g_forest` to create forest plot.
 
+## New Functions and Functionality
+
+* Addition of parameter split_by to split tbl_baseline_chg() into a named list of tables.
+
 # crane 0.3.0
 
 ## New Functions and Functionality
