@@ -14,7 +14,7 @@
 #' @returns a 'gtsummary' table
 #' @export
 #'
-#' @examples
+#' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true")
 #' tbl <-
 #'   trial |>
 #'   tbl_roche_subgroups(
@@ -91,7 +91,7 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
   # subgroup analyses
   tbl_subgp <-
     subgroups |>
-    purrr::map(
+    map(
       \(x) {
         list(
           # total n
