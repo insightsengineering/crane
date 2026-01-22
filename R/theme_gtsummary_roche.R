@@ -87,9 +87,9 @@ theme_gtsummary_roche <- function(font_size = NULL,
           rlang::expr(flextable::border_outer(part = "body", border = !!border))
         ),
         valign = list( # valign only because it will append to to last commands
-          rlang::expr(flextable::fontsize(size = !!((font_size %||% 8) - 1), part = "footer")), # second fontsize spec
+          rlang::expr(flextable::fontsize(size = !!((font_size %||% 8) - 1), part = "footer")), # second fontsize spectbl
           rlang::expr(flextable::border_outer(part = "header", border = !!border)), # second command from border
-          rlang::expr(flextable::border_inner_h(part = "header", border = !!border)),
+          rlang::expr(flextable::border_inner_h(part = "header", border = !!border)), # fix different line sizes
           rlang::expr(flextable::valign(valign = "top", part = "all")),
           rlang::expr(flextable::font(fontname = "Arial", part = "all")),
           rlang::expr(flextable::padding(padding.top = 0, part = "all")),
