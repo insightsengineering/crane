@@ -12,6 +12,8 @@
 
 * Addition of parameter split_by to split tbl_baseline_chg() into a named list of tables.
 
+* Update `theme_gtsummary_roche` so that `flextable` created from `gtsummary` objects have a fixed layout.
+
 # crane 0.3.0
 
 ## New Functions and Functionality

@@ -45,7 +45,7 @@
       flextable::line_spacing(space = 1, part = "all")
       
       $user_added3[[8]]
-      flextable::set_table_properties(layout = "autofit")
+      flextable::set_table_properties(layout = "fixed")
       
       
 
