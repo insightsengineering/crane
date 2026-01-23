@@ -10,6 +10,7 @@ tbl_baseline_chg(
   baseline_level,
   denominator,
   by = NULL,
+  split_by = NULL,
   digits = NULL,
   id = "USUBJID",
   visit = "AVISIT",
@@ -37,6 +38,11 @@ Data set used to compute the header counts (typically \code{ADSL}).}
 \item{by}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 A single column from \code{data}. Summary statistics will be stratified by this variable.
 Default is \code{NULL}.}
+
+\item{split_by}{(\code{string})\cr
+String identifying the variable to split the table by. Default is \code{NULL}. Usually
+used with \code{'PARAM'} variables to produce a list of tables for each parameter. Subtitles
+highlight the split levels.}
 
 \item{digits}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
 Specifies how summary statistics are rounded. Values may be either integer(s)
@@ -74,7 +80,7 @@ String indicating the column label. Default is \code{"**Overall**  \nN = {style_
 \item{...}{These dots are for future extensions and must be empty.}
 }
 \value{
-a gtsummary table
+A gtsummary table, or a named list of gtsummary tables if \code{split_by} is specified.
 }
 \description{
 Typical use is tabulating changes from baseline
@@ -88,22 +94,31 @@ df <- cards::ADLB |>
   dplyr::mutate(AVISIT = trimws(AVISIT)) |>
   dplyr::filter(
     AVISIT != "End of Treatment",
-    PARAMCD == "SODIUM"
+    PARAMCD \%in\% c("SODIUM", "K")
   )
 
 tbl_baseline_chg(
-  data = df,
+  data = df |> dplyr::filter(PARAMCD == "SODIUM"),
   baseline_level = "Baseline",
   by = "TRTA",
   denominator = cards::ADSL
 )
 
 tbl_baseline_chg(
-  data = df,
+  data = df |> dplyr::filter(PARAMCD == "K"),
   baseline_level = "Baseline",
   by = "TRTA",
   denominator = cards::ADSL
 ) |>
   add_overall(last = TRUE, col_label = "All Participants")
+
+# Split by PARAM
+tbl_baseline_chg(
+  data = df,
+  baseline_level = "Baseline",
+  by = "TRTA",
+  split_by = "PARAM",
+  denominator = cards::ADSL
+)
 \dontshow{\}) # examplesIf}
 }
