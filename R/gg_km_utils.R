@@ -47,11 +47,11 @@ df2gg <- function(df, colwidths = NULL, font_size = 10, col_labels = TRUE,
       dplyr::mutate(row_name = row.names(df)) |>
       # 2. Pivot the remaining columns (starting from '0' to the end) longer
       tidyr::pivot_longer(
-        cols = -.data$row_name, # Select all columns EXCEPT 'row_name'
+        cols = -"row_name", # Select all columns EXCEPT 'row_name'
         names_to = "col_name", # Name the new column containing the old column headers
         values_to = "value" # Name the new column containing the data values
       ) |>
-      dplyr::arrange(.data$row_name, .data$col_name) |>
+      dplyr::arrange("row_name", "col_name") |>
       dplyr::mutate(
         col_name = as.numeric(.data$col_name),
         row_name = factor(.data$row_name, levels = row.names(df))

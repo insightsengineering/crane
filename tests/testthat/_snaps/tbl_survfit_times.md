@@ -65,9 +65,9 @@
     Code
       as.data.frame(add_overall(tbl_survfit_times(data = cards::ADTTE, by = "TRTA", times = 30, label = "Day {time}"), last = TRUE, col_label = "**All Participants**  \nN = {n}"))
     Output
-                                   Placebo  \n(N = 86) Xanomeline High Dose  \n(N = 84) Xanomeline Low Dose  \n(N = 84) **All Participants**  \nN = 254
-      1                     Day 30                <NA>                             <NA>                            <NA>                            <NA>
-      2 Patients remaining at risk                  69                               38                              42                             149
-      3        Event Free Rate (%)                84.4                             53.0                            53.4                            64.1
-      4                     95% CI        (77.0, 92.6)                     (42.8, 65.7)                    (43.4, 65.6)                    (58.2, 70.5)
+                                   Placebo  \n(N = 86) Xanomeline High Dose  \n(N = 84) Xanomeline Low Dose  \n(N = 84) All Participants  \nN = 254
+      1                     Day 30                <NA>                             <NA>                            <NA>                        <NA>
+      2 Patients remaining at risk                  69                               38                              42                         149
+      3        Event Free Rate (%)                84.4                             53.0                            53.4                        64.1
+      4                     95% CI        (77.0, 92.6)                     (42.8, 65.7)                    (43.4, 65.6)                (58.2, 70.5)
 

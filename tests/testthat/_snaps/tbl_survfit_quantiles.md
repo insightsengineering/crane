@@ -67,10 +67,10 @@
     Code
       as.data.frame(add_overall(tbl_survfit_quantiles(data = cards::ADTTE, by = "TRTA"), last = TRUE, col_label = "**All Participants**  \nN = {n}"))
     Output
-                        Placebo  \n(N = 86) Xanomeline High Dose  \n(N = 84) Xanomeline Low Dose  \n(N = 84) **All Participants**  \nN = 254
-      1   Time to event                <NA>                             <NA>                            <NA>                            <NA>
-      2          Median                  NE                             36.0                            33.0                            51.0
-      3          95% CI            (NE, NE)                     (25.0, 47.0)                    (28.0, 51.0)                    (44.0, 70.0)
-      4 25% and 75%-ile            70.0, NE                       14.0, 58.0                      19.0, 80.0                        22.0, NE
-      5           Range        1.0 to 198.0                     1.0 to 189.0                    1.0 to 190.0                    1.0 to 198.0
+                        Placebo  \n(N = 86) Xanomeline High Dose  \n(N = 84) Xanomeline Low Dose  \n(N = 84) All Participants  \nN = 254
+      1   Time to event                <NA>                             <NA>                            <NA>                        <NA>
+      2          Median                  NE                             36.0                            33.0                        51.0
+      3          95% CI            (NE, NE)                     (25.0, 47.0)                    (28.0, 51.0)                (44.0, 70.0)
+      4 25% and 75%-ile            70.0, NE                       14.0, 58.0                      19.0, 80.0                    22.0, NE
+      5           Range        1.0 to 198.0                     1.0 to 189.0                    1.0 to 190.0                1.0 to 198.0
 
