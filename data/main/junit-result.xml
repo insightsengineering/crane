@@ -1,337 +1,140 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites>
-  <testsuite name="add_blank_rows" timestamp="2026-02-02T15:09:17Z" hostname="c05728a5528e" tests="1" skipped="0" failures="0" errors="0" time="6.877">
-    <testcase time="6.877" classname="character(0)" name="add_blank_rows_works"/>
+  <testsuite name="add_blank_rows" timestamp="2026-02-02T15:09:54Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="6.968">
+    <testcase time="6.968" classname="character(0)" name="add_blank_rows_works"/>
   </testsuite>
-  <testsuite name="add_blank_rows" timestamp="2026-02-02T15:09:17Z" hostname="c05728a5528e" tests="2" skipped="0" failures="0" errors="0" time="0.024">
-    <testcase time="0.0230000000000015" classname="character(0)" name="add_blank_rows_variables_works"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="add_blank_rows_variables_works"/>
+  <testsuite name="add_blank_rows" timestamp="2026-02-02T15:09:54Z" hostname="659fa2b24f4c" tests="2" skipped="0" failures="0" errors="0" time="0.024">
+    <testcase time="0.0229999999999997" classname="character(0)" name="add_blank_rows_variables_works"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="add_blank_rows_variables_works"/>
   </testsuite>
-  <testsuite name="add_blank_rows" timestamp="2026-02-02T15:09:18Z" hostname="c05728a5528e" tests="1" skipped="0" failures="0" errors="0" time="0.021">
-    <testcase time="0.0210000000000008" classname="character(0)" name="add_blank_rows_variables_grade_is_last_row_then_table_identical"/>
+  <testsuite name="add_blank_rows" timestamp="2026-02-02T15:09:54Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="0.023">
+    <testcase time="0.0229999999999997" classname="character(0)" name="add_blank_rows_variables_grade_is_last_row_then_table_identical"/>
   </testsuite>
-  <testsuite name="add_blank_rows" timestamp="2026-02-02T15:09:18Z" hostname="c05728a5528e" tests="1" skipped="0" failures="0" errors="0" time="0.001">
-    <testcase time="0.000999999999999446" classname="character(0)" name="add_blank_rows_variable_level_works"/>
+  <testsuite name="add_blank_rows" timestamp="2026-02-02T15:09:54Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999889" classname="character(0)" name="add_blank_rows_variable_level_works"/>
   </testsuite>
-  <testsuite name="add_blank_rows" timestamp="2026-02-02T15:09:18Z" hostname="c05728a5528e" tests="1" skipped="1" failures="0" errors="0" time="0.002">
-    <testcase time="0.00199999999999889" classname="character(0)" name="add_blank_rows_error_message">
-      <skipped message="Reason: On CRAN ('test-add_blank_rows.R:73:1')"/>
-    </testcase>
+  <testsuite name="add_blank_rows" timestamp="2026-02-02T15:09:54Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00200000000000067" classname="character(0)" name="add_blank_rows_error_message"/>
   </testsuite>
-  <testsuite name="add_blank_rows" timestamp="2026-02-02T15:09:18Z" hostname="c05728a5528e" tests="2" skipped="0" failures="0" errors="0" time="0.014">
-    <testcase time="0.0129999999999999" classname="character(0)" name="add_blank_rows_row_numbers_error"/>
-    <testcase time="0.00100000000000122" classname="character(0)" name="add_blank_rows_row_numbers_error"/>
+  <testsuite name="add_blank_rows" timestamp="2026-02-02T15:09:54Z" hostname="659fa2b24f4c" tests="2" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00200000000000067" classname="character(0)" name="add_blank_rows_row_numbers_error"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="add_blank_rows_row_numbers_error"/>
   </testsuite>
-  <testsuite name="add_blank_rows" timestamp="2026-02-02T15:09:18Z" hostname="c05728a5528e" tests="1" skipped="1" failures="0" errors="0" time="0.002">
-    <testcase time="0.00199999999999889" classname="character(0)" name="add_blank_rows_errors_when_no_variable">
-      <skipped message="Reason: On CRAN ('test-add_blank_rows.R:99:1')"/>
-    </testcase>
+  <testsuite name="add_blank_rows" timestamp="2026-02-02T15:09:54Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.000999999999999446" classname="character(0)" name="add_blank_rows_errors_when_no_variable"/>
   </testsuite>
-  <testsuite name="add_difference_row" timestamp="2026-02-02T15:09:20Z" hostname="c05728a5528e" tests="7" skipped="1" failures="0" errors="0" time="2.726">
-    <testcase time="2.722" classname="character(0)" name="add_difference_row.tbl_survfit_times_works"/>
+  <testsuite name="add_difference_row" timestamp="2026-02-02T15:09:56Z" hostname="659fa2b24f4c" tests="8" skipped="0" failures="0" errors="0" time="2.676">
+    <testcase time="2.671" classname="character(0)" name="add_difference_row.tbl_survfit_times_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="add_difference_row.tbl_survfit_times_works"/>
     <testcase time="0.000999999999999446" classname="character(0)" name="add_difference_row.tbl_survfit_times_works"/>
     <testcase time="0" classname="character(0)" name="add_difference_row.tbl_survfit_times_works"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="add_difference_row.tbl_survfit_times_works"/>
     <testcase time="0.00100000000000122" classname="character(0)" name="add_difference_row.tbl_survfit_times_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="add_difference_row.tbl_survfit_times_works"/>
     <testcase time="0" classname="character(0)" name="add_difference_row.tbl_survfit_times_works"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="add_difference_row.tbl_survfit_times_works">
-      <skipped message="Reason: On CRAN ('test-add_difference_row.R:10:1')"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="add_difference_row.tbl_survfit_times_works"/>
+  </testsuite>
+  <testsuite name="add_difference_row" timestamp="2026-02-02T15:09:56Z" hostname="659fa2b24f4c" tests="2" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00200000000000067" classname="character(0)" name="add_difference_row.tbl_survfit_times_error_messaging_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="add_difference_row.tbl_survfit_times_error_messaging_works"/>
+  </testsuite>
+  <testsuite name="forestplot" timestamp="2026-02-02T15:09:56Z" hostname="659fa2b24f4c" tests="1" skipped="1" failures="0" errors="0" time="0.036">
+    <testcase time="0.0359999999999996" classname="character(0)" name="test_g_forest_works">
+      <skipped message="Reason: chromium-browser not available on CI ('test-forestplot.R:4:3')"/>
     </testcase>
   </testsuite>
-  <testsuite name="add_difference_row" timestamp="2026-02-02T15:09:20Z" hostname="c05728a5528e" tests="1" skipped="1" failures="0" errors="0" time="0.012">
-    <testcase time="0.0120000000000005" classname="character(0)" name="add_difference_row.tbl_survfit_times_error_messaging_works">
-      <skipped message="Reason: On CRAN ('test-add_difference_row.R:52:1')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="forestplot" timestamp="2026-02-02T15:09:20Z" hostname="c05728a5528e" tests="1" skipped="1" failures="0" errors="0" time="0.042">
-    <testcase time="0.0419999999999998" classname="character(0)" name="test_g_forest_works">
-      <skipped message="Reason: On CRAN ('test-forestplot.R:2:3')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="add_hierarchical_count_row" timestamp="2026-02-02T15:09:21Z" hostname="c05728a5528e" tests="3" skipped="1" failures="0" errors="0" time="0.841">
-    <testcase time="0.839" classname="character(0)" name="add_hierarchical_count_row_works"/>
+  <testsuite name="add_hierarchical_count_row" timestamp="2026-02-02T15:09:57Z" hostname="659fa2b24f4c" tests="4" skipped="0" failures="0" errors="0" time="0.857">
+    <testcase time="0.854000000000001" classname="character(0)" name="add_hierarchical_count_row_works"/>
     <testcase time="0.000999999999999446" classname="character(0)" name="add_hierarchical_count_row_works"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="add_hierarchical_count_row_works">
-      <skipped message="Reason: On CRAN ('test-add_hierarchical_count_row.R:1:1')"/>
-    </testcase>
+    <testcase time="0.000999999999999446" classname="character(0)" name="add_hierarchical_count_row_works"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="add_hierarchical_count_row_works"/>
   </testsuite>
-  <testsuite name="add_hierarchical_count_row" timestamp="2026-02-02T15:09:21Z" hostname="c05728a5528e" tests="2" skipped="1" failures="0" errors="0" time="0.017">
-    <testcase time="0.016" classname="character(0)" name="add_hierarchical_count_row_data_preprocess_works"/>
-    <testcase time="0.00100000000000122" classname="character(0)" name="add_hierarchical_count_row_data_preprocess_works">
-      <skipped message="Reason: On CRAN ('test-add_hierarchical_count_row.R:37:1')"/>
-    </testcase>
+  <testsuite name="add_hierarchical_count_row" timestamp="2026-02-02T15:09:57Z" hostname="659fa2b24f4c" tests="2" skipped="0" failures="0" errors="0" time="0.004">
+    <testcase time="0.00300000000000011" classname="character(0)" name="add_hierarchical_count_row_data_preprocess_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="add_hierarchical_count_row_data_preprocess_works"/>
   </testsuite>
-  <testsuite name="label_roche" timestamp="2026-02-02T15:09:21Z" hostname="c05728a5528e" tests="1" skipped="0" failures="0" errors="0" time="0.081">
-    <testcase time="0.0809999999999995" classname="character(0)" name="style_roche_pvalue_works"/>
+  <testsuite name="label_roche" timestamp="2026-02-02T15:09:57Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="0.078">
+    <testcase time="0.0779999999999994" classname="character(0)" name="style_roche_pvalue_works"/>
   </testsuite>
-  <testsuite name="label_roche" timestamp="2026-02-02T15:09:21Z" hostname="c05728a5528e" tests="3" skipped="0" failures="0" errors="0" time="0.003">
-    <testcase time="0.00199999999999889" classname="character(0)" name="style_roche_percent_works"/>
+  <testsuite name="label_roche" timestamp="2026-02-02T15:09:57Z" hostname="659fa2b24f4c" tests="3" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00200000000000067" classname="character(0)" name="style_roche_percent_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="style_roche_percent_works"/>
     <testcase time="0" classname="character(0)" name="style_roche_percent_works"/>
-    <testcase time="0.00100000000000122" classname="character(0)" name="style_roche_percent_works"/>
   </testsuite>
-  <testsuite name="label_roche" timestamp="2026-02-02T15:09:21Z" hostname="c05728a5528e" tests="2" skipped="0" failures="0" errors="0" time="0.002">
-    <testcase time="0.00199999999999889" classname="character(0)" name="style_roche_ratio_works"/>
-    <testcase time="0" classname="character(0)" name="style_roche_ratio_works"/>
+  <testsuite name="label_roche" timestamp="2026-02-02T15:09:57Z" hostname="659fa2b24f4c" tests="2" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00200000000000067" classname="character(0)" name="style_roche_ratio_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="style_roche_ratio_works"/>
   </testsuite>
-  <testsuite name="label_roche" timestamp="2026-02-02T15:09:21Z" hostname="c05728a5528e" tests="2" skipped="0" failures="0" errors="0" time="0.003">
+  <testsuite name="label_roche" timestamp="2026-02-02T15:09:57Z" hostname="659fa2b24f4c" tests="2" skipped="0" failures="0" errors="0" time="0.002">
     <testcase time="0.00200000000000067" classname="character(0)" name="style_roche_number_works"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="style_roche_number_works"/>
+    <testcase time="0" classname="character(0)" name="style_roche_number_works"/>
   </testsuite>
-  <testsuite name="gg_km" timestamp="2026-02-02T15:09:22Z" hostname="c05728a5528e" tests="3" skipped="0" failures="0" errors="0" time="0.333">
-    <testcase time="0.331000000000001" classname="character(0)" name="gg_km_works_with_default_inputs"/>
+  <testsuite name="gg_km" timestamp="2026-02-02T15:09:58Z" hostname="659fa2b24f4c" tests="3" skipped="0" failures="0" errors="0" time="0.379">
+    <testcase time="0.376999999999999" classname="character(0)" name="gg_km_works_with_default_inputs"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="gg_km_works_with_default_inputs"/>
     <testcase time="0.000999999999999446" classname="character(0)" name="gg_km_works_with_default_inputs"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="gg_km_works_with_default_inputs"/>
   </testsuite>
-  <testsuite name="gg_km" timestamp="2026-02-02T15:09:22Z" hostname="c05728a5528e" tests="2" skipped="0" failures="0" errors="0" time="0.005">
-    <testcase time="0.00399999999999956" classname="character(0)" name="df2gg_works_with_proper_x_axis_and_without"/>
-    <testcase time="0.00100000000000122" classname="character(0)" name="df2gg_works_with_proper_x_axis_and_without"/>
+  <testsuite name="gg_km" timestamp="2026-02-02T15:09:58Z" hostname="659fa2b24f4c" tests="2" skipped="0" failures="0" errors="0" time="0.004">
+    <testcase time="0.00300000000000011" classname="character(0)" name="df2gg_works_with_proper_x_axis_and_without"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="df2gg_works_with_proper_x_axis_and_without"/>
   </testsuite>
-  <testsuite name="modify_zero_recode" timestamp="2026-02-02T15:09:23Z" hostname="c05728a5528e" tests="2" skipped="1" failures="0" errors="0" time="0.963">
-    <testcase time="0.962" classname="character(0)" name="modify_zero_recode_works"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="modify_zero_recode_works">
-      <skipped message="Reason: On CRAN ('test-modify_zero_recode.R:1:1')"/>
-    </testcase>
+  <testsuite name="modify_zero_recode" timestamp="2026-02-02T15:09:59Z" hostname="659fa2b24f4c" tests="2" skipped="0" failures="0" errors="0" time="0.947">
+    <testcase time="0.946000000000002" classname="character(0)" name="modify_zero_recode_works"/>
+    <testcase time="0.000999999999999446" classname="character(0)" name="modify_zero_recode_works"/>
   </testsuite>
-  <testsuite name="modify_header_rm_md" timestamp="2026-02-02T15:09:24Z" hostname="c05728a5528e" tests="2" skipped="0" failures="0" errors="0" time="1.058">
-    <testcase time="1.057" classname="character(0)" name="strip_md_bold_works_with_gtsummary_table"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="strip_md_bold_works_with_gtsummary_table"/>
-    <testcase time="0.0289999999999999" classname="character(0)" name="_unnamed_">
-      <skipped message="Reason: On CRAN ('test-tbl_hierarchical_rate_and_count.R:1:1')"/>
-    </testcase>
-    <testcase time="0.0449999999999999" classname="character(0)" name="_unnamed_">
-      <skipped message="Reason: On CRAN ('test-tbl_hierarchical_rate_by_grade.R:1:1')"/>
-    </testcase>
+  <testsuite name="modify_header_rm_md" timestamp="2026-02-02T15:10:00Z" hostname="659fa2b24f4c" tests="2" skipped="0" failures="0" errors="0" time="1.038">
+    <testcase time="1.037" classname="character(0)" name="strip_md_bold_works_with_gtsummary_table"/>
+    <testcase time="0.00100000000000122" classname="character(0)" name="strip_md_bold_works_with_gtsummary_table"/>
   </testsuite>
-  <testsuite name="tbl_listing" timestamp="2026-02-02T15:09:24Z" hostname="c05728a5528e" tests="3" skipped="3" failures="0" errors="0" time="0.66">
-    <testcase time="0.586" classname="character(0)" name="tbl_listing_works_with_default_values">
-      <skipped message="Reason: On CRAN ('test-tbl_listing.R:6:1')"/>
-    </testcase>
+  <testsuite name="tbl_hierarchical_rate_and_count" timestamp="2026-02-02T15:10:17Z" hostname="659fa2b24f4c" tests="6" skipped="0" failures="0" errors="0" time="17.497">
+    <testcase time="17.494" classname="character(0)" name="tbl_hierarchical_rate_and_count_works"/>
+    <testcase time="0.000999999999997669" classname="character(0)" name="tbl_hierarchical_rate_and_count_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_hierarchical_rate_and_count_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_hierarchical_rate_and_count_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_hierarchical_rate_and_count_works"/>
+    <testcase time="0.000999999999997669" classname="character(0)" name="tbl_hierarchical_rate_and_count_works"/>
   </testsuite>
-  <testsuite name="tbl_listing" timestamp="2026-02-02T15:09:24Z" hostname="c05728a5528e" tests="3" skipped="1" failures="0" errors="0" time="0.011">
-    <testcase time="0.00999999999999979" classname="character(0)" name="tbl_listing_add_blanks_rows_works_with_standard_values"/>
-    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_listing_add_blanks_rows_works_with_standard_values"/>
-    <testcase time="0" classname="character(0)" name="tbl_listing_add_blanks_rows_works_with_standard_values">
-      <skipped message="Reason: On CRAN ('test-tbl_listing.R:12:1')"/>
-    </testcase>
+  <testsuite name="tbl_hierarchical_rate_and_count" timestamp="2026-02-02T15:10:17Z" hostname="659fa2b24f4c" tests="2" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00200000000000244" classname="character(0)" name="tbl_hierarchical_rate_and_count_sort_"/>
+    <testcase time="0" classname="character(0)" name="tbl_hierarchical_rate_and_count_sort_"/>
   </testsuite>
-  <testsuite name="tbl_listing" timestamp="2026-02-02T15:09:24Z" hostname="c05728a5528e" tests="3" skipped="1" failures="0" errors="0" time="0.011">
-    <testcase time="0.00999999999999979" classname="character(0)" name="tbl_listing_split_by_rows_works_with_standard_values"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_listing_split_by_rows_works_with_standard_values"/>
-    <testcase time="0" classname="character(0)" name="tbl_listing_split_by_rows_works_with_standard_values">
-      <skipped message="Reason: On CRAN ('test-tbl_listing.R:31:1')"/>
-    </testcase>
+  <testsuite name="tbl_hierarchical_rate_and_count" timestamp="2026-02-02T15:10:17Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.000999999999997669" classname="character(0)" name="tbl_hierarchical_rate_and_count_digits_styling_defaults_to_gtsummary"/>
   </testsuite>
-  <testsuite name="tbl_listing" timestamp="2026-02-02T15:09:24Z" hostname="c05728a5528e" tests="3" skipped="1" failures="0" errors="0" time="0.012">
-    <testcase time="0.011000000000001" classname="character(0)" name="tbl_listing_split_by_rows_add_blank_rows_works_with_standard_values"/>
-    <testcase time="0" classname="character(0)" name="tbl_listing_split_by_rows_add_blank_rows_works_with_standard_values"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_listing_split_by_rows_add_blank_rows_works_with_standard_values">
-      <skipped message="Reason: On CRAN ('test-tbl_listing.R:42:1')"/>
-    </testcase>
+  <testsuite name="tbl_hierarchical_rate_and_count" timestamp="2026-02-02T15:10:17Z" hostname="659fa2b24f4c" tests="2" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00200000000000244" classname="character(0)" name="tbl_hierarchical_rate_and_count_works_only_with_2_or_3_variables"/>
+    <testcase time="0.000999999999997669" classname="character(0)" name="tbl_hierarchical_rate_and_count_works_only_with_2_or_3_variables"/>
   </testsuite>
-  <testsuite name="tbl_listing" timestamp="2026-02-02T15:09:24Z" hostname="c05728a5528e" tests="3" skipped="1" failures="0" errors="0" time="0.011">
-    <testcase time="0.00999999999999979" classname="character(0)" name="tbl_listing_split_by_columns_works_with_standard_values"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_listing_split_by_columns_works_with_standard_values"/>
-    <testcase time="0" classname="character(0)" name="tbl_listing_split_by_columns_works_with_standard_values">
-      <skipped message="Reason: On CRAN ('test-tbl_listing.R:57:1')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="tbl_listing" timestamp="2026-02-02T15:09:24Z" hostname="c05728a5528e" tests="5" skipped="1" failures="0" errors="0" time="0.012">
-    <testcase time="0.00999999999999979" classname="character(0)" name="tbl_listing_split_by_rows_split_by_columns_works_with_standard_values"/>
-    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_listing_split_by_rows_split_by_columns_works_with_standard_values"/>
-    <testcase time="0" classname="character(0)" name="tbl_listing_split_by_rows_split_by_columns_works_with_standard_values"/>
-    <testcase time="0.000999999999999446" classname="character(0)" name="tbl_listing_split_by_rows_split_by_columns_works_with_standard_values"/>
-    <testcase time="0" classname="character(0)" name="tbl_listing_split_by_rows_split_by_columns_works_with_standard_values">
-      <skipped message="Reason: On CRAN ('test-tbl_listing.R:70:1')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="tbl_listing" timestamp="2026-02-02T15:09:24Z" hostname="c05728a5528e" tests="1" skipped="1" failures="0" errors="0" time="0.01">
-    <testcase time="0.00999999999999979" classname="character(0)" name="remove_duplicate_keys_works_with_standard_values">
-      <skipped message="Reason: On CRAN ('test-tbl_listing.R:89:1')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="tbl_listing" timestamp="2026-02-02T15:09:24Z" hostname="c05728a5528e" tests="1" skipped="1" failures="0" errors="0" time="0.01">
-    <testcase time="0.00999999999999979" classname="character(0)" name="remove_duplicate_keys_works_with_unique_and_duplicated_values">
-      <skipped message="Reason: On CRAN ('test-tbl_listing.R:98:1')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="tbl_null_report" timestamp="2026-02-02T15:09:24Z" hostname="c05728a5528e" tests="3" skipped="0" failures="0" errors="0" time="0.113">
-    <testcase time="0.112" classname="character(0)" name="tbl_null_report_works_correctly"/>
-    <testcase time="0" classname="character(0)" name="tbl_null_report_works_correctly"/>
-    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_null_report_works_correctly"/>
-  </testsuite>
-  <testsuite name="tbl_roche_summary" timestamp="2026-02-02T15:09:31Z" hostname="c05728a5528e" tests="1" skipped="0" failures="0" errors="0" time="6.826">
-    <testcase time="6.826" classname="character(0)" name="tbl_roche_summary_works"/>
-  </testsuite>
-  <testsuite name="tbl_roche_summary" timestamp="2026-02-02T15:09:31Z" hostname="c05728a5528e" tests="3" skipped="1" failures="0" errors="0" time="0.005">
-    <testcase time="0.00300000000000011" classname="character(0)" name="tbl_roche_summary_add_overall_works"/>
-    <testcase time="0.000999999999997669" classname="character(0)" name="tbl_roche_summary_add_overall_works"/>
-    <testcase time="0.00100000000000122" classname="character(0)" name="tbl_roche_summary_add_overall_works">
-      <skipped message="Reason: On CRAN ('test-tbl_roche_summary.R:14:1')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="tbl_roche_summary" timestamp="2026-02-02T15:09:31Z" hostname="c05728a5528e" tests="1" skipped="0" failures="0" errors="0" time="0.013">
-    <testcase time="0.0129999999999981" classname="character(0)" name="tbl_roche_summary_recode_counts_for_all_NA_column"/>
-  </testsuite>
-  <testsuite name="tbl_roche_summary" timestamp="2026-02-02T15:09:31Z" hostname="c05728a5528e" tests="2" skipped="1" failures="0" errors="0" time="0.002">
-    <testcase time="0.00200000000000244" classname="character(0)" name="tbl_roche_summary_digit_estimation_works"/>
-    <testcase time="0" classname="character(0)" name="tbl_roche_summary_digit_estimation_works">
-      <skipped message="Reason: On CRAN ('test-tbl_roche_summary.R:85:1')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="tbl_shift" timestamp="2026-02-02T15:09:51Z" hostname="c05728a5528e" tests="3" skipped="1" failures="0" errors="0" time="19.285">
-    <testcase time="19.283" classname="character(0)" name="tbl_shift_strata_location_"/>
-    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_shift_strata_location_"/>
-    <testcase time="0.000999999999997669" classname="character(0)" name="tbl_shift_strata_location_">
-      <skipped message="Reason: On CRAN ('test-tbl_shift.R:23:1')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="tbl_shift" timestamp="2026-02-02T15:09:51Z" hostname="c05728a5528e" tests="1" skipped="1" failures="0" errors="0" time="0.02">
-    <testcase time="0.019999999999996" classname="character(0)" name="tbl_shift_by_messaging">
-      <skipped message="Reason: On CRAN ('test-tbl_shift.R:53:1')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="tbl_shift" timestamp="2026-02-02T15:09:51Z" hostname="c05728a5528e" tests="1" skipped="1" failures="0" errors="0" time="0.01">
-    <testcase time="0.0100000000000051" classname="character(0)" name="tbl_shift_data_header_messaging">
-      <skipped message="Reason: On CRAN ('test-tbl_shift.R:72:1')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="tbl_shift" timestamp="2026-02-02T15:09:51Z" hostname="c05728a5528e" tests="3" skipped="1" failures="0" errors="0" time="0.011">
-    <testcase time="0.00900000000000034" classname="character(0)" name="add_overall.tbl_shift_"/>
-    <testcase time="0.000999999999997669" classname="character(0)" name="add_overall.tbl_shift_"/>
-    <testcase time="0.000999999999997669" classname="character(0)" name="add_overall.tbl_shift_">
-      <skipped message="Reason: On CRAN ('test-tbl_shift.R:89:1')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="tbl_shift" timestamp="2026-02-02T15:09:51Z" hostname="c05728a5528e" tests="1" skipped="1" failures="0" errors="0" time="0.009">
-    <testcase time="0.00900000000000034" classname="character(0)" name="add_overall.tbl_shift_messaging">
-      <skipped message="Reason: On CRAN ('test-tbl_shift.R:124:1')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="tbl_shift" timestamp="2026-02-02T15:09:51Z" hostname="c05728a5528e" tests="2" skipped="1" failures="0" errors="0" time="0.01">
-    <testcase time="0.00900000000000034" classname="character(0)" name="add_overall.tbl_shift_strata_NULL_messaging"/>
-    <testcase time="0.000999999999997669" classname="character(0)" name="add_overall.tbl_shift_strata_NULL_messaging">
-      <skipped message="Reason: On CRAN ('test-tbl_shift.R:159:1')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2026-02-02T15:09:56Z" hostname="c05728a5528e" tests="5" skipped="1" failures="0" errors="0" time="5.149">
-    <testcase time="5.147" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0.000999999999997669" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_survfit_quantiles_works"/>
-    <testcase time="0" classname="character(0)" name="tbl_survfit_quantiles_works">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:3:1')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2026-02-02T15:09:56Z" hostname="c05728a5528e" tests="1" skipped="1" failures="0" errors="0" time="0.011">
-    <testcase time="0.0109999999999957" classname="character(0)" name="tbl_survfit_quantiles_by_messaging">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:53:1')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2026-02-02T15:09:56Z" hostname="c05728a5528e" tests="1" skipped="1" failures="0" errors="0" time="0.01">
-    <testcase time="0.0100000000000051" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:73:1')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2026-02-02T15:09:56Z" hostname="c05728a5528e" tests="1" skipped="0" failures="0" errors="0" time="0.01">
-    <testcase time="0.00999999999999801" classname="character(0)" name="tbl_survfit_quantiles_method.args_"/>
-  </testsuite>
-  <testsuite name="tbl_survfit_quantiles" timestamp="2026-02-02T15:09:56Z" hostname="c05728a5528e" tests="1" skipped="1" failures="0" errors="0" time="0.001">
-    <testcase time="0.00100000000000477" classname="character(0)" name="add_overall.tbl_survfit_quantiles_works">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_quantiles.R:109:1')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="tbl_survfit_times" timestamp="2026-02-02T15:09:59Z" hostname="c05728a5528e" tests="5" skipped="1" failures="0" errors="0" time="3.286">
-    <testcase time="3.284" classname="character(0)" name="tbl_survfit_times_works"/>
-    <testcase time="0" classname="character(0)" name="tbl_survfit_times_works"/>
-    <testcase time="0.000999999999997669" classname="character(0)" name="tbl_survfit_times_works"/>
-    <testcase time="0.000999999999997669" classname="character(0)" name="tbl_survfit_times_works"/>
-    <testcase time="0" classname="character(0)" name="tbl_survfit_times_works">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_times.R:3:1')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="tbl_survfit_times" timestamp="2026-02-02T15:09:59Z" hostname="c05728a5528e" tests="1" skipped="1" failures="0" errors="0" time="0.011">
-    <testcase time="0.0110000000000028" classname="character(0)" name="tbl_survfit_times_by_messaging">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_times.R:57:1')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="tbl_survfit_times" timestamp="2026-02-02T15:09:59Z" hostname="c05728a5528e" tests="1" skipped="1" failures="0" errors="0" time="0.01">
-    <testcase time="0.00999999999999801" classname="character(0)" name="add_overall.tbl_survfit_times_works">
-      <skipped message="Reason: On CRAN ('test-tbl_survfit_times.R:79:1')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2026-02-02T15:10:04Z" hostname="c05728a5528e" tests="1" skipped="1" failures="0" errors="0" time="4.89">
-    <testcase time="4.89" classname="character(0)" name="theme_gtsummary_roche_works">
-      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:1:1')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2026-02-02T15:10:04Z" hostname="c05728a5528e" tests="1" skipped="1" failures="0" errors="0" time="0.011">
-    <testcase time="0.0110000000000028" classname="character(0)" name="theme_gtsummary_roche_adds_relevant_flextable_directives">
-      <skipped message="Reason: On CRAN ('test-theme_gtsummary_roche.R:8:1')"/>
-    </testcase>
-  </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2026-02-02T15:10:04Z" hostname="c05728a5528e" tests="1" skipped="0" failures="0" errors="0" time="0.01">
-    <testcase time="0.00999999999999801" classname="character(0)" name="theme_gtsummary_roche_no_errors_with_a_gt_print"/>
-  </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2026-02-02T15:10:04Z" hostname="c05728a5528e" tests="7" skipped="0" failures="0" errors="0" time="0.005">
-    <testcase time="0.00200000000000244" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
-    <testcase time="0.000999999999997669" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
-    <testcase time="0" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
-    <testcase time="0.000999999999997669" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
-    <testcase time="0" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
-    <testcase time="0.00100000000000477" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
-    <testcase time="0" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
-  </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2026-02-02T15:10:04Z" hostname="c05728a5528e" tests="1" skipped="0" failures="0" errors="0" time="0.002">
-    <testcase time="0.00199999999999534" classname="character(0)" name="with_assign_summary_type_arg_cat_threshold_0L_each_data_type_is_always_mapped_as_it_is"/>
-  </testsuite>
-  <testsuite name="theme_gtsummary_roche" timestamp="2026-02-02T15:10:04Z" hostname="c05728a5528e" tests="2" skipped="0" failures="0" errors="0" time="0.002">
-    <testcase time="0.00100000000000477" classname="character(0)" name="theme_pre_conversion_modifies_header_not_to_be_bold_and_border_only_0.5"/>
-    <testcase time="0.000999999999997669" classname="character(0)" name="theme_pre_conversion_modifies_header_not_to_be_bold_and_border_only_0.5"/>
-  </testsuite>
-  <testsuite name="tbl_baseline_chg" timestamp="2026-02-02T15:10:23Z" hostname="c05728a5528e" tests="3" skipped="1" failures="0" errors="0" time="18.824">
-    <testcase time="18.823" classname="character(0)" name="tbl_baseline_chg_works"/>
+  <testsuite name="tbl_baseline_chg" timestamp="2026-02-02T15:10:59Z" hostname="659fa2b24f4c" tests="3" skipped="0" failures="0" errors="0" time="42.093">
+    <testcase time="42.092" classname="character(0)" name="tbl_baseline_chg_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_baseline_chg_works"/>
     <testcase time="0" classname="character(0)" name="tbl_baseline_chg_works"/>
-    <testcase time="0.000999999999990564" classname="character(0)" name="tbl_baseline_chg_works">
-      <skipped message="Reason: On CRAN ('test-tbl_baseline_chg.R:15:1')"/>
-    </testcase>
   </testsuite>
-  <testsuite name="tbl_baseline_chg" timestamp="2026-02-02T15:10:23Z" hostname="c05728a5528e" tests="2" skipped="1" failures="0" errors="0" time="0.011">
-    <testcase time="0.0100000000000051" classname="character(0)" name="tbl_baseline_chg_works_with_no_by_variable"/>
-    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_baseline_chg_works_with_no_by_variable">
-      <skipped message="Reason: On CRAN ('test-tbl_baseline_chg.R:45:1')"/>
-    </testcase>
+  <testsuite name="tbl_baseline_chg" timestamp="2026-02-02T15:10:59Z" hostname="659fa2b24f4c" tests="2" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00199999999999534" classname="character(0)" name="tbl_baseline_chg_works_with_no_by_variable"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_baseline_chg_works_with_no_by_variable"/>
   </testsuite>
-  <testsuite name="tbl_baseline_chg" timestamp="2026-02-02T15:10:23Z" hostname="c05728a5528e" tests="2" skipped="1" failures="0" errors="0" time="0.01">
-    <testcase time="0.00999999999999091" classname="character(0)" name="add_overall.tbl_baseline_chg_works"/>
-    <testcase time="0" classname="character(0)" name="add_overall.tbl_baseline_chg_works">
-      <skipped message="Reason: On CRAN ('test-tbl_baseline_chg.R:59:1')"/>
-    </testcase>
+  <testsuite name="tbl_baseline_chg" timestamp="2026-02-02T15:10:59Z" hostname="659fa2b24f4c" tests="2" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00100000000000477" classname="character(0)" name="add_overall.tbl_baseline_chg_works"/>
+    <testcase time="0.000999999999990564" classname="character(0)" name="add_overall.tbl_baseline_chg_works"/>
   </testsuite>
-  <testsuite name="tbl_baseline_chg" timestamp="2026-02-02T15:10:23Z" hostname="c05728a5528e" tests="1" skipped="1" failures="0" errors="0" time="0.01">
-    <testcase time="0.0100000000000051" classname="character(0)" name="add_overall.tbl_baseline_chg_messaging">
-      <skipped message="Reason: On CRAN ('test-tbl_baseline_chg.R:76:1')"/>
-    </testcase>
+  <testsuite name="tbl_baseline_chg" timestamp="2026-02-02T15:10:59Z" hostname="659fa2b24f4c" tests="2" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00100000000000477" classname="character(0)" name="add_overall.tbl_baseline_chg_messaging"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="add_overall.tbl_baseline_chg_messaging"/>
   </testsuite>
-  <testsuite name="tbl_baseline_chg" timestamp="2026-02-02T15:10:23Z" hostname="c05728a5528e" tests="4" skipped="1" failures="0" errors="0" time="0.012">
-    <testcase time="0.00999999999999091" classname="character(0)" name="tbl_baseline_chg_throws_error_when_required_arguments_are_missing"/>
+  <testsuite name="tbl_baseline_chg" timestamp="2026-02-02T15:10:59Z" hostname="659fa2b24f4c" tests="4" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.000999999999990564" classname="character(0)" name="tbl_baseline_chg_throws_error_when_required_arguments_are_missing"/>
     <testcase time="0.00100000000000477" classname="character(0)" name="tbl_baseline_chg_throws_error_when_required_arguments_are_missing"/>
     <testcase time="0.00100000000000477" classname="character(0)" name="tbl_baseline_chg_throws_error_when_required_arguments_are_missing"/>
-    <testcase time="0" classname="character(0)" name="tbl_baseline_chg_throws_error_when_required_arguments_are_missing">
-      <skipped message="Reason: On CRAN ('test-tbl_baseline_chg.R:107:1')"/>
-    </testcase>
+    <testcase time="0" classname="character(0)" name="tbl_baseline_chg_throws_error_when_required_arguments_are_missing"/>
   </testsuite>
-  <testsuite name="tbl_baseline_chg" timestamp="2026-02-02T15:10:23Z" hostname="c05728a5528e" tests="1" skipped="1" failures="0" errors="0" time="0.01">
-    <testcase time="0.00999999999999091" classname="character(0)" name="tbl_baseline_chg_messaging">
-      <skipped message="Reason: On CRAN ('test-tbl_baseline_chg.R:158:1')"/>
-    </testcase>
+  <testsuite name="tbl_baseline_chg" timestamp="2026-02-02T15:10:59Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999534" classname="character(0)" name="tbl_baseline_chg_messaging"/>
   </testsuite>
-  <testsuite name="tbl_baseline_chg" timestamp="2026-02-02T15:10:23Z" hostname="c05728a5528e" tests="1" skipped="1" failures="0" errors="0" time="0.01">
-    <testcase time="0.0100000000000051" classname="character(0)" name="gather_ard_works_on_output_table">
-      <skipped message="Reason: On CRAN ('test-tbl_baseline_chg.R:173:1')"/>
-    </testcase>
+  <testsuite name="tbl_baseline_chg" timestamp="2026-02-02T15:10:59Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.00100000000000477" classname="character(0)" name="gather_ard_works_on_output_table"/>
   </testsuite>
-  <testsuite name="tbl_baseline_chg" timestamp="2026-02-02T15:10:23Z" hostname="c05728a5528e" tests="41" skipped="1" failures="0" errors="0" time="0.628">
-    <testcase time="0.0100000000000051" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+  <testsuite name="tbl_baseline_chg" timestamp="2026-02-02T15:10:59Z" hostname="659fa2b24f4c" tests="41" skipped="0" failures="0" errors="0" time="0.501">
+    <testcase time="0.00199999999999534" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -415,7 +218,7 @@ Backtrace:
  28.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  29.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.0130000000000052" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.01400000000001" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -457,7 +260,7 @@ Backtrace:
  28.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  29.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.012999999999991" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0139999999999958" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -499,7 +302,7 @@ Backtrace:
  28.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  29.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.0130000000000052" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0139999999999958" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -541,7 +344,7 @@ Backtrace:
  28.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  29.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.0130000000000052" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0139999999999958" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -583,7 +386,7 @@ Backtrace:
  28.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  29.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.0139999999999958" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0130000000000052" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -625,7 +428,7 @@ Backtrace:
  28.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  29.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.012999999999991" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0139999999999958" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -667,7 +470,7 @@ Backtrace:
  28.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  29.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.0130000000000052" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.01400000000001" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -709,7 +512,7 @@ Backtrace:
  28.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  29.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.0130000000000052" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0139999999999958" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -751,7 +554,7 @@ Backtrace:
  28.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  29.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.0300000000000011" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0139999999999958" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -793,7 +596,7 @@ Backtrace:
  28.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  29.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.012999999999991" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.01400000000001" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -835,7 +638,8 @@ Backtrace:
  28.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  29.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.0130000000000052" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works"/>
+    <testcase time="0.0209999999999866" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works"/>
     <testcase time="0.00100000000000477" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works"/>
     <testcase time="0" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
@@ -921,7 +725,7 @@ Backtrace:
  28.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  29.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.012999999999991" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0139999999999958" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -1047,7 +851,7 @@ Backtrace:
  28.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  29.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.0130000000000052" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0139999999999958" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -1089,7 +893,7 @@ Backtrace:
  28.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  29.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.0139999999999958" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.01400000000001" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -1131,7 +935,7 @@ Backtrace:
  28.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  29.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.0139999999999958" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0150000000000006" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -1173,7 +977,7 @@ Backtrace:
  28.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  29.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.01400000000001" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0139999999999958" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -1215,7 +1019,7 @@ Backtrace:
  28.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  29.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.012999999999991" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0139999999999958" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -1257,7 +1061,7 @@ Backtrace:
  28.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  29.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.01400000000001" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0139999999999958" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -1299,7 +1103,7 @@ Backtrace:
  28.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  29.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.0139999999999958" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.01400000000001" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -1341,8 +1145,8 @@ Backtrace:
  28.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  29.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.152000000000001" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works"/>
-    <testcase time="0.000999999999990564" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0139999999999958" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -1379,7 +1183,7 @@ Backtrace:
  23.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  24.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.0110000000000099" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0120000000000005" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -1416,7 +1220,7 @@ Backtrace:
  23.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  24.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.0109999999999957" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0120000000000005" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -1453,7 +1257,7 @@ Backtrace:
  23.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  24.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.0120000000000005" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0150000000000006" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -1490,7 +1294,7 @@ Backtrace:
  23.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  24.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.0109999999999957" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0120000000000005" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -1527,7 +1331,7 @@ Backtrace:
  23.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  24.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.0110000000000099" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0130000000000052" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -1564,7 +1368,7 @@ Backtrace:
  23.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  24.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.0109999999999957" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0120000000000005" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -1601,7 +1405,7 @@ Backtrace:
  23.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  24.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.0109999999999957" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0120000000000005" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -1638,7 +1442,7 @@ Backtrace:
  23.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  24.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.0120000000000005" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.012999999999991" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -1675,7 +1479,7 @@ Backtrace:
  23.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  24.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.0109999999999957" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0120000000000005" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -1712,7 +1516,7 @@ Backtrace:
  23.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  24.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.0110000000000099" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0120000000000005" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -1749,7 +1553,7 @@ Backtrace:
  23.                       └─tidyselect:::walk_data_tree(expr, data_mask, context_mask)
  24.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
-    <testcase time="0.0109999999999957" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
+    <testcase time="0.0130000000000052" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
       <system-out>Using an external vector in selections was deprecated in tidyselect 1.1.0.
 i Please use `all_of()` or `any_of()` instead.
   # Was:
@@ -1787,8 +1591,206 @@ Backtrace:
  24.                         └─tidyselect:::eval_sym(expr, data_mask, context_mask)</system-out>
     </testcase>
     <testcase time="0.0120000000000005" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works"/>
-    <testcase time="0" classname="character(0)" name="tbl_baseline_chg_split_by_PARAM_works">
-      <skipped message="Reason: On CRAN ('test-tbl_baseline_chg.R:189:1')"/>
-    </testcase>
+  </testsuite>
+  <testsuite name="tbl_listing" timestamp="2026-02-02T15:11:01Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="0.617">
+    <testcase time="0.617000000000004" classname="character(0)" name="tbl_listing_works_with_default_values"/>
+  </testsuite>
+  <testsuite name="tbl_listing" timestamp="2026-02-02T15:11:01Z" hostname="659fa2b24f4c" tests="3" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00199999999999534" classname="character(0)" name="tbl_listing_add_blanks_rows_works_with_standard_values"/>
+    <testcase time="0" classname="character(0)" name="tbl_listing_add_blanks_rows_works_with_standard_values"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_listing_add_blanks_rows_works_with_standard_values"/>
+  </testsuite>
+  <testsuite name="tbl_listing" timestamp="2026-02-02T15:11:01Z" hostname="659fa2b24f4c" tests="3" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.000999999999990564" classname="character(0)" name="tbl_listing_split_by_rows_works_with_standard_values"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_listing_split_by_rows_works_with_standard_values"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_listing_split_by_rows_works_with_standard_values"/>
+  </testsuite>
+  <testsuite name="tbl_listing" timestamp="2026-02-02T15:11:01Z" hostname="659fa2b24f4c" tests="3" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.000999999999990564" classname="character(0)" name="tbl_listing_split_by_rows_add_blank_rows_works_with_standard_values"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_listing_split_by_rows_add_blank_rows_works_with_standard_values"/>
+    <testcase time="0" classname="character(0)" name="tbl_listing_split_by_rows_add_blank_rows_works_with_standard_values"/>
+  </testsuite>
+  <testsuite name="tbl_listing" timestamp="2026-02-02T15:11:01Z" hostname="659fa2b24f4c" tests="3" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00199999999999534" classname="character(0)" name="tbl_listing_split_by_columns_works_with_standard_values"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_listing_split_by_columns_works_with_standard_values"/>
+    <testcase time="0" classname="character(0)" name="tbl_listing_split_by_columns_works_with_standard_values"/>
+  </testsuite>
+  <testsuite name="tbl_listing" timestamp="2026-02-02T15:11:01Z" hostname="659fa2b24f4c" tests="5" skipped="0" failures="0" errors="0" time="0.004">
+    <testcase time="0.00199999999999534" classname="character(0)" name="tbl_listing_split_by_rows_split_by_columns_works_with_standard_values"/>
+    <testcase time="0" classname="character(0)" name="tbl_listing_split_by_rows_split_by_columns_works_with_standard_values"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_listing_split_by_rows_split_by_columns_works_with_standard_values"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_listing_split_by_rows_split_by_columns_works_with_standard_values"/>
+    <testcase time="0" classname="character(0)" name="tbl_listing_split_by_rows_split_by_columns_works_with_standard_values"/>
+  </testsuite>
+  <testsuite name="tbl_listing" timestamp="2026-02-02T15:11:01Z" hostname="659fa2b24f4c" tests="2" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999534" classname="character(0)" name="remove_duplicate_keys_works_with_standard_values"/>
+    <testcase time="0" classname="character(0)" name="remove_duplicate_keys_works_with_standard_values"/>
+  </testsuite>
+  <testsuite name="tbl_listing" timestamp="2026-02-02T15:11:01Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999534" classname="character(0)" name="remove_duplicate_keys_works_with_unique_and_duplicated_values"/>
+  </testsuite>
+  <testsuite name="tbl_null_report" timestamp="2026-02-02T15:11:01Z" hostname="659fa2b24f4c" tests="3" skipped="0" failures="0" errors="0" time="0.116">
+    <testcase time="0.115000000000009" classname="character(0)" name="tbl_null_report_works_correctly"/>
+    <testcase time="0.000999999999990564" classname="character(0)" name="tbl_null_report_works_correctly"/>
+    <testcase time="0" classname="character(0)" name="tbl_null_report_works_correctly"/>
+  </testsuite>
+  <testsuite name="tbl_roche_summary" timestamp="2026-02-02T15:11:08Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="7.144">
+    <testcase time="7.14400000000001" classname="character(0)" name="tbl_roche_summary_works"/>
+  </testsuite>
+  <testsuite name="tbl_roche_summary" timestamp="2026-02-02T15:11:08Z" hostname="659fa2b24f4c" tests="3" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00199999999999534" classname="character(0)" name="tbl_roche_summary_add_overall_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_roche_summary_add_overall_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_roche_summary_add_overall_works"/>
+  </testsuite>
+  <testsuite name="tbl_roche_summary" timestamp="2026-02-02T15:11:08Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_roche_summary_recode_counts_for_all_NA_column"/>
+  </testsuite>
+  <testsuite name="tbl_roche_summary" timestamp="2026-02-02T15:11:08Z" hostname="659fa2b24f4c" tests="2" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_roche_summary_digit_estimation_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_roche_summary_digit_estimation_works"/>
+  </testsuite>
+  <testsuite name="tbl_hierarchical_rate_by_grade" timestamp="2026-02-02T15:11:15Z" hostname="659fa2b24f4c" tests="7" skipped="0" failures="0" errors="0" time="6.702">
+    <testcase time="6.696" classname="character(0)" name="tbl_hierarchical_rate_by_grade_works"/>
+    <testcase time="0.000999999999990564" classname="character(0)" name="tbl_hierarchical_rate_by_grade_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_hierarchical_rate_by_grade_works"/>
+    <testcase time="0.000999999999990564" classname="character(0)" name="tbl_hierarchical_rate_by_grade_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_hierarchical_rate_by_grade_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_hierarchical_rate_by_grade_works"/>
+    <testcase time="0.000999999999990564" classname="character(0)" name="tbl_hierarchical_rate_by_grade_works"/>
+  </testsuite>
+  <testsuite name="tbl_hierarchical_rate_by_grade" timestamp="2026-02-02T15:11:15Z" hostname="659fa2b24f4c" tests="4" skipped="0" failures="0" errors="0" time="0.006">
+    <testcase time="0.00300000000000011" classname="character(0)" name="tbl_hierarchical_rate_by_grade_include_overall_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_hierarchical_rate_by_grade_include_overall_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_hierarchical_rate_by_grade_include_overall_works"/>
+    <testcase time="0.000999999999990564" classname="character(0)" name="tbl_hierarchical_rate_by_grade_include_overall_works"/>
+  </testsuite>
+  <testsuite name="tbl_hierarchical_rate_by_grade" timestamp="2026-02-02T15:11:15Z" hostname="659fa2b24f4c" tests="2" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00200000000000955" classname="character(0)" name="tbl_hierarchical_rate_by_grade_works_with_add_overall_"/>
+    <testcase time="0.000999999999990564" classname="character(0)" name="tbl_hierarchical_rate_by_grade_works_with_add_overall_"/>
+  </testsuite>
+  <testsuite name="tbl_hierarchical_rate_by_grade" timestamp="2026-02-02T15:11:15Z" hostname="659fa2b24f4c" tests="5" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_hierarchical_rate_by_grade_sort_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_hierarchical_rate_by_grade_sort_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_hierarchical_rate_by_grade_sort_works"/>
+    <testcase time="0.000999999999990564" classname="character(0)" name="tbl_hierarchical_rate_by_grade_sort_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_hierarchical_rate_by_grade_sort_works"/>
+  </testsuite>
+  <testsuite name="tbl_hierarchical_rate_by_grade" timestamp="2026-02-02T15:11:15Z" hostname="659fa2b24f4c" tests="4" skipped="0" failures="0" errors="0" time="0.004">
+    <testcase time="0.00200000000000955" classname="character(0)" name="tbl_hierarchical_rate_by_grade_filter_works"/>
+    <testcase time="0.000999999999990564" classname="character(0)" name="tbl_hierarchical_rate_by_grade_filter_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_hierarchical_rate_by_grade_filter_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_hierarchical_rate_by_grade_filter_works"/>
+  </testsuite>
+  <testsuite name="tbl_hierarchical_rate_by_grade" timestamp="2026-02-02T15:11:15Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_hierarchical_rate_by_grade_works_with_non_factor_grade_variables"/>
+  </testsuite>
+  <testsuite name="tbl_hierarchical_rate_by_grade" timestamp="2026-02-02T15:11:15Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999534" classname="character(0)" name="tbl_hierarchical_rate_by_grade_grade_groups_works_with_some_grades_not_in_groups"/>
+  </testsuite>
+  <testsuite name="tbl_hierarchical_rate_by_grade" timestamp="2026-02-02T15:11:15Z" hostname="659fa2b24f4c" tests="4" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00199999999999534" classname="character(0)" name="tbl_hierarchical_rate_by_grade_grades_exclude_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_hierarchical_rate_by_grade_grades_exclude_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_hierarchical_rate_by_grade_grades_exclude_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_hierarchical_rate_by_grade_grades_exclude_works"/>
+  </testsuite>
+  <testsuite name="tbl_hierarchical_rate_by_grade" timestamp="2026-02-02T15:11:15Z" hostname="659fa2b24f4c" tests="3" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00199999999999534" classname="character(0)" name="tbl_hierarchical_rate_by_grade_keep_zero_rows_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_hierarchical_rate_by_grade_keep_zero_rows_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_hierarchical_rate_by_grade_keep_zero_rows_works"/>
+  </testsuite>
+  <testsuite name="tbl_hierarchical_rate_by_grade" timestamp="2026-02-02T15:11:15Z" hostname="659fa2b24f4c" tests="4" skipped="0" failures="0" errors="0" time="0.006">
+    <testcase time="0.00499999999999545" classname="character(0)" name="tbl_hierarchical_rate_by_grade_error_messaging_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_hierarchical_rate_by_grade_error_messaging_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_hierarchical_rate_by_grade_error_messaging_works"/>
+    <testcase time="0" classname="character(0)" name="tbl_hierarchical_rate_by_grade_error_messaging_works"/>
+  </testsuite>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2026-02-02T15:11:20Z" hostname="659fa2b24f4c" tests="7" skipped="0" failures="0" errors="0" time="5.329">
+    <testcase time="5.32299999999999" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.000999999999990564" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+    <testcase time="0.000999999999990564" classname="character(0)" name="tbl_survfit_quantiles_works"/>
+  </testsuite>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2026-02-02T15:11:20Z" hostname="659fa2b24f4c" tests="2" skipped="0" failures="0" errors="0" time="0.004">
+    <testcase time="0.00300000000000011" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_survfit_quantiles_by_messaging"/>
+  </testsuite>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2026-02-02T15:11:20Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00300000000000011" classname="character(0)" name="tbl_survfit_quantiles_estimate_fun_"/>
+  </testsuite>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2026-02-02T15:11:20Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_survfit_quantiles_method.args_"/>
+  </testsuite>
+  <testsuite name="tbl_survfit_quantiles" timestamp="2026-02-02T15:11:20Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999534" classname="character(0)" name="add_overall.tbl_survfit_quantiles_works"/>
+  </testsuite>
+  <testsuite name="tbl_survfit_times" timestamp="2026-02-02T15:11:23Z" hostname="659fa2b24f4c" tests="7" skipped="0" failures="0" errors="0" time="3.269">
+    <testcase time="3.26300000000001" classname="character(0)" name="tbl_survfit_times_works"/>
+    <testcase time="0.000999999999990564" classname="character(0)" name="tbl_survfit_times_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_survfit_times_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_survfit_times_works"/>
+    <testcase time="0.000999999999990564" classname="character(0)" name="tbl_survfit_times_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_survfit_times_works"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_survfit_times_works"/>
+  </testsuite>
+  <testsuite name="tbl_survfit_times" timestamp="2026-02-02T15:11:23Z" hostname="659fa2b24f4c" tests="2" skipped="0" failures="0" errors="0" time="0.004">
+    <testcase time="0.00300000000000011" classname="character(0)" name="tbl_survfit_times_by_messaging"/>
+    <testcase time="0.000999999999990564" classname="character(0)" name="tbl_survfit_times_by_messaging"/>
+  </testsuite>
+  <testsuite name="tbl_survfit_times" timestamp="2026-02-02T15:11:23Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00200000000000955" classname="character(0)" name="add_overall.tbl_survfit_times_works"/>
+  </testsuite>
+  <testsuite name="tbl_shift" timestamp="2026-02-02T15:11:27Z" hostname="659fa2b24f4c" tests="4" skipped="0" failures="0" errors="0" time="4.137">
+    <testcase time="4.134" classname="character(0)" name="tbl_shift_strata_location_"/>
+    <testcase time="0.000999999999990564" classname="character(0)" name="tbl_shift_strata_location_"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_shift_strata_location_"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="tbl_shift_strata_location_"/>
+  </testsuite>
+  <testsuite name="tbl_shift" timestamp="2026-02-02T15:11:27Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00300000000000011" classname="character(0)" name="tbl_shift_by_messaging"/>
+  </testsuite>
+  <testsuite name="tbl_shift" timestamp="2026-02-02T15:11:27Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00300000000000011" classname="character(0)" name="tbl_shift_data_header_messaging"/>
+  </testsuite>
+  <testsuite name="tbl_shift" timestamp="2026-02-02T15:11:27Z" hostname="659fa2b24f4c" tests="4" skipped="0" failures="0" errors="0" time="0.005">
+    <testcase time="0.00300000000000011" classname="character(0)" name="add_overall.tbl_shift_"/>
+    <testcase time="0" classname="character(0)" name="add_overall.tbl_shift_"/>
+    <testcase time="0.000999999999990564" classname="character(0)" name="add_overall.tbl_shift_"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="add_overall.tbl_shift_"/>
+  </testsuite>
+  <testsuite name="tbl_shift" timestamp="2026-02-02T15:11:27Z" hostname="659fa2b24f4c" tests="2" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00199999999999534" classname="character(0)" name="add_overall.tbl_shift_messaging"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="add_overall.tbl_shift_messaging"/>
+  </testsuite>
+  <testsuite name="tbl_shift" timestamp="2026-02-02T15:11:27Z" hostname="659fa2b24f4c" tests="2" skipped="0" failures="0" errors="0" time="0.004">
+    <testcase time="0.00300000000000011" classname="character(0)" name="add_overall.tbl_shift_strata_NULL_messaging"/>
+    <testcase time="0.000999999999990564" classname="character(0)" name="add_overall.tbl_shift_strata_NULL_messaging"/>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2026-02-02T15:11:28Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="0.674">
+    <testcase time="0.674000000000007" classname="character(0)" name="theme_gtsummary_roche_works"/>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2026-02-02T15:11:28Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999534" classname="character(0)" name="theme_gtsummary_roche_adds_relevant_flextable_directives"/>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2026-02-02T15:11:28Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="0.002">
+    <testcase time="0.00199999999999534" classname="character(0)" name="theme_gtsummary_roche_no_errors_with_a_gt_print"/>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2026-02-02T15:11:28Z" hostname="659fa2b24f4c" tests="7" skipped="0" failures="0" errors="0" time="0.005">
+    <testcase time="0.00100000000000477" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
+    <testcase time="0" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
+    <testcase time="0.000999999999990564" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
+    <testcase time="0" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
+    <testcase time="0.00100000000000477" classname="character(0)" name="theme_gtsummary_roche_styles_tbl_hierarchical_results"/>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2026-02-02T15:11:28Z" hostname="659fa2b24f4c" tests="1" skipped="0" failures="0" errors="0" time="0.001">
+    <testcase time="0.000999999999990564" classname="character(0)" name="with_assign_summary_type_arg_cat_threshold_0L_each_data_type_is_always_mapped_as_it_is"/>
+  </testsuite>
+  <testsuite name="theme_gtsummary_roche" timestamp="2026-02-02T15:11:28Z" hostname="659fa2b24f4c" tests="2" skipped="0" failures="0" errors="0" time="0.003">
+    <testcase time="0.00200000000000955" classname="character(0)" name="theme_pre_conversion_modifies_header_not_to_be_bold_and_border_only_0.5"/>
+    <testcase time="0.000999999999990564" classname="character(0)" name="theme_pre_conversion_modifies_header_not_to_be_bold_and_border_only_0.5"/>
   </testsuite>
 </testsuites>
