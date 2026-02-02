@@ -1,4 +1,15 @@
-# crane 0.3.1.9001
+# crane 0.3.1.9002
+
+## New Functions and Functionality
+
+* Addition of parameter split_by to split tbl_baseline_chg() into a named list of tables.
+
+### Other Updates
+
+* Removed bold from headers when using `tbl_strata()` (#133).
+
+* Unified border width in `theme_gtsummary_roche()` to 0.5 for header. (#154)
+
 
 # crane 0.3.1
 
@@ -8,9 +19,6 @@
 
 * Added `g_forest` to create forest plot.
 
-## New Functions and Functionality
-
-* Addition of parameter split_by to split tbl_baseline_chg() into a named list of tables.
 
 # crane 0.3.0
 
