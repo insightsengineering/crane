@@ -168,7 +168,7 @@ gg_forest_plot <- function(data,
 #' @keywords internal
 extract_plot_data <- function(tbl) {
   ret <- tbl$table_body |>
-    select(
+    dplyr::select(
       # group = termc("Drug A", "Drug B"),
       estimate = starts_with("estimate"),
       ci_lower = starts_with("conf.low"),

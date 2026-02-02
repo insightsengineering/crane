@@ -56,21 +56,21 @@
 #'
 #' # subsetting ADLB on one PARAM, and the highest grade
 #' adlb <- pharmaverseadam::adlb |>
-#'   select("USUBJID", "TRT01A", "PARAM", "PARAMCD", "ATOXGRH", "BTOXGRH", "VISITNUM") |>
+#'   dplyr::select("USUBJID", "TRT01A", "PARAM", "PARAMCD", "ATOXGRH", "BTOXGRH", "VISITNUM") |>
 #'   mutate(TRT01A = factor(TRT01A)) |>
-#'   filter(PARAMCD %in% c("CHOLES", "GLUC")) |>
+#'   dplyr::filter(PARAMCD %in% c("CHOLES", "GLUC")) |>
 #'   slice_max(by = c(USUBJID, PARAMCD), order_by = ATOXGRH, n = 1L, with_ties = FALSE) |>
 #'   labelled::set_variable_labels(
 #'     BTOXGRH = "Baseline  \nNCI-CTCAE Grade",
 #'     ATOXGRH = "Post-baseline  \nNCI-CTCAE Grade"
 #'   )
 #' adsl <- pharmaverseadam::adsl[c("USUBJID", "TRT01A")] |>
-#'   filter(TRT01A != "Screen Failure")
+#'   dplyr::filter(TRT01A != "Screen Failure")
 #'
 #' # Example 1 ----------------------------------
 #' # tabulate baseline grade by worst grade
 #' tbl_shift(
-#'   data = filter(adlb, PARAMCD %in% "CHOLES"),
+#'   data = dplyr::filter(adlb, PARAMCD %in% "CHOLES"),
 #'   strata = BTOXGRH,
 #'   variable = ATOXGRH,
 #'   by = TRT01A,
@@ -80,7 +80,7 @@
 #' # Example 2 ----------------------------------
 #' # same as Ex1, but with the stratifying variable levels in header rows
 #' adlb |>
-#'   filter(PARAMCD %in% "CHOLES") |>
+#'   dplyr::filter(PARAMCD %in% "CHOLES") |>
 #'   labelled::set_variable_labels(
 #'     BTOXGRH = "Baseline NCI-CTCAE Grade",
 #'     ATOXGRH = "Post-baseline NCI-CTCAE Grade"
@@ -124,7 +124,7 @@
 #' filter(adlb, PARAMCD %in% "CHOLES") |>
 #'   right_join(
 #'     pharmaverseadam::adsl[c("USUBJID", "TRT01A")] |>
-#'       filter(TRT01A != "Screen Failure"),
+#'       dplyr::filter(TRT01A != "Screen Failure"),
 #'     by = c("USUBJID", "TRT01A")
 #'   ) |>
 #'   tbl_shift(
