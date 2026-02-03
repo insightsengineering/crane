@@ -146,7 +146,7 @@ annotate_riskdf <- function(gg_plt, fit_km, title = "Patients at Risk:",
     ) +
     ggplot2::coord_cartesian(clip = "off", ylim = c(0.5, nrow(at_risk_tbl)))
 
-  # 1. Get the exact x-range from the top plot (the 0-1200 range)
+  # 1. Get the exact x-range from the top plot (e.g. 0-1200 range)
   top_range <- layer_scales(gg_plt)$x$range$range
   top_breaks <- layer_scales(gg_plt)$x$break_positions()
 
