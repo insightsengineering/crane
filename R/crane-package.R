@@ -3,7 +3,6 @@
 #' @import ggplot2
 #' @import glue glue
 #' @import patchwork
-#' @import gtsummary
 #' @importFrom broom tidy
 #' @importFrom broom.helpers .assert_package
 #' @importFrom cowplot plot_grid ggdraw draw_plot
