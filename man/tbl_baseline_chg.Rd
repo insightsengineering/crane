@@ -32,14 +32,14 @@ tbl_baseline_chg(
 \item{baseline_level}{(\code{string})\cr
 String identifying baseline level in the \code{visit} variable.}
 
-\item{denominator}{(\code{string})\cr
+\item{denominator}{(\code{data.frame})\cr
 Data set used to compute the header counts (typically \code{ADSL}).}
 
 \item{by}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 A single column from \code{data}. Summary statistics will be stratified by this variable.
 Default is \code{NULL}.}
 
-\item{split_by}{(\code{string})\cr
+\item{split_by}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 String identifying the variable to split the table by. Default is \code{NULL}. Usually
 used with \code{'PARAM'} variables to produce a list of tables for each parameter. Subtitles
 highlight the split levels.}
@@ -49,22 +49,22 @@ Specifies how summary statistics are rounded. Values may be either integer(s)
 or function(s). If not specified, default formatting is assigned
 via \code{assign_summary_digits()}. See below for details.}
 
-\item{id}{(\code{string})\cr
+\item{id}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 String identifying the unique subjects. Default is \code{'USUBJID'}.}
 
-\item{visit}{(\code{string})\cr
+\item{visit}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 String for the visit variable. Default is
 \code{'AVISIT'}. If there are more than one entry for each visit and subject,
 only the first row is kept.}
 
-\item{visit_number}{(\code{string})\cr
+\item{visit_number}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 String identifying the visit or analysis sequence number. Default is
 \code{'AVISITN'}.}
 
-\item{analysis_variable}{(\code{string})\cr
+\item{analysis_variable}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 String identifying the analysis values. Default is \code{'AVAL'}.}
 
-\item{change_variable}{(\code{string})\cr
+\item{change_variable}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 String identifying the change from baseline values. Default is \code{'CHG'}.}
 
 \item{x}{(\code{tbl_summary}, \code{tbl_svysummary}, \code{tbl_continuous}, \code{tbl_custom_summary})\cr

@@ -1,19 +1,33 @@
-test_that("test g_forest() works", {
-  skip_on_cran()
-  skip_on_os("windows")
-  skip_if_not(
-    nzchar(Sys.which("chromium-browser")),
-    "chromium-browser not available on CI"
-  )
-  skip_if_pkg_not_installed("parameters")
-  skip_if_pkg_not_installed("broom.helpers")
-  skip_if_pkg_not_installed("ggtext")
-  skip_if_pkg_not_installed("magick")
-  skip_if_pkg_not_installed("patchwork")
-  skip_if_pkg_not_installed("webshot2")
+skip_on_cran()
+tbl <-
+  trial |>
+  select(age, marker, grade, response) |>
+  tbl_uvregression(
+    y = response,
+    method = glm,
+    method.args = list(family = binomial),
+    exponentiate = TRUE,
+    hide_n = TRUE
+  ) |>
+  modify_column_merge(
+    pattern = "{estimate} (95% CI {ci}; {p.value})",
+    rows = !is.na(estimate)
+  ) |>
+  modify_header(estimate = "**Odds Ratio**") |>
+  bold_labels()
 
-  expect_no_error(
-    tbl <- trial %>%
+test_that("add_forest(table_engine = 'flextable') works", {
+  expect_warning(
+    add_forest(tbl, table_engine = "flextable"),
+    "Less than 2 spanning headers detected."
+  )
+  expect_warning(
+    add_forest(tbl, table_engine = "gt"),
+    "Less than 2 spanning headers detected."
+  )
+
+  expect_silent(
+    tbl <- trial |>
       tbl_roche_subgroups(
         subgroups = c("grade", "stage"),
         rsp = "response",
@@ -23,7 +37,10 @@ test_that("test g_forest() works", {
             show_single_row = trt,
             exponentiate = TRUE
           )
+      ) |>
+      add_forest(
+        pvalue = starts_with("p.value"),
+        table_engine = "flextable"
       )
-    )
-  expect_no_error(g_forest(tbl))
+  )
 })

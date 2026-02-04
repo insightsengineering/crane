@@ -3,57 +3,57 @@
 
 # Default sizes for various elements in the forest plot
 .get_default_forest_sizes <- function(table_engine) {
-    if (table_engine == "gt") {
-      out <- list(
-        # Lines & Strokes
-        line_axis = 8,
-        line_ref = 6,
-        errorbar_size = 8,
-        stroke = 5,
-        tick_width = 6,
+  if (table_engine == "gt") {
+    out <- list(
+      # Lines & Strokes
+      line_axis = 8,
+      line_ref = 6,
+      errorbar_size = 8,
+      stroke = 5,
+      tick_width = 6,
 
-        # Ticks (Large units for high-res HTML)
-        tick_short = unit(0.7, "cm"),
-        tick_mid   = unit(1.3, "cm"),
-        tick_long  = unit(2.5, "cm"),
+      # Ticks (Large units for high-res HTML)
+      tick_short = unit(0.7, "cm"),
+      tick_mid = unit(1.3, "cm"),
+      tick_long = unit(2.5, "cm"),
 
-        # Text
-        text_size = 120,
-        text_margin = 60,
+      # Text
+      text_size = 120,
+      text_margin = 60,
 
-        # Dots (Scale factor for p-values)
-        dot_max = 120,
-        dot_base = 40,
+      # Dots (Scale factor for p-values)
+      dot_max = 120,
+      dot_base = 40,
 
-        # x-axis plot margins
-        axis_plot_margins = margin(t = 0, r = 5, b = 25, l = 5, unit = "pt")
-      )
-    } else {
-      out <- list(
-        # Lines & Strokes (Standard ggplot sizes)
-        line_axis = 0.5,
-        line_ref = 0.4,
-        errorbar_size = 0.6,
-        stroke = 0.8,
-        tick_width = 0.4,
+      # x-axis plot margins
+      axis_plot_margins = margin(t = 0, r = 5, b = 25, l = 5, unit = "pt")
+    )
+  } else {
+    out <- list(
+      # Lines & Strokes (Standard ggplot sizes)
+      line_axis = 0.5,
+      line_ref = 0.4,
+      errorbar_size = 0.6,
+      stroke = 0.8,
+      tick_width = 0.4,
 
-        # Ticks (Standard units)
-        tick_short = unit(0.1, "cm"),
-        tick_mid   = unit(0.15, "cm"),
-        tick_long  = unit(0.2, "cm"),
+      # Ticks (Standard units)
+      tick_short = unit(0.1, "cm"),
+      tick_mid = unit(0.15, "cm"),
+      tick_long = unit(0.2, "cm"),
 
-        # Text
-        text_size = 9,      # Standard point size
-        text_margin = 3,
+      # Text
+      text_size = 9, # Standard point size
+      text_margin = 3,
 
-        # Dots
-        dot_max = 6,        # Max dot size (e.g. 6pt)
-        dot_base = 2,       # Default dot size if p-value missing
+      # Dots
+      dot_max = 6, # Max dot size (e.g. 6pt)
+      dot_base = 2, # Default dot size if p-value missing
 
-        # x-axis plot margins
-        axis_plot_margins = margin(t = 0, r = 5, b = 3, l = 5, unit = "pt")
-      )
-    }
+      # x-axis plot margins
+      axis_plot_margins = margin(t = 0, r = 5, b = 3, l = 5, unit = "pt")
+    )
+  }
   out
 }
 
@@ -63,7 +63,8 @@
 .determine_ggplot_header <- function(tbl, header_spaces, table_engine) {
   raw_headers <- tbl$table_styling$spanning_header |>
     dplyr::filter(column != "label", !is.na(spanning_header)) |>
-    dplyr::filter(grepl(column, pattern = "stat")) |> dplyr::arrange(column) |>
+    dplyr::filter(grepl(column, pattern = "stat")) |>
+    dplyr::arrange(column) |>
     dplyr::pull(spanning_header) |>
     unique()
 
@@ -84,7 +85,7 @@
     clean_headers <- clean_headers[1:2]
   }
 
-  left_text  <- clean_headers[1]
+  left_text <- clean_headers[1]
   right_text <- clean_headers[2]
   header_spacer_btm <- nchar(left_text) + header_spaces - nchar("Better") + 1
 
@@ -98,7 +99,6 @@
       left_text, spacer, right_text, "<br>",
       "Better", spacer_btm, "Better"
     ))
-
   } else {
     # FLEXTABLE (Text)
     spacer <- paste0(rep("\u00A0", header_spaces), collapse = "")
@@ -142,19 +142,17 @@
     ggplot2::geom_vline(xintercept = mean_estimate, linetype = "dashed", color = "black", linewidth = sizes$line_ref) +
     ggplot2::geom_vline(xintercept = 1, color = "black", linewidth = sizes$line_ref) +
     ggplot2::geom_vline(xintercept = 0.2, linewidth = sizes$line_ref) +
-
     ggplot2::theme_void() +
 
     # COORDINATES (Crucial so ticks don't get clipped)
     ggplot2::coord_cartesian(xlim = limits, clip = "off") +
-
     ggplot2::theme(
       # Draw the main horizontal axis line
-      axis.line.x  = element_line(color = "black", linewidth = sizes$line_axis),
+      axis.line.x = element_line(color = "black", linewidth = sizes$line_axis),
       axis.ticks.x = element_line(color = "black", linewidth = sizes$line_axis),
       axis.ticks.length.x = sizes$tick_long, # Match the 'long' logtick
       # Text styling
-      axis.text.x  = element_text(
+      axis.text.x = element_text(
         size = sizes$text_size,
         color = "black",
         margin = margin(t = sizes$text_margin)

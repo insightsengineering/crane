@@ -1,14 +1,56 @@
-source("R/add_forest_utils.R")
-
-#' Add a Forest Plot
+#' Add a Forest Plot Column to a gtsummary Table
 #'
-#' @param x a gtsummary table
+#' This function adds a forest plot column to a gtsummary table, typically produced
+#' by [tbl_roche_subgroups()]. The forest plot visualizes estimates and confidence intervals
+#' for each subgroup in the table. The function supports rendering with either the `gt`
+#' or `flextable` engines, making it suitable for HTML and Word/PPT outputs.
 #'
-#' @return a gt table
+#' @param x (`gtsummary`)\cr
+#'   A gtsummary table with estimates and confidence intervals in the table body. Usually produced
+#'   by [tbl_roche_subgroups()].
+#' @param estimate ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#'   Estimate column name.
+#' @param conf_low ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#'   Confidence interval lower bound column name.
+#' @param conf_high ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#'  Confidence interval upper bound column name.
+#' @param pvalue ([`tidy-select`][dplyr::dplyr_tidy_select], optional)\cr
+#'  P-value column name. If provided, point sizes in the forest plot will be scaled
+#'  according to p-value (smaller p-values = smaller points).
+#' @param after ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#'  Column name after which the forest plot column will be added. Default is after
+#'  the p-value column. If no p-value column is provided, the forest plot will be added
+#'  after the row names.
+#' @param table_engine (`character`)\cr
+#'  Table rendering engine to use. Options are "gt" (for HTML output)
+#'  or "flextable" (for Word/PPT output). Default is "flextable".
+#'
+#' @details
+#' Both gt and flextable outputs could produce issues in line continuity between rows if
+#' there are wrapping in the statistical cells.
+#'
+#' @return a gt table or flextable object with an added forest plot column.
 #'
 #' @examples
-#' tbl <-
-#'   trial |>
+#' # Simple example ------------------------------------------------------------
+#' trial |>
+#'   select(age, marker, grade, response) |>
+#'   tbl_uvregression(
+#'     y = response,
+#'     method = glm,
+#'     method.args = list(family = binomial),
+#'     exponentiate = TRUE,
+#'     hide_n = TRUE
+#'   ) |>
+#'   modify_column_merge(
+#'     pattern = "{estimate} (95% CI {ci}; {p.value})",
+#'     rows = !is.na(estimate)
+#'   ) |>
+#'   modify_header(estimate = "**Odds Ratio**") |>
+#'   add_forest(table_engine = "gt")
+#'
+#' # Realistic example ---------------------------------------------------------
+#' trial |>
 #'   tbl_roche_subgroups(
 #'     rsp = "response",
 #'     by = "trt",
@@ -18,35 +60,30 @@ source("R/add_forest_utils.R")
 #'         show_single_row = trt,
 #'         exponentiate = TRUE
 #'       )
-#'   )
-#'
-#' # Using gt
-#' tbl |> add_forest(pvalue = starts_with("p.value"))
-#'
-#' # Using flextable
-#' tbl |> add_forest(pvalue = starts_with("p.value"), table_engine = "flextable")
+#'   ) |>
+#'   add_forest(pvalue = starts_with("p.value"), table_engine = "flextable")
 #'
 #' @export
 add_forest <- function(x,
                        estimate = starts_with("estimate"),
-                       conf.low = starts_with("conf.low"), conf.high = starts_with("conf.high"),
+                       conf_low = starts_with("conf.low"), conf_high = starts_with("conf.high"),
                        pvalue = NULL,
                        after = starts_with("p.value"),
                        table_engine = c("gt", "flextable")) {
   set_cli_abort_call()
   check_not_missing(x)
   check_not_missing(estimate)
-  check_not_missing(conf.low)
+  check_not_missing(conf_low)
   check_not_missing(analysis_variable)
   check_not_missing(change_variable)
   cards::process_selectors(
     x$table_body,
-    estimate = {{ estimate }}, conf.low = {{ conf.low }}, conf.high = {{ conf.high }},
+    estimate = {{ estimate }}, conf_low = {{ conf_low }}, conf_high = {{ conf_high }},
     pvalue = {{ pvalue }}, after = {{ after }}
   )
   check_scalar(estimate)
-  check_scalar(conf.low)
-  check_scalar(conf.high)
+  check_scalar(conf_low)
+  check_scalar(conf_high)
   check_scalar(pvalue, allow_empty = TRUE)
   check_scalar(after)
 
@@ -58,8 +95,10 @@ add_forest <- function(x,
   sizes <- .get_default_forest_sizes(table_engine = table_engine)
 
   # 2. DATA PREP ---------------------------------------------------------------
-  global_limits <- c(min(c(x$table_body[[conf.low]], 0.2), na.rm = TRUE),
-                     max(x$table_body[[conf.high]], na.rm = TRUE))
+  global_limits <- c(
+    min(c(x$table_body[[conf_low]], 0.2), na.rm = TRUE),
+    max(x$table_body[[conf_high]], na.rm = TRUE)
+  )
   mean_estimate <- mean(x$table_body[[estimate]], na.rm = TRUE)
   global_margins <- margin(t = 0, r = 5, b = 0, l = 5, unit = "pt")
 
@@ -68,12 +107,10 @@ add_forest <- function(x,
     seq_len(nrow(x$table_body)) |>
     lapply(
       function(i) {
-
         # Handle missing estimates by creating an empty plot with just reference lines
         if (is.na(x$table_body[[estimate]][i]) ||
-            is.na(x$table_body[[conf.low]][i]) ||
-            is.na(x$table_body[[conf.high]][i])) {
-
+          is.na(x$table_body[[conf_low]][i]) ||
+          is.na(x$table_body[[conf_high]][i])) {
           # Create an empty plot with just the reference lines
           out <- ggplot2::ggplot() +
             ggplot2::geom_vline(xintercept = mean_estimate, linetype = "dashed", linewidth = sizes$line_ref) +
@@ -106,8 +143,8 @@ add_forest <- function(x,
             ggplot2::aes(
               y = .data$y,
               x = .data[[estimate]],
-              xmin = .data[[conf.low]],
-              xmax = .data[[conf.high]]
+              xmin = .data[[conf_low]],
+              xmax = .data[[conf_high]]
             )
           ) +
           ggplot2::geom_errorbar(height = 0, size = sizes$errorbar_size) +
@@ -138,11 +175,18 @@ add_forest <- function(x,
 
   # Extract the Spanning Headers from gtsummary metadata
   header_text <- .determine_ggplot_header(x, header_spaces, table_engine)
+
+  # 5. BUILD FINAL TABLE --------------------------------------------------------
+  out <- x |>
+    gtsummary::modify_table_body(~ .x |>
+                                   dplyr::add_row() |>
+                                   dplyr::mutate(ggplot = NA, .after = .data[[after]])) |>
+    gtsummary::modify_footnote(gtsummary::everything() ~ NA) |>
+    gtsummary::modify_header(ggplot = header_text)
+
+  # 6. RENDER TABLE -------------------------------------------------------------
   if (table_engine == "gt") {
-    out <- x |>
-      gtsummary::modify_table_body(~ .x |> dplyr::add_row() |> dplyr::mutate(ggplot = NA, .after = .data[[after]])) |>
-      gtsummary::modify_footnote(gtsummary::everything() ~ NA) |>
-      gtsummary::modify_header(ggplot = header_text) |>
+  out <- out |>
       gtsummary::as_gt() |>
       gt::text_transform(
         locations = gt::cells_body(columns = .data$ggplot),
@@ -162,12 +206,8 @@ add_forest <- function(x,
         .gt_table img { display: block; vertical-align: bottom; margin: 0 auto; }
       ") |>
       gt::tab_style(style = gt::cell_text(whitespace = "nowrap"), locations = gt::cells_body())
-
   } else if (table_engine == "flextable") {
-    out <- x |>
-      gtsummary::modify_table_body(~ .x |> dplyr::add_row() |> dplyr::mutate(ggplot = NA, .after = .data[[after]])) |>
-      gtsummary::modify_footnote(gtsummary::everything() ~ NA) |>
-      gtsummary::modify_header(ggplot = header_text) |>
+    out <- out |>
       gtsummary::as_flex_table() |>
       flextable::mk_par(
         j = "ggplot",

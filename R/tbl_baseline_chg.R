@@ -4,26 +4,26 @@
 #' measurement of an Analysis Variable.
 #' @inheritParams tbl_roche_summary
 #' @inheritParams gtsummary::add_overall
-#' @param split_by (`string`)\cr
+#' @param split_by ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'  String identifying the variable to split the table by. Default is `NULL`. Usually
 #'  used with `'PARAM'` variables to produce a list of tables for each parameter. Subtitles
 #'  highlight the split levels.
-#' @param analysis_variable (`string`)\cr
+#' @param analysis_variable ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'  String identifying the analysis values. Default is `'AVAL'`.
-#' @param change_variable (`string`)\cr
+#' @param change_variable ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'  String identifying the change from baseline values. Default is `'CHG'`.
-#' @param id (`string`)\cr
+#' @param id ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'  String identifying the unique subjects. Default is `'USUBJID'`.
-#' @param visit (`string`)\cr
+#' @param visit ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'  String for the visit variable. Default is
 #'  `'AVISIT'`. If there are more than one entry for each visit and subject,
 #'  only the first row is kept.
-#' @param visit_number (`string`)\cr
+#' @param visit_number ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'  String identifying the visit or analysis sequence number. Default is
 #'  `'AVISITN'`.
 #' @param baseline_level (`string`)\cr
 #'  String identifying baseline level in the `visit` variable.
-#' @param denominator (`string`)\cr
+#' @param denominator (`data.frame`)\cr
 #'  Data set used to compute the header counts (typically `ADSL`).
 #'
 #' @return A gtsummary table, or a named list of gtsummary tables if `split_by` is specified.
