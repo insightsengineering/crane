@@ -9,7 +9,7 @@ add_forest(
   estimate = starts_with("estimate"),
   conf_low = starts_with("conf.low"),
   conf_high = starts_with("conf.high"),
-  pvalue = NULL,
+  pvalue = starts_with("p.value"),
   after = starts_with("p.value"),
   table_engine = c("gt", "flextable")
 )
@@ -28,18 +28,16 @@ Confidence interval lower bound column name.}
 \item{conf_high}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 Confidence interval upper bound column name.}
 
-\item{pvalue}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}, optional)\cr
-P-value column name. If provided, point sizes in the forest plot will be scaled
-according to p-value (smaller p-values = smaller points).}
+\item{pvalue}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+P-value column name. Point sizes in the forest plot will be scaled
+according to p-value (smaller p-values = smaller points). \code{NULL} to turn this off.}
 
 \item{after}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 Column name after which the forest plot column will be added. Default is after
-the p-value column. If no p-value column is provided, the forest plot will be added
-after the row names.}
+the p-value column.}
 
 \item{table_engine}{(\code{character})\cr
-Table rendering engine to use. Options are "gt" (for HTML output)
-or "flextable" (for Word/PPT output). Default is "flextable".}
+Table rendering engine to use. Default is "flextable".}
 }
 \value{
 a gt table or flextable object with an added forest plot column.
@@ -48,7 +46,7 @@ a gt table or flextable object with an added forest plot column.
 This function adds a forest plot column to a gtsummary table, typically produced
 by \code{\link[=tbl_roche_subgroups]{tbl_roche_subgroups()}}. The forest plot visualizes estimates and confidence intervals
 for each subgroup in the table. The function supports rendering with either the \code{gt}
-or \code{flextable} engines, making it suitable for HTML and Word/PPT outputs.
+or \code{flextable} engines, making it suitable for different outputs.
 }
 \details{
 Both gt and flextable outputs could produce issues in line continuity between rows if

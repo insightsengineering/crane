@@ -3,7 +3,7 @@
 #' This function adds a forest plot column to a gtsummary table, typically produced
 #' by [tbl_roche_subgroups()]. The forest plot visualizes estimates and confidence intervals
 #' for each subgroup in the table. The function supports rendering with either the `gt`
-#' or `flextable` engines, making it suitable for HTML and Word/PPT outputs.
+#' or `flextable` engines, making it suitable for different outputs.
 #'
 #' @param x (`gtsummary`)\cr
 #'   A gtsummary table with estimates and confidence intervals in the table body. Usually produced
@@ -14,16 +14,14 @@
 #'   Confidence interval lower bound column name.
 #' @param conf_high ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'  Confidence interval upper bound column name.
-#' @param pvalue ([`tidy-select`][dplyr::dplyr_tidy_select], optional)\cr
-#'  P-value column name. If provided, point sizes in the forest plot will be scaled
-#'  according to p-value (smaller p-values = smaller points).
+#' @param pvalue ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#'  P-value column name. Point sizes in the forest plot will be scaled
+#'  according to p-value (smaller p-values = smaller points). `NULL` to turn this off.
 #' @param after ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'  Column name after which the forest plot column will be added. Default is after
-#'  the p-value column. If no p-value column is provided, the forest plot will be added
-#'  after the row names.
+#'  the p-value column.
 #' @param table_engine (`character`)\cr
-#'  Table rendering engine to use. Options are "gt" (for HTML output)
-#'  or "flextable" (for Word/PPT output). Default is "flextable".
+#'  Table rendering engine to use. Default is "flextable".
 #'
 #' @details
 #' Both gt and flextable outputs could produce issues in line continuity between rows if
@@ -67,7 +65,7 @@
 add_forest <- function(x,
                        estimate = starts_with("estimate"),
                        conf_low = starts_with("conf.low"), conf_high = starts_with("conf.high"),
-                       pvalue = NULL,
+                       pvalue = starts_with("p.value"),
                        after = starts_with("p.value"),
                        table_engine = c("gt", "flextable")) {
   set_cli_abort_call()

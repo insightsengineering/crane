@@ -72,12 +72,6 @@
   clean_headers <- gsub("\\*\\*", "", raw_headers)
 
   # Fallback: If no spanning headers exist (e.g. no 'by' variable), use generic defaults
-  if (length(clean_headers) < 2) {
-    cli::cli_warn(
-      "Less than 2 spanning headers detected. Using default headers 'Group 1' and 'Group 2' for the forest plot header."
-    )
-    clean_headers <- c("Group 1", "Group 2")
-  }
   if (length(clean_headers) > 2) {
     cli::cli_warn(
       "More than 2 spanning headers detected. Only the first two will be used for the forest plot header."
@@ -90,7 +84,12 @@
   header_spacer_btm <- nchar(left_text) + header_spaces - nchar("Better") + 1
 
   # B. Build the String
-  if (table_engine == "gt") {
+  if (length(clean_headers) < 2) {
+    cli::cli_warn(
+      "Less than 2 spanning headers detected. The forest plot column will have an empty header."
+    )
+    header_text <- ""
+  } else if (table_engine == "gt") {
     # GT (HTML)
     spacer <- paste0(rep("&nbsp;", header_spaces), collapse = "")
     spacer_btm <- paste0(rep("&nbsp;", header_spacer_btm), collapse = "")
