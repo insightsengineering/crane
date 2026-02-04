@@ -147,7 +147,7 @@ add_forest <- function(x,
               xmax = .data[[conf_high]]
             )
           ) +
-          ggplot2::geom_errorbar(height = 0, size = sizes$errorbar_size) +
+          ggplot2::geom_errorbar(height = 0, linewidth = sizes$errorbar_size) +
           ggplot2::geom_vline(xintercept = mean_estimate, linetype = "dashed", linewidth = sizes$line_ref) +
           ggplot2::geom_vline(xintercept = 1, linewidth = sizes$line_ref) +
           ggplot2::geom_vline(xintercept = 0.2, linewidth = sizes$line_ref) +
@@ -179,14 +179,14 @@ add_forest <- function(x,
   # 5. BUILD FINAL TABLE --------------------------------------------------------
   out <- x |>
     gtsummary::modify_table_body(~ .x |>
-                                   dplyr::add_row() |>
-                                   dplyr::mutate(ggplot = NA, .after = .data[[after]])) |>
+      dplyr::add_row() |>
+      dplyr::mutate(ggplot = NA, .after = .data[[after]])) |>
     gtsummary::modify_footnote(gtsummary::everything() ~ NA) |>
     gtsummary::modify_header(ggplot = header_text)
 
   # 6. RENDER TABLE -------------------------------------------------------------
   if (table_engine == "gt") {
-  out <- out |>
+    out <- out |>
       gtsummary::as_gt() |>
       gt::text_transform(
         locations = gt::cells_body(columns = .data$ggplot),
