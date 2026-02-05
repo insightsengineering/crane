@@ -1,7 +1,7 @@
 skip_on_cran()
 tbl <-
   trial |>
-  select(age, marker, grade, response) |>
+  dplyr::select(age, marker, grade, response) |>
   tbl_uvregression(
     y = response,
     method = glm,

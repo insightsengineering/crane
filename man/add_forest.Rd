@@ -11,7 +11,7 @@ add_forest(
   conf_high = starts_with("conf.high"),
   pvalue = starts_with("p.value"),
   after = starts_with("p.value"),
-  table_engine = c("gt", "flextable")
+  table_engine = c("flextable", "gt")
 )
 }
 \arguments{
@@ -28,7 +28,7 @@ Confidence interval lower bound column name.}
 \item{conf_high}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 Confidence interval upper bound column name.}
 
-\item{pvalue}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+\item{pvalue}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}, optional)\cr
 P-value column name. Point sizes in the forest plot will be scaled
 according to p-value (smaller p-values = smaller points). \code{NULL} to turn this off.}
 

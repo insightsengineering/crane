@@ -14,7 +14,7 @@
 #'   Confidence interval lower bound column name.
 #' @param conf_high ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'  Confidence interval upper bound column name.
-#' @param pvalue ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#' @param pvalue ([`tidy-select`][dplyr::dplyr_tidy_select], optional)\cr
 #'  P-value column name. Point sizes in the forest plot will be scaled
 #'  according to p-value (smaller p-values = smaller points). `NULL` to turn this off.
 #' @param after ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
@@ -67,7 +67,7 @@ add_forest <- function(x,
                        conf_low = starts_with("conf.low"), conf_high = starts_with("conf.high"),
                        pvalue = starts_with("p.value"),
                        after = starts_with("p.value"),
-                       table_engine = c("gt", "flextable")) {
+                       table_engine = c("flextable", "gt")) {
   set_cli_abort_call()
   check_not_missing(x)
   check_not_missing(estimate)
