@@ -46,7 +46,19 @@ calc_stats <- function(x, conf_level = 0.95, decimal_places = 2) {
 #' @param strata_N Column name for the stratification variable used for grouping/coloring (can be NULL).
 #' @param whiskers A vector of two column names for the lower and upper error bar limits.
 #' @param mid_type String indicating whether to plot points ("p"), lines ("l"), or both ("pl").
-#' @param ... (Other plotting arguments: position, mid_point_size, errorbar_width, labs, theme, etc.)
+#' @param mid_point_size Numeric value for the size of points.
+#' @param position Position adjustment for dodging points and lines (default: position_dodge(width = 0.4)).
+#' @param legend_title Title for the legend.
+#' @param legend_position Position of the legend (default: "bottom").
+#' @param ggtheme ggplot2 theme to apply (default: theme_bw()).
+#' @param x_lab Label for the x-axis.
+#' @param y_lab Label for the y-axis.
+#' @param title Plot title.
+#' @param subtitle Plot subtitle.
+#' @param caption Plot caption.
+#' @param errorbar_width Width of error bars (default: 0.45).
+#' @param col Vector of color values for manual color scaling.
+#' @param linetype Vector of line type values for manual line type scaling.
 #' @return A ggplot object.
 #'
 #' @export
@@ -254,10 +266,23 @@ g_lineplot_table <- function(df_stats,
 #' @param mid Column name for the plot midpoint (e.g., "mean").
 #' @param whiskers A vector of two column names for the lower and upper error bar limits.
 #' @param table A character vector of statistic column names to display in the table (e.g., c("n", "mean")).
+#' @param mid_type String indicating whether to plot points ("p"), lines ("l"), or both ("pl").
+#' @param mid_point_size Numeric value for the size of points.
+#' @param position Position adjustment for dodging points and lines.
+#' @param legend_title Title for the legend.
+#' @param legend_position Position of the legend.
+#' @param ggtheme ggplot2 theme to apply (default: nestcolor::theme_nest()).
+#' @param x_lab Label for the x-axis.
+#' @param y_lab Label for the y-axis.
+#' @param title Plot title.
+#' @param subtitle Plot subtitle.
+#' @param caption Plot caption.
 #' @param table_font_size Font size for the table text.
 #' @param decimal_places Integer specifying the number of decimal places for numeric statistics in the table.
-#' @param rel_height_plot Relative height of the plot component compared to the table.
-#' @param ... (Other plotting and layout parameters)
+#' @param errorbar_width Width of error bars.
+#' @param col Vector of color values for manual color scaling.
+#' @param linetype Vector of line type values for manual line type scaling.
+#' @param rel_height_plot Relative height of the plot component compared to the table (default: 0.5).
 #' @return A combined plot/table (cowplot) or just the plot (ggplot).
 #'
 #' @export
@@ -325,9 +350,7 @@ g_lineplot_with_table <- function(df_stats,
                                   linetype = NULL,
                                   rel_height_plot = 0.5) {
 
-  # NOTE: Dependencies on external functions: g_lineplot_without_table, g_lineplot_table, plot_grid
-
-  # 1. GENERATE PLOT (using external function) ---------------------------------
+  # 1. GENERATE PLOT -----------------------------------------------------------------
   p <- g_lineplot_without_table(
     df_stats = df_stats,
     x = x,
@@ -382,8 +405,8 @@ g_lineplot_with_table <- function(df_stats,
 #' @param group_var Column name for the grouping variable (e.g., "ARM").
 #' @param subject_var Column name for the subject ID (e.g., "USUBJID").
 #' @param mid Column name for the mean/median statistic to be plotted (e.g., "mean").
-#' @param conf_level The confidence level for the interval (default is 0.95).
 #' @param calc_stats A function to calculate summary statistics, defaulting to the provided `calc_stats` function.
+#' @param ... Additional arguments passed to the `calc_stats` function (e.g., `conf_level`, `decimal_places`).
 #' @return A data frame (`df_stats`) containing the calculated statistics, ready for plotting.
 #'
 #' @examples
@@ -404,7 +427,7 @@ g_lineplot_with_table <- function(df_stats,
 #'   ARM = c(rep("Treatment A", 10), rep("Treatment B", 10))
 #' )
 #'
-#' # Preprocess data for line plot
+#' # Preprocess data for line plot with default confidence level
 #' df_stats <- preprocess_lineplot_data(
 #'   df = adlb,
 #'   alt_counts_df = adsl,
@@ -412,6 +435,28 @@ g_lineplot_with_table <- function(df_stats,
 #'   y = "AVAL",
 #'   group_var = "ARM",
 #'   subject_var = "USUBJID"
+#' )
+#'
+#' # Custom confidence level using ...
+#' df_stats_90ci <- preprocess_lineplot_data(
+#'   df = adlb,
+#'   alt_counts_df = adsl,
+#'   x = "AVISIT",
+#'   y = "AVAL",
+#'   group_var = "ARM",
+#'   subject_var = "USUBJID",
+#'   conf_level = 0.90
+#' )
+#'
+#' # Custom decimal places using ...
+#' df_stats_3dec <- preprocess_lineplot_data(
+#'   df = adlb,
+#'   alt_counts_df = adsl,
+#'   x = "AVISIT",
+#'   y = "AVAL",
+#'   group_var = "ARM",
+#'   subject_var = "USUBJID",
+#'   decimal_places = 3
 #' )
 #'
 #' # Without grouping variable
@@ -428,10 +473,8 @@ preprocess_lineplot_data <- function(df,
                                      group_var = "ARM",
                                      subject_var = "USUBJID",
                                      mid = "mean",
-                                     conf_level = 0.95,
-                                     calc_stats = calc_stats) { # Allowing for custom statistic function, defaulting to calc_stats
-
-  # NOTE: Dependencies on external functions: calc_stats
+                                     calc_stats = calc_stats,
+                                     ...) { # Allowing for custom statistic function, defaulting to calc_stats
 
   # Remove unused factor levels
   if (is.factor(df[[x]])) {
@@ -453,7 +496,7 @@ preprocess_lineplot_data <- function(df,
   # 2. CALCULATE STATISTICS
   df_stats <- df_grp %>%
     summarise(
-      stats = list(calc_stats(.data[[y]], conf_level = conf_level)), # Calls external calc_stats
+      stats = list(calc_stats(.data[[y]], ...)), # Calls external calc_stats with ...
       .groups = "drop"
     ) %>%
     tidyr::unnest_wider(stats)
