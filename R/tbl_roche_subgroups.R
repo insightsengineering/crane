@@ -53,7 +53,7 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
   all_vars <- c("..overall..", subgroups)
 
   # subgroup analyses
-  tbl <-
+  roche_subgroups_tbl <-
     all_vars |>
     pmap(
       \(x) {
@@ -142,14 +142,15 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
       }
     ) |>
     # stack overall and subgroup analyses
-    tbl_stack()
-
-  # stack analyses and return formatted table
-  ret <- tbl |>
+    tbl_stack() |>
     modify_header(label_1 ~ "**Baseline Risk Factors**") |>
     remove_footnote_header() |>
     remove_abbreviation()
 
-  attr(ret, "by") <- levels(factor(data[[by]]))
-  return(ret)
+  attr(roche_subgroups_tbl, "by") <- levels(factor(data[[by]]))
+
+  roche_subgroups_tbl <- roche_subgroups_tbl |>
+      structure(class = c("tbl_roche_subgroups", "gtsummary"))
+
+  return(roche_subgroups_tbl)
 }
