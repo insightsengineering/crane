@@ -47,7 +47,7 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
   check_class(subgroups, "character")
   check_class(.tbl_fun, c("formula", "function"))
 
-  # 1. Augment data with a dummy variable for the 'All Participants' row
+  # Augment data with a dummy variable for the 'All Participants' row
   overall_rowname <- "All Participants"
   data_aug <- data %>% dplyr::mutate(..overall.. = all_part_rowname)
   all_vars <- c("..overall..", subgroups)
@@ -55,7 +55,7 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
   # subgroup analyses
   tbl <-
     all_vars |>
-    map(
+    pmap(
       \(x) {
         list(
           # total n
@@ -117,7 +117,6 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
           # add a header row for the variable
           modify_table_body(
             function(table_body) {
-              # browser()
               if (any(grepl(pattern = overall_rowname, table_body))) {
                 return(
                   table_body |>
@@ -139,7 +138,7 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
                   dplyr::select(-.data$groupname_col)
               )
             }
-         )
+          )
       }
     ) |>
     # stack overall and subgroup analyses
