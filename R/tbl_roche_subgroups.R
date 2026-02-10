@@ -47,66 +47,34 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
   check_class(subgroups, "character")
   check_class(.tbl_fun, c("formula", "function"))
 
-  # overall analyses
-  tbl_overall <-
-    list(
-      # total n
-      data |>
-        tbl_summary(include = rsp, statistic = everything() ~ "{N}", missing = "no") |>
-        modify_header(stat_0 ~ "**Total n**"),
-      # responder statistics
-      data |>
-        tbl_strata(
-          strata = by,
-          .tbl_fun = ~ .x |>
-            ard_tabulate_value(
-              variables = rsp,
-              stat_label = everything() ~ list(N = "n", n = "Responders", p = "Response (%)")
-            ) |>
-            tbl_ard_wide_summary(
-              include = rsp,
-              statistic = c("{N}", "{n}", "{p}")
-            )
-        ),
-      # comparison statistics
-      tbl_strata(
-        data = data |> mutate(dummy = "..overall.."),
-        strata = "dummy",
-        .tbl_fun = .tbl_fun,
-        .combine_with = "tbl_stack"
-      ) |>
-        modify_header(estimate = "**Odds Ratio**")
-    ) |>
-    tbl_merge(tab_spanner = FALSE, merge_vars = c("groupname_col", "tbl_id1", "row_type")) |>
-    modify_column_hide(c("label_2", "label_3")) |>
-    # add a header row for the variable
-    modify_table_body(
-      function(table_body) {
-        table_body |>
-          mutate(label_1 = "All Participants")
-      }
-    ) |>
-    modify_column_hide("groupname_col_3")
+  # 1. Augment data with a dummy variable for the 'All Participants' row
+  overall_rowname <- "All Participants"
+  data_aug <- data %>% dplyr::mutate(..overall.. = all_part_rowname)
+  all_vars <- c("..overall..", subgroups)
 
   # subgroup analyses
-  tbl_subgp <-
-    subgroups |>
+  tbl <-
+    all_vars |>
     map(
       \(x) {
         list(
           # total n
           tbl_strata(
-            data = data,
+            data = data_aug,
             strata = x,
-            .tbl_fun =
-              ~ .x |> tbl_summary(include = rsp, statistic = everything() ~ "{N}", missing = "no"),
+            .tbl_fun = ~ .x |>
+              tbl_summary(include = rsp, statistic = everything() ~ "{N}", missing = "no"),
             .combine_with = "tbl_stack",
-            .combine_args = list(quiet = TRUE)
+            .combine_args = if (x == "..overall..") {
+              list(group_header = NULL, quiet = TRUE)
+            } else {
+              list(quiet = TRUE)
+            }
           ) |>
             modify_header(stat_0 ~ "**Total n**"),
           # responder statistics
           tbl_strata(
-            data = data,
+            data = data_aug,
             strata = x,
             .tbl_fun =
               ~ .x |>
@@ -115,21 +83,32 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
                   .tbl_fun = ~ .x |>
                     ard_tabulate_value(
                       variables = rsp,
-                      stat_label = everything() ~ list(N = "n", n = "Responders", p = "Response (%)")
+                      stat_label = everything() ~ list(N = "n", n = "Responders", p = "response")
                     ) |>
                     tbl_ard_wide_summary(
                       include = rsp,
-                      statistic = c("{N}", "{n}", "{p}")
+                      statistic = c("{N} ({p} %)"),
+                      label = list(rsp = "n Response (%)")
                     )
                 ),
-            .combine_with = "tbl_stack"
+            .combine_with = "tbl_stack",
+            .combine_args = if (x == "..overall..") {
+              list(group_header = NULL, quiet = TRUE)
+            } else {
+              list(quiet = TRUE)
+            }
           ),
           # comparison statistics
           tbl_strata(
-            data = data,
+            data = data_aug,
             strata = x,
             .tbl_fun = .tbl_fun,
-            .combine_with = "tbl_stack"
+            .combine_with = "tbl_stack",
+            .combine_args = if (x == "..overall..") {
+              list(group_header = NULL, quiet = TRUE)
+            } else {
+              list(quiet = TRUE)
+            }
           ) |>
             modify_header(estimate = "**Odds Ratio**")
         ) |>
@@ -138,6 +117,13 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
           # add a header row for the variable
           modify_table_body(
             function(table_body) {
+              # browser()
+              if (any(grepl(pattern = overall_rowname, table_body))) {
+                return(
+                  table_body |>
+                    dplyr::mutate(label_1 = overall_rowname)
+                )
+              }
               dplyr::bind_rows(
                 dplyr::tibble(
                   variable = x,
@@ -153,17 +139,18 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
                   dplyr::select(-.data$groupname_col)
               )
             }
-          )
+         )
       }
     ) |>
+    # stack overall and subgroup analyses
     tbl_stack()
 
   # stack analyses and return formatted table
-  ret <- list(tbl_overall, tbl_subgp) |>
-    tbl_stack(attr_order = 2) |>
+  ret <- tbl |>
     modify_header(label_1 ~ "**Baseline Risk Factors**") |>
     remove_footnote_header() |>
     remove_abbreviation()
+
   attr(ret, "by") <- levels(factor(data[[by]]))
   return(ret)
 }
