@@ -62,10 +62,10 @@
 # We look for columns that are NOT the label column, and get their 'spanning_header'
 .determine_ggplot_header <- function(tbl, header_spaces, table_engine) {
   raw_headers <- tbl$table_styling$spanning_header |>
-    dplyr::filter(column != "label", !is.na(spanning_header)) |>
-    dplyr::filter(grepl(column, pattern = "stat")) |>
-    dplyr::arrange(column) |>
-    dplyr::pull(spanning_header) |>
+    dplyr::filter(.data$column != "label", !is.na(.data$spanning_header)) |>
+    dplyr::filter(grepl(.data$column, pattern = "stat")) |>
+    dplyr::arrange(.data$column) |>
+    dplyr::pull(.data$spanning_header) |>
     unique()
 
   # Clean up headers (remove **bolding** syntax if present)
@@ -115,7 +115,7 @@
 # Function to generate a clean, centered X-axis
 .plot_centered_axis <- function(limits, mean_estimate, sizes) {
   # create dummy data just to initialize ggplot
-  ggplot(data.frame(x = limits), aes(x = x)) +
+  ggplot(data.frame(x = limits), aes(x = .data$x)) +
     geom_blank() +
 
     # LOG SCALE WITH DYNAMIC BREAKS

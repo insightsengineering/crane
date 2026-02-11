@@ -72,8 +72,6 @@ add_forest <- function(x,
   check_not_missing(x)
   check_not_missing(estimate)
   check_not_missing(conf_low)
-  check_not_missing(analysis_variable)
-  check_not_missing(change_variable)
   cards::process_selectors(
     x$table_body,
     estimate = {{ estimate }}, conf_low = {{ conf_low }}, conf_high = {{ conf_high }},
