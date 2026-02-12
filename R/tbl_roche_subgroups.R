@@ -34,8 +34,7 @@
 #'       ~ glm(status ~ arm, data = .x) |>
 #'         tbl_regression(
 #'          show_single_row = arm,
-#'          exponentiate = TRUE,
-#'          tidy_fun = broom.helpers::tidy_parameters
+#'          exponentiate = TRUE #, tidy_fun = broom.helpers::tidy_parameters
 #'        )
 #'  ) |>
 #'  modify_header(starts_with("estimate") ~ "Odds Ratio")

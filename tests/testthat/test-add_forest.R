@@ -17,6 +17,8 @@ tbl <-
   bold_labels()
 
 test_that("add_forest(table_engine = 'flextable') works", {
+  skip_if_not_installed("broom.helpers")
+
   expect_warning(
     add_forest(tbl, table_engine = "flextable"),
     "Less than 2 spanning headers detected."
@@ -35,7 +37,8 @@ test_that("add_forest(table_engine = 'flextable') works", {
         ~ glm(response ~ trt, data = .x) |>
           gtsummary::tbl_regression(
             show_single_row = trt,
-            exponentiate = TRUE
+            exponentiate = TRUE,
+            tidy_fun = broom.helpers::tidy_parameters
           )
       ) |>
       add_forest(
