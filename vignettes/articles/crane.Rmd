@@ -86,7 +86,11 @@ Another case where we may create helper functions in {crane}, is when the table 
 Generally, creating an ARD of all results in a summary table, then creating then table is more cumbersome.
 In these cumbersome cases, a new function in {crane} is warranted.
 
-## MMRM Regression Tables
+## Regression Tables
+
+In addition to summary tables, {crane} provides convenient wrappers for creating regression tables from various model types. These functions ensure proper integration with {gtsummary} and provide model-specific validation.
+
+### MMRM Regression Tables
 
 The `tbl_mmrm()` function provides a convenient wrapper for creating regression tables from Mixed Models for Repeated Measures (MMRM). This function works seamlessly with the {mmrm} package and {gtsummary}.
 

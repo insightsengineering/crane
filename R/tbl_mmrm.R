@@ -52,7 +52,16 @@ tbl_mmrm <- function(x, ...) {
   }
   
   # Check that tidy method exists for mmrm
-  if (!any(grepl("^tidy\\.mmrm$", methods("tidy")))) {
+  # Try to get the method to ensure it exists and is properly registered
+  tidy_exists <- tryCatch(
+    {
+      getS3method("tidy", "mmrm", optional = TRUE)
+      TRUE
+    },
+    error = function(e) FALSE
+  )
+  
+  if (!tidy_exists) {
     cli::cli_abort(
       c(
         "No {.fun tidy} method found for {.cls mmrm} objects.",
