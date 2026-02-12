@@ -52,12 +52,12 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
   # Augment data with a dummy variable for the 'All Participants' row
   overall_rowname <- "All Participants"
   data_aug <- data %>% dplyr::mutate(..overall.. = overall_rowname)
-  all_vars <- c("..overall..", subgroups) |> as.list()
+  all_vars <- c("..overall..", subgroups)
 
   # subgroup analyses
   roche_subgroups_tbl <-
     all_vars |>
-    pmap(
+    map(
       \(x, ...) {
         list(
           # total n
