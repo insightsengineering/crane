@@ -11,6 +11,7 @@ add_forest(
   conf_high = starts_with("conf.high"),
   pvalue = starts_with("p.value"),
   after = starts_with("p.value"),
+  header_spaces = 20,
   table_engine = c("flextable", "gt")
 )
 }
@@ -35,6 +36,11 @@ according to p-value (smaller p-values = smaller points). \code{NULL} to turn th
 \item{after}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 Column name after which the forest plot column will be added. Default is after
 the p-value column.}
+
+\item{header_spaces}{(\code{integer})\cr Spaces to add to the forest plot header to
+visually separate the two treatment areas (\verb{trt A\\n Better} and \verb{trt B\\nBetter}).
+It is suggested to modify manually this variable if the treatment names are long,
+with \code{add_forest(..., header_spaces = 5)} or \code{flextable::set_header_labels(ggplot = "*")}.}
 
 \item{table_engine}{(\code{character})\cr
 Table rendering engine to use. Default is "flextable".}
@@ -75,13 +81,14 @@ trial |>
   tbl_roche_subgroups(
     rsp = "response",
     by = "trt",
-    subgroups = c("grade", "stage"),
+    subgroups = c("grade"),
     ~ glm(response ~ trt, data = .x) |>
       gtsummary::tbl_regression(
         show_single_row = trt,
-        exponentiate = TRUE
+        exponentiate = TRUE,
+         tidy_fun = broom.helpers::tidy_parameters
       )
   ) |>
-  add_forest(pvalue = starts_with("p.value"), table_engine = "flextable")
-
+  add_forest(pvalue = starts_with("p.value"), table_engine = "flextable") |>
+  flextable::set_header_labels(ggplot = "---------")
 }

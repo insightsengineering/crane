@@ -14,22 +14,49 @@
 #' @returns a 'gtsummary' table
 #'
 #' @examples
-#' # logistic regression -------------------------------------------------------
-#' tbl <-
-#'   trial |>
-#'   tbl_roche_subgroups(
-#'     rsp = "response",
-#'     by = "trt",
-#'     subgroups = c("grade", "stage"),
-#'     .tbl_fun =
-#'       ~ glm(response ~ trt, data = .x) |>
-#'         tbl_regression(
-#'           show_single_row = trt,
-#'           exponentiate = TRUE
-#'         )
-#'   )
+#' # prepare sample data
+#' df_adtte <- data.frame(
+#'   time = rexp(100, rate = 0.1),
+#'   status = sample(c(0, 1), 100, replace = TRUE),
+#'   arm = sample(c("Arm A", "Arm B"), 100, replace = TRUE),
+#'   grade = sample(c("I", "II"), 100, replace = TRUE),
+#'   strata = sample(c("1", "2"), 100, replace = TRUE)
+#' ) |>
+#'   mutate(arm = relevel(factor(arm), ref = "Arm A")) # Set Reference
 #'
-#' tbl
+#' # logistic regression -------------------------------------------------------
+#' df_adtte |>
+#'   tbl_roche_subgroups(
+#'     rsp = "status",
+#'     by = "arm",
+#'     subgroups = c("grade"),
+#'     .tbl_fun =
+#'       ~ glm(status ~ arm, data = .x) |>
+#'         tbl_regression(
+#'          show_single_row = arm,
+#'          exponentiate = TRUE,
+#'          tidy_fun = broom.helpers::tidy_parameters
+#'        )
+#'  ) |>
+#'  modify_header(starts_with("estimate") ~ "Odds Ratio")
+#'
+#' # coxph regression ----------------------------------------------------------
+#' df_adtte |>
+#'   tbl_roche_subgroups(
+#'     rsp = status,
+#'     by = arm,
+#'     subgroups = c(grade, strata),
+#'     ~ survival::coxph(
+#'       survival::Surv(time, status) ~ arm,
+#'       data = .x,
+#'       ties = "exact"
+#'     ) |> # Exact Ties
+#'       tbl_regression(
+#'         show_single_row = arm,
+#'         exponentiate = TRUE # Get Hazard Ratios
+#'       )
+#'   ) |>
+#'   modify_header(starts_with("estimate") ~ "Hazard Ratio")
 #'
 #' @export
 tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
@@ -53,7 +80,7 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
   overall_rowname <- "All Participants"
   data_aug <- data %>% dplyr::mutate(..overall.. = overall_rowname)
   all_vars <- c("..overall..", subgroups)
-
+  x <- "strata_col"
   # subgroup analyses
   roche_subgroups_tbl <-
     all_vars |>
@@ -112,7 +139,7 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
               list(quiet = TRUE)
             }
           ) |>
-            gtsummary::modify_header(estimate = "Odds Ratio")
+            gtsummary::modify_header(estimate = "estimate")
         ) |>
           gtsummary::tbl_merge(tab_spanner = FALSE, merge_vars = c("groupname_col", "tbl_id1", "row_type")) |>
           gtsummary::modify_column_hide(c("label_2", "label_3")) |>
@@ -149,10 +176,11 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
     gtsummary::remove_footnote_header() |>
     gtsummary::remove_abbreviation()
 
+
   attr(roche_subgroups_tbl, "by") <- levels(factor(data[[by]]))
 
   roche_subgroups_tbl <- roche_subgroups_tbl |>
-      structure(class = c("tbl_roche_subgroups", "gtsummary"))
+    structure(class = c("tbl_roche_subgroups", "gtsummary"))
 
   return(roche_subgroups_tbl)
 }

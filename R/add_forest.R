@@ -20,6 +20,10 @@
 #' @param after ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'  Column name after which the forest plot column will be added. Default is after
 #'  the p-value column.
+#' @param header_spaces (`integer`)\cr Spaces to add to the forest plot header to
+#'   visually separate the two treatment areas (`trt A\n Better` and `trt B\nBetter`).
+#'   It is suggested to modify manually this variable if the treatment names are long,
+#'   with `add_forest(..., header_spaces = 5)` or `flextable::set_header_labels(ggplot = "*")`.
 #' @param table_engine (`character`)\cr
 #'  Table rendering engine to use. Default is "flextable".
 #'
@@ -52,21 +56,23 @@
 #'   tbl_roche_subgroups(
 #'     rsp = "response",
 #'     by = "trt",
-#'     subgroups = c("grade", "stage"),
+#'     subgroups = c("grade"),
 #'     ~ glm(response ~ trt, data = .x) |>
 #'       gtsummary::tbl_regression(
 #'         show_single_row = trt,
-#'         exponentiate = TRUE
+#'         exponentiate = TRUE,
+#'          tidy_fun = broom.helpers::tidy_parameters
 #'       )
 #'   ) |>
-#'   add_forest(pvalue = starts_with("p.value"), table_engine = "flextable")
-#'
+#'   add_forest(pvalue = starts_with("p.value"), table_engine = "flextable") |>
+#'   flextable::set_header_labels(ggplot = "---------")
 #' @export
 add_forest <- function(x,
                        estimate = starts_with("estimate"),
                        conf_low = starts_with("conf.low"), conf_high = starts_with("conf.high"),
                        pvalue = starts_with("p.value"),
                        after = starts_with("p.value"),
+                       header_spaces = 20,
                        table_engine = c("flextable", "gt")) {
   set_cli_abort_call()
   check_not_missing(x)
@@ -82,11 +88,11 @@ add_forest <- function(x,
   check_scalar(conf_high)
   check_scalar(pvalue, allow_empty = TRUE)
   check_scalar(after)
+  check_scalar_integerish(header_spaces)
 
   # 1. SETUP DEFAULTS ----------------------------------------------------------
   # Define two sets of sizes: "Huge" for GT (HTML) and "Standard" for Flextable (Word/PPT)
   table_engine <- arg_match(table_engine, error_call = get_cli_abort_call())
-  header_spaces <- 20
 
   sizes <- .get_default_forest_sizes(table_engine = table_engine)
 
