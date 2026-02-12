@@ -86,4 +86,32 @@ Another case where we may create helper functions in {crane}, is when the table 
 Generally, creating an ARD of all results in a summary table, then creating then table is more cumbersome.
 In these cumbersome cases, a new function in {crane} is warranted.
 
+## MMRM Regression Tables
+
+The `tbl_mmrm()` function provides a convenient wrapper for creating regression tables from Mixed Models for Repeated Measures (MMRM). This function works seamlessly with the {mmrm} package and {gtsummary}.
+
+```r
+library(mmrm)
+
+# Fit an MMRM model
+fit_mmrm <- mmrm(
+  formula = FEV1 ~ RACE + SEX + ARMCD * AVISIT + us(AVISIT | USUBJID),
+  data = mmrm::fev_data
+)
+
+# Create a regression table
+tbl_mmrm(fit_mmrm)
+```
+
+The function is essentially a wrapper around `gtsummary::tbl_regression()` with additional validation for mmrm objects. All arguments from `tbl_regression()` can be passed through:
+
+```r
+# Customize the output
+tbl_mmrm(
+  fit_mmrm,
+  include = c("RACE", "SEX", "ARMCD"),
+  conf.level = 0.90
+)
+```
+
 
