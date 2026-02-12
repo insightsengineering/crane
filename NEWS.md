@@ -2,6 +2,8 @@
 
 ## New Functions and Functionality
 
+* Added `tbl_mmrm()` function to create regression tables for Mixed Models for Repeated Measures (MMRM) using [gtsummary::tbl_regression()]. (#163)
+
 * Addition of parameter split_by to split tbl_baseline_chg() into a named list of tables.
 
 ### Other Updates
