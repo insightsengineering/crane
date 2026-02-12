@@ -34,14 +34,12 @@
 #' @export
 tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
   set_cli_abort_call()
-  estimate_colname <- "Odds Ratio"
 
   # check inputs ---------------------------------------------------------------
   check_not_missing(data)
   check_not_missing(rsp)
   check_not_missing(by)
   check_not_missing(subgroups)
-  check_not_missing(estimate_colname)
   check_not_missing(.tbl_fun)
   check_data_frame(data)
   cards::process_selectors(data, rsp = {{ rsp }}, by = {{ by }}, subgroups = {{ subgroups }})
@@ -49,19 +47,18 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
   check_string(by)
   check_binary(data[[rsp]])
   check_class(subgroups, "character")
-  check_string(estimate_colname)
   check_class(.tbl_fun, c("formula", "function"))
 
   # Augment data with a dummy variable for the 'All Participants' row
   overall_rowname <- "All Participants"
   data_aug <- data %>% dplyr::mutate(..overall.. = overall_rowname)
-  all_vars <- c("..overall..", subgroups)
+  all_vars <- c("..overall..", subgroups) |> as.list()
 
   # subgroup analyses
   roche_subgroups_tbl <-
     all_vars |>
     pmap(
-      \(x) {
+      \(x, ...) {
         list(
           # total n
           gtsummary::tbl_strata(
@@ -115,7 +112,7 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
               list(quiet = TRUE)
             }
           ) |>
-            gtsummary::modify_header(estimate = estimate_colname)
+            gtsummary::modify_header(estimate = "Odds Ratio")
         ) |>
           gtsummary::tbl_merge(tab_spanner = FALSE, merge_vars = c("groupname_col", "tbl_id1", "row_type")) |>
           gtsummary::modify_column_hide(c("label_2", "label_3")) |>
