@@ -58,7 +58,7 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
   roche_subgroups_tbl <-
     all_vars |>
     map(
-      \(x, ...) {
+      \(x) {
         list(
           # total n
           gtsummary::tbl_strata(

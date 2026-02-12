@@ -101,7 +101,7 @@ add_forest <- function(x,
   # 3. GENERATE PLOTS ----------------------------------------------------------
   lst_ggplots <-
     seq_len(nrow(x$table_body)) |>
-    pmap(
+    map(
       function(i) {
         # Handle missing estimates by creating an empty plot with just reference lines
         if (is.na(x$table_body[[estimate]][i]) ||

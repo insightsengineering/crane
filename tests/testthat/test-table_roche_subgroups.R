@@ -1,6 +1,6 @@
 skip_on_cran()
 
-test_that("add_forest() works", {
+test_that("tbl_roche_subgroups() works", {
   expect_silent(
     tbl <- trial |>
       tbl_roche_subgroups(
