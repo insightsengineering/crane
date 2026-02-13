@@ -12,7 +12,8 @@ preprocess_lineplot_data(
   group_var = "ARM",
   subject_var = "USUBJID",
   mid = "mean",
-  conf_level = 0.95
+  calc_stats = calc_stats,
+  ...
 )
 }
 \arguments{
@@ -20,17 +21,19 @@ preprocess_lineplot_data(
 
 \item{alt_counts_df}{An optional data frame for calculating N counts (e.g., ADSL).}
 
-\item{x}{Column name for the x-axis (e.g., "AVISIT").}
+\item{x}{Column name for the x-axis (e.g., \code{"AVISIT"}).}
 
-\item{y}{Column name for the y-axis values (e.g., "AVAL").}
+\item{y}{Column name for the y-axis values (e.g., \code{"AVAL"}).}
 
 \item{group_var}{Column name for the grouping variable (e.g., "ARM").}
 
-\item{subject_var}{Column name for the subject ID (e.g., "USUBJID").}
+\item{subject_var}{Column name for the subject ID (e.g., \code{"USUBJID"}).}
 
 \item{mid}{Column name for the mean/median statistic to be plotted (e.g., "mean").}
 
-\item{conf_level}{The confidence level for the interval (default is 0.95).}
+\item{calc_stats}{A function to calculate summary statistics, defaulting to the provided \code{calc_stats} function.}
+
+\item{...}{Additional arguments passed to the \code{calc_stats} function (e.g., \code{conf_level}, \code{decimal_places}).}
 }
 \value{
 A data frame (\code{df_stats}) containing the calculated statistics, ready for plotting.
@@ -57,7 +60,7 @@ adsl <- data.frame(
   ARM = c(rep("Treatment A", 10), rep("Treatment B", 10))
 )
 
-# Preprocess data for line plot
+# Preprocess data for line plot with default confidence level
 df_stats <- preprocess_lineplot_data(
   df = adlb,
   alt_counts_df = adsl,
@@ -65,6 +68,28 @@ df_stats <- preprocess_lineplot_data(
   y = "AVAL",
   group_var = "ARM",
   subject_var = "USUBJID"
+)
+
+# Custom confidence level using ...
+df_stats_90ci <- preprocess_lineplot_data(
+  df = adlb,
+  alt_counts_df = adsl,
+  x = "AVISIT",
+  y = "AVAL",
+  group_var = "ARM",
+  subject_var = "USUBJID",
+  conf_level = 0.90
+)
+
+# Custom decimal places using ...
+df_stats_3dec <- preprocess_lineplot_data(
+  df = adlb,
+  alt_counts_df = adsl,
+  x = "AVISIT",
+  y = "AVAL",
+  group_var = "ARM",
+  subject_var = "USUBJID",
+  decimal_places = 3
 )
 
 # Without grouping variable

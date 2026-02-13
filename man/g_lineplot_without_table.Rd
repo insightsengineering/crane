@@ -29,17 +29,41 @@ g_lineplot_without_table(
 \arguments{
 \item{df_stats}{A data frame containing pre-calculated statistics (e.g., mean, CIs, N).}
 
-\item{x}{Column name for the x-axis (must be in df_stats).}
+\item{x}{Column name for the x-axis (must be in \code{df_stats}).}
 
 \item{mid}{Column name for the y-axis middle point (e.g., "mean").}
 
-\item{strata_N}{Column name for the stratification variable used for grouping/coloring (can be NULL).}
+\item{strata_N}{Column name for the stratification variable used for grouping/coloring (can be \code{NULL}).}
 
 \item{whiskers}{A vector of two column names for the lower and upper error bar limits.}
 
 \item{mid_type}{String indicating whether to plot points ("p"), lines ("l"), or both ("pl").}
 
-\item{...}{(Other plotting arguments: position, mid_point_size, errorbar_width, labs, theme, etc.)}
+\item{mid_point_size}{Numeric value for the size of points.}
+
+\item{position}{Position adjustment for dodging points and lines (default: position_dodge(width = 0.4)).}
+
+\item{legend_title}{Title for the legend.}
+
+\item{legend_position}{Position of the legend (default: "bottom").}
+
+\item{ggtheme}{ggplot2 theme to apply (default: \code{theme_bw()}).}
+
+\item{x_lab}{Label for the x-axis.}
+
+\item{y_lab}{Label for the y-axis.}
+
+\item{title}{Plot title.}
+
+\item{subtitle}{Plot subtitle.}
+
+\item{caption}{Plot caption.}
+
+\item{errorbar_width}{Width of error bars (default: 0.45).}
+
+\item{col}{Vector of color values for manual color scaling.}
+
+\item{linetype}{Vector of line type values for manual line type scaling.}
 }
 \value{
 A ggplot object.
@@ -71,8 +95,10 @@ g_lineplot_without_table(
 # Line plot with stratification
 df_stats_strat <- rbind(
   transform(df_stats, ARM = "Treatment A"),
-  transform(df_stats, ARM = "Treatment B", mean = mean + 2,
-            mean_ci_lwr = mean_ci_lwr + 2, mean_ci_upr = mean_ci_upr + 2)
+  transform(df_stats,
+    ARM = "Treatment B", mean = mean + 2,
+    mean_ci_lwr = mean_ci_lwr + 2, mean_ci_upr = mean_ci_upr + 2
+  )
 )
 g_lineplot_without_table(
   df_stats = df_stats_strat,

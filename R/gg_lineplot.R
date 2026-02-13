@@ -14,7 +14,9 @@
 #' calc_stats(x, conf_level = 0.95, decimal_places = 2)
 calc_stats <- function(x, conf_level = 0.95, decimal_places = 2) {
   n <- sum(!is.na(x))
-  if (n == 0) return(list(n = 0, mean = NA, mean_ci_lwr = NA, mean_ci_upr = NA, median = NA, sd = NA))
+  if (n == 0) {
+    return(list(n = 0, mean = NA, mean_ci_lwr = NA, mean_ci_upr = NA, median = NA, sd = NA))
+  }
 
   m <- mean(x, na.rm = TRUE)
   se <- sd(x, na.rm = TRUE) / sqrt(n)
@@ -25,8 +27,10 @@ calc_stats <- function(x, conf_level = 0.95, decimal_places = 2) {
   list(
     n = n,
     mean = round(m, decimal_places),
-    mean_ci = paste(mean_ci_lwr,
-                    mean_ci_upr),
+    mean_ci = paste(
+      mean_ci_lwr,
+      mean_ci_upr
+    ),
     mean_ci_lwr = mean_ci_lwr,
     mean_ci_upr = mean_ci_upr,
     median = median(x, na.rm = TRUE),
@@ -41,16 +45,16 @@ calc_stats <- function(x, conf_level = 0.95, decimal_places = 2) {
 #' confidence intervals from a summary data frame.
 #'
 #' @param df_stats A data frame containing pre-calculated statistics (e.g., mean, CIs, N).
-#' @param x Column name for the x-axis (must be in df_stats).
+#' @param x Column name for the x-axis (must be in `df_stats`).
 #' @param mid Column name for the y-axis middle point (e.g., "mean").
-#' @param strata_N Column name for the stratification variable used for grouping/coloring (can be NULL).
+#' @param strata_N Column name for the stratification variable used for grouping/coloring (can be `NULL`).
 #' @param whiskers A vector of two column names for the lower and upper error bar limits.
 #' @param mid_type String indicating whether to plot points ("p"), lines ("l"), or both ("pl").
 #' @param mid_point_size Numeric value for the size of points.
 #' @param position Position adjustment for dodging points and lines (default: position_dodge(width = 0.4)).
 #' @param legend_title Title for the legend.
 #' @param legend_position Position of the legend (default: "bottom").
-#' @param ggtheme ggplot2 theme to apply (default: theme_bw()).
+#' @param ggtheme ggplot2 theme to apply (default: `theme_bw()`).
 #' @param x_lab Label for the x-axis.
 #' @param y_lab Label for the y-axis.
 #' @param title Plot title.
@@ -86,8 +90,10 @@ calc_stats <- function(x, conf_level = 0.95, decimal_places = 2) {
 #' # Line plot with stratification
 #' df_stats_strat <- rbind(
 #'   transform(df_stats, ARM = "Treatment A"),
-#'   transform(df_stats, ARM = "Treatment B", mean = mean + 2,
-#'             mean_ci_lwr = mean_ci_lwr + 2, mean_ci_upr = mean_ci_upr + 2)
+#'   transform(df_stats,
+#'     ARM = "Treatment B", mean = mean + 2,
+#'     mean_ci_lwr = mean_ci_lwr + 2, mean_ci_upr = mean_ci_upr + 2
+#'   )
 #' )
 #' g_lineplot_without_table(
 #'   df_stats = df_stats_strat,
@@ -116,7 +122,6 @@ g_lineplot_without_table <- function(df_stats,
                                      errorbar_width = 0.45,
                                      col = NULL,
                                      linetype = NULL) {
-
   p <- ggplot(
     data = df_stats,
     aes(
@@ -221,7 +226,6 @@ g_lineplot_table <- function(df_stats,
                              table = c("n", "mean"),
                              table_font_size = 3,
                              decimal_places = 2) {
-
   # Format numeric columns to character strings with specified decimal places
   fmt <- paste0("%.", decimal_places, "f")
   df_stats_formatted <- df_stats %>%
@@ -283,7 +287,7 @@ g_lineplot_table <- function(df_stats,
 #' @param col Vector of color values for manual color scaling.
 #' @param linetype Vector of line type values for manual line type scaling.
 #' @param rel_height_plot Relative height of the plot component compared to the table (default: 0.5).
-#' @return A combined plot/table (cowplot) or just the plot (ggplot).
+#' @return A combined plot/table (`cowplot`) or just the plot (`ggplot`).
 #'
 #' @export
 #'
@@ -301,8 +305,10 @@ g_lineplot_table <- function(df_stats,
 #'   mean = c(10.5, 12.3, 14.1, 10.8, 11.5, 12.2),
 #'   mean_ci_lwr = c(9.2, 11.0, 12.8, 9.5, 10.2, 10.9),
 #'   mean_ci_upr = c(11.8, 13.6, 15.4, 12.1, 12.8, 13.5),
-#'   mean_ci = c("9.20 11.80", "11.00 13.60", "12.80 15.40",
-#'               "9.50 12.10", "10.20 12.80", "10.90 13.50")
+#'   mean_ci = c(
+#'     "9.20 11.80", "11.00 13.60", "12.80 15.40",
+#'     "9.50 12.10", "10.20 12.80", "10.90 13.50"
+#'   )
 #' )
 #' df_stats$ARM_N <- factor(df_stats$ARM_N)
 #'
@@ -349,7 +355,6 @@ g_lineplot_with_table <- function(df_stats,
                                   col = NULL,
                                   linetype = NULL,
                                   rel_height_plot = 0.5) {
-
   # 1. GENERATE PLOT -----------------------------------------------------------------
   p <- g_lineplot_without_table(
     df_stats = df_stats,
@@ -385,8 +390,10 @@ g_lineplot_with_table <- function(df_stats,
     )
 
     # Combine plot and table using cowplot::plot_grid
-    return(cowplot::plot_grid(p, tbl, ncol = 1, align = "v", axis = "tblr",
-                              rel_heights = c(rel_height_plot, 1 - rel_height_plot)))
+    return(cowplot::plot_grid(p, tbl,
+      ncol = 1, align = "v", axis = "tblr",
+      rel_heights = c(rel_height_plot, 1 - rel_height_plot)
+    ))
   } else {
     return(p)
   }
@@ -400,14 +407,15 @@ g_lineplot_with_table <- function(df_stats,
 #'
 #' @param df The primary data frame containing the data to plot (e.g., ADaM BDS).
 #' @param alt_counts_df An optional data frame for calculating N counts (e.g., ADSL).
-#' @param x Column name for the x-axis (e.g., "AVISIT").
-#' @param y Column name for the y-axis values (e.g., "AVAL").
+#' @param x Column name for the x-axis (e.g., `"AVISIT"`).
+#' @param y Column name for the y-axis values (e.g., `"AVAL"`).
 #' @param group_var Column name for the grouping variable (e.g., "ARM").
-#' @param subject_var Column name for the subject ID (e.g., "USUBJID").
+#' @param subject_var Column name for the subject ID (e.g., `"USUBJID"`).
 #' @param mid Column name for the mean/median statistic to be plotted (e.g., "mean").
 #' @param calc_stats A function to calculate summary statistics, defaulting to the provided `calc_stats` function.
 #' @param ... Additional arguments passed to the `calc_stats` function (e.g., `conf_level`, `decimal_places`).
 #' @return A data frame (`df_stats`) containing the calculated statistics, ready for plotting.
+#' @export
 #'
 #' @examples
 #' library(dplyr)

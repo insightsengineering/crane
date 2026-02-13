@@ -20,3 +20,8 @@ A list with statistics: n, mean, mean_ci_lwr, mean_ci_upr, median, sd.
 Calculates N, mean, standard deviation, and a two-sided confidence
 interval for the mean of a numeric vector.
 }
+\examples{
+set.seed(123)
+x <- rnorm(100, mean = 10, sd = 2)
+calc_stats(x, conf_level = 0.95, decimal_places = 2)
+}

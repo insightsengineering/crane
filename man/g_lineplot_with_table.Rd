@@ -46,16 +46,42 @@ g_lineplot_with_table(
 
 \item{table}{A character vector of statistic column names to display in the table (e.g., c("n", "mean")).}
 
+\item{mid_type}{String indicating whether to plot points ("p"), lines ("l"), or both ("pl").}
+
+\item{mid_point_size}{Numeric value for the size of points.}
+
+\item{position}{Position adjustment for dodging points and lines.}
+
+\item{legend_title}{Title for the legend.}
+
+\item{legend_position}{Position of the legend.}
+
+\item{ggtheme}{ggplot2 theme to apply (default: nestcolor::theme_nest()).}
+
+\item{x_lab}{Label for the x-axis.}
+
+\item{y_lab}{Label for the y-axis.}
+
+\item{title}{Plot title.}
+
+\item{subtitle}{Plot subtitle.}
+
+\item{caption}{Plot caption.}
+
 \item{table_font_size}{Font size for the table text.}
 
 \item{decimal_places}{Integer specifying the number of decimal places for numeric statistics in the table.}
 
-\item{rel_height_plot}{Relative height of the plot component compared to the table.}
+\item{errorbar_width}{Width of error bars.}
 
-\item{...}{(Other plotting and layout parameters)}
+\item{col}{Vector of color values for manual color scaling.}
+
+\item{linetype}{Vector of line type values for manual line type scaling.}
+
+\item{rel_height_plot}{Relative height of the plot component compared to the table (default: 0.5).}
 }
 \value{
-A combined plot/table (cowplot) or just the plot (ggplot).
+A combined plot/table (\code{cowplot}) or just the plot (\code{ggplot}).
 }
 \description{
 Generates and combines a line plot and an optional summary table
@@ -75,8 +101,10 @@ df_stats <- data.frame(
   mean = c(10.5, 12.3, 14.1, 10.8, 11.5, 12.2),
   mean_ci_lwr = c(9.2, 11.0, 12.8, 9.5, 10.2, 10.9),
   mean_ci_upr = c(11.8, 13.6, 15.4, 12.1, 12.8, 13.5),
-  mean_ci = c("9.20 11.80", "11.00 13.60", "12.80 15.40",
-              "9.50 12.10", "10.20 12.80", "10.90 13.50")
+  mean_ci = c(
+    "9.20 11.80", "11.00 13.60", "12.80 15.40",
+    "9.50 12.10", "10.20 12.80", "10.90 13.50"
+  )
 )
 df_stats$ARM_N <- factor(df_stats$ARM_N)
 
