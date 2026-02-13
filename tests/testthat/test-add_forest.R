@@ -38,7 +38,7 @@ test_that("add_forest(table_engine = 'flextable') works", {
           gtsummary::tbl_regression(
             show_single_row = trt,
             exponentiate = TRUE,
-            tidy_fun = broom.helpers::tidy_parameters
+            tidy_fun = broom.helpers::tidy_parameters # Avoid message
           )
       ) |>
       add_forest(
