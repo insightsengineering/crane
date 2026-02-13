@@ -12,24 +12,52 @@
 #'   Variables to perform stratified analyses for.
 #'
 #' @returns a 'gtsummary' table
-#' @export
 #'
-#' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true")
-#' tbl <-
-#'   trial |>
+#' @examples
+#' # prepare sample data
+#' df_adtte <- data.frame(
+#'   time = rexp(100, rate = 0.1),
+#'   status = sample(c(0, 1), 100, replace = TRUE),
+#'   arm = sample(c("Arm A", "Arm B"), 100, replace = TRUE),
+#'   grade = sample(c("I", "II"), 100, replace = TRUE),
+#'   strata = sample(c("1", "2"), 100, replace = TRUE)
+#' ) |>
+#'   mutate(arm = relevel(factor(arm), ref = "Arm A")) # Set Reference
+#'
+#' # logistic regression -------------------------------------------------------
+#' df_adtte |>
 #'   tbl_roche_subgroups(
-#'     rsp = "response",
-#'     by = "trt",
-#'     subgroups = c("grade", "stage"),
+#'     rsp = "status",
+#'     by = "arm",
+#'     subgroups = c("grade"),
 #'     .tbl_fun =
-#'       ~ glm(response ~ trt, data = .x) |>
+#'       ~ glm(status ~ arm, data = .x) |>
 #'         tbl_regression(
-#'           show_single_row = trt,
-#'           exponentiate = TRUE
-#'         )
-#'   )
+#'          show_single_row = arm,
+#'          exponentiate = TRUE #, tidy_fun = broom.helpers::tidy_parameters
+#'        )
+#'  ) |>
+#'  modify_header(starts_with("estimate") ~ "Odds Ratio")
 #'
-#' tbl
+#' # coxph regression ----------------------------------------------------------
+#' df_adtte |>
+#'   tbl_roche_subgroups(
+#'     rsp = status,
+#'     by = arm,
+#'     subgroups = c(grade, strata),
+#'     ~ survival::coxph(
+#'       survival::Surv(time, status) ~ arm,
+#'       data = .x,
+#'       ties = "exact"
+#'     ) |> # Exact Ties
+#'       tbl_regression(
+#'         show_single_row = arm,
+#'         exponentiate = TRUE # Get Hazard Ratios
+#'       )
+#'   ) |>
+#'   modify_header(starts_with("estimate") ~ "Hazard Ratio")
+#'
+#' @export
 tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
   set_cli_abort_call()
 
@@ -47,97 +75,82 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
   check_class(subgroups, "character")
   check_class(.tbl_fun, c("formula", "function"))
 
-  # overall analyses
-  tbl_overall <-
-    list(
-      # total n
-      data |>
-        tbl_summary(include = rsp, statistic = everything() ~ "{N}", missing = "no") |>
-        modify_header(stat_0 ~ "**Total n**"),
-      # responder statistics
-      data |>
-        tbl_strata(
-          strata = by,
-          .tbl_fun = ~ .x |>
-            ard_tabulate_value(
-              variables = rsp,
-              stat_label = everything() ~ list(N = "n", n = "Responders", p = "Response (%)")
-            ) |>
-            tbl_ard_wide_summary(
-              include = rsp,
-              statistic = c("{N}", "{n}", "{p}")
-            )
-        ),
-      # comparison statistics
-      tbl_strata(
-        data = data |> mutate(dummy = "..overall.."),
-        strata = "dummy",
-        .tbl_fun = .tbl_fun,
-        .combine_with = "tbl_stack"
-      ) |>
-        modify_header(estimate = "**Odds Ratio**")
-    ) |>
-    tbl_merge(tab_spanner = FALSE, merge_vars = c("groupname_col", "tbl_id1", "row_type")) |>
-    modify_column_hide(c("label_2", "label_3")) |>
-    # add a header row for the variable
-    modify_table_body(
-      function(table_body) {
-        table_body |>
-          mutate(label_1 = "All Participants")
-      }
-    ) |>
-    modify_column_hide("groupname_col_3")
-
+  # Augment data with a dummy variable for the 'All Participants' row
+  overall_rowname <- "All Participants"
+  data_aug <- data %>% dplyr::mutate(..overall.. = overall_rowname)
+  all_vars <- c("..overall..", subgroups)
+  x <- "strata_col"
   # subgroup analyses
-  tbl_subgp <-
-    subgroups |>
+  roche_subgroups_tbl <-
+    all_vars |>
     map(
       \(x) {
         list(
           # total n
-          tbl_strata(
-            data = data,
+          gtsummary::tbl_strata(
+            data = data_aug,
             strata = x,
-            .tbl_fun =
-              ~ .x |> tbl_summary(include = rsp, statistic = everything() ~ "{N}", missing = "no"),
+            .tbl_fun = ~ .x |>
+              gtsummary::tbl_summary(include = rsp, statistic = everything() ~ "{N}", missing = "no"),
             .combine_with = "tbl_stack",
-            .combine_args = list(quiet = TRUE)
+            .combine_args = if (x == "..overall..") {
+              list(group_header = NULL, quiet = TRUE)
+            } else {
+              list(quiet = TRUE)
+            }
           ) |>
-            modify_header(stat_0 ~ "**Total n**"),
+            gtsummary::modify_header(stat_0 ~ "**Total n**"),
           # responder statistics
-          tbl_strata(
-            data = data,
+          gtsummary::tbl_strata(
+            data = data_aug,
             strata = x,
             .tbl_fun =
               ~ .x |>
                 tbl_strata(
                   strata = by,
                   .tbl_fun = ~ .x |>
-                    ard_tabulate_value(
+                    cards::ard_tabulate_value(
                       variables = rsp,
-                      stat_label = everything() ~ list(N = "n", n = "Responders", p = "Response (%)")
+                      stat_label = everything() ~ list(N = "n", n = "Responders", p = "response")
                     ) |>
-                    tbl_ard_wide_summary(
+                    gtsummary::tbl_ard_wide_summary(
                       include = rsp,
-                      statistic = c("{N}", "{n}", "{p}")
+                      statistic = c("{N} ({p} %)"),
+                      label = list(rsp = "n Response (%)")
                     )
                 ),
-            .combine_with = "tbl_stack"
+            .combine_with = "tbl_stack",
+            .combine_args = if (x == "..overall..") {
+              list(group_header = NULL, quiet = TRUE)
+            } else {
+              list(quiet = TRUE)
+            }
           ),
           # comparison statistics
-          tbl_strata(
-            data = data,
+          gtsummary::tbl_strata(
+            data = data_aug,
             strata = x,
             .tbl_fun = .tbl_fun,
-            .combine_with = "tbl_stack"
+            .combine_with = "tbl_stack",
+            .combine_args = if (x == "..overall..") {
+              list(group_header = NULL, quiet = TRUE)
+            } else {
+              list(quiet = TRUE)
+            }
           ) |>
-            modify_header(estimate = "**Odds Ratio**")
+            gtsummary::modify_header(estimate = "estimate")
         ) |>
-          tbl_merge(tab_spanner = FALSE, merge_vars = c("groupname_col", "tbl_id1", "row_type")) |>
-          modify_column_hide(c("label_2", "label_3")) |>
+          gtsummary::tbl_merge(tab_spanner = FALSE, merge_vars = c("groupname_col", "tbl_id1", "row_type")) |>
+          gtsummary::modify_column_hide(c("label_2", "label_3")) |>
           # add a header row for the variable
-          modify_table_body(
+          gtsummary::modify_table_body(
             function(table_body) {
+              if (any(grepl(pattern = overall_rowname, table_body))) {
+                return(
+                  table_body |>
+                    dplyr::mutate(label_1 = overall_rowname)
+                )
+              }
               dplyr::bind_rows(
                 dplyr::tibble(
                   variable = x,
@@ -156,14 +169,17 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun) {
           )
       }
     ) |>
-    tbl_stack()
+    # stack overall and subgroup analyses
+    gtsummary::tbl_stack() |>
+    gtsummary::modify_header(label_1 ~ "**Baseline Risk Factors**") |>
+    gtsummary::remove_footnote_header() |>
+    gtsummary::remove_abbreviation()
 
-  # stack analyses and return formatted table
-  ret <- list(tbl_overall, tbl_subgp) |>
-    tbl_stack(attr_order = 2) |>
-    modify_header(label_1 ~ "**Baseline Risk Factors**") |>
-    remove_footnote_header() |>
-    remove_abbreviation()
-  attr(ret, "by") <- levels(factor(data[[by]]))
-  return(ret)
+
+  attr(roche_subgroups_tbl, "by") <- levels(factor(data[[by]]))
+
+  roche_subgroups_tbl <- roche_subgroups_tbl |>
+    structure(class = c("tbl_roche_subgroups", "gtsummary"))
+
+  return(roche_subgroups_tbl)
 }

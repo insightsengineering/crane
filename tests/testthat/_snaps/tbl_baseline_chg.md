@@ -181,35 +181,3 @@
     Output
       [1] "SODIUM" "K"     
 
----
-
-    Code
-      as.data.frame(tbl[[2]])[1:25, 1:5]
-    Output
-             Visit Value at Visit Change from Baseline Value at Visit.1 Change from Baseline.1
-      1   Baseline           <NA>                 <NA>             <NA>                   <NA>
-      2          n              7                 <NA>                7                   <NA>
-      3  Mean (SD)    4.34 (0.40)                 <NA>      4.30 (0.18)                   <NA>
-      4     Median           4.30                 <NA>             4.40                   <NA>
-      5  Min - Max      3.7 - 4.9                 <NA>        4.0 - 4.5                   <NA>
-      6     Week 2           <NA>                 <NA>             <NA>                   <NA>
-      7          n              7                    7                6                      6
-      8  Mean (SD)    4.47 (0.42)          0.13 (0.46)      4.35 (0.27)            0.07 (0.12)
-      9     Median           4.50                -0.10             4.40                   0.05
-      10 Min - Max      3.9 - 5.1           -0.4 - 1.0        3.9 - 4.6             -0.1 - 0.2
-      11    Week 4           <NA>                 <NA>             <NA>                   <NA>
-      12         n              7                    7                6                      6
-      13 Mean (SD)    4.44 (0.38)          0.10 (0.37)      4.32 (0.46)           -0.02 (0.32)
-      14    Median           4.60                 0.00             4.45                   0.05
-      15 Min - Max      3.9 - 4.8           -0.4 - 0.7        3.4 - 4.6             -0.6 - 0.3
-      16    Week 6           <NA>                 <NA>             <NA>                   <NA>
-      17         n              5                    5                6                      6
-      18 Mean (SD)    4.50 (0.35)          0.26 (0.26)      4.20 (0.23)           -0.13 (0.12)
-      19    Median           4.60                 0.10             4.25                  -0.15
-      20 Min - Max      4.0 - 4.8            0.1 - 0.7        3.8 - 4.4             -0.3 - 0.0
-      21    Week 8           <NA>                 <NA>             <NA>                   <NA>
-      22         n              5                    5                4                      4
-      23 Mean (SD)    4.18 (0.23)         -0.06 (0.33)      4.18 (0.56)           -0.13 (0.41)
-      24    Median           4.10                 0.00             4.20                  -0.20
-      25 Min - Max      3.9 - 4.5           -0.4 - 0.3        3.5 - 4.8             -0.5 - 0.4
-
