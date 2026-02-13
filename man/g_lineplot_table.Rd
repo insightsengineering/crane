@@ -16,11 +16,11 @@ g_lineplot_table(
 \arguments{
 \item{df_stats}{A data frame containing pre-calculated statistics.}
 
-\item{x}{Column name for the x-axis (must be in df_stats).}
+\item{x}{Column name for the x-axis (must be in \code{df_stats}).}
 
-\item{group_var}{Column name for the grouping/stratification variable (can be NULL).}
+\item{group_var}{Column name for the grouping/stratification variable (can be \code{NULL}).}
 
-\item{table}{A character vector of statistic column names to display in the table (e.g., c("n", "mean", "mean_ci")).}
+\item{table}{A character vector of statistic column names to display in the table (e.g., c(\code{"n"}, \code{"mean"}, \code{"mean_ci"})).}
 
 \item{table_font_size}{Font size for the table text.}
 

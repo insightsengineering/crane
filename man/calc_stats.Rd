@@ -14,7 +14,7 @@ calc_stats(x, conf_level = 0.95, decimal_places = 2)
 \item{decimal_places}{Number of decimal places for numeric values in the table.}
 }
 \value{
-A list with statistics: n, mean, mean_ci_lwr, mean_ci_upr, median, sd.
+A list with statistics: \code{n}, \code{mean}, \code{mean_ci_lwr}, \code{mean_ci_upr}, \code{median}, \code{sd}.
 }
 \description{
 Calculates N, mean, standard deviation, and a two-sided confidence
