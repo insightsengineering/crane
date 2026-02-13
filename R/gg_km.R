@@ -219,7 +219,7 @@ gg_km <- function(surv_plot_data,
     )
   ) +
     ggplot2::theme_bw(base_size = font_size) +
-    ggplot2::scale_y_continuous(limits = ylim, expand = c(0.025, 0)) +
+    ggplot2::scale_y_continuous(limits = ylim) +
     ggplot2::labs(x = "Days", y = paste(yval, "Probability")) +
     ggplot2::theme(
       axis.text = ggplot2::element_text(size = font_size),
@@ -236,18 +236,18 @@ gg_km <- function(surv_plot_data,
 
   if (!is.null(max_time) && !is.null(xticks)) {
     gg_plt <- gg_plt + ggplot2::scale_x_continuous(
-      breaks = xticks, limits = c(min(0, xticks), max(c(xticks, max_time))), expand = c(0.025, 0)
+      breaks = xticks, limits = c(min(0, xticks), max(c(xticks, max_time)))
     )
   } else if (!is.null(xticks)) {
     if (max(data$time) <= max(xticks)) {
       gg_plt <- gg_plt + ggplot2::scale_x_continuous(
-        breaks = xticks, limits = c(min(0, min(xticks)), max(xticks)), expand = c(0.025, 0)
+        breaks = xticks, limits = c(min(0, min(xticks)), max(xticks))
       )
     } else {
-      gg_plt <- gg_plt + ggplot2::scale_x_continuous(breaks = xticks, expand = c(0.025, 0))
+      gg_plt <- gg_plt + ggplot2::scale_x_continuous(breaks = xticks)
     }
   } else if (!is.null(max_time)) {
-    gg_plt <- gg_plt + ggplot2::scale_x_continuous(limits = c(0, max_time), expand = c(0.025, 0))
+    gg_plt <- gg_plt + ggplot2::scale_x_continuous(limits = c(0, max_time))
   }
 
   if (!is.null(legend_pos)) {
