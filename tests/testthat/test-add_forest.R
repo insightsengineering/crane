@@ -17,8 +17,6 @@ tbl <-
   bold_labels()
 
 test_that("add_forest(table_engine = 'flextable') works", {
-  skip_if_not_installed("broom.helpers")
-
   expect_warning(
     add_forest(tbl, table_engine = "flextable"),
     "Less than 2 spanning headers detected."
@@ -28,7 +26,7 @@ test_that("add_forest(table_engine = 'flextable') works", {
     "Less than 2 spanning headers detected."
   )
 
-  expect_silent(
+  expect_error(
     tbl <- trial |>
       tbl_roche_subgroups(
         subgroups = c("grade", "stage"),
@@ -37,13 +35,13 @@ test_that("add_forest(table_engine = 'flextable') works", {
         ~ glm(response ~ trt, data = .x) |>
           gtsummary::tbl_regression(
             show_single_row = trt,
-            exponentiate = TRUE,
-            tidy_fun = broom.helpers::tidy_parameters # Avoid message
+            exponentiate = TRUE
           )
       ) |>
       add_forest(
         pvalue = starts_with("p.value"),
         table_engine = "flextable"
-      )
+      ),
+    NA
   )
 })

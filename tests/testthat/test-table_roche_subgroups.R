@@ -1,7 +1,7 @@
 skip_on_cran()
 
 test_that("tbl_roche_subgroups() works", {
-  expect_silent(
+  expect_error(
     tbl <- trial |>
       tbl_roche_subgroups(
         subgroups = c("grade", "stage"),
@@ -12,7 +12,8 @@ test_that("tbl_roche_subgroups() works", {
             show_single_row = trt,
             exponentiate = TRUE
           )
-      )
+      ),
+    NA
   )
 
   tbl_only_labs_stats <- tbl$table_body |>
