@@ -10,7 +10,6 @@ tbl_baseline_chg(
   baseline_level,
   denominator,
   by = NULL,
-  split_by = NULL,
   digits = NULL,
   id = "USUBJID",
   visit = "AVISIT",
@@ -38,11 +37,6 @@ Data set used to compute the header counts (typically \code{ADSL}).}
 \item{by}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 A single column from \code{data}. Summary statistics will be stratified by this variable.
 Default is \code{NULL}.}
-
-\item{split_by}{(\code{string})\cr
-String identifying the variable to split the table by. Default is \code{NULL}. Usually
-used with \code{'PARAM'} variables to produce a list of tables for each parameter. Subtitles
-highlight the split levels.}
 
 \item{digits}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
 Specifies how summary statistics are rounded. Values may be either integer(s)
@@ -80,7 +74,7 @@ String indicating the column label. Default is \code{"**Overall**  \nN = {style_
 \item{...}{These dots are for future extensions and must be empty.}
 }
 \value{
-A gtsummary table, or a named list of gtsummary tables if \code{split_by} is specified.
+A gtsummary table.
 }
 \description{
 Typical use is tabulating changes from baseline
@@ -113,12 +107,18 @@ tbl_baseline_chg(
   add_overall(last = TRUE, col_label = "All Participants")
 
 # Split by PARAM
-tbl_baseline_chg(
+tbl_strata(
   data = df,
-  baseline_level = "Baseline",
-  by = "TRTA",
-  split_by = "PARAM",
-  denominator = cards::ADSL
-)
+  strata = PARAMCD,
+  .tbl_fun = ~ tbl_baseline_chg(
+    data = .x,
+    baseline_level = "Baseline",
+    by = "TRTA",
+    denominator = cards::ADSL
+  ),
+  .combine_with = "tbl_stack",
+  .combine_args = list(group_header = NULL, quiet = TRUE)
+) |>
+tbl_split_by_rows(variable_level = ends_with("lbl"))
 \dontshow{\}) # examplesIf}
 }
