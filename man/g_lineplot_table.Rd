@@ -14,20 +14,20 @@ g_lineplot_table(
 )
 }
 \arguments{
-\item{df_stats}{A data frame containing pre-calculated statistics.}
+\item{df_stats}{(\code{data.frame})\cr containing pre-calculated statistics.}
 
-\item{x}{Column name for the x-axis (must be in \code{df_stats}).}
+\item{x}{(\code{string})\cr Column name for the x-axis (must be in \code{df_stats}).}
 
-\item{group_var}{Column name for the grouping/stratification variable (can be \code{NULL}).}
+\item{group_var}{(\code{string})\cr Column name for the grouping/stratification variable (can be \code{NULL}).}
 
-\item{table}{A character vector of statistic column names to display in the table (e.g., c(\code{"n"}, \code{"mean"}, \code{"mean_ci"})).}
+\item{table}{(\code{character})\cr A character vector of statistic column names to display in the table (e.g., c(\code{"n"}, \code{"mean"}, \code{"mean_ci"})).}
 
-\item{table_font_size}{Font size for the table text.}
+\item{table_font_size}{(\code{integer})\cr Font size for the table text.}
 
-\item{decimal_places}{Integer specifying the number of decimal places for numeric statistics (like 'mean').}
+\item{decimal_places}{(\code{integer})\cr Integer specifying the number of decimal places for numeric statistics (like 'mean').}
 }
 \value{
-A ggplot object formatted as a table.
+A \code{ggplot} object formatted as a table.
 }
 \description{
 Creates a ggplot object containing text data for use as a table

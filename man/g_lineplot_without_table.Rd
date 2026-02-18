@@ -13,63 +13,39 @@ g_lineplot_without_table(
   mid_type = "pl",
   mid_point_size = 2,
   position = position_dodge(width = 0.4),
-  legend_title = NULL,
-  legend_position = "bottom",
-  ggtheme = theme_bw(),
-  x_lab = NULL,
-  y_lab = NULL,
-  title = "Plot of Mean and 95\% Confidence Limits by Visit",
-  subtitle = "",
-  caption = NULL,
   errorbar_width = 0.45,
   col = NULL,
   linetype = NULL
 )
 }
 \arguments{
-\item{df_stats}{A data frame containing pre-calculated statistics (e.g., mean, CIs, N).}
+\item{df_stats}{(\code{data.frame})\cr containing pre-calculated statistics (e.g., mean, CIs, N).}
 
-\item{x}{Column name for the x-axis (must be in \code{df_stats}).}
+\item{x}{(\code{string})\cr Column name for the x-axis (must be in \code{df_stats}).}
 
-\item{mid}{Column name for the y-axis middle point (e.g., "mean").}
+\item{mid}{(\code{string})\cr Column name for the y-axis middle point (e.g., "mean").}
 
-\item{strata_N}{Column name for the stratification variable used for grouping/coloring (can be \code{NULL}).}
+\item{strata_N}{(\code{string})\cr Column name for the stratification variable used for grouping/coloring (can be \code{NULL}).}
 
-\item{whiskers}{A vector of two column names for the lower and upper error bar limits.}
+\item{whiskers}{(\code{character})\cr A vector of two column names for the lower and upper error bar limits.}
 
-\item{mid_type}{String indicating whether to plot points ("p"), lines ("l"), or both ("pl").}
+\item{mid_type}{(\code{string})\cr String indicating whether to plot points ("p"), lines ("l"), or both ("pl").}
 
-\item{mid_point_size}{Numeric value for the size of points.}
+\item{mid_point_size}{(\code{numeric})\cr Numeric value for the size of points.}
 
-\item{position}{Position adjustment for dodging points and lines (default: position_dodge(width = 0.4)).}
+\item{position}{(\code{position})\cr Position adjustment for dodging points and lines (default: \code{position_dodge(width = 0.4)}).}
 
-\item{legend_title}{Title for the legend.}
+\item{errorbar_width}{(\code{numeric})\cr Width of error bars (default: 0.45).}
 
-\item{legend_position}{Position of the legend (default: "bottom").}
+\item{col}{(\code{character})\cr Vector of color values for manual color scaling.}
 
-\item{ggtheme}{ggplot2 theme to apply (default: \code{theme_bw()}).}
-
-\item{x_lab}{Label for the x-axis.}
-
-\item{y_lab}{Label for the y-axis.}
-
-\item{title}{Plot title.}
-
-\item{subtitle}{Plot subtitle.}
-
-\item{caption}{Plot caption.}
-
-\item{errorbar_width}{Width of error bars (default: 0.45).}
-
-\item{col}{Vector of color values for manual color scaling.}
-
-\item{linetype}{Vector of line type values for manual line type scaling.}
+\item{linetype}{(\code{character})\cr Vector of line type values for manual line type scaling.}
 }
 \value{
-A ggplot object.
+A \code{ggplot} object.
 }
 \description{
-Creates a ggplot line plot of mean (or other mid-point) and
+Creates a \code{ggplot} line plot of mean (or other mid-point) and
 confidence intervals from a summary data frame.
 }
 \examples{

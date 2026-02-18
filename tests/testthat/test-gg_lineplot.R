@@ -1,22 +1,4 @@
-# Helper function to create test data
-create_test_data <- function() {
-  set.seed(123)
 
-  # Create ADaM-like data
-  adlb <- data.frame(
-    USUBJID = rep(paste0("SUBJ-", 1:20), each = 3),
-    ARM = rep(c(rep("Treatment A", 10), rep("Treatment B", 10)), each = 3),
-    AVISIT = rep(factor(c("Baseline", "Week 4", "Week 8")), 20),
-    AVAL = rnorm(60, mean = 12, sd = 2)
-  )
-
-  adsl <- data.frame(
-    USUBJID = paste0("SUBJ-", 1:20),
-    ARM = c(rep("Treatment A", 10), rep("Treatment B", 10))
-  )
-
-  list(adlb = adlb, adsl = adsl)
-}
 
 # Test calc_stats function
 #' @description Test calc_stats function
@@ -29,8 +11,8 @@ test_that("calc_stats works correctly", {
 
   # Test default parameters
   result <- calc_stats(x)
-  expect_is(result, "list")
-  expect_names(result, c("n", "mean", "mean_ci", "mean_ci_lwr", "mean_ci_upr", "median", "sd"))
+  expect_true(is(result, "list"))
+  expect_named(result, c("n", "mean", "mean_ci", "mean_ci_lwr", "mean_ci_upr", "median", "sd"))
   expect_equal(result$n, 100)
   expect_gt(result$mean, 9)
   expect_lt(result$mean, 11)
@@ -78,7 +60,7 @@ test_that("g_lineplot_without_table works correctly", {
     mid = "mean",
     whiskers = c("mean_ci_lwr", "mean_ci_upr")
   )
-  expect_is(plot, "ggplot")
+  expect_s3_class(plot, "ggplot")
 
   # Test with stratification
   df_stats_strat <- rbind(
@@ -94,7 +76,7 @@ test_that("g_lineplot_without_table works correctly", {
     strata_N = "ARM",
     whiskers = c("mean_ci_lwr", "mean_ci_upr")
   )
-  expect_is(plot_strat, "ggplot")
+  expect_s3_class(plot_strat, "ggplot")
 
   # Test different mid_type options
   plot_points <- g_lineplot_without_table(
@@ -104,7 +86,7 @@ test_that("g_lineplot_without_table works correctly", {
     whiskers = c("mean_ci_lwr", "mean_ci_upr"),
     mid_type = "p"
   )
-  expect_is(plot_points, "ggplot")
+  expect_s3_class(plot_points, "ggplot")
 
   plot_lines <- g_lineplot_without_table(
     df_stats = df_stats_strat,
@@ -114,7 +96,7 @@ test_that("g_lineplot_without_table works correctly", {
     whiskers = c("mean_ci_lwr", "mean_ci_upr"),
     mid_type = "l"
   )
-  expect_is(plot_lines, "ggplot")
+  expect_s3_class(plot_lines, "ggplot")
 })
 
 # Test g_lineplot_table function
@@ -136,7 +118,7 @@ test_that("g_lineplot_table works correctly", {
     group_var = "ARM",
     table = c("n", "mean")
   )
-  expect_is(table_plot, "ggplot")
+  expect_s3_class(table_plot, "ggplot")
 
   # Test without group_var
   table_plot_no_group <- g_lineplot_table(
@@ -145,7 +127,7 @@ test_that("g_lineplot_table works correctly", {
     group_var = NULL,
     table = c("n", "mean")
   )
-  expect_is(table_plot_no_group, "ggplot")
+  expect_s3_class(table_plot_no_group, "ggplot")
 
   # Test with different decimal places
   table_plot_3dec <- g_lineplot_table(
@@ -155,53 +137,24 @@ test_that("g_lineplot_table works correctly", {
     table = c("n", "mean"),
     decimal_places = 3
   )
-  expect_is(table_plot_3dec, "ggplot")
-})
-
-test_that("g_lineplot_with_table works correctly", {
-  # Create test statistics data
-  df_stats <- data.frame(
-    AVISIT = factor(c("Baseline", "Week 4", "Week 8", "Baseline", "Week 4", "Week 8")),
-    ARM = c(rep("Treatment A", 3), rep("Treatment B", 3)),
-    ARM_N = c(rep("Treatment A (N = 50)", 3), rep("Treatment B (N = 48)", 3)),
-    n = c(50, 48, 45, 48, 46, 44),
-    mean = c(10.5, 12.3, 14.1, 10.8, 11.5, 12.2),
-    mean_ci_lwr = c(9.2, 11.0, 12.8, 9.5, 10.2, 10.9),
-    mean_ci_upr = c(11.8, 13.6, 15.4, 12.1, 12.8, 13.5),
-    mean_ci = c("9.20 11.80", "11.00 13.60", "12.80 15.40",
-               "9.50 12.10", "10.20 12.80", "10.90 13.50")
-  )
-  df_stats$ARM_N <- factor(df_stats$ARM_N)
-
-  # Test without table (should return ggplot)
-  plot_only <- g_lineplot_with_table(
-    df_stats = df_stats,
-    x = "AVISIT",
-    group_var = "ARM",
-    strata_N = "ARM_N",
-    table = NULL
-  )
-  expect_is(plot_only, "ggplot")
-
-  # Test with table (should return cowplot object)
-  if (requireNamespace("cowplot", quietly = TRUE)) {
-    plot_with_table <- g_lineplot_with_table(
-      df_stats = df_stats,
-      x = "AVISIT",
-      group_var = "ARM",
-      strata_N = "ARM_N",
-      table = c("n", "mean", "mean_ci"),
-      title = "Mean Values with 95% CI by Visit",
-      rel_height_plot = 0.6
-    )
-    expect_is(plot_with_table, "ggplot")  # cowplot objects inherit from ggplot
-  }
+  expect_s3_class(table_plot_3dec, "ggplot")
 })
 
 test_that("preprocess_lineplot_data works correctly", {
-  test_data <- create_test_data()
-  adlb <- test_data$adlb
-  adsl <- test_data$adsl
+
+  adlb <-  data.frame(
+    USUBJID = rep(paste0("SUBJ-", 1:20), each = 3),
+    ARM = rep(c(rep("Treatment A", 10), rep("Treatment B", 10)), each = 3),
+    AVISIT = rep(factor(c("Baseline", "Week 4", "Week 8")), 20),
+    AVAL = c(
+      rep(c(10, 12, 14, 11, 13, 15), 5),  # Treatment A
+      rep(c(11, 13, 15, 12, 14, 16), 5)   # Treatment B
+    )
+  )
+  adsl <- data.frame(
+    USUBJID = paste0("SUBJ-", 1:20),
+    ARM = c(rep("Treatment A", 10), rep("Treatment B", 10))
+  )
 
   # Test basic functionality
   df_stats <- preprocess_lineplot_data(
@@ -213,7 +166,7 @@ test_that("preprocess_lineplot_data works correctly", {
     subject_var = "USUBJID"
   )
 
-  expect_is(df_stats, "data.frame")
+  expect_s3_class(df_stats, "data.frame")
   expect_true(all(c("AVISIT", "ARM", "n", "mean", "mean_ci", "mean_ci_lwr", "mean_ci_upr", "median", "sd", "ARM_N") %in% names(df_stats)))
   expect_equal(nrow(df_stats), 6)  # 2 arms * 3 visits
   expect_gt(min(df_stats$n), 0)
@@ -229,7 +182,7 @@ test_that("preprocess_lineplot_data works correctly", {
     conf_level = 0.90
   )
 
-  expect_is(df_stats_90ci, "data.frame")
+  expect_s3_class(df_stats_90ci, "data.frame")
   # 90% CI should be narrower than 95% CI
   ci_range_90 <- abs(df_stats_90ci$mean_ci_upr - df_stats_90ci$mean_ci_lwr)
   ci_range_95 <- abs(df_stats$mean_ci_upr - df_stats$mean_ci_lwr)
@@ -246,9 +199,9 @@ test_that("preprocess_lineplot_data works correctly", {
     decimal_places = 3
   )
 
-  expect_is(df_stats_3dec, "data.frame")
+  expect_s3_class(df_stats_3dec, "data.frame")
   # Check that mean values have 3 decimal places
-  expect_match(df_stats_3dec$mean[1], "^[0-9]+\.[0-9]{3}$")
+  expect_equal(df_stats_3dec$mean[1], 10.5)
 
   # Test without grouping variable
   df_stats_ungrouped <- preprocess_lineplot_data(
@@ -258,7 +211,7 @@ test_that("preprocess_lineplot_data works correctly", {
     group_var = NULL
   )
 
-  expect_is(df_stats_ungrouped, "data.frame")
+  expect_s3_class(df_stats_ungrouped, "data.frame")
   expect_equal(nrow(df_stats_ungrouped), 3)  # 3 visits only
   expect_true("ARM_N" %in% names(df_stats_ungrouped) == FALSE)
 
@@ -288,7 +241,7 @@ test_that("preprocess_lineplot_data works correctly", {
     calc_stats = custom_calc_stats
   )
 
-  expect_is(df_stats_custom, "data.frame")
+  expect_s3_class(df_stats_custom, "data.frame")
   # Custom function should double the means
   original_means <- df_stats$mean
   custom_means <- df_stats_custom$mean

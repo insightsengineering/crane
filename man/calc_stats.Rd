@@ -7,21 +7,20 @@
 calc_stats(x, conf_level = 0.95, decimal_places = 2)
 }
 \arguments{
-\item{x}{A numeric vector.}
+\item{x}{(\code{numeric})\cr vector to summarize.}
 
-\item{conf_level}{The confidence level for the interval (default is 0.95).}
+\item{conf_level}{(\code{probability})\cr The confidence level for the interval (default is 0.95).}
 
-\item{decimal_places}{Number of decimal places for numeric values in the table.}
+\item{decimal_places}{(\code{integer})\cr Number of decimal places for numeric values in the table.}
 }
 \value{
-A list with statistics: \code{n}, \code{mean}, \code{mean_ci_lwr}, \code{mean_ci_upr}, \code{median}, \code{sd}.
+A \code{list} with statistics: \code{n}, \code{mean}, \code{mean_ci_lwr}, \code{mean_ci_upr}, \code{median}, \code{sd}.
 }
 \description{
 Calculates N, mean, standard deviation, and a two-sided confidence
 interval for the mean of a numeric vector.
 }
 \examples{
-set.seed(123)
-x <- rnorm(100, mean = 10, sd = 2)
+x <- c(10, 20, 40, NA, 30)
 calc_stats(x, conf_level = 0.95, decimal_places = 2)
 }

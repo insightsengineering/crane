@@ -17,21 +17,21 @@ preprocess_lineplot_data(
 )
 }
 \arguments{
-\item{df}{The primary data frame containing the data to plot (e.g., ADaM BDS).}
+\item{df}{(\code{data.frame})\cr The primary data frame containing the data to plot (e.g., ADaM BDS).}
 
-\item{alt_counts_df}{An optional data frame for calculating N counts (e.g., ADSL).}
+\item{alt_counts_df}{(\code{data.frame})\cr An optional data frame for calculating N counts (e.g., ADSL).}
 
-\item{x}{Column name for the x-axis (e.g., \code{"AVISIT"}).}
+\item{x}{(\code{string})\cr Column name for the x-axis (e.g., \code{"AVISIT"}).}
 
-\item{y}{Column name for the y-axis values (e.g., \code{"AVAL"}).}
+\item{y}{(\code{string})\cr Column name for the y-axis values (e.g., \code{"AVAL"}).}
 
-\item{group_var}{Column name for the grouping variable (e.g., "ARM").}
+\item{group_var}{(\code{string})\cr Column name for the grouping variable (e.g., \code{"ARM"}).}
 
-\item{subject_var}{Column name for the subject ID (e.g., \code{"USUBJID"}).}
+\item{subject_var}{(\code{string})\cr Column name for the subject ID (e.g., \code{"USUBJID"}).}
 
-\item{mid}{Column name for the mean/median statistic to be plotted (e.g., "mean").}
+\item{mid}{(\code{string})\cr Column name for the mean/median statistic to be plotted (e.g., \code{"mean"}).}
 
-\item{calc_stats}{A function to calculate summary statistics, defaulting to the provided \code{calc_stats} function.}
+\item{calc_stats}{(\code{function})\cr A function to calculate summary statistics, defaulting to the provided \code{calc_stats} function.}
 
 \item{...}{Additional arguments passed to the \code{calc_stats} function (e.g., \code{conf_level}, \code{decimal_places}).}
 }
