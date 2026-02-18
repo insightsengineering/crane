@@ -32,8 +32,8 @@ calc_stats <- function(x, conf_level = 0.95, decimal_places = 2) {
     ),
     mean_ci_lwr = mean_ci_lwr,
     mean_ci_upr = mean_ci_upr,
-    median = median(x, na.rm = TRUE),
-    sd = sd(x, na.rm = TRUE)
+    median = stats::median(x, na.rm = TRUE),
+    sd = stats::sd(x, na.rm = TRUE)
   )
 }
 
@@ -138,7 +138,7 @@ g_lineplot_without_table <- function(df_stats,
 
   # Add labels and theme
   p <- p +
-    scale_y_continuous(labels = scales::comma)
+    scale_y_continuous(labels = scales::label_comma)
 
 
   if (!is.null(col)) {
@@ -332,7 +332,7 @@ preprocess_lineplot_data <- function(df,
       stats = list(as.list(calc_stats_func(.data[[y]], ...))), # Convert to list to ensure compatibility
       .groups = "drop"
     ) |>
-    tidyr::unnest_wider(stats)
+    tidyr::unnest_wider(all_of("stats"))
 
   # Remove NA rows where the midpoint statistic is missing
   df_stats <- df_stats[!is.na(df_stats[[mid]]), ]
@@ -345,7 +345,7 @@ preprocess_lineplot_data <- function(df,
     df_N <- alt_counts_df |>
       dplyr::group_by(.data[[group_var]]) |>
       dplyr::summarise(N = dplyr::n_distinct(.data[[subject_var]]), .groups = "drop") |>
-      dplyr::mutate(!!strata_N := paste0(.data[[group_var]], " (N = ", N, ")"))
+      dplyr::mutate(!!strata_N := paste0(.data[[group_var]], " (N = ", .data[["N"]], ")"))
 
     df_stats <- df_stats |>
       dplyr::left_join(df_N[, c(group_var, strata_N)], by = group_var) |>
