@@ -12,7 +12,7 @@ preprocess_lineplot_data(
   group_var = "ARM",
   subject_var = "USUBJID",
   mid = "mean",
-  calc_stats = calc_stats,
+  calc_stats_func = calc_stats,
   ...
 )
 }
@@ -31,7 +31,7 @@ preprocess_lineplot_data(
 
 \item{mid}{(\code{string})\cr Column name for the mean/median statistic to be plotted (e.g., \code{"mean"}).}
 
-\item{calc_stats}{(\code{function})\cr A function to calculate summary statistics, defaulting to the provided \code{calc_stats} function.}
+\item{calc_stats_func}{(\code{function})\cr A function to calculate summary statistics, defaulting to the provided \code{calc_stats} function.}
 
 \item{...}{Additional arguments passed to the \code{calc_stats} function (e.g., \code{conf_level}, \code{decimal_places}).}
 }

@@ -1,5 +1,3 @@
-
-
 # Test calc_stats function
 #' @description Test calc_stats function
 #' @param x Numeric vector
@@ -21,8 +19,10 @@ test_that("calc_stats works correctly", {
 
   # Test custom confidence level
   result_90 <- calc_stats(x, conf_level = 0.90)
-  expect_lt(abs(result_90$mean_ci_lwr - result_90$mean_ci_upr),
-            abs(result$mean_ci_lwr - result$mean_ci_upr))
+  expect_lt(
+    abs(result_90$mean_ci_lwr - result_90$mean_ci_upr),
+    abs(result$mean_ci_lwr - result$mean_ci_upr)
+  )
 
   # Test custom decimal places
   result_3dec <- calc_stats(x, decimal_places = 3)
@@ -31,7 +31,7 @@ test_that("calc_stats works correctly", {
   # Test with NA values
   x_na <- c(x, NA, NA)
   result_na <- calc_stats(x_na)
-  expect_equal(result_na$n, 100)  # NA values should be excluded
+  expect_equal(result_na$n, 100) # NA values should be excluded
 
   # Test with all NA values
   x_all_na <- rep(NA, 10)
@@ -65,8 +65,10 @@ test_that("g_lineplot_without_table works correctly", {
   # Test with stratification
   df_stats_strat <- rbind(
     transform(df_stats, ARM = "Treatment A"),
-    transform(df_stats, ARM = "Treatment B", mean = mean + 2,
-              mean_ci_lwr = mean_ci_lwr + 2, mean_ci_upr = mean_ci_upr + 2)
+    transform(df_stats,
+      ARM = "Treatment B", mean = mean + 2,
+      mean_ci_lwr = mean_ci_lwr + 2, mean_ci_upr = mean_ci_upr + 2
+    )
   )
 
   plot_strat <- g_lineplot_without_table(
@@ -141,14 +143,13 @@ test_that("g_lineplot_table works correctly", {
 })
 
 test_that("preprocess_lineplot_data works correctly", {
-
-  adlb <-  data.frame(
+  adlb <- data.frame(
     USUBJID = rep(paste0("SUBJ-", 1:20), each = 3),
     ARM = rep(c(rep("Treatment A", 10), rep("Treatment B", 10)), each = 3),
     AVISIT = rep(factor(c("Baseline", "Week 4", "Week 8")), 20),
     AVAL = c(
-      rep(c(10, 12, 14, 11, 13, 15), 5),  # Treatment A
-      rep(c(11, 13, 15, 12, 14, 16), 5)   # Treatment B
+      rep(c(10, 12, 14, 11, 13, 15), 5), # Treatment A
+      rep(c(11, 13, 15, 12, 14, 16), 5) # Treatment B
     )
   )
   adsl <- data.frame(
@@ -168,7 +169,7 @@ test_that("preprocess_lineplot_data works correctly", {
 
   expect_s3_class(df_stats, "data.frame")
   expect_true(all(c("AVISIT", "ARM", "n", "mean", "mean_ci", "mean_ci_lwr", "mean_ci_upr", "median", "sd", "ARM_N") %in% names(df_stats)))
-  expect_equal(nrow(df_stats), 6)  # 2 arms * 3 visits
+  expect_equal(nrow(df_stats), 6) # 2 arms * 3 visits
   expect_gt(min(df_stats$n), 0)
 
   # Test with custom confidence level using ...
@@ -212,18 +213,20 @@ test_that("preprocess_lineplot_data works correctly", {
   )
 
   expect_s3_class(df_stats_ungrouped, "data.frame")
-  expect_equal(nrow(df_stats_ungrouped), 3)  # 3 visits only
+  expect_equal(nrow(df_stats_ungrouped), 3) # 3 visits only
   expect_true("ARM_N" %in% names(df_stats_ungrouped) == FALSE)
 
   # Test with custom calc_stats function
   custom_calc_stats <- function(x, conf_level = 0.95, decimal_places = 2) {
     n <- sum(!is.na(x))
-    if (n == 0) return(list(n = 0, mean = NA, mean_ci_lwr = NA, mean_ci_upr = NA, median = NA, sd = NA))
+    if (n == 0) {
+      return(list(n = 0, mean = NA, mean_ci_lwr = NA, mean_ci_upr = NA, median = NA, sd = NA))
+    }
 
     m <- mean(x, na.rm = TRUE)
     list(
       n = n,
-      mean = round(m * 2, decimal_places),  # Double the mean for testing
+      mean = round(m * 2, decimal_places), # Double the mean for testing
       mean_ci_lwr = round(m * 2 - 1, decimal_places),
       mean_ci_upr = round(m * 2 + 1, decimal_places),
       median = median(x, na.rm = TRUE),

@@ -149,8 +149,6 @@ g_lineplot_without_table <- function(df_stats,
     p <- p + scale_linetype_manual(values = linetype)
   }
 
-
-
   return(p)
 }
 
@@ -198,12 +196,12 @@ g_lineplot_table <- function(df_stats,
                              decimal_places = 2) {
   # Format numeric columns to character strings with specified decimal places
   fmt <- paste0("%.", decimal_places, "f")
-  df_stats_formatted <- df_stats %>%
+  df_stats_formatted <- df_stats |>
     mutate(across(all_of(table) & where(is.numeric), ~ sprintf(fmt, .)))
 
   # Select and pivot the formatted data
-  df_stats_table <- df_stats_formatted %>%
-    select(all_of(c(group_var, x, table))) %>%
+  df_stats_table <- df_stats_formatted |>
+    select(all_of(c(group_var, x, table))) |>
     tidyr::pivot_longer(
       cols = -all_of(c(group_var, x)),
       names_to = "stat",
@@ -311,7 +309,6 @@ preprocess_lineplot_data <- function(df,
                                      mid = "mean",
                                      calc_stats_func = calc_stats,
                                      ...) {
-
   # Remove unused factor levels
   if (is.factor(df[[x]])) {
     df[[x]] <- droplevels(df[[x]])
@@ -325,17 +322,17 @@ preprocess_lineplot_data <- function(df,
   }
 
   # Join with actual data and compute statistics
-  df_grp <- df_grp %>%
-    dplyr::full_join(df[, c(group_var, x, y)], by = c(group_var, x), multiple = "all") %>%
+  df_grp <- df_grp |>
+    dplyr::full_join(df[, c(group_var, x, y)], by = c(group_var, x), multiple = "all") |>
     dplyr::group_by(across(all_of(c(group_var, x))))
 
   # 2. CALCULATE STATISTICS
   # Ensure stats column contains only vectors
-  df_stats <- df_grp %>%
+  df_stats <- df_grp |>
     dplyr::summarise(
       stats = list(as.list(calc_stats_func(.data[[y]], ...))), # Convert to list to ensure compatibility
       .groups = "drop"
-    ) %>%
+    ) |>
     tidyr::unnest_wider(stats)
 
   # Remove NA rows where the midpoint statistic is missing
@@ -346,13 +343,13 @@ preprocess_lineplot_data <- function(df,
   if (!is.null(group_var) && !is.null(alt_counts_df)) {
     strata_N <- paste0(group_var, "_N")
 
-    df_N <- alt_counts_df %>%
-      dplyr::group_by(.data[[group_var]]) %>%
-      dplyr::summarise(N = dplyr::n_distinct(.data[[subject_var]]), .groups = "drop") %>%
+    df_N <- alt_counts_df |>
+      dplyr::group_by(.data[[group_var]]) |>
+      dplyr::summarise(N = dplyr::n_distinct(.data[[subject_var]]), .groups = "drop") |>
       dplyr::mutate(!!strata_N := paste0(.data[[group_var]], " (N = ", N, ")"))
 
-    df_stats <- df_stats %>%
-      dplyr::left_join(df_N[, c(group_var, strata_N)], by = group_var) %>%
+    df_stats <- df_stats |>
+      dplyr::left_join(df_N[, c(group_var, strata_N)], by = group_var) |>
       dplyr::mutate(!!strata_N := factor(.data[[strata_N]], levels = unique(df_N[[strata_N]])))
   }
 
