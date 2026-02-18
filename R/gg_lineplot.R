@@ -138,7 +138,7 @@ g_lineplot_without_table <- function(df_stats,
 
   # Add labels and theme
   p <- p +
-    scale_y_continuous(labels = scales::label_comma)
+    scale_y_continuous(labels = scales::label_comma())
 
 
   if (!is.null(col)) {
