@@ -207,7 +207,7 @@ g_lineplot_table <- function(df_stats,
       values_to = "value"
     )
 
-  tbl <- ggplot(df_stats_table, aes(x = .data[[x]], y = .data[[stat]], label = .data[[value]])) +
+  tbl <- ggplot(df_stats_table, aes(x = .data[[x]], y = .data[["stat"]], label = .data[["value"]])) +
     geom_text(size = table_font_size) +
     theme_bw() +
     theme(
