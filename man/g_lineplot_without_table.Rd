@@ -81,7 +81,6 @@ g_lineplot_without_table(
   x = "AVISIT",
   mid = "mean",
   strata_N = "ARM",
-  whiskers = c("mean_ci_lwr", "mean_ci_upr"),
-  title = "Mean Values by Visit and Treatment"
+  whiskers = c("mean_ci_lwr", "mean_ci_upr")
 )
 }

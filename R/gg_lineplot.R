@@ -18,8 +18,8 @@ calc_stats <- function(x, conf_level = 0.95, decimal_places = 2) {
   }
 
   m <- mean(x, na.rm = TRUE)
-  se <- sd(x, na.rm = TRUE) / sqrt(n)
-  ci_val <- qt((1 + conf_level) / 2, df = n - 1) * se
+  se <- stats::sd(x, na.rm = TRUE) / sqrt(n)
+  ci_val <- stats::qt((1 + conf_level) / 2, df = n - 1) * se
   mean_ci_lwr <- round(m - ci_val, decimal_places)
   mean_ci_upr <- round(m + ci_val, decimal_places)
 
@@ -91,8 +91,7 @@ calc_stats <- function(x, conf_level = 0.95, decimal_places = 2) {
 #'   x = "AVISIT",
 #'   mid = "mean",
 #'   strata_N = "ARM",
-#'   whiskers = c("mean_ci_lwr", "mean_ci_upr"),
-#'   title = "Mean Values by Visit and Treatment"
+#'   whiskers = c("mean_ci_lwr", "mean_ci_upr")
 #' )
 g_lineplot_without_table <- function(df_stats,
                                      x = "AVISIT",
@@ -208,7 +207,7 @@ g_lineplot_table <- function(df_stats,
       values_to = "value"
     )
 
-  tbl <- ggplot(df_stats_table, aes(x = .data[[x]], y = stat, label = value)) +
+  tbl <- ggplot(df_stats_table, aes(x = .data[[x]], y = .data[[stat]], label = .data[[value]])) +
     geom_text(size = table_font_size) +
     theme_bw() +
     theme(
@@ -221,7 +220,7 @@ g_lineplot_table <- function(df_stats,
     )
 
   if (!is.null(group_var)) {
-    tbl <- tbl + facet_wrap(as.formula(paste("~", group_var)), ncol = 1)
+    tbl <- tbl + facet_wrap(stats::as.formula(paste("~", group_var)), ncol = 1)
   }
   return(tbl)
 }
