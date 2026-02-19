@@ -35,7 +35,7 @@ reference:
       - tbl_null_report
 
   - title: "Forest plot"
-    cotents:
+    contents:
       - tbl_roche_subgroups
       - g_forest
 
@@ -56,3 +56,9 @@ reference:
     contents:
       - g_forest
       - tbl_roche_subgroups
+  - title: "Line Plot"
+    contents:
+      - calc_stats
+      - g_lineplot_without_table
+      - g_lineplot_table
+      - preprocess_lineplot_data
