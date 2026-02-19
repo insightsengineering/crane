@@ -63,7 +63,7 @@
 #'   .combine_with = "tbl_stack",
 #'   .combine_args = list(group_header = NULL, quiet = TRUE)
 #' ) |>
-#' tbl_split_by_rows(variable_level = ends_with("lbl"))
+#'   tbl_split_by_rows(variable_level = ends_with("lbl"))
 #'
 NULL
 
