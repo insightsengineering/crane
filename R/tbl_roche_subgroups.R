@@ -42,6 +42,7 @@
 #'  ) |>
 #'  modify_header(starts_with("estimate") ~ "**Odds Ratio**")
 #'
+#' @examplesIf rlang::is_installed("survival")
 #' # coxph regression ----------------------------------------------------------
 #' # please use browser() inside .tbl_fun to check if the coxph model throws an error
 #' # and use tryCatch to modify the input/output accordingly

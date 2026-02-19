@@ -37,11 +37,11 @@ Function adapted from \code{gtforester::tbl_subgroups()}.
 \examples{
 # prepare sample data
 df_adtte <- data.frame(
-  time = rexp(100, rate = 0.1),
-  status = sample(c(0, 1), 100, replace = TRUE),
-  arm = sample(c("Arm A", "Arm B"), 100, replace = TRUE),
-  grade = sample(c("I", "II"), 100, replace = TRUE),
-  strata = sample(c("1", "2"), 100, replace = TRUE)
+  time = rexp(10, rate = 0.1),
+  status = sample(c(0, 1), 10, replace = TRUE),
+  arm = sample(c("Arm A", "Arm B"), 10, replace = TRUE),
+  grade = sample(c("I", "II"), 10, replace = TRUE),
+  strata = sample(c("1", "2"), 10, replace = TRUE)
 ) |>
   mutate(arm = relevel(factor(arm), ref = "Arm A")) # Set Reference
 
@@ -60,8 +60,9 @@ df_adtte |>
  ) |>
  modify_header(starts_with("estimate") ~ "**Odds Ratio**")
 
+\dontshow{if (rlang::is_installed("survival")) withAutoprint(\{ # examplesIf}
 # coxph regression ----------------------------------------------------------
-# please use browser() inside .tbl_fun to check if the coxph model fits correctly
+# please use browser() inside .tbl_fun to check if the coxph model throws an error
 # and use tryCatch to modify the input/output accordingly
 df_adtte |>
   tbl_roche_subgroups(
@@ -79,6 +80,6 @@ df_adtte |>
         exponentiate = TRUE # Get Hazard Ratios
       )
   ) |>
-  modify_header(starts_with("estimate") ~ "Hazard Ratio")
-
+  modify_header(starts_with("estimate") ~ "**Hazard Ratio**")
+\dontshow{\}) # examplesIf}
 }
