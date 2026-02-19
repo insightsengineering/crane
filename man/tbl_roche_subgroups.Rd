@@ -4,7 +4,7 @@
 \alias{tbl_roche_subgroups}
 \title{Subgroup Analyses}
 \usage{
-tbl_roche_subgroups(data, rsp, by, subgroups, .tbl_fun)
+tbl_roche_subgroups(data, rsp, by, subgroups, .tbl_fun, time_to_event = NULL)
 }
 \arguments{
 \item{data}{(\code{data.frame}, \code{survey.design})\cr
@@ -23,6 +23,10 @@ Variables to perform stratified analyses for.}
 A function or formula. If a \emph{function}, it is used as is.
 If a formula, e.g. \code{~ .x \%>\% tbl_summary() \%>\% add_p()}, it is converted to a function.
 The stratified data frame is passed to this function.}
+
+\item{time_to_event}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+Variable to use in time-to-event analyses. If specified, the mid table will
+show the median time-to-event instead of responder rates.}
 }
 \value{
 a 'gtsummary' table
@@ -54,15 +58,18 @@ df_adtte |>
          exponentiate = TRUE #, tidy_fun = broom.helpers::tidy_parameters
        )
  ) |>
- modify_header(starts_with("estimate") ~ "Odds Ratio")
+ modify_header(starts_with("estimate") ~ "**Odds Ratio**")
 
 # coxph regression ----------------------------------------------------------
+# please use browser() inside .tbl_fun to check if the coxph model fits correctly
+# and use tryCatch to modify the input/output accordingly
 df_adtte |>
   tbl_roche_subgroups(
     rsp = status,
     by = arm,
+    time_to_event = time, # Specify time variable for time-to-event analyses (different mid table)
     subgroups = c(grade, strata),
-    ~ survival::coxph(
+    ~ survival::coxph( # Please use coxph for time-to-event analyses
       survival::Surv(time, status) ~ arm,
       data = .x,
       ties = "exact"
