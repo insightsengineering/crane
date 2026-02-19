@@ -221,12 +221,12 @@ test_that("tbl_baseline_chg(split_by = PARAM) works", {
   # check that individual tables are the same as filtering the data
   expect_equal(
     tbl_baseline_chg(
-      data = df_2params,
+      data = df_2params |> dplyr::filter(PARAMCD == "SODIUM"),
       baseline_level = "Baseline",
       by = "TRTA",
       split_by = "PARAMCD",
       denominator = cards::ADSL
-    )[[1]] |> as.data.frame(),
+    ) |> as.data.frame(), # [[1]]
     tbl_baseline_chg(
       data = df_2params |> dplyr::filter(PARAMCD == "SODIUM"),
       baseline_level = "Baseline",
