@@ -14,7 +14,7 @@
 calc_stats <- function(x, conf_level = 0.95, decimal_places = 2) {
   n <- sum(!is.na(x))
   if (n == 0) {
-    return(structure(list(n = 0, mean = NA, mean_ci_lwr = NA, mean_ci_upr = NA, median = NA, sd = NA), class = "calc_stats"))
+    return(list(n = 0, mean = NA, mean_ci_lwr = NA, mean_ci_upr = NA, median = NA, sd = NA))
   }
 
   m <- mean(x, na.rm = TRUE)
