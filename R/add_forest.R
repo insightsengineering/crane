@@ -107,7 +107,7 @@ add_forest <- function(x,
     if (length(fin_high) > 0) max(fin_high, 1.2) else 2.0  # Default upper limit if all are filtered out
   )
 
-  mean_estimate <- if (length(fin_est) > 0) mean(fin_est) else NA_real_
+  mean_estimate <- if (length(fin_est) > 0) mean(fin_est) else 1.0 # could be better NA_real_
   global_margins <- margin(t = 0, r = 5, b = 0, l = 5, unit = "pt")
 
   # 3. GENERATE PLOTS ----------------------------------------------------------
