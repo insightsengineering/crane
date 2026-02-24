@@ -98,9 +98,13 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun, time_to_even
           # total n
           gtsummary::tbl_strata(
             data = data_aug,
-            strata = x,
+            strata = dplyr::all_of(x),
             .tbl_fun = ~ .x |>
-              gtsummary::tbl_summary(include = rsp, statistic = everything() ~ "{N}", missing = "no"),
+              gtsummary::tbl_summary(
+                include = rsp,
+                statistic = gtsummary::everything() ~ "{N}",
+                missing = "no"
+              ),
             .combine_with = "tbl_stack",
             .combine_args = if (x == "..overall..") {
               list(group_header = NULL, quiet = TRUE)
@@ -178,8 +182,7 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun, time_to_even
 
   attr(roche_subgroups_tbl, "by") <- levels(factor(data[[by]]))
 
-  roche_subgroups_tbl <- roche_subgroups_tbl |>
-    structure(class = c("tbl_roche_subgroups", "gtsummary"))
+  class(roche_subgroups_tbl) <- c("tbl_roche_subgroups", class(roche_subgroups_tbl))
 
   return(roche_subgroups_tbl)
 }
