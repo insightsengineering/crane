@@ -17,13 +17,15 @@
 #' @returns a 'gtsummary' table
 #'
 #' @examples
+#' set.seed(1)
+#'
 #' # prepare sample data
 #' df_adtte <- data.frame(
-#'   time = rexp(10, rate = 0.1),
-#'   status = sample(c(0, 1), 10, replace = TRUE),
-#'   arm = sample(c("Arm A", "Arm B"), 10, replace = TRUE),
-#'   grade = sample(c("I", "II"), 10, replace = TRUE),
-#'   strata = sample(c("1", "2"), 10, replace = TRUE)
+#'   time = rexp(100, rate = 0.1),
+#'   status = sample(c(0, 1), 100, replace = TRUE),
+#'   arm = sample(c("Arm A", "Arm B"), 100, replace = TRUE),
+#'   grade = sample(c("I", "II"), 100, replace = TRUE),
+#'   strata = sample(c("1", "2"), 100, replace = TRUE)
 #' ) |>
 #'   mutate(arm = relevel(factor(arm), ref = "Arm A")) # Set Reference
 #'
@@ -36,11 +38,11 @@
 #'     .tbl_fun =
 #'       ~ glm(status ~ arm, data = .x) |>
 #'         tbl_regression(
-#'          show_single_row = arm,
-#'          exponentiate = TRUE #, tidy_fun = broom.helpers::tidy_parameters
-#'        )
-#'  ) |>
-#'  modify_header(starts_with("estimate") ~ "**Odds Ratio**")
+#'           show_single_row = arm,
+#'           exponentiate = TRUE # , tidy_fun = broom.helpers::tidy_parameters
+#'         )
+#'   ) |>
+#'   modify_header(starts_with("estimate") ~ "**Odds Ratio**")
 #'
 #' @examplesIf rlang::is_installed("survival")
 #' # coxph regression ----------------------------------------------------------
@@ -75,8 +77,10 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun, time_to_even
   check_not_missing(subgroups)
   check_not_missing(.tbl_fun)
   check_data_frame(data)
-  cards::process_selectors(data, rsp = {{ rsp }}, by = {{ by }}, subgroups = {{ subgroups }},
-                           time_to_event = {{ time_to_event }})
+  cards::process_selectors(data,
+    rsp = {{ rsp }}, by = {{ by }}, subgroups = {{ subgroups }},
+    time_to_event = {{ time_to_event }}
+  )
   check_string(rsp)
   check_string(by)
   check_string(time_to_event, allow_empty = TRUE)
@@ -122,7 +126,7 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun, time_to_even
                 tbl_strata(
                   strata = by,
                   .tbl_fun = ~ .make_mid_tbl(dt = .x, vars = c("rsp" = rsp, "time_to_event" = time_to_event))
-                  ),
+                ),
             .combine_with = "tbl_stack",
             .combine_args = if (x == "..overall..") {
               list(group_header = NULL, quiet = TRUE)

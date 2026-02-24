@@ -60,7 +60,7 @@
 #'     ~ glm(response ~ trt, data = .x) |>
 #'       gtsummary::tbl_regression(
 #'         show_single_row = trt,
-#'         exponentiate = TRUE#, tidy_fun = broom.helpers::tidy_parameters
+#'         exponentiate = TRUE # , tidy_fun = broom.helpers::tidy_parameters
 #'       )
 #'   ) |>
 #'   add_forest(pvalue = starts_with("p.value"), table_engine = "flextable") |>
@@ -97,14 +97,14 @@ add_forest <- function(x,
 
   # 2. DATA PREP ---------------------------------------------------------------
   # Extract only finite numbers that are ALSO <= 999.99
-  fin_low  <- x$table_body[[conf_low]][is.finite(x$table_body[[conf_low]]) & x$table_body[[conf_low]] <= 999.99]
+  fin_low <- x$table_body[[conf_low]][is.finite(x$table_body[[conf_low]]) & x$table_body[[conf_low]] <= 999.99]
   fin_high <- x$table_body[[conf_high]][is.finite(x$table_body[[conf_high]]) & x$table_body[[conf_high]] <= 999.99]
-  fin_est  <- x$table_body[[estimate]][is.finite(x$table_body[[estimate]]) & x$table_body[[estimate]] <= 999.99]
+  fin_est <- x$table_body[[estimate]][is.finite(x$table_body[[estimate]]) & x$table_body[[estimate]] <= 999.99]
 
   # Calculate limits (with fallbacks to prevent warnings if vectors are empty)
   global_limits <- c(
     if (length(fin_low) > 0 && min(fin_low) > 0) min(fin_low, 0.2) else 0.2, # at least 0.2 because of log scale
-    if (length(fin_high) > 0) max(fin_high, 1.2) else 2.0  # Default upper limit if all are filtered out
+    if (length(fin_high) > 0) max(fin_high, 1.2) else 2.0 # Default upper limit if all are filtered out
   )
 
   mean_estimate <- if (length(fin_est) > 0) mean(fin_est) else 1.0 # could be better NA_real_

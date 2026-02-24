@@ -48,7 +48,6 @@ test_that("add_forest(table_engine = 'flextable') works", {
 })
 
 test_that("add_forest handles extreme limits and character NA p-values safely", {
-
   # 1. SETUP: Create a basic model and table
   df_dummy <- data.frame(
     status = c(1, 0, 1, 0, 1, 1, 0, 0),

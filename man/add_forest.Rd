@@ -85,7 +85,7 @@ trial |>
     ~ glm(response ~ trt, data = .x) |>
       gtsummary::tbl_regression(
         show_single_row = trt,
-        exponentiate = TRUE#, tidy_fun = broom.helpers::tidy_parameters
+        exponentiate = TRUE # , tidy_fun = broom.helpers::tidy_parameters
       )
   ) |>
   add_forest(pvalue = starts_with("p.value"), table_engine = "flextable") |>
