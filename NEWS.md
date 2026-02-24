@@ -1,14 +1,12 @@
-# crane 0.3.1.9003
-
-## New Functions and Functionality
-
-* Addition of parameter split_by to split tbl_baseline_chg() into a named list of tables.
+# crane 0.3.1.9004
 
 ### Other Updates
 
 * Removed bold from headers when using `tbl_strata()` (#133).
 
 * Unified border width in `theme_gtsummary_roche()` to 0.5 for header. (#154)
+
+* Added example on how to stratify `tbl_baseline_chg()` by `PARAM` and split into a list.
 
 
 # crane 0.3.1
