@@ -96,11 +96,18 @@ add_forest <- function(x,
   sizes <- .get_default_forest_sizes(table_engine = table_engine)
 
   # 2. DATA PREP ---------------------------------------------------------------
+  # Extract only finite numbers that are ALSO <= 999.99
+  fin_low  <- x$table_body[[conf_low]][is.finite(x$table_body[[conf_low]]) & x$table_body[[conf_low]] <= 999.99]
+  fin_high <- x$table_body[[conf_high]][is.finite(x$table_body[[conf_high]]) & x$table_body[[conf_high]] <= 999.99]
+  fin_est  <- x$table_body[[estimate]][is.finite(x$table_body[[estimate]]) & x$table_body[[estimate]] <= 999.99]
+
+  # Calculate limits (with fallbacks to prevent warnings if vectors are empty)
   global_limits <- c(
-    min(c(x$table_body[[conf_low]], 0.2), na.rm = TRUE),
-    max(x$table_body[[conf_high]], na.rm = TRUE)
+    if (length(fin_low) > 0) max(min(fin_low), 0.2) else 0.2, # at least 0.2 because of log scale
+    if (length(fin_high) > 0) max(fin_high) else 2.0  # Default upper limit if all are filtered out
   )
-  mean_estimate <- mean(x$table_body[[estimate]], na.rm = TRUE)
+
+  mean_estimate <- if (length(fin_est) > 0) mean(fin_est) else NA_real_
   global_margins <- margin(t = 0, r = 5, b = 0, l = 5, unit = "pt")
 
   # 3. GENERATE PLOTS ----------------------------------------------------------
@@ -109,9 +116,7 @@ add_forest <- function(x,
     map(
       function(i) {
         # Handle missing estimates by creating an empty plot with just reference lines
-        if (is.na(x$table_body[[estimate]][i]) ||
-          is.na(x$table_body[[conf_low]][i]) ||
-          is.na(x$table_body[[conf_high]][i])) {
+        if (.is_na_or_chr(x, i, estimate, conf_low, conf_high)) {
           # Create an empty plot with just the reference lines
           out <- ggplot2::ggplot() +
             ggplot2::geom_vline(xintercept = mean_estimate, linetype = "dashed", linewidth = sizes$line_ref) +
@@ -230,4 +235,16 @@ add_forest <- function(x,
   }
 
   out
+}
+
+.is_na_or_chr <- function(x, i, estimate, conf_low, conf_high) {
+  is.na(x$table_body[[estimate]][i]) ||
+    is.na(x$table_body[[conf_low]][i]) ||
+    is.na(x$table_body[[conf_high]][i]) ||
+    is.character(x$table_body[[estimate]][i]) ||
+    is.character(x$table_body[[conf_low]][i]) ||
+    is.character(x$table_body[[conf_high]][i]) ||
+    x$table_body[[estimate]][i] > 999.99 ||
+    x$table_body[[conf_high]][i] > 999.99 ||
+    x$table_body[[conf_low]][i] > 999.99 # Needed?
 }
