@@ -18,7 +18,7 @@ measurement of an Analysis Variable."><meta property="og:image" content="https:/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1.9002</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1.9004</span>
       </span>
     </div>
 
@@ -73,7 +73,6 @@ measurement of an Analysis Variable.</p>
 <span>  <span class="va">baseline_level</span>,</span>
 <span>  <span class="va">denominator</span>,</span>
 <span>  by <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  split_by <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  digits <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  id <span class="op">=</span> <span class="st">"USUBJID"</span>,</span>
 <span>  visit <span class="op">=</span> <span class="st">"AVISIT"</span>,</span>
@@ -113,13 +112,6 @@ Data set used to compute the header counts (typically <code>ADSL</code>).</p></d
 <dd><p>(<code><a href="https://dplyr.tidyverse.org/reference/dplyr_tidy_select.html" class="external-link">tidy-select</a></code>)<br>
 A single column from <code>data</code>. Summary statistics will be stratified by this variable.
 Default is <code>NULL</code>.</p></dd>
-
-
-<dt id="arg-split-by">split_by<a class="anchor" aria-label="anchor" href="#arg-split-by"></a></dt>
-<dd><p>(<code>string</code>)<br>
-String identifying the variable to split the table by. Default is <code>NULL</code>. Usually
-used with <code>'PARAM'</code> variables to produce a list of tables for each parameter. Subtitles
-highlight the split levels.</p></dd>
 
 
 <dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
@@ -179,7 +171,7 @@ String indicating the column label. Default is <code>"**Overall**  \nN = {style_
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A gtsummary table, or a named list of gtsummary tables if <code>split_by</code> is specified.</p>
+    <p>A gtsummary table.</p>
     </div>
 
     <div id="ref-examples">
@@ -959,21 +951,27 @@ String indicating the column label. Default is <code>"**Overall**  \nN = {style_
 <td headers="stat_0_1_2" class="gt_row gt_center" style="border-style: none; padding-top: 1px; padding-bottom: 1px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; text-align: center;" valign="middle" align="center">3.6 - 5.0</td>
 <td headers="stat_0_2_2" class="gt_row gt_center" style="border-style: none; padding-top: 1px; padding-bottom: 1px; padding-left: 5px; padding-right: 5px; margin: 10px; border-top-style: solid; border-top-width: 1px; border-top-color: #D3D3D3; border-left-style: none; border-left-width: 1px; border-left-color: #D3D3D3; border-right-style: none; border-right-width: 1px; border-right-color: #D3D3D3; vertical-align: middle; overflow-x: hidden; text-align: center;" valign="middle" align="center">-0.6 - 0.4</td></tr></tbody></table></div></div><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Split by PARAM</span></span></span>
-<span class="r-in"><span><span class="fu">tbl_baseline_chg</span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_strata.html" class="external-link">tbl_strata</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">df</span>,</span></span>
-<span class="r-in"><span>  baseline_level <span class="op">=</span> <span class="st">"Baseline"</span>,</span></span>
-<span class="r-in"><span>  by <span class="op">=</span> <span class="st">"TRTA"</span>,</span></span>
-<span class="r-in"><span>  split_by <span class="op">=</span> <span class="st">"PARAM"</span>,</span></span>
-<span class="r-in"><span>  denominator <span class="op">=</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://insightsengineering.github.io/cards/latest-tag/reference/adam.html" class="external-link">ADSL</a></span></span></span>
-<span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building table for <span style="color: #0000BB;">"PARAM"</span> = <span style="color: #0000BB;">"Sodium (mmol/L)"</span></span>
+<span class="r-in"><span>  strata <span class="op">=</span> <span class="va">PARAMCD</span>,</span></span>
+<span class="r-in"><span>  .tbl_fun <span class="op">=</span> <span class="op">~</span> <span class="fu">tbl_baseline_chg</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    data <span class="op">=</span> <span class="va">.x</span>,</span></span>
+<span class="r-in"><span>    baseline_level <span class="op">=</span> <span class="st">"Baseline"</span>,</span></span>
+<span class="r-in"><span>    by <span class="op">=</span> <span class="st">"TRTA"</span>,</span></span>
+<span class="r-in"><span>    denominator <span class="op">=</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://insightsengineering.github.io/cards/latest-tag/reference/adam.html" class="external-link">ADSL</a></span></span></span>
+<span class="r-in"><span>  <span class="op">)</span>,</span></span>
+<span class="r-in"><span>  .combine_with <span class="op">=</span> <span class="st">"tbl_stack"</span>,</span></span>
+<span class="r-in"><span>  .combine_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>group_header <span class="op">=</span> <span class="cn">NULL</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_split_by.html" class="external-link">tbl_split_by_rows</a></span><span class="op">(</span>variable_level <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">ends_with</a></span><span class="op">(</span><span class="st">"lbl"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Converting column <span style="color: #0000BB;">"TRTA"</span> to a factor.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Building table for <span style="color: #0000BB;">"PARAM"</span> = <span style="color: #0000BB;">"Potassium (mmol/L)"</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Converting column <span style="color: #0000BB;">"TRTA"</span> to a factor.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $`Sodium (mmol/L)`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $`Potassium (mmol/L)`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── <span style="font-weight: bold;">Printing </span><span style="color: #0000BB; font-weight: bold;">2</span><span style="font-weight: bold;"> Tables</span> ──</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── Table <span style="color: #0000BB;">1</span> of <span style="color: #0000BB;">2</span>: K </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> ── Table <span style="color: #0000BB;">2</span> of <span style="color: #0000BB;">2</span>: SODIUM </span>
 </code></pre></div>
     </div>
   </div>
