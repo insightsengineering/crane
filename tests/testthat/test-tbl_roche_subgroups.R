@@ -29,6 +29,7 @@ test_that("tbl_roche_subgroups(time_to_event=NULL) works", {
 })
 
 test_that("tbl_roche_subgroups(time_to_event) works", {
+  set.seed(3210)
   df_adtte <- data.frame(
     time = rexp(10, rate = 0.1),
     status = sample(c(0, 1), 10, replace = TRUE),

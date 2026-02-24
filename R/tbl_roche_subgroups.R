@@ -116,7 +116,7 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun, time_to_even
           # responder or time-to-event median statistics
           gtsummary::tbl_strata(
             data = data_aug,
-            strata = x,
+            strata = dplyr::all_of(x),
             .tbl_fun =
               ~ .x |>
                 tbl_strata(
@@ -133,7 +133,7 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun, time_to_even
           # comparison statistics
           gtsummary::tbl_strata(
             data = data_aug,
-            strata = x,
+            strata = dplyr::all_of(x),
             .tbl_fun = .tbl_fun,
             .combine_with = "tbl_stack",
             .combine_args = if (x == "..overall..") {
