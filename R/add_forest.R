@@ -103,8 +103,8 @@ add_forest <- function(x,
 
   # Calculate limits (with fallbacks to prevent warnings if vectors are empty)
   global_limits <- c(
-    if (length(fin_low) > 0) max(min(fin_low), 0.2) else 0.2, # at least 0.2 because of log scale
-    if (length(fin_high) > 0) max(fin_high) else 2.0  # Default upper limit if all are filtered out
+    if (length(fin_low) > 0 && min(fin_low) > 0) min(fin_low, 0.2) else 0.2, # at least 0.2 because of log scale
+    if (length(fin_high) > 0) max(fin_high, 1.2) else 2.0  # Default upper limit if all are filtered out
   )
 
   mean_estimate <- if (length(fin_est) > 0) mean(fin_est) else NA_real_
