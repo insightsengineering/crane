@@ -90,7 +90,7 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun, time_to_even
 
   # Augment data with a dummy variable for the 'All Participants' row
   overall_rowname <- "All Participants"
-  data_aug <- data %>% dplyr::mutate(..overall.. = overall_rowname)
+  data_aug <- data |> dplyr::mutate(..overall.. = overall_rowname)
   all_vars <- c("..overall..", subgroups)
 
   # subgroup analyses
@@ -105,7 +105,7 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun, time_to_even
             strata = dplyr::all_of(x),
             .tbl_fun = ~ .x |>
               gtsummary::tbl_summary(
-                include = rsp,
+                include = dplyr::all_of(rsp),
                 statistic = gtsummary::everything() ~ "{N}",
                 missing = "no"
               ),
@@ -123,10 +123,10 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun, time_to_even
             strata = dplyr::all_of(x),
             .tbl_fun =
               ~ .x |>
-                tbl_strata(
-                  strata = by,
-                  .tbl_fun = ~ .make_mid_tbl(dt = .x, vars = c("rsp" = rsp, "time_to_event" = time_to_event))
-                ),
+              tbl_strata(
+                strata = dplyr::all_of(by),
+                .tbl_fun = ~ .make_mid_tbl(dt = .x, vars = c("rsp" = rsp, "time_to_event" = time_to_event))
+              ),
             .combine_with = "tbl_stack",
             .combine_args = if (x == "..overall..") {
               list(group_header = NULL, quiet = TRUE)
@@ -168,10 +168,10 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun, time_to_even
                 table_body |>
                   dplyr::mutate(
                     variable = x,
-                    label_1 = .data$groupname_col,
+                    label_1 = "groupname_col",
                     row_type = "level"
                   ) |>
-                  dplyr::select(-.data$groupname_col)
+                  dplyr::select(-"groupname_col")
               )
             }
           )
@@ -188,7 +188,7 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun, time_to_even
 
   class(roche_subgroups_tbl) <- c("tbl_roche_subgroups", class(roche_subgroups_tbl))
 
-  return(roche_subgroups_tbl)
+  roche_subgroups_tbl
 }
 
 

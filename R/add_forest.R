@@ -186,7 +186,8 @@ add_forest <- function(x,
   out <- x |>
     gtsummary::modify_table_body(~ .x |>
       dplyr::add_row() |>
-      dplyr::mutate(ggplot = NA, .after = .data[[after]])) |>
+      dplyr::mutate(ggplot = NA, .after = dplyr::all_of(after))
+    ) |>
     gtsummary::modify_footnote(gtsummary::everything() ~ NA) |>
     gtsummary::modify_header(ggplot = header_text)
 
