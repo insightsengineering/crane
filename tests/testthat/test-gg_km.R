@@ -38,8 +38,11 @@ test_that("gg_km() works with default inputs", {
 
   # annotate_riskdf() is correctly aligned with gg_km
   expect_no_error(
-    plt_aligned <- gg_km(surv_plot_data) |>
-      annotate_riskdf(fit_kmg01)
+    expect_warnings( # Current alignment removes values that have 0s in the risk table
+      plt_aligned <- gg_km(surv_plot_data) |>
+        annotate_riskdf(fit_kmg01),
+      "Removed 3 rows containing missing values"
+    )
   )
 })
 
