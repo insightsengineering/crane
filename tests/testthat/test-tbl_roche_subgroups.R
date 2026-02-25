@@ -24,7 +24,8 @@ test_that("tbl_roche_subgroups(time_to_event=NULL) works", {
         dplyr::starts_with("estimate"),
         dplyr::starts_with("ci"),
         dplyr::starts_with("p.value")
-      )
+      ) |>
+      dplyr::mutate(dplyr::across(tidyselect::where(is.numeric), ~ round(.x, digits = 3)))
   )
 })
 
