@@ -2,19 +2,19 @@ skip_on_cran()
 tbl <-
   trial |>
   dplyr::select(age, marker, grade, response) |>
-  tbl_uvregression(
+  gtsummary::tbl_uvregression(
     y = response,
     method = glm,
     method.args = list(family = binomial),
     exponentiate = TRUE,
     hide_n = TRUE
   ) |>
-  modify_column_merge(
+  gtsummary::modify_column_merge(
     pattern = "{estimate} (95% CI {ci}; {p.value})",
     rows = !is.na(estimate)
   ) |>
-  modify_header(estimate = "**Odds Ratio**") |>
-  bold_labels()
+  gtsummary::modify_header(estimate = "**Odds Ratio**") |>
+  gtsummary::bold_labels()
 
 test_that("add_forest(table_engine = 'flextable') works", {
   expect_warning(
