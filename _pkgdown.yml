@@ -34,11 +34,6 @@ reference:
     contents:
       - tbl_null_report
 
-  - title: "Forest plot"
-    contents:
-      - tbl_roche_subgroups
-      - g_forest
-
   - title: "Styling"
     contents:
       - theme_gtsummary_roche
@@ -46,16 +41,19 @@ reference:
       - modify_zero_recode
       - add_blank_rows
       - label_roche
+
   - title: "Kaplan-Meier Plot"
     contents:
       - process_survfit
       - gg_km
       - annotate_gg_km
       - get_cox_pairwise_df
+
   - title: "Forest Plot"
     contents:
-      - g_forest
+      - add_forest
       - tbl_roche_subgroups
+
   - title: "Line Plot"
     contents:
       - calc_stats
