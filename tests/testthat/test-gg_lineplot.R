@@ -1,8 +1,3 @@
-# Test calc_stats function
-#' @description Test calc_stats function
-#' @param x Numeric vector
-#' @param conf_level Confidence level
-#' @param decimal_places Number of decimal places
 test_that("calc_stats works correctly", {
   # Explicit numeric vector of 10 values, mean = 10.19, sd ~ 0.93
   x <- c(8.1, 9.2, 9.8, 10.4, 11.1, 9.5, 10.2, 8.7, 11.3, 9.9)
@@ -41,8 +36,6 @@ test_that("calc_stats works correctly", {
   expect_true(is.na(result_all_na$sd))
 })
 
-# Test g_lineplot function
-#' @description Test g_lineplot function
 test_that("g_lineplot works correctly", {
   # Create test statistics data
   df_stats <- data.frame(
@@ -101,8 +94,6 @@ test_that("g_lineplot works correctly", {
   expect_s3_class(plot_lines, "ggplot")
 })
 
-# Test g_lineplot_table function
-#' @description Test g_lineplot_table function
 test_that("g_lineplot_table works correctly", {
   # Create test statistics data
   df_stats <- data.frame(
