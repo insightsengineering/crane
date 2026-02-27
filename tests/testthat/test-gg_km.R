@@ -1,20 +1,20 @@
+# pre-processing the km fit
+anl <- cards::ADTTE |>
+  dplyr::mutate(is_event = CNSR == 0)
+by <- "TRTP"
+anl[[by]] <- factor(anl[[by]], levels = c(
+  "Placebo",
+  "Xanomeline Low Dose",
+  "Xanomeline High Dose"
+))
+group_sym <- rlang::sym(by)
+model_formula <- rlang::new_formula(
+  lhs = rlang::expr(Surv(AVAL, is_event)),
+  rhs = rlang::expr(!!group_sym)
+)
+fit_kmg01 <- survival::survfit(model_formula, anl)
+
 test_that("gg_km() works with default inputs", {
-  anl <- cards::ADTTE |>
-    dplyr::mutate(is_event = CNSR == 0)
-  by <- "TRTP"
-  anl[[by]] <- factor(anl[[by]], levels = c(
-    "Placebo",
-    "Xanomeline Low Dose",
-    "Xanomeline High Dose"
-  ))
-  group_sym <- rlang::sym(by)
-  model_formula <- rlang::new_formula(
-    lhs = rlang::expr(Surv(AVAL, is_event)),
-    rhs = rlang::expr(!!group_sym)
-  )
-
-  fit_kmg01 <- survival::survfit(model_formula, anl)
-
   expect_no_error(
     surv_plot_data <- process_survfit(fit_kmg01)
   )
@@ -34,6 +34,15 @@ test_that("gg_km() works with default inputs", {
       annotate_surv_med(fit_kmg01) |>
       annotate_coxph(coxph_tbl) |>
       annotate_riskdf(fit_kmg01)
+  )
+
+  # annotate_riskdf() is correctly aligned with gg_km
+  expect_no_error(
+    expect_warning( # Current alignment removes values that have 0s in the risk table
+      plt_aligned <- gg_km(surv_plot_data) |>
+        annotate_riskdf(fit_kmg01),
+      "Removed 3 rows containing missing values"
+    )
   )
 })
 
