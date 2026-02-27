@@ -196,7 +196,7 @@ g_lineplot_table <- function(df_stats,
 
   # Select and pivot the formatted data
   df_stats_table <- df_stats_formatted |>
-    select(all_of(c(group_var, x, table))) |>
+    dplyr::select(all_of(c(group_var, x, table))) |>
     tidyr::pivot_longer(
       cols = -all_of(c(group_var, x)),
       names_to = "stat",
