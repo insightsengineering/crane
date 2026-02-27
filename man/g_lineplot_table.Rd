@@ -34,10 +34,6 @@ Creates a ggplot object containing text data for use as a table
 component beneath a main plot.
 }
 \examples{
-library(ggplot2)
-library(dplyr)
-library(tidyr)
-
 # Create example statistics data frame
 df_stats <- data.frame(
   AVISIT = factor(c("Baseline", "Week 4", "Week 8")),
