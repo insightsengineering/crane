@@ -4,18 +4,18 @@
 #' @param conf_level Confidence level
 #' @param decimal_places Number of decimal places
 test_that("calc_stats works correctly", {
-  set.seed(456)
-  x <- rnorm(100, mean = 10, sd = 2)
+  # Explicit numeric vector of 10 values, mean = 10.19, sd ~ 0.93
+  x <- c(8.1, 9.2, 9.8, 10.4, 11.1, 9.5, 10.2, 8.7, 11.3, 9.9)
+  true_mean <- mean(x)  # 9.82
+  true_sd   <- sd(x)    # ~0.93
 
   # Test default parameters
   result <- calc_stats(x)
   expect_true(is(result, "list"))
   expect_named(result, c("n", "mean", "mean_ci", "mean_ci_lwr", "mean_ci_upr", "median", "sd"))
-  expect_equal(result$n, 100)
-  expect_gt(result$mean, 9)
-  expect_lt(result$mean, 11)
-  expect_gt(result$sd, 1.5)
-  expect_lt(result$sd, 2.5)
+  expect_equal(result$n, 10)
+  expect_equal(result$mean, round(true_mean, 2))
+  expect_equal(result$sd, round(true_sd, 2))
 
   # Test custom confidence level
   result_90 <- calc_stats(x, conf_level = 0.90)
@@ -31,19 +31,19 @@ test_that("calc_stats works correctly", {
   # Test with NA values
   x_na <- c(x, NA, NA)
   result_na <- calc_stats(x_na)
-  expect_equal(result_na$n, 100) # NA values should be excluded
+  expect_equal(result_na$n, 10) # NA values should be excluded
 
   # Test with all NA values
-  x_all_na <- rep(NA, 10)
+  x_all_na <- rep(NA_real_, 10)
   result_all_na <- calc_stats(x_all_na)
   expect_equal(result_all_na$n, 0)
   expect_true(is.na(result_all_na$mean))
   expect_true(is.na(result_all_na$sd))
 })
 
-# Test g_lineplot_without_table function
-#' @description Test g_lineplot_without_table function
-test_that("g_lineplot_without_table works correctly", {
+# Test g_lineplot function
+#' @description Test g_lineplot function
+test_that("g_lineplot works correctly", {
   # Create test statistics data
   df_stats <- data.frame(
     AVISIT = factor(c("Baseline", "Week 4", "Week 8")),
@@ -54,7 +54,7 @@ test_that("g_lineplot_without_table works correctly", {
   )
 
   # Test basic functionality
-  plot <- g_lineplot_without_table(
+  plot <- g_lineplot(
     df_stats = df_stats,
     x = "AVISIT",
     mid = "mean",
@@ -71,7 +71,7 @@ test_that("g_lineplot_without_table works correctly", {
     )
   )
 
-  plot_strat <- g_lineplot_without_table(
+  plot_strat <- g_lineplot(
     df_stats = df_stats_strat,
     x = "AVISIT",
     mid = "mean",
@@ -81,7 +81,7 @@ test_that("g_lineplot_without_table works correctly", {
   expect_s3_class(plot_strat, "ggplot")
 
   # Test different mid_type options
-  plot_points <- g_lineplot_without_table(
+  plot_points <- g_lineplot(
     df_stats = df_stats,
     x = "AVISIT",
     mid = "mean",
@@ -90,7 +90,7 @@ test_that("g_lineplot_without_table works correctly", {
   )
   expect_s3_class(plot_points, "ggplot")
 
-  plot_lines <- g_lineplot_without_table(
+  plot_lines <- g_lineplot(
     df_stats = df_stats_strat,
     x = "AVISIT",
     mid = "mean",
@@ -238,6 +238,18 @@ test_that("preprocess_lineplot_data works correctly", {
     df = adlb,
     alt_counts_df = adsl,
     x = "AVISIT",
+    y = "AVAL",
+    group_var = "ARM",
+    subject_var = "USUBJID",
+    calc_stats = custom_calc_stats
+  )
+
+  expect_s3_class(df_stats_custom, "data.frame")
+  # Custom function should double the means
+  original_means <- df_stats$mean
+  custom_means <- df_stats_custom$mean
+  expect_gt(mean(custom_means, na.rm = TRUE), mean(original_means, na.rm = TRUE))
+})
     y = "AVAL",
     group_var = "ARM",
     subject_var = "USUBJID",

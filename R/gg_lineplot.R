@@ -71,7 +71,7 @@ calc_stats <- function(x, conf_level = 0.95, decimal_places = 2) {
 #' )
 #'
 #' # Basic line plot without stratification
-#' g_lineplot_without_table(
+#' g_lineplot(
 #'   df_stats = df_stats,
 #'   x = "AVISIT",
 #'   mid = "mean",
@@ -86,14 +86,14 @@ calc_stats <- function(x, conf_level = 0.95, decimal_places = 2) {
 #'     mean_ci_lwr = mean_ci_lwr + 2, mean_ci_upr = mean_ci_upr + 2
 #'   )
 #' )
-#' g_lineplot_without_table(
+#' g_lineplot(
 #'   df_stats = df_stats_strat,
 #'   x = "AVISIT",
 #'   mid = "mean",
 #'   strata_N = "ARM",
 #'   whiskers = c("mean_ci_lwr", "mean_ci_upr")
 #' )
-g_lineplot_without_table <- function(df_stats,
+g_lineplot <- function(df_stats,
                                      x = "AVISIT",
                                      mid = "mean",
                                      strata_N = NULL,
