@@ -1,7 +1,7 @@
 test_that("calc_stats works correctly", {
   x <- c(8.1, 9.2, 9.8, 10.4, 11.1, 9.5, 10.2, 8.7, 11.3, 9.9)
   true_mean <- mean(x)
-  true_sd   <- sd(x)
+  true_sd <- sd(x)
 
   # Test default parameters
   result <- calc_stats(x)
