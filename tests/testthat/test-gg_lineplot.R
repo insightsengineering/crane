@@ -241,15 +241,3 @@ test_that("preprocess_lineplot_data works correctly", {
   custom_means <- df_stats_custom$mean
   expect_gt(mean(custom_means, na.rm = TRUE), mean(original_means, na.rm = TRUE))
 })
-    y = "AVAL",
-    group_var = "ARM",
-    subject_var = "USUBJID",
-    calc_stats = custom_calc_stats
-  )
-
-  expect_s3_class(df_stats_custom, "data.frame")
-  # Custom function should double the means
-  original_means <- df_stats$mean
-  custom_means <- df_stats_custom$mean
-  expect_gt(mean(custom_means, na.rm = TRUE), mean(original_means, na.rm = TRUE))
-})

@@ -94,16 +94,16 @@ calc_stats <- function(x, conf_level = 0.95, decimal_places = 2) {
 #'   whiskers = c("mean_ci_lwr", "mean_ci_upr")
 #' )
 g_lineplot <- function(df_stats,
-                                     x = "AVISIT",
-                                     mid = "mean",
-                                     strata_N = NULL,
-                                     whiskers = c("mean_ci_lwr", "mean_ci_upr"),
-                                     mid_type = "pl",
-                                     mid_point_size = 2,
-                                     position = position_dodge(width = 0.4),
-                                     errorbar_width = 0.45,
-                                     col = NULL,
-                                     linetype = NULL) {
+                       x = "AVISIT",
+                       mid = "mean",
+                       strata_N = NULL,
+                       whiskers = c("mean_ci_lwr", "mean_ci_upr"),
+                       mid_type = "pl",
+                       mid_point_size = 2,
+                       position = position_dodge(width = 0.4),
+                       errorbar_width = 0.45,
+                       col = NULL,
+                       linetype = NULL) {
   p <- ggplot(
     data = df_stats,
     aes(
