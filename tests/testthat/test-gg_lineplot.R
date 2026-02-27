@@ -1,16 +1,15 @@
 test_that("calc_stats works correctly", {
-  # Explicit numeric vector of 10 values, mean = 10.19, sd ~ 0.93
   x <- c(8.1, 9.2, 9.8, 10.4, 11.1, 9.5, 10.2, 8.7, 11.3, 9.9)
-  true_mean <- mean(x)  # 9.82
-  true_sd   <- sd(x)    # ~0.93
+  true_mean <- mean(x)
+  true_sd   <- sd(x)
 
   # Test default parameters
   result <- calc_stats(x)
   expect_true(is(result, "list"))
   expect_named(result, c("n", "mean", "mean_ci", "mean_ci_lwr", "mean_ci_upr", "median", "sd"))
   expect_equal(result$n, 10)
-  expect_equal(result$mean, round(true_mean, 2))
-  expect_equal(result$sd, round(true_sd, 2))
+  expect_equal(result$mean, true_mean)
+  expect_equal(result$sd, true_sd)
 
   # Test custom confidence level
   result_90 <- calc_stats(x, conf_level = 0.90)
