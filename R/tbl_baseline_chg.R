@@ -4,29 +4,25 @@
 #' measurement of an Analysis Variable.
 #' @inheritParams tbl_roche_summary
 #' @inheritParams gtsummary::add_overall
-#' @param split_by (`string`)\cr
-#'  String identifying the variable to split the table by. Default is `NULL`. Usually
-#'  used with `'PARAM'` variables to produce a list of tables for each parameter. Subtitles
-#'  highlight the split levels.
-#' @param analysis_variable (`string`)\cr
+#' @param analysis_variable ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'  String identifying the analysis values. Default is `'AVAL'`.
-#' @param change_variable (`string`)\cr
+#' @param change_variable ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'  String identifying the change from baseline values. Default is `'CHG'`.
-#' @param id (`string`)\cr
+#' @param id ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'  String identifying the unique subjects. Default is `'USUBJID'`.
-#' @param visit (`string`)\cr
+#' @param visit ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'  String for the visit variable. Default is
 #'  `'AVISIT'`. If there are more than one entry for each visit and subject,
 #'  only the first row is kept.
-#' @param visit_number (`string`)\cr
+#' @param visit_number ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'  String identifying the visit or analysis sequence number. Default is
 #'  `'AVISITN'`.
 #' @param baseline_level (`string`)\cr
 #'  String identifying baseline level in the `visit` variable.
-#' @param denominator (`string`)\cr
+#' @param denominator (`data.frame`)\cr
 #'  Data set used to compute the header counts (typically `ADSL`).
 #'
-#' @return A gtsummary table, or a named list of gtsummary tables if `split_by` is specified.
+#' @return A gtsummary table.
 #' @name tbl_baseline_chg
 #'
 #' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true")
@@ -55,13 +51,19 @@
 #'   add_overall(last = TRUE, col_label = "All Participants")
 #'
 #' # Split by PARAM
-#' tbl_baseline_chg(
+#' tbl_strata(
 #'   data = df,
-#'   baseline_level = "Baseline",
-#'   by = "TRTA",
-#'   split_by = "PARAM",
-#'   denominator = cards::ADSL
-#' )
+#'   strata = PARAMCD,
+#'   .tbl_fun = ~ tbl_baseline_chg(
+#'     data = .x,
+#'     baseline_level = "Baseline",
+#'     by = "TRTA",
+#'     denominator = cards::ADSL
+#'   ),
+#'   .combine_with = "tbl_stack",
+#'   .combine_args = list(group_header = NULL, quiet = TRUE)
+#' ) |>
+#'   tbl_split_by_rows(variable_level = ends_with("lbl"))
 #'
 NULL
 
@@ -71,7 +73,6 @@ tbl_baseline_chg <- function(data,
                              baseline_level,
                              denominator,
                              by = NULL,
-                             split_by = NULL,
                              digits = NULL,
                              id = "USUBJID",
                              visit = "AVISIT",
@@ -96,43 +97,14 @@ tbl_baseline_chg <- function(data,
   cards::process_selectors(
     data,
     by = {{ by }}, id = {{ id }}, visit = {{ visit }}, visit_number = {{ visit_number }},
-    analysis_variable = {{ analysis_variable }}, change_variable = {{ change_variable }},
-    split_by = {{ split_by }}
+    analysis_variable = {{ analysis_variable }}, change_variable = {{ change_variable }}
   )
   check_scalar(by, allow_empty = TRUE)
-  check_scalar(split_by, allow_empty = TRUE)
   check_scalar(id)
   check_scalar(visit)
   check_scalar(visit_number)
   check_scalar(analysis_variable)
   check_scalar(change_variable)
-
-  if (length(split_by) > 0L) {
-    split_by_levels <- if (is.factor(data[[split_by]])) {
-      levels(data[[split_by]])
-    } else {
-      unique(data[[split_by]])
-    }
-    tbl_list <- vector("list", length = length(split_by_levels))
-    names(tbl_list) <- split_by_levels
-    for (level in split_by_levels) {
-      cli::cli_inform(c("i" = "Building table for {.val {split_by}} = {.val {level}}"))
-      tbl_list[[as.character(level)]] <-
-        tbl_baseline_chg(
-          data = data[data[[split_by]] == level, ],
-          baseline_level = baseline_level,
-          denominator = denominator,
-          by = by,
-          digits = digits,
-          id = id,
-          visit = visit,
-          visit_number = visit_number,
-          analysis_variable = analysis_variable,
-          change_variable = change_variable
-        )
-    }
-    return(tbl_list)
-  }
 
   # Check that `baseline_level` is one of the visit values
   if (!(baseline_level %in% data[[visit]])) {

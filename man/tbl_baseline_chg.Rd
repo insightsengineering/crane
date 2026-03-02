@@ -10,7 +10,6 @@ tbl_baseline_chg(
   baseline_level,
   denominator,
   by = NULL,
-  split_by = NULL,
   digits = NULL,
   id = "USUBJID",
   visit = "AVISIT",
@@ -32,39 +31,34 @@ tbl_baseline_chg(
 \item{baseline_level}{(\code{string})\cr
 String identifying baseline level in the \code{visit} variable.}
 
-\item{denominator}{(\code{string})\cr
+\item{denominator}{(\code{data.frame})\cr
 Data set used to compute the header counts (typically \code{ADSL}).}
 
 \item{by}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 A single column from \code{data}. Summary statistics will be stratified by this variable.
 Default is \code{NULL}.}
 
-\item{split_by}{(\code{string})\cr
-String identifying the variable to split the table by. Default is \code{NULL}. Usually
-used with \code{'PARAM'} variables to produce a list of tables for each parameter. Subtitles
-highlight the split levels.}
-
 \item{digits}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
 Specifies how summary statistics are rounded. Values may be either integer(s)
 or function(s). If not specified, default formatting is assigned
 via \code{assign_summary_digits()}. See below for details.}
 
-\item{id}{(\code{string})\cr
+\item{id}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 String identifying the unique subjects. Default is \code{'USUBJID'}.}
 
-\item{visit}{(\code{string})\cr
+\item{visit}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 String for the visit variable. Default is
 \code{'AVISIT'}. If there are more than one entry for each visit and subject,
 only the first row is kept.}
 
-\item{visit_number}{(\code{string})\cr
+\item{visit_number}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 String identifying the visit or analysis sequence number. Default is
 \code{'AVISITN'}.}
 
-\item{analysis_variable}{(\code{string})\cr
+\item{analysis_variable}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 String identifying the analysis values. Default is \code{'AVAL'}.}
 
-\item{change_variable}{(\code{string})\cr
+\item{change_variable}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 String identifying the change from baseline values. Default is \code{'CHG'}.}
 
 \item{x}{(\code{tbl_summary}, \code{tbl_svysummary}, \code{tbl_continuous}, \code{tbl_custom_summary})\cr
@@ -80,7 +74,7 @@ String indicating the column label. Default is \code{"**Overall**  \nN = {style_
 \item{...}{These dots are for future extensions and must be empty.}
 }
 \value{
-A gtsummary table, or a named list of gtsummary tables if \code{split_by} is specified.
+A gtsummary table.
 }
 \description{
 Typical use is tabulating changes from baseline
@@ -113,12 +107,18 @@ tbl_baseline_chg(
   add_overall(last = TRUE, col_label = "All Participants")
 
 # Split by PARAM
-tbl_baseline_chg(
+tbl_strata(
   data = df,
-  baseline_level = "Baseline",
-  by = "TRTA",
-  split_by = "PARAM",
-  denominator = cards::ADSL
-)
+  strata = PARAMCD,
+  .tbl_fun = ~ tbl_baseline_chg(
+    data = .x,
+    baseline_level = "Baseline",
+    by = "TRTA",
+    denominator = cards::ADSL
+  ),
+  .combine_with = "tbl_stack",
+  .combine_args = list(group_header = NULL, quiet = TRUE)
+) |>
+  tbl_split_by_rows(variable_level = ends_with("lbl"))
 \dontshow{\}) # examplesIf}
 }

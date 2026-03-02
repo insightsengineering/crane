@@ -1,4 +1,4 @@
-# crane 0.3.1.9003
+# crane 0.3.1.9006
 
 ## New Functions and Functionality
 
@@ -11,6 +11,8 @@
 * Removed bold from headers when using `tbl_strata()` (#133).
 
 * Unified border width in `theme_gtsummary_roche()` to 0.5 for header. (#154)
+
+* Added example on how to stratify `tbl_baseline_chg()` by `PARAM` and split into a list.
 
 
 # crane 0.3.1
