@@ -153,6 +153,7 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun, time_to_even
           # add a header row for the variable
           gtsummary::modify_table_body(
             function(table_body) {
+
               if (any(grepl(pattern = overall_rowname, table_body))) {
                 return(
                   table_body |>
@@ -168,7 +169,7 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun, time_to_even
                 table_body |>
                   dplyr::mutate(
                     variable = x,
-                    label_1 = "groupname_col",
+                    label_1 = groupname_col,
                     row_type = "level"
                   ) |>
                   dplyr::select(-"groupname_col")
