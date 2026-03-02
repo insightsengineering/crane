@@ -153,7 +153,6 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun, time_to_even
           # add a header row for the variable
           gtsummary::modify_table_body(
             function(table_body) {
-
               if (any(grepl(pattern = overall_rowname, table_body))) {
                 return(
                   table_body |>
