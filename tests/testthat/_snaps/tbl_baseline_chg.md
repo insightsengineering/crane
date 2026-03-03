@@ -174,10 +174,3 @@
     Output
       
 
-# tbl_baseline_chg(split_by = PARAM) works
-
-    Code
-      names(tbl)
-    Output
-      [1] "SODIUM" "K"     
-
