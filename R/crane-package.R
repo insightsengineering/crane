@@ -9,6 +9,7 @@
 #' @importFrom labeling extended
 #' @importFrom survival coxph Surv survdiff
 #' @importFrom stats pchisq median
+#' @importFrom scales label_comma
 #' @importFrom tidyr pivot_wider
 #' @importFrom utils tail
 "_PACKAGE"

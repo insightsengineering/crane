@@ -1,4 +1,6 @@
-# crane 0.3.1.9006
+# crane 0.3.1.9008
+
+* Added `g_lineplot()` for creating line plots with optional summary statistics table. Includes helper functions `calc_stats()`, `g_lineplot_table()`, and `preprocess_lineplot_data()`.
 
 ## New Functions and Functionality
 
