@@ -238,13 +238,15 @@ add_forest <- function(x,
 }
 
 .is_na_or_chr <- function(x, i, estimate, conf_low, conf_high) {
-  is.na(x$table_body[[estimate]][i]) ||
-    is.na(x$table_body[[conf_low]][i]) ||
-    is.na(x$table_body[[conf_high]][i]) ||
-    is.character(x$table_body[[estimate]][i]) ||
-    is.character(x$table_body[[conf_low]][i]) ||
-    is.character(x$table_body[[conf_high]][i]) ||
-    x$table_body[[estimate]][i] > 999.99 ||
-    x$table_body[[conf_high]][i] > 999.99 ||
+  any(c(
+    is.na(x$table_body[[estimate]][i]),
+    is.na(x$table_body[[conf_low]][i]),
+    is.na(x$table_body[[conf_high]][i]),
+    is.character(x$table_body[[estimate]][i]),
+    is.character(x$table_body[[conf_low]][i]),
+    is.character(x$table_body[[conf_high]][i]),
+    x$table_body[[estimate]][i] > 999.99,
+    x$table_body[[conf_high]][i] > 999.99,
     x$table_body[[conf_low]][i] > 999.99 # Needed?
+  ))
 }

@@ -168,10 +168,10 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun, time_to_even
                 table_body |>
                   dplyr::mutate(
                     variable = x,
-                    label_1 = "groupname_col",
+                    label_1 = .data$groupname_col,
                     row_type = "level"
                   ) |>
-                  dplyr::select(-"groupname_col")
+                  dplyr::select(-dplyr::any_of("groupname_col"))
               )
             }
           )
