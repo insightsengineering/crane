@@ -2,6 +2,12 @@
 
 * Added `g_lineplot()` for creating line plots with optional summary statistics table. Includes helper functions `calc_stats()`, `g_lineplot_table()`, and `preprocess_lineplot_data()`.
 
+## New Functions and Functionality
+
+* Added `tbl_mmrm()` function to create regression tables for Mixed Models for Repeated Measures (MMRM) using [gtsummary::tbl_regression()]. (#163)
+
+* Addition of parameter split_by to split tbl_baseline_chg() into a named list of tables.
+
 ### Other Updates
 
 * Removed bold from headers when using `tbl_strata()` (#133).
