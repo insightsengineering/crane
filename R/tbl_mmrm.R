@@ -1,73 +1,195 @@
-#' Display MMRM Results in a Formatted Table
+#' Get and display MMRM Results in a Formatted Table
 #'
-#' This function takes a fitted MMRM model object and creates a formatted table,
+#' These functions take a fitted MMRM model object and creates a formatted table,
 #' following the style of the MMRM TLG template. It combines baseline summary statistics
 #' (if available) with the MMRM results, presenting them in a clear and organized manner.
 #'
-#' @param df_tidy_mmrm (`data.frame`)\cr
+#' @param fit_mmrm (`mmrm` model object)\cr
+#'   A fitted MMRM model object, typically created using the `mmrm` function from the `mmrm` package. This object
+#'   should contain the necessary information to extract adjusted means, differences, confidence intervals, and
+#'   p-values for the specified visits and arms.
+#' @param conf_level (`numeric`)\cr
+#'   The confidence level to use when calculating confidence intervals for the adjusted means and differences.
+#'   Default is 0.95 for 95% confidence intervals.
+#' @param mmrm_df (`data.frame`)\cr
 #'   A tidy data frame containing the MMRM results. This should include
 #'   columns for the visit, arm, adjusted means, differences, confidence intervals, and
 #'   p-values. The data frame should be structured in a way that allows for stratification by visit and arm.
 #'   Usually the output of [get_mmrm_results()].
-#' @param df_baseline (`data.frame`)\cr
+#' @param base_df (`data.frame`)\cr
 #'   A data frame containing baseline measurements. This should include columns for
 #'   the visit, arm, and baseline values. The function will summarize this data
 #'   to provide baseline statistics in the final table.
-#' @param arm ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
-#'   The column in `df_tidy_mmrm` and `df_baseline` that identifies the treatment arms.
+#' @param arm (`string`)\cr
+#'   The column in `mmrm_df` and `base_df` that identifies the treatment arms.
 #'   This will be used to divide the results in columns. First value is reference.
-#' @param visit ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
-#'   The column in `df_tidy_mmrm` and `df_baseline` that identifies the visits.
+#' @param visit (`string`)\cr
+#'   The column in `mmrm_df` and `base_df` that identifies the visits.
 #'   This will be used to stratify the results in rows.
 #' @param baseline_aval ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
-#'   The column in `df_baseline` that contains the baseline values to be summarized.
+#'   The column in `base_df` that contains the baseline values to be summarized.
 #'
-#' @return A 'gtsummary' table object.
-#'
-#' @export
 #' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true") && requireNamespace("mmrm", quietly = TRUE)
-library(mmrm)
-fv_dt <- mmrm::fev_data |>
-  dplyr::mutate(
-    ARMCD = sprintf(
-      "%s\n(N = %d)", ARMCD,
-      table(mmrm::fev_data$ARMCD)[ARMCD]
-    ),
-    ARMCD = factor(ARMCD)
+#' library(mmrm)
+#' fv_dt <- mmrm::fev_data |>
+#'   dplyr::mutate(
+#'     ARMCD = sprintf(
+#'       "%s\n(N = %d)", ARMCD,
+#'       table(mmrm::fev_data$ARMCD)[ARMCD]
+#'     ),
+#'     ARMCD = factor(ARMCD)
+#'   )
+#'
+#' @name tbl_mmrm
+NULL
+
+#' @return A `data.frame` containing the estimated marginal means (adjusted means)
+#' and contrasts (differences in adjusted means) for each visit and arm,
+#' along with their standard errors, confidence intervals, degrees of freedom,
+#' and sample sizes. This data frame is structured to facilitate the creation of a
+#' formatted table using [tbl_mmrm()].
+#'
+#' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true") && requireNamespace("mmrm", quietly = TRUE)
+#' # Fit an MMRM model using the FEV data
+#' fit_mmrm <- mmrm::mmrm(
+#'   formula = FEV1 ~ RACE + SEX + ARMCD * AVISIT + us(AVISIT | USUBJID), # us -> unstructured cov structure
+#'   data = fv_dt
+#' )
+#' mmrm_results <- get_mmrm_results(fit_mmrm, arm = "ARMCD", visit = "AVISIT", conf_level = 0.95)
+#'
+#' @rdname tbl_mmrm
+#' @export
+get_mmrm_results <- function(fit_mmrm, arm, visit, conf_level = 0.95) {
+  check_installed("emmeans")
+  check_not_missing(fit_mmrm)
+  check_not_missing(arm)
+  check_not_missing(visit)
+  check_not_missing(conf_level)
+  check_string(rsp)
+  check_string(by)
+  check_string(time_to_event, allow_empty = TRUE)
+  check_binary(data[[rsp]])
+  check_class(subgroups, "character")
+  check_class(.tbl_fun, c("formula", "function"))
+
+
+  # Extract Statistics using emmeans
+  emmeans_object <- emmeans::emmeans(
+    fit_mmrm,
+    data = model.frame(fit_mmrm),
+    specs = c(arm, visit),
+    weights = "equal"
   )
 
+  # Get n from the emmeans grid and rename the weight column to n
+  visit_arm_grid <- emmeans_object@grid
+  wgt_index <- match(".wgt.", names(visit_arm_grid))
+  names(visit_arm_grid)[wgt_index] <- "n"
+  visit_arm_grid$n <- as.integer(visit_arm_grid$n)
+  # list with `object` (`emmGrid` object containing `emmeans` results) and `grid`
+  # (`data.frame` containing the potential arm and the visit variables
+  # together with the sample size `n` for each combination).
+  emmeans_res <- list(object = emmeans_object, grid = visit_arm_grid)
 
-# Fit an MMRM model using the FEV data
-fit_mmrm <- mmrm::mmrm(
-  formula = FEV1 ~ RACE + SEX + ARMCD * AVISIT + us(AVISIT | USUBJID),
-  data = fv_dt
-)
+  # Calculate confidence intervals for the emmeans results
+  cis <- stats::confint(emmeans_res$object, level = conf_level)
 
-afit <- tern.mmrm::fit_mmrm(
-  vars = list(
-    response = "FEV1", covariates = c("RACE", "SEX", "ARMCD"), id = "USUBJID",
-    arm = "ARMCD", visit =
-      "AVISIT"
-  ),
-  fv_dt,
-  conf_level = 0.95,
-  cor_struct = "unstructured",
-  weights_emmeans = "equal"
-)
+  # Tidy up first part of the results and combine with confidence intervals and n
+  estimates <- cbind(
+    emmeans_res$grid[, setdiff(names(emmeans_res$grid), "n"), drop = FALSE],
+    data.frame(estimate = cis$emmean, se = cis$SE, df = cis$df, lower_cl = cis$lower.CL, upper_cl = cis$upper.CL),
+    emmeans_res$grid[, "n", drop = FALSE]
+  )
 
-tbl_mmrm(tidy(afit), fv_dt |> dplyr::mutate(AVISIT = "Baseline"), arm = "ARMCD", visit = "AVISIT", baseline_aval = "FEV1")
+  # Get least square means estimates for single visits, and possibly averaged visits.
+  contrast_specs <- .get_single_visit_contrast_specs(emmeans_res, arm, visit)
+  conts <- emmeans::contrast(
+    emmeans_res$object,
+    contrast_specs$coefs
+  )
+  cis <- stats::confint(conts, level = conf_level)
+  contrast_estimates <- cbind(
+    contrast_specs$grid,
+    data.frame(
+      estimate = cis$estimate,
+      se = cis$SE,
+      df = cis$df,
+      lower_cl = cis$lower.CL,
+      upper_cl = cis$upper.CL
+    )
+  )
+  conts_df <- as.data.frame(conts)
+  contrast_estimates$t_stat <- conts_df$t.ratio
+  contrast_estimates$p_value <- conts_df$p.value
 
-tbl_mmrm <- function(df_tidy_mmrm, df_baseline, arm, visit, baseline_aval) {
+  # Merge the estimates and contrast estimates together
+  relative_reduc_df <- .get_relative_reduc_df(estimates, arm, visit)
+  contrast_estimates <- merge(
+    contrast_estimates,
+    relative_reduc_df,
+    by = c(arm, visit),
+    sort = FALSE
+  )
+  contrast_estimates[[arm]] <- factor(contrast_estimates[[arm]])
+  contrast_estimates[[visit]] <- factor(contrast_estimates[[visit]])
+
+  # Safe-net to ensure the arm variable in contrast_estimates has the same factor levels as in estimates
+  contrast_estimates <- contrast_estimates |>
+    dplyr::mutate(!!sym(arm) := factor(!!sym(arm), levels = levels(estimates[[arm]])))
+
+  # Return a list containing the estimates, contrast estimates, averages, and weights
+  # Left join estimates with contrasts
+  out <- dplyr::full_join(
+    estimates,
+    contrast_estimates,
+    by = c(arm, visit),
+    suffix = c("_est", "_contr")
+  ) |>
+    dplyr::mutate(conf_level = conf_level) |>
+    dplyr::arrange(!!sym(arm), !!sym(visit))
+
+  class(out) <- c("mmrm_df", class(out))
+
+  out
+}
+
+#' @return A 'gtsummary' table object.
+#'
+#' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true") && requireNamespace("mmrm", quietly = TRUE)
+#' tbl_mmrm(mmrm_results, fv_dt |> dplyr::mutate(AVISIT = "Baseline"), arm = "ARMCD", visit = "AVISIT", baseline_aval = "FEV1")
+#'
+#' @rdname tbl_mmrm
+#' @export
+tbl_mmrm <- function(mmrm_df, base_df, arm, visit, baseline_aval) {
+  check_not_missing(mmrm_df)
+  check_not_missing(base_df)
+  check_not_missing(arm)
+  check_not_missing(visit)
+  check_not_missing(baseline_aval)
+  cards::process_selectors(
+    mmrm_df,
+    arm = {{ arm }}, visit = {{ visit }}, baseline_aval = {{ baseline_aval }}
+  )
+  check_data_frame(mmrm_df)
+  check_data_frame(base_df)
+  check_string(arm)
+  check_string(visit)
+  check_string(baseline_aval)
+  check_class(mmrm_df, "mmrm_df")
+
+  # Converts 0.95 into "95%"
+  ci_pct_str <- sprintf("%.0f%%", mmrm_df$conf_level[1] * 100)
+
   # 3. Build Baseline Table (if baseline data exists)
   gts_baseline <- NULL
-  if (nrow(df_baseline) > 0) {
+  if (nrow(base_df) > 0) {
     # Define the Standard Error (SE) function so gtsummary can find it
     se <- function(x, na.rm = TRUE) {
       if (na.rm) x <- stats::na.omit(x)
       stats::sd(x) / sqrt(length(x))
     }
 
-    gts_baseline <- df_baseline |>
+    gts_baseline <- base_df |>
       tbl_strata(
         strata = any_of(visit), # or visit, depending on your column name
         .combine_with = "tbl_stack",
@@ -85,18 +207,18 @@ tbl_mmrm <- function(df_tidy_mmrm, df_baseline, arm, visit, baseline_aval) {
           ) |>
           modify_table_body(
             ~ .x |>
-              mutate(
-                label = case_when(
+              dplyr::mutate(
+                label = dplyr::case_when(
                   label == "N Non-missing" ~ "n",
                   label == "Mean (se)" ~ "Mean (SE)",
                   TRUE ~ label
                 )
               ) |>
               # Remove the original continuous2 header row
-              filter(row_type != "label") |>
+              dplyr::filter(row_type != "label") |>
               # THE FIX: Force the remaining stats to act like primary labels
               # so they align exactly with the MMRM table!
-              mutate(row_type = "label")
+              dplyr::mutate(row_type = "label")
           ) |>
           modify_footnote(everything() ~ NA) |>
           modify_header(all_stat_cols() ~ "{level}")
@@ -104,7 +226,7 @@ tbl_mmrm <- function(df_tidy_mmrm, df_baseline, arm, visit, baseline_aval) {
   }
 
   # 4. Build Post-Baseline MMRM Table
-  gts_mmrm <- df_tidy_mmrm |>
+  gts_mmrm <- mmrm_df |>
     tbl_strata(
       strata = visit,
       .combine_with = "tbl_stack",
@@ -130,9 +252,9 @@ tbl_mmrm <- function(df_tidy_mmrm, df_baseline, arm, visit, baseline_aval) {
               label = case_when(
                 variable == "n" ~ "n",
                 variable == "estimate_est" ~ "Adjusted Mean (SE)",
-                variable == "lower_cl_est" ~ "95% CI for Adjusted Mean",
+                variable == "lower_cl_est" ~ sprintf("%s CI for Adjusted Mean", ci_pct_str),
                 variable == "estimate_contr" ~ "Difference in Adjusted Means (SE)",
-                variable == "lower_cl_contr" ~ "95% CI for Difference in Adjusted Means",
+                variable == "lower_cl_contr" ~ sprintf("%s CI for Difference in Adjusted Means", ci_pct_str),
                 variable == "p_value" ~ "P-value",
                 TRUE ~ label
               )
@@ -158,56 +280,4 @@ tbl_mmrm <- function(df_tidy_mmrm, df_baseline, arm, visit, baseline_aval) {
     )
 
   final_table
-}
-
-
-# Define custom formatting functions internally
-.get_n <- function(data, ...) {
-  val <- if (nrow(data) == 0 || is.na(data$n[1])) "-" else as.character(data$n[1])
-  list(my_stat = val)
-}
-
-.get_adj_mean_se <- function(data, ...) {
-  val <- if (nrow(data) == 0 || is.na(data$estimate_est[1])) {
-    "-"
-  } else {
-    sprintf("%.2f (%.3f)", data$estimate_est[1], data$se_est[1])
-  }
-  list(my_stat = val)
-}
-
-.get_adj_mean_ci <- function(data, ...) {
-  val <- if (nrow(data) == 0 || is.na(data$lower_cl_est[1])) {
-    "-"
-  } else {
-    sprintf("(%.2f, %.2f)", data$lower_cl_est[1], data$upper_cl_est[1])
-  }
-  list(my_stat = val)
-}
-
-.get_diff_se <- function(data, ...) {
-  val <- if (nrow(data) == 0 || is.na(data$estimate_contr[1])) {
-    "-"
-  } else {
-    sprintf("%.2f (%.3f)", data$estimate_contr[1], data$se_contr[1])
-  }
-  list(my_stat = val)
-}
-
-.get_diff_ci <- function(data, ...) {
-  val <- if (nrow(data) == 0 || is.na(data$lower_cl_contr[1])) {
-    "-"
-  } else {
-    sprintf("(%.2f, %.2f)", data$lower_cl_contr[1], data$upper_cl_contr[1])
-  }
-  list(my_stat = val)
-}
-
-.get_pval <- function(data, ...) {
-  val <- if (nrow(data) == 0 || is.na(data$p_value[1])) {
-    "-"
-  } else {
-    sprintf("%.4f", data$p_value[1])
-  }
-  list(my_stat = val)
 }

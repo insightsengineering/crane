@@ -2,47 +2,80 @@
 % Please edit documentation in R/tbl_mmrm.R
 \name{tbl_mmrm}
 \alias{tbl_mmrm}
-\title{Regression Table for MMRM Models}
+\alias{get_mmrm_results}
+\title{Get and display MMRM Results in a Formatted Table}
 \usage{
-tbl_mmrm(x, ...)
+get_mmrm_results(fit_mmrm, arm, visit, conf_level = 0.95)
+
+tbl_mmrm(mmrm_df, base_df, arm, visit, baseline_aval)
 }
 \arguments{
-\item{x}{(\code{mmrm})\cr
-A fitted model object from the {mmrm} package.}
+\item{fit_mmrm}{(\code{mmrm} model object)\cr
+A fitted MMRM model object, typically created using the \code{mmrm} function from the \code{mmrm} package. This object
+should contain the necessary information to extract adjusted means, differences, confidence intervals, and
+p-values for the specified visits and arms.}
 
-\item{...}{Additional arguments passed to \code{\link[gtsummary:tbl_regression]{gtsummary::tbl_regression()}}.
-Common arguments include \code{exponentiate}, \code{include}, \code{exclude},
-\code{show_single_row}, \code{conf.level}, etc.}
+\item{arm}{(\code{string})\cr
+The column in \code{mmrm_df} and \code{base_df} that identifies the treatment arms.
+This will be used to divide the results in columns. First value is reference.}
+
+\item{visit}{(\code{string})\cr
+The column in \code{mmrm_df} and \code{base_df} that identifies the visits.
+This will be used to stratify the results in rows.}
+
+\item{conf_level}{(\code{numeric})\cr
+The confidence level to use when calculating confidence intervals for the adjusted means and differences.
+Default is 0.95 for 95\% confidence intervals.}
+
+\item{mmrm_df}{(\code{data.frame})\cr
+A tidy data frame containing the MMRM results. This should include
+columns for the visit, arm, adjusted means, differences, confidence intervals, and
+p-values. The data frame should be structured in a way that allows for stratification by visit and arm.
+Usually the output of \code{\link[=get_mmrm_results]{get_mmrm_results()}}.}
+
+\item{base_df}{(\code{data.frame})\cr
+A data frame containing baseline measurements. This should include columns for
+the visit, arm, and baseline values. The function will summarize this data
+to provide baseline statistics in the final table.}
+
+\item{baseline_aval}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+The column in \code{base_df} that contains the baseline values to be summarized.}
 }
 \value{
-A 'gtsummary' table object
+A \code{data.frame} containing the estimated marginal means (adjusted means)
+and contrasts (differences in adjusted means) for each visit and arm,
+along with their standard errors, confidence intervals, degrees of freedom,
+and sample sizes. This data frame is structured to facilitate the creation of a
+formatted table using \code{\link[=tbl_mmrm]{tbl_mmrm()}}.
+
+A 'gtsummary' table object.
 }
 \description{
-Creates a formatted regression table for Mixed Models for Repeated Measures
-(MMRM) using \code{\link[gtsummary:tbl_regression]{gtsummary::tbl_regression()}}. This function provides a
-convenient wrapper specifically for \code{mmrm} class objects.
-}
-\details{
-This function is a wrapper around \code{\link[gtsummary:tbl_regression]{gtsummary::tbl_regression()}} specifically
-designed for MMRM models. It relies on the tidy methods for \code{mmrm} objects
-provided by the {mmrm} package or {broom.mixed} package.
-
-The {mmrm} package must be installed to use this function.
+These functions take a fitted MMRM model object and creates a formatted table,
+following the style of the MMRM TLG template. It combines baseline summary statistics
+(if available) with the MMRM results, presenting them in a clear and organized manner.
 }
 \examples{
-\dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true") && requireNamespace("mmrm", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true") && requireNamespace("mmrm", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(mmrm)
-
+fv_dt <- mmrm::fev_data |>
+  dplyr::mutate(
+    ARMCD = sprintf(
+      "\%s\n(N = \%d)", ARMCD,
+      table(mmrm::fev_data$ARMCD)[ARMCD]
+    ),
+    ARMCD = factor(ARMCD)
+  )
+\dontshow{\}) # examplesIf}
+\dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true") && requireNamespace("mmrm", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 # Fit an MMRM model using the FEV data
-fit_mmrm <- mmrm(
-  formula = FEV1 ~ RACE + SEX + ARMCD * AVISIT + us(AVISIT | USUBJID),
-  data = mmrm::fev_data
+fit_mmrm <- mmrm::mmrm(
+  formula = FEV1 ~ RACE + SEX + ARMCD * AVISIT + us(AVISIT | USUBJID), # us -> unstructured cov structure
+  data = fv_dt
 )
-
-# Create a regression table
-tbl_mmrm(fit_mmrm)
-
-# With exponentiation (for log-transformed outcomes)
-# tbl_mmrm(fit_mmrm, exponentiate = TRUE)
+mmrm_results <- get_mmrm_results(fit_mmrm, arm = "ARMCD", visit = "AVISIT", conf_level = 0.95)
+\dontshow{\}) # examplesIf}
+\dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true") && requireNamespace("mmrm", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+tbl_mmrm(mmrm_results, fv_dt |> dplyr::mutate(AVISIT = "Baseline"), arm = "ARMCD", visit = "AVISIT", baseline_aval = "FEV1")
 \dontshow{\}) # examplesIf}
 }
