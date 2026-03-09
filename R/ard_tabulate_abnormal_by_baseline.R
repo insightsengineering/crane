@@ -94,7 +94,7 @@ ard_tabulate_abnormal_by_baseline <- function(data,
   current_gp <- unique(data[[postbaseline_name]])
 
   # 3. Loop through abnormalities (Low, High)
-  purrr::map(names(abnormal)[unlist(lapply(abnormal, function(x) {
+  map(names(abnormal)[unlist(lapply(abnormal, function(x) {
     current_gp %in% x
   }))], function(abn_name) {
     abn_val <- abnormal[[abn_name]]
