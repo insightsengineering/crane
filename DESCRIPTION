@@ -52,6 +52,9 @@ Suggests:
     testthat (>= 3.0.0),
     tidyselect,
     withr (>= 3.0.1)
+Remotes:
+    insightsengineering/cards@main,
+    insightsengineering/cardx@main
 Config/Needs/check: hms
 Config/Needs/website: rmarkdown, yaml
 Config/testthat/edition: 3
