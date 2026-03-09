@@ -54,7 +54,8 @@ Suggests:
     withr (>= 3.0.1)
 Remotes:
   insightsengineering/cards@main,
-  insightsengineering/cardx@main
+  insightsengineering/cardx@main,
+  ddsjoberg/gtsummary@main
 Config/Needs/check: hms
 Config/Needs/website: rmarkdown, yaml
 Config/testthat/edition: 3
