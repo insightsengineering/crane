@@ -46,9 +46,7 @@ ard_tabulate_abnormal_by_baseline <- function(data,
                                               by = NULL,
                                               strata = NULL) {
   postbaseline_quo <- enquo(postbaseline)
-
   postbaseline_name <- as_label(postbaseline_quo)
-
 
   cards::process_selectors(
     data,
@@ -60,13 +58,10 @@ ard_tabulate_abnormal_by_baseline <- function(data,
   )
 
 
+
   # 2. Internal Calculation Helper
-
   calc_logic <- function(df, group_label, abn_val) {
-    if (nrow(df) == 0) {
-      return(NULL)
-    }
-
+    if (nrow(df) == 0) return(NULL)
 
     cards::ard_mvsummary(
       data = df,
@@ -79,79 +74,58 @@ ard_tabulate_abnormal_by_baseline <- function(data,
             dplyr::pull(all_of(id)) |>
             dplyr::n_distinct()
 
-
           N_total <- data |>
             dplyr::pull(all_of(id)) |>
             dplyr::n_distinct()
 
-
-          as_tibble(n = n_abn, N = N_total, p = n / N)
+          dplyr::tibble(n = n_abn, N = N_total, p = n / N)
         }
       )
     ) |>
       # FORCE level and variable_level to character strings.
-
       # This fixes the 'Can't combine list and character' error.
-
       dplyr::mutate(
         variable_level = as.character(group_label),
         level = as.character(group_label)
       )
   }
 
-
-  current_gp <- unique(data[[postbaseline_name]])
-
+  current_gp = unique(data[[postbaseline_name]])
 
   # 3. Loop through abnormalities (Low, High)
-
-  map(names(abnormal)[unlist(lapply(abnormal, function(x) {
-    current_gp %in% x
-  }))], function(abn_name) {
+  purrr::map(names(abnormal)[unlist(lapply(abnormal, function(x){current_gp %in% x}))], function(abn_name) {
     abn_val <- abnormal[[abn_name]]
 
-
     # Tier: Not [Abnormal] at baseline
-
     res_not_abn <- data |>
       dplyr::filter(!(.data[[baseline]] %in% abn_val) | is.na(.data[[baseline]])) |>
       calc_logic(paste("Not", abn_name), abn_val)
 
-
     # Tier: [Abnormal] at baseline
-
     res_is_abn <- data |>
       dplyr::filter(.data[[baseline]] %in% abn_val) |>
       calc_logic(abn_name, abn_val)
 
-
     # Tier: Total
-
     res_total <- data |>
       calc_logic(paste("Total"), abn_val)
-
 
     cards::bind_ard(res_not_abn, res_is_abn, res_total)
   }) |>
     cards::bind_ard() |>
     dplyr::mutate(
       context = "abnormal_by_baseline",
-
       # stat_label = "n/N (%)"
-
       stat_label = dplyr::coalesce(.data$stat_label, .data$stat_name),
     ) |>
     # FINAL STEP: Ensure all ARD indexing columns are characters
-
     # This ensures compatibility with gtsummary's internal bind_rows calls
-
     dplyr::mutate(dplyr::across(
       dplyr::any_of(c("variable", "variable_level", "context", "stat_name", "stat_label", "level")),
       as.character
     )) |>
-    cards::as_card() -> ret # new cards/cardx require check = FALSE
-
-  class(ret$variable_level) <- "list"
-
+    cards::as_card(check=FALSE) -> ret
+  class(ret$variable_level) = "list"
   return(ret)
 }
+
