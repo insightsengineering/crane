@@ -149,7 +149,7 @@ ard_tabulate_abnormal_by_baseline <- function(data,
       dplyr::any_of(c("variable", "variable_level", "context", "stat_name", "stat_label", "level")),
       as.character
     )) |>
-    cards::as_card(check = FALSE) -> ret
+    cards::as_card() -> ret # new cards/cardx require check = FALSE
 
   class(ret$variable_level) <- "list"
 

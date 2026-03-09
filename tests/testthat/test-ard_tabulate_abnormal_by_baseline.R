@@ -27,7 +27,9 @@ test_that("ard_tabulate_abnormal_by_baseline() works with standard inputs", {
   expect_true("variable_level" %in% names(res))
 
   # Check that the tiers exist in the results
-  levels_found <- res$variable_level |> unlist() |> unique()
+  levels_found <- res$variable_level |>
+    unlist() |>
+    unique()
   # expect_contains(levels_found, c("Not Low", "Low", "Total", "Not High", "High"))
 
   # Snapshot check for the full output structure
@@ -53,10 +55,10 @@ test_that("ard_tabulate_abnormal_by_baseline() correctly calculates percentages"
   # Create a small controlled dataset to verify math
   df_small <- tibble::tribble(
     ~USUBJID, ~TRTA, ~BNRIND, ~LBNRIND,
-    "1", "A", "NORMAL", "LOW",    # Not Low at baseline -> 1 Abnormal
+    "1", "A", "NORMAL", "LOW", # Not Low at baseline -> 1 Abnormal
     "2", "A", "NORMAL", "NORMAL", # Not Low at baseline -> 0 Abnormal
-    "3", "A", "LOW",    "LOW",    # Low at baseline -> 1 Abnormal
-    "4", "A", "LOW",    "NORMAL"  # Low at baseline -> 0 Abnormal
+    "3", "A", "LOW", "LOW", # Low at baseline -> 1 Abnormal
+    "4", "A", "LOW", "NORMAL" # Low at baseline -> 0 Abnormal
   )
 
   res <- ard_tabulate_abnormal_by_baseline(
