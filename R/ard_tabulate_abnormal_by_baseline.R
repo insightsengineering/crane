@@ -85,7 +85,7 @@ ard_tabulate_abnormal_by_baseline <- function(data,
             dplyr::n_distinct()
 
 
-          dplyr::tibble(n = n_abn, N = N_total, p = n / N)
+          as_tibble(n = n_abn, N = N_total, p = n / N)
         }
       )
     ) |>
@@ -105,7 +105,7 @@ ard_tabulate_abnormal_by_baseline <- function(data,
 
   # 3. Loop through abnormalities (Low, High)
 
-  purrr::map(names(abnormal)[unlist(lapply(abnormal, function(x) {
+  map(names(abnormal)[unlist(lapply(abnormal, function(x) {
     current_gp %in% x
   }))], function(abn_name) {
     abn_val <- abnormal[[abn_name]]
