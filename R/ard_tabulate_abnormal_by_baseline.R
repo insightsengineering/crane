@@ -58,10 +58,11 @@ ard_tabulate_abnormal_by_baseline <- function(data,
   )
 
 
-
   # 2. Internal Calculation Helper
   calc_logic <- function(df, group_label, abn_val) {
-    if (nrow(df) == 0) return(NULL)
+    if (nrow(df) == 0) {
+      return(NULL)
+    }
 
     cards::ard_mvsummary(
       data = df,
@@ -90,10 +91,12 @@ ard_tabulate_abnormal_by_baseline <- function(data,
       )
   }
 
-  current_gp = unique(data[[postbaseline_name]])
+  current_gp <- unique(data[[postbaseline_name]])
 
   # 3. Loop through abnormalities (Low, High)
-  purrr::map(names(abnormal)[unlist(lapply(abnormal, function(x){current_gp %in% x}))], function(abn_name) {
+  purrr::map(names(abnormal)[unlist(lapply(abnormal, function(x) {
+    current_gp %in% x
+  }))], function(abn_name) {
     abn_val <- abnormal[[abn_name]]
 
     # Tier: Not [Abnormal] at baseline
@@ -124,8 +127,7 @@ ard_tabulate_abnormal_by_baseline <- function(data,
       dplyr::any_of(c("variable", "variable_level", "context", "stat_name", "stat_label", "level")),
       as.character
     )) |>
-    cards::as_card(check=FALSE) -> ret
-  class(ret$variable_level) = "list"
+    cards::as_card(check = FALSE) -> ret
+  class(ret$variable_level) <- "list"
   return(ret)
 }
-
