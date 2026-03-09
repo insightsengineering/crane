@@ -79,7 +79,7 @@ ard_tabulate_abnormal_by_baseline <- function(data,
             dplyr::pull(all_of(id)) |>
             dplyr::n_distinct()
 
-          dplyr::as_tibble(n = n_abn, N = N_total, p = n / N)
+          dplyr::tibble(n = n_abn, N = N_total, p = n / N)
         }
       )
     ) |>
