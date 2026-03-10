@@ -77,15 +77,6 @@ ard_tabulate_abnormal_by_baseline <- function(data,
     )
   }
 
-  # print abnormality levels ---------------------------------------------------
-  if (!quiet) {
-    for (i in seq_along(abnormal)) {
-      vec <- cli::cli_vec(abnormal[[i]], style = list("vec-sep" = ", ", "vec-sep2" = ", ", "vec-last" = ", "))
-      cli::cli_inform("Abnormality {.val {names(abnormal)[i]}} created {cli::qty(abnormal[[i]])} {?from/by merging} level{?s}: {.val {vec}}")
-    }
-  }
-
-
   if (!is.list(abnormal) || is.null(names(abnormal)) || any(names(abnormal) == "")) {
     cli::cli_abort(
       "{.arg abnormal} must be a named list (e.g., {.code list(Low = 'LOW')}).",
