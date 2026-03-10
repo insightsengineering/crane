@@ -61,6 +61,10 @@ ard_tabulate_abnormal_by_baseline <- function(data,
     strata = {{ strata }}
   )
 
+  if (nrow(data) == 0) {
+    return(NULL)
+  }
+
   check_not_missing(abnormal)
   check_class(abnormal, "list")
 

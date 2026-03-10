@@ -43,26 +43,25 @@ test_that("ard_tabulate_abnormal_by_baseline() works with standard inputs", {
   levels_found <- res$variable_level |>
     unlist() |>
     unique()
-  # expect_contains(levels_found, c("Not Low", "Low", "Total", "Not High", "High"))
 
   # Snapshot check for the full output structure
   expect_snapshot(res |> as.data.frame() |> select(variable, variable_level, stat_name, stat_label, stat))
 })
 
-# test_that("ard_tabulate_abnormal_by_baseline() handles empty data gracefully", {
-#   # Test with a subset that has no rows
-#   empty_data <- adlb_test |> filter(USUBJID == "NON_EXISTENT")
-#
-#   expect_error(
-#     empty_data |>
-#       ard_tabulate_abnormal_by_baseline(
-#         postbaseline = LBNRIND,
-#         baseline = BNRIND,
-#         abnormal = list(Low = "LOW")
-#       ),
-#     NA # We hope it doesn't crash, but returns an empty/minimal ARD
-#   )
-# })
+test_that("ard_tabulate_abnormal_by_baseline() handles empty data gracefully", {
+  # Test with a subset that has no rows
+  empty_data <- adlb_test |> filter(USUBJID == "NON_EXISTENT")
+
+  expect_error(
+    empty_data |>
+      ard_tabulate_abnormal_by_baseline(
+        postbaseline = LBNRIND,
+        baseline = BNRIND,
+        abnormal = list(Low = "LOW")
+      ),
+    NA # We hope it doesn't crash, but returns an empty/minimal ARD
+  )
+})
 
 test_that("ard_tabulate_abnormal_by_baseline() correctly calculates percentages", {
   # Create a small controlled dataset to verify math
@@ -83,13 +82,12 @@ test_that("ard_tabulate_abnormal_by_baseline() correctly calculates percentages"
   )
 
   # Check "Not Low" tier: 2 subjects (1,2), 1 is Low post-baseline -> n=1, N=2, p=0.5
-  # not_low_stats <- res |>
-  #   filter(variable_level == "Not Low", stat_name == "abnormal") |>
-  #   pull(stat) |>
-  #   _[[1]]
 
-  # expect_equal(not_low_stats$n, 1)
-  # expect_equal(not_low_stats$N, 2)
+  not_low_stats <- res |>
+    filter(variable_level == "Not Low")
+
+  expect_equal(not_low_stats$stat[[which(not_low_stats$stat_name == "n")]], 1)
+  expect_equal(not_low_stats$stat[[which(not_low_stats$stat_name == "N")]], 2)
 })
 
 test_that("ard_tabulate_abnormal_by_baseline() handles grouping variables (by)", {
