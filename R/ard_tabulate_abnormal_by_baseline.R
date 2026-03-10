@@ -48,6 +48,10 @@ ard_tabulate_abnormal_by_baseline <- function(data,
   postbaseline_quo <- enquo(postbaseline)
   postbaseline_name <- as_label(postbaseline_quo)
 
+  set_cli_abort_call()
+
+  # check inputs ---------------------------------------------------------------
+  check_data_frame(data)
   cards::process_selectors(
     data,
     postbaseline = {{ postbaseline }},
@@ -56,6 +60,31 @@ ard_tabulate_abnormal_by_baseline <- function(data,
     by = {{ by }},
     strata = {{ strata }}
   )
+
+  check_not_missing(abnormal)
+  check_class(abnormal, "list")
+
+  if (!is_named(abnormal)) {
+    cli::cli_abort(
+      "{.arg abnormal} must be a named list, where each name corresponds to a different abnormality/direction.",
+      call = get_cli_abort_call()
+    )
+  }
+  if (!all(is.character(unlist(abnormal)))) {
+    cli::cli_abort(
+      "Each abnormal level of {.var {postbaseline}} specified via {.arg abnormal} must be a {.cls string}.",
+      call = get_cli_abort_call()
+    )
+  }
+
+  # print abnormality levels ---------------------------------------------------
+  if (!quiet) {
+    for (i in seq_along(abnormal)) {
+      vec <- cli::cli_vec(abnormal[[i]], style = list("vec-sep" = ", ", "vec-sep2" = ", ", "vec-last" = ", "))
+      cli::cli_inform("Abnormality {.val {names(abnormal)[i]}} created {cli::qty(abnormal[[i]])} {?from/by merging} level{?s}: {.val {vec}}")
+    }
+  }
+
 
   if (!is.list(abnormal) || is.null(names(abnormal)) || any(names(abnormal) == "")) {
     cli::cli_abort(
