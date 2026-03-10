@@ -1,3 +1,5 @@
+skip_on_cran()
+
 test_that("tbl_roche_subgroups(time_to_event=NULL) works", {
   expect_error(
     tbl <- trial |>
