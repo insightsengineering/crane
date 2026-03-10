@@ -123,7 +123,7 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun, time_to_even
             strata = dplyr::all_of(x),
             .tbl_fun =
               ~ .x |>
-                tbl_strata(
+              gtsummary::tbl_strata(
                   strata = dplyr::all_of(by),
                   .tbl_fun = ~ .make_mid_tbl(dt = .x, vars = c("rsp" = rsp, "time_to_event" = time_to_event))
                 ),

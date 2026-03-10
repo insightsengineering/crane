@@ -75,11 +75,11 @@ get_mmrm_results <- function(fit_mmrm, arm, visit, conf_level = 0.95) {
   #    complete cases only.
   # 1. Dynamically extract the raw data from the model call's environment
   # This prevents the user from having to pass 'data' manually!
-  raw_data <- eval(fit_mmrm$call$data, envir = environment(formula(fit_mmrm)))
+  raw_data <- eval(fit_mmrm$call$data, envir = environment(stats::formula(fit_mmrm)))
 
   # 2. Extract complete cases to perfectly match the model's dataset
   # This guarantees emmeans calculates LS Means on the exact correct covariate averages
-  model_vars <- all.vars(formula(fit_mmrm))
+  model_vars <- all.vars(stats::formula(fit_mmrm))
   model_data <- stats::na.omit(raw_data[, model_vars, drop = FALSE])
 
   # Extract Statistics using emmeans
@@ -205,7 +205,7 @@ tbl_mmrm <- function(mmrm_df, base_df, arm, visit, baseline_aval, digits = c(2, 
   gts_baseline <- NULL
   if (nrow(base_df) > 0) {
     gts_baseline <- base_df |>
-      tbl_strata(
+      gtsummary::tbl_strata(
         strata = any_of(visit), # or visit, depending on your column name
         .combine_with = "tbl_stack",
         .header = "{strata}",
@@ -236,13 +236,13 @@ tbl_mmrm <- function(mmrm_df, base_df, arm, visit, baseline_aval, digits = c(2, 
               dplyr::mutate(row_type = "label")
           ) |>
           modify_footnote(everything() ~ NA) |>
-          modify_header(all_stat_cols() ~ "{level}")
+          gtsummary::modify_header(all_stat_cols() ~ "{level}")
       )
   }
 
   # 4. Build Post-Baseline MMRM Table
   gts_mmrm <- mmrm_df |>
-    tbl_strata(
+    gtsummary::tbl_strata(
       strata = visit,
       .combine_with = "tbl_stack",
       .header = "{strata}",
@@ -279,20 +279,20 @@ tbl_mmrm <- function(mmrm_df, base_df, arm, visit, baseline_aval, digits = c(2, 
             )
         ) |>
         modify_footnote(everything() ~ NA) |>
-        modify_header(all_stat_cols() ~ "{level}") |>
-        modify_header(label = "")
+        gtsummary::modify_header(all_stat_cols() ~ "{level}") |>
+        gtsummary::modify_header(label = "")
     )
 
   # 5. Stack and Finalize Headers
   # If baseline exists, stack it with MMRM; otherwise just format MMRM
   if (!is.null(gts_baseline)) {
-    final_table <- tbl_stack(list(gts_baseline, gts_mmrm))
+    final_table <- gtsummary::tbl_stack(list(gts_baseline, gts_mmrm))
   } else {
     final_table <- gts_mmrm
   }
 
   final_table <- final_table |>
-    modify_header(
+    gtsummary::modify_header(
       groupname_col = "Visit",
       label = "Statistics"
     )
@@ -311,12 +311,11 @@ se <- function(x, na.rm = TRUE) { # nolint
   ref_arm_level <- levels(estimates[[arm]])[1L]
 
   estimates |>
-    dplyr::select(dplyr::all_of(c(visit, arm)), estimate) |>
-    tidyr::pivot_wider(names_from = dplyr::all_of(arm), values_from = estimate) |>
+    dplyr::select(dplyr::all_of(c(visit, arm)), "estimate") |>
+    tidyr::pivot_wider(names_from = dplyr::all_of(arm), values_from = "estimate") |>
     dplyr::mutate(
       dplyr::across(
         -dplyr::all_of(c(visit, ref_arm_level)),
-        # Tidy-eval safe reference using .data pronoun
         ~ (.data[[ref_arm_level]] - .x) / .data[[ref_arm_level]],
         .names = "relative_reduc_{.col}"
       )
