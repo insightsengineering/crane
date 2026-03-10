@@ -65,11 +65,27 @@ get_mmrm_results <- function(fit_mmrm, arm, visit, conf_level = 0.95) {
   check_not_missing(arm)
   check_not_missing(visit)
   check_not_missing(conf_level)
+  check_string(arm)
+  check_string(visit)
+  check_class(fit_mmrm, "mmrm_fit")
+
+  # NEW: Explicitly extract complete cases to perfectly match the model's dataset.
+  # This guarantees emmeans calculates LS Means on the exact correct covariate averages.
+  # -> To match standard clinical reporting (and SAS PROC MIXED), you must calculate LS Means on the
+  #    complete cases only.
+  # 1. Dynamically extract the raw data from the model call's environment
+  # This prevents the user from having to pass 'data' manually!
+  raw_data <- eval(fit_mmrm$call$data, envir = environment(formula(fit_mmrm)))
+
+  # 2. Extract complete cases to perfectly match the model's dataset
+  # This guarantees emmeans calculates LS Means on the exact correct covariate averages
+  model_vars <- all.vars(formula(fit_mmrm))
+  model_data <- stats::na.omit(raw_data[, model_vars, drop = FALSE])
 
   # Extract Statistics using emmeans
   emmeans_object <- emmeans::emmeans(
     fit_mmrm,
-    data = model.frame(fit_mmrm),
+    data = model_data,            # NEW: Pass our bulletproof complete cases
     specs = c(arm, visit),
     weights = "equal"
   )
@@ -165,7 +181,11 @@ tbl_mmrm <- function(mmrm_df, base_df, arm, visit, baseline_aval, digits = c(2, 
   check_not_missing(baseline_aval)
   cards::process_selectors(
     mmrm_df,
-    arm = {{ arm }}, visit = {{ visit }}, baseline_aval = {{ baseline_aval }}
+    arm = {{ arm }}, visit = {{ visit }}
+  )
+  cards::process_selectors(
+    base_df,
+    arm = arm, visit = visit, baseline_aval = {{ baseline_aval }}
   )
   check_data_frame(mmrm_df)
   check_data_frame(base_df)
@@ -207,7 +227,7 @@ tbl_mmrm <- function(mmrm_df, base_df, arm, visit, baseline_aval, digits = c(2, 
               ) |>
               # Remove the original continuous2 header row
               dplyr::filter(row_type != "label") |>
-              # THE FIX: Force the remaining stats to act like primary labels
+              # Force the remaining stats to act like primary labels
               # so they align exactly with the MMRM table!
               dplyr::mutate(row_type = "label")
           ) |>
@@ -226,22 +246,25 @@ tbl_mmrm <- function(mmrm_df, base_df, arm, visit, baseline_aval, digits = c(2, 
         tbl_custom_summary(
           by = arm,
           include = c(n, estimate_est, lower_cl_est, estimate_contr, lower_cl_contr, p_value),
-          # Pass the digits parameter into the custom formatting helpers
+          # MANDATORY: This stops the variable labels from repeating across two lines!
+          type = list(everything() ~ "continuous"),
+          # We wrap the outside functions so they can accept `digits` dynamically
           stat_fns = list(
-            n ~ .get_n,
-            estimate_est ~ function(data, ...) .get_adj_mean_se(data, digits),
-            lower_cl_est ~ function(data, ...) .get_adj_mean_ci(data, digits),
+            n              ~ function(data, ...) .get_n(data),
+            estimate_est   ~ function(data, ...) .get_adj_mean_se(data, digits),
+            lower_cl_est   ~ function(data, ...) .get_adj_mean_ci(data, digits),
             estimate_contr ~ function(data, ...) .get_diff_se(data, digits),
             lower_cl_contr ~ function(data, ...) .get_diff_ci(data, digits),
-            p_value ~ function(data, ...) .get_pval(data, digits)
+            p_value        ~ function(data, ...) .get_pval(data, digits)
           ),
+
           statistic = ~"{my_stat}",
           missing = "no"
         ) |>
         modify_table_body(
           ~ .x |>
-            mutate(
-              label = case_when(
+            dplyr::mutate(
+              label = dplyr::case_when(
                 variable == "n" ~ "n",
                 variable == "estimate_est" ~ "Adjusted Mean (SE)",
                 variable == "lower_cl_est" ~ sprintf("%s CI for Adjusted Mean", ci_pct_str),
@@ -336,57 +359,63 @@ se <- function(x, na.rm = TRUE) {
   list(coefs = overall_list, grid = grid)
 }
 
+# --- Custom formatting functions internally --------------------------------
 .get_n <- function(data, ...) {
-  val <- if (nrow(data) == 0 || is.na(data$n[1])) "" else as.character(data$n[1])
-  list(my_stat = val)
-}
-
-.get_adj_mean_se <- function(data, digits = c(2, 3, 4), ...) {
-  val <- if (nrow(data) == 0 || is.na(data$estimate_est[1])) {
+  val <- if (nrow(data) == 0 || isTRUE(is.na(data$n[1]))) {
     ""
   } else {
-    fmt <- paste0("%.", digits[1], "f (%.", digits[2], "f)")
-    sprintf(fmt, data$estimate_est[1], data$se_est[1])
+    as.character(data$n[1])
   }
   list(my_stat = val)
 }
 
-.get_adj_mean_ci <- function(data, digits = c(2, 3, 4), ...) {
-  val <- if (nrow(data) == 0 || is.na(data$lower_cl_est[1])) {
+.get_adj_mean_se <- function(data, digits, ...) {
+  val <- if (nrow(data) == 0 || isTRUE(is.na(data$estimate_est[1]))) {
     ""
   } else {
-    fmt <- paste0("(%.", digits[1], "f, %.", digits[1], "f)")
-    sprintf(fmt, data$lower_cl_est[1], data$upper_cl_est[1])
+    sprintf(paste0("%.", digits[1], "f (%.", digits[2], "f)"), data$estimate_est[1], data$se_est[1])
   }
   list(my_stat = val)
 }
 
-.get_diff_se <- function(data, digits = c(2, 3, 4), ...) {
-  val <- if (nrow(data) == 0 || is.na(data$estimate_contr[1])) {
+.get_adj_mean_ci <- function(data, digits, ...) {
+  val <- if (nrow(data) == 0 || isTRUE(is.na(data$lower_cl_est[1]))) {
     ""
   } else {
-    fmt <- paste0("%.", digits[1], "f (%.", digits[2], "f)")
-    sprintf(fmt, data$estimate_contr[1], data$se_contr[1])
+    sprintf(paste0("(%.", digits[1], "f, %.", digits[1], "f)"), data$lower_cl_est[1], data$upper_cl_est[1])
   }
   list(my_stat = val)
 }
 
-.get_diff_ci <- function(data, digits = c(2, 3, 4), ...) {
-  val <- if (nrow(data) == 0 || is.na(data$lower_cl_contr[1])) {
+.get_diff_se <- function(data, digits, ...) {
+  val <- if (nrow(data) == 0 || isTRUE(is.na(data$estimate_contr[1]))) {
     ""
   } else {
-    fmt <- paste0("(%.", digits[1], "f, %.", digits[1], "f)")
-    sprintf(fmt, data$lower_cl_contr[1], data$upper_cl_contr[1])
+    sprintf(paste0("%.", digits[1], "f (%.", digits[2], "f)"), data$estimate_contr[1], data$se_contr[1])
   }
   list(my_stat = val)
 }
 
-.get_pval <- function(data, digits = c(2, 3, 4), ...) {
-  val <- if (nrow(data) == 0 || is.na(data$p_value[1])) {
+.get_diff_ci <- function(data, digits, ...) {
+  val <- if (nrow(data) == 0 || isTRUE(is.na(data$lower_cl_contr[1]))) {
     ""
   } else {
-    fmt <- paste0("%.", digits[3], "f")
-    sprintf(fmt, data$p_value[1])
+    sprintf(paste0("(%.", digits[1], "f, %.", digits[1], "f)"), data$lower_cl_contr[1], data$upper_cl_contr[1])
+  }
+  list(my_stat = val)
+}
+
+.get_pval <- function(data, digits, ...) {
+  val <- if (nrow(data) == 0 || isTRUE(is.na(data$p_value[1]))) {
+    ""
+  } else {
+    pval <- data$p_value[1]
+    cutoff <- 10^(-digits[3])
+    if (isTRUE(pval < cutoff)) {
+      paste0("<", format(cutoff, scientific = FALSE, trim = TRUE))
+    } else {
+      sprintf(paste0("%.", digits[3], "f"), pval)
+    }
   }
   list(my_stat = val)
 }
