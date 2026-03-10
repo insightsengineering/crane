@@ -37,7 +37,7 @@
 #'   baseline = BNRIND,
 #'   abnormal = list(Low = "LOW", High = "HIGH"),
 #'   by = TRTA
-#' )
+#' ) %>% tbl_ard_summary(by = TRTA)
 ard_tabulate_abnormal_by_baseline <- function(data,
                                               postbaseline,
                                               baseline,
@@ -57,6 +57,40 @@ ard_tabulate_abnormal_by_baseline <- function(data,
     strata = {{ strata }}
   )
 
+  if (!is.list(abnormal) || is.null(names(abnormal)) || any(names(abnormal) == "")) {
+    cli::cli_abort(
+      "{.arg abnormal} must be a named list (e.g., {.code list(Low = 'LOW')}).",
+      call = get_cli_abort_call()
+    )
+  }
+
+  for (col in c(postbaseline, baseline)) {
+    if (is.numeric(data[[col]])) {
+      cli::cli_abort(
+        "Column {.var {col}} cannot be numeric. It must be a character or factor indicator.",
+        call = get_cli_abort_call()
+      )
+    }
+  }
+
+  # 5. Check if 'abnormal' levels exist in the data (Warning only)
+  all_data_levels <- unique(c(as.character(data[[postbaseline]]), as.character(data[[baseline]])))
+  all_abn_levels <- unlist(abnormal)
+  missing_levels <- setdiff(all_abn_levels, all_data_levels)
+
+  if (length(missing_levels) > 0) {
+    cli::cli_warn(
+      "The following levels in {.arg abnormal} were not found in the data: {.val {missing_levels}}"
+    )
+  }
+
+  # 6. Check for Overlap in Logic
+  # It's confusing if the same value is defined as both "Low" and "High"
+  if (length(all_abn_levels) != length(unique(all_abn_levels))) {
+    cli::cli_inform(
+      "Note: Some levels appear in multiple {.arg abnormal} categories."
+    )
+  }
 
   # 2. Internal Calculation Helper
   calc_logic <- function(df, group_label, abn_val) {

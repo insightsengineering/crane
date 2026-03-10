@@ -10,6 +10,19 @@ adlb_test$BNRIND <- ifelse(
   "NORMAL"
 )
 
+test_that("ard_tabulate_abnormal_by_baseline() catches bad inputs", {
+  # Test non-named list
+  expect_error(
+    adlb |> ard_tabulate_abnormal_by_baseline(LBNRIND, BNRIND, abnormal = list("LOW"))
+  )
+
+  # Test numeric column error
+  adlb_bad <- adlb |> mutate(LBNRIND = 1:n())
+  expect_error(
+    adlb_bad |> ard_tabulate_abnormal_by_baseline(LBNRIND, BNRIND, abnormal = list(Low = "LOW"))
+  )
+})
+
 test_that("ard_tabulate_abnormal_by_baseline() works with standard inputs", {
   # We expect it to run and produce an ARD for each abnormality (Low, High)
   # with three rows per abnormality: Not [Abn], [Abn], Total

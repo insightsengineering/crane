@@ -60,5 +60,5 @@ ard_tabulate_abnormal_by_baseline(
   baseline = BNRIND,
   abnormal = list(Low = "LOW", High = "HIGH"),
   by = TRTA
-)
+) \%>\% tbl_ard_summary(by = TRTA)
 }
