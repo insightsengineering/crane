@@ -85,7 +85,7 @@ get_mmrm_results <- function(fit_mmrm, arm, visit, conf_level = 0.95) {
   # Extract Statistics using emmeans
   emmeans_object <- emmeans::emmeans(
     fit_mmrm,
-    data = model_data,            # NEW: Pass our bulletproof complete cases
+    data = model_data, # NEW: Pass our bulletproof complete cases
     specs = c(arm, visit),
     weights = "equal"
   )
@@ -169,7 +169,11 @@ get_mmrm_results <- function(fit_mmrm, arm, visit, conf_level = 0.95) {
 #' @return `tbl_mmrm` returns a 'gtsummary' table object.
 #'
 #' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true") && requireNamespace("mmrm", quietly = TRUE)
-#' tbl_mmrm(mmrm_results, fv_dt |> dplyr::mutate(AVISIT = "Baseline"), arm = "ARMCD", visit = "AVISIT", baseline_aval = "FEV1")
+#' tbl_mmrm(
+#'   mmrm_results,
+#'   fv_dt |> dplyr::mutate(AVISIT = "Baseline"),
+#'   arm = "ARMCD", visit = "AVISIT", baseline_aval = "FEV1"
+#' )
 #'
 #' @rdname tbl_mmrm
 #' @export
@@ -250,14 +254,13 @@ tbl_mmrm <- function(mmrm_df, base_df, arm, visit, baseline_aval, digits = c(2, 
           type = list(everything() ~ "continuous"),
           # We wrap the outside functions so they can accept `digits` dynamically
           stat_fns = list(
-            n              ~ function(data, ...) .get_n(data),
-            estimate_est   ~ function(data, ...) .get_adj_mean_se(data, digits),
-            lower_cl_est   ~ function(data, ...) .get_adj_mean_ci(data, digits),
+            n ~ function(data, ...) .get_n(data),
+            estimate_est ~ function(data, ...) .get_adj_mean_se(data, digits),
+            lower_cl_est ~ function(data, ...) .get_adj_mean_ci(data, digits),
             estimate_contr ~ function(data, ...) .get_diff_se(data, digits),
             lower_cl_contr ~ function(data, ...) .get_diff_ci(data, digits),
-            p_value        ~ function(data, ...) .get_pval(data, digits)
+            p_value ~ function(data, ...) .get_pval(data, digits)
           ),
-
           statistic = ~"{my_stat}",
           missing = "no"
         ) |>
@@ -299,7 +302,7 @@ tbl_mmrm <- function(mmrm_df, base_df, arm, visit, baseline_aval, digits = c(2, 
 
 # --- Internal Helper Functions ---
 
-se <- function(x, na.rm = TRUE) {
+se <- function(x, na.rm = TRUE) { # nolint
   if (na.rm) x <- stats::na.omit(x)
   stats::sd(x) / sqrt(length(x))
 }

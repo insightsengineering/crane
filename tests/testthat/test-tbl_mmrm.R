@@ -91,8 +91,10 @@ test_that("get_mmrm_results outputs expected mmrm_df structure", {
   expect_s3_class(res, "data.frame")
 
   # Check expected columns exist (verifying the join and suffix logic)
-  expected_cols <- c("ARMCD", "AVISIT", "estimate_est", "se_est", "lower_cl_est",
-                     "estimate_contr", "p_value", "relative_reduc", "conf_level")
+  expected_cols <- c(
+    "ARMCD", "AVISIT", "estimate_est", "se_est", "lower_cl_est",
+    "estimate_contr", "p_value", "relative_reduc", "conf_level"
+  )
   expect_true(all(expected_cols %in% names(res)))
 
   # Check conf_level was passed through
@@ -126,7 +128,7 @@ test_that("tbl_mmrm generates stacked table successfully", {
 
   # Must contain stacked tables
   expect_s3_class(tbl, "tbl_stack")
-  expect_equal(length(tbl$tbls), 2) # Baseline + MMRM
+  expect_equal(length(tbl$tbls), 2) # this is Baseline + MMRM
 
   # Check that 95% was injected into the label correctly
   table_labels <- tbl$table_body$label

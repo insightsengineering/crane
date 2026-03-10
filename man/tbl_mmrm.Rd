@@ -80,6 +80,10 @@ fit_mmrm <- mmrm::mmrm(
 mmrm_results <- get_mmrm_results(fit_mmrm, arm = "ARMCD", visit = "AVISIT", conf_level = 0.95)
 \dontshow{\}) # examplesIf}
 \dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true") && requireNamespace("mmrm", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-tbl_mmrm(mmrm_results, fv_dt |> dplyr::mutate(AVISIT = "Baseline"), arm = "ARMCD", visit = "AVISIT", baseline_aval = "FEV1")
+tbl_mmrm(
+  mmrm_results,
+  fv_dt |> dplyr::mutate(AVISIT = "Baseline"),
+  arm = "ARMCD", visit = "AVISIT", baseline_aval = "FEV1"
+)
 \dontshow{\}) # examplesIf}
 }
