@@ -1,7 +1,7 @@
 #' Get and display MMRM Results in a Formatted Table
 #'
 #' These functions take a fitted MMRM model object and creates a formatted table,
-#' following the style of the MMRM TLG template. It combines baseline summary statistics
+#' following the style of the MMRM template. It combines baseline summary statistics
 #' (if available) with the MMRM results, presenting them in a clear and organized manner.
 #'
 #' @param fit_mmrm (`mmrm` model object)\cr
