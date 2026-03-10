@@ -146,14 +146,18 @@ get_mmrm_results <- function(fit_mmrm, arm, visit, conf_level = 0.95) {
   out
 }
 
-#' @return A 'gtsummary' table object.
+#' @param digits (`numeric`)\cr
+#'   A numeric vector of length 3 specifying the number of decimal places for: 1) Estimates/CIs, 2) Standard
+#'    Errors, and 3) P-values. Default is `c(2, 3, 4)`.
+#'
+#' @return `tbl_mmrm` returns a 'gtsummary' table object.
 #'
 #' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true") && requireNamespace("mmrm", quietly = TRUE)
 #' tbl_mmrm(mmrm_results, fv_dt |> dplyr::mutate(AVISIT = "Baseline"), arm = "ARMCD", visit = "AVISIT", baseline_aval = "FEV1")
 #'
 #' @rdname tbl_mmrm
 #' @export
-tbl_mmrm <- function(mmrm_df, base_df, arm, visit, baseline_aval) {
+tbl_mmrm <- function(mmrm_df, base_df, arm, visit, baseline_aval, digits = c(2, 3, 4)) {
   check_not_missing(mmrm_df)
   check_not_missing(base_df)
   check_not_missing(arm)
@@ -189,8 +193,8 @@ tbl_mmrm <- function(mmrm_df, base_df, arm, visit, baseline_aval) {
             type = list(all_of(baseline_aval) ~ "continuous2"),
             # Specify the exact stats you want
             statistic = list(all_of(baseline_aval) ~ c("{N_nonmiss}", "{mean} ({se})")),
-            # list(0, c(2, 2)) means: 0 decimals for row 1 (N), and 2 decimals for row 2 (mean, se)
-            digits = list(all_of(baseline_aval) ~ c(0, 2, 3))
+            # Map digits parameter directly: 0 for N, digits[1] for Mean, digits[2] for SE
+            digits = list(all_of(baseline_aval) ~ c(0, digits[1], digits[2]))
           ) |>
           modify_table_body(
             ~ .x |>
@@ -222,13 +226,14 @@ tbl_mmrm <- function(mmrm_df, base_df, arm, visit, baseline_aval) {
         tbl_custom_summary(
           by = arm,
           include = c(n, estimate_est, lower_cl_est, estimate_contr, lower_cl_contr, p_value),
+          # Pass the digits parameter into the custom formatting helpers
           stat_fns = list(
             n ~ .get_n,
-            estimate_est ~ .get_adj_mean_se,
-            lower_cl_est ~ .get_adj_mean_ci,
-            estimate_contr ~ .get_diff_se,
-            lower_cl_contr ~ .get_diff_ci,
-            p_value ~ .get_pval
+            estimate_est ~ function(data, ...) .get_adj_mean_se(data, digits),
+            lower_cl_est ~ function(data, ...) .get_adj_mean_ci(data, digits),
+            estimate_contr ~ function(data, ...) .get_diff_se(data, digits),
+            lower_cl_contr ~ function(data, ...) .get_diff_ci(data, digits),
+            p_value ~ function(data, ...) .get_pval(data, digits)
           ),
           statistic = ~"{my_stat}",
           missing = "no"
@@ -269,8 +274,119 @@ tbl_mmrm <- function(mmrm_df, base_df, arm, visit, baseline_aval) {
   final_table
 }
 
-# Define the Standard Error (SE) function so gtsummary can find it
+# --- Internal Helper Functions ---
+
 se <- function(x, na.rm = TRUE) {
   if (na.rm) x <- stats::na.omit(x)
   stats::sd(x) / sqrt(length(x))
+}
+
+.get_relative_reduc_df <- function(estimates, arm, visit) {
+  ref_arm_level <- levels(estimates[[arm]])[1L]
+
+  estimates |>
+    dplyr::select(dplyr::all_of(c(visit, arm)), estimate) |>
+    tidyr::pivot_wider(names_from = dplyr::all_of(arm), values_from = estimate) |>
+    dplyr::mutate(
+      dplyr::across(
+        -dplyr::all_of(c(visit, ref_arm_level)),
+        # Tidy-eval safe reference using .data pronoun
+        ~ (.data[[ref_arm_level]] - .x) / .data[[ref_arm_level]],
+        .names = "relative_reduc_{.col}"
+      )
+    ) |>
+    tidyr::pivot_longer(
+      cols = dplyr::starts_with("relative_reduc_"),
+      names_to = arm,
+      names_prefix = "relative_reduc_",
+      values_to = "relative_reduc"
+    )
+}
+
+.get_single_visit_contrast_specs <- function(emmeans_res, arm, visit) {
+  emmeans_res$grid$index <- seq_len(nrow(emmeans_res$grid))
+  grid_by_visit <- split(emmeans_res$grid, emmeans_res$grid[[visit]])
+  arm_levels <- emmeans_res$object@levels[[arm]]
+  ref_arm_level <- arm_levels[1L]
+  zeros_coefs <- numeric(nrow(emmeans_res$grid))
+  overall_list <- list()
+  arm_vec <- visit_vec <- c()
+
+  for (j in seq_along(grid_by_visit)) {
+    this_grid <- grid_by_visit[[j]]
+    ref_index <- which(this_grid[[arm]] == ref_arm_level)
+    this_visit <- names(grid_by_visit)[j]
+    this_ref_coefs <- zeros_coefs
+    this_ref_coefs[this_grid$index[ref_index]] <- -1
+    this_list <- list()
+    for (i in seq_len(nrow(this_grid))[-ref_index]) {
+      this_coefs <- this_ref_coefs
+      this_coefs[this_grid$index[i]] <- 1
+      this_arm <- as.character(this_grid[[arm]][i])
+      arm_vec <- c(arm_vec, this_arm)
+      visit_vec <- c(visit_vec, this_visit)
+      this_label <- paste(this_arm, this_visit, sep = ".")
+      this_list[[this_label]] <- this_coefs
+    }
+    overall_list <- c(overall_list, this_list)
+  }
+
+  grid <- data.frame(arm = arm_vec, visit = visit_vec)
+  names(grid) <- c(arm, visit)
+  list(coefs = overall_list, grid = grid)
+}
+
+.get_n <- function(data, ...) {
+  val <- if (nrow(data) == 0 || is.na(data$n[1])) "" else as.character(data$n[1])
+  list(my_stat = val)
+}
+
+.get_adj_mean_se <- function(data, digits = c(2, 3, 4), ...) {
+  val <- if (nrow(data) == 0 || is.na(data$estimate_est[1])) {
+    ""
+  } else {
+    fmt <- paste0("%.", digits[1], "f (%.", digits[2], "f)")
+    sprintf(fmt, data$estimate_est[1], data$se_est[1])
+  }
+  list(my_stat = val)
+}
+
+.get_adj_mean_ci <- function(data, digits = c(2, 3, 4), ...) {
+  val <- if (nrow(data) == 0 || is.na(data$lower_cl_est[1])) {
+    ""
+  } else {
+    fmt <- paste0("(%.", digits[1], "f, %.", digits[1], "f)")
+    sprintf(fmt, data$lower_cl_est[1], data$upper_cl_est[1])
+  }
+  list(my_stat = val)
+}
+
+.get_diff_se <- function(data, digits = c(2, 3, 4), ...) {
+  val <- if (nrow(data) == 0 || is.na(data$estimate_contr[1])) {
+    ""
+  } else {
+    fmt <- paste0("%.", digits[1], "f (%.", digits[2], "f)")
+    sprintf(fmt, data$estimate_contr[1], data$se_contr[1])
+  }
+  list(my_stat = val)
+}
+
+.get_diff_ci <- function(data, digits = c(2, 3, 4), ...) {
+  val <- if (nrow(data) == 0 || is.na(data$lower_cl_contr[1])) {
+    ""
+  } else {
+    fmt <- paste0("(%.", digits[1], "f, %.", digits[1], "f)")
+    sprintf(fmt, data$lower_cl_contr[1], data$upper_cl_contr[1])
+  }
+  list(my_stat = val)
+}
+
+.get_pval <- function(data, digits = c(2, 3, 4), ...) {
+  val <- if (nrow(data) == 0 || is.na(data$p_value[1])) {
+    ""
+  } else {
+    fmt <- paste0("%.", digits[3], "f")
+    sprintf(fmt, data$p_value[1])
+  }
+  list(my_stat = val)
 }

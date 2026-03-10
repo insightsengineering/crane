@@ -7,7 +7,7 @@
 \usage{
 get_mmrm_results(fit_mmrm, arm, visit, conf_level = 0.95)
 
-tbl_mmrm(mmrm_df, base_df, arm, visit, baseline_aval)
+tbl_mmrm(mmrm_df, base_df, arm, visit, baseline_aval, digits = c(2, 3, 4))
 }
 \arguments{
 \item{fit_mmrm}{(\code{mmrm} model object)\cr
@@ -40,6 +40,10 @@ to provide baseline statistics in the final table.}
 
 \item{baseline_aval}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 The column in \code{base_df} that contains the baseline values to be summarized.}
+
+\item{digits}{(\code{numeric})\cr
+A numeric vector of length 3 specifying the number of decimal places for: 1) Estimates/CIs, 2) Standard
+Errors, and 3) P-values. Default is \code{c(2, 3, 4)}.}
 }
 \value{
 A \code{data.frame} containing the estimated marginal means (adjusted means)
@@ -48,7 +52,7 @@ along with their standard errors, confidence intervals, degrees of freedom,
 and sample sizes. This data frame is structured to facilitate the creation of a
 formatted table using \code{\link[=tbl_mmrm]{tbl_mmrm()}}.
 
-A 'gtsummary' table object.
+\code{tbl_mmrm} returns a 'gtsummary' table object.
 }
 \description{
 These functions take a fitted MMRM model object and creates a formatted table,
