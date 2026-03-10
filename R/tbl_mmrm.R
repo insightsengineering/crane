@@ -65,13 +65,6 @@ get_mmrm_results <- function(fit_mmrm, arm, visit, conf_level = 0.95) {
   check_not_missing(arm)
   check_not_missing(visit)
   check_not_missing(conf_level)
-  check_string(rsp)
-  check_string(by)
-  check_string(time_to_event, allow_empty = TRUE)
-  check_binary(data[[rsp]])
-  check_class(subgroups, "character")
-  check_class(.tbl_fun, c("formula", "function"))
-
 
   # Extract Statistics using emmeans
   emmeans_object <- emmeans::emmeans(
@@ -183,12 +176,6 @@ tbl_mmrm <- function(mmrm_df, base_df, arm, visit, baseline_aval) {
   # 3. Build Baseline Table (if baseline data exists)
   gts_baseline <- NULL
   if (nrow(base_df) > 0) {
-    # Define the Standard Error (SE) function so gtsummary can find it
-    se <- function(x, na.rm = TRUE) {
-      if (na.rm) x <- stats::na.omit(x)
-      stats::sd(x) / sqrt(length(x))
-    }
-
     gts_baseline <- base_df |>
       tbl_strata(
         strata = any_of(visit), # or visit, depending on your column name
@@ -280,4 +267,10 @@ tbl_mmrm <- function(mmrm_df, base_df, arm, visit, baseline_aval) {
     )
 
   final_table
+}
+
+# Define the Standard Error (SE) function so gtsummary can find it
+se <- function(x, na.rm = TRUE) {
+  if (na.rm) x <- stats::na.omit(x)
+  stats::sd(x) / sqrt(length(x))
 }

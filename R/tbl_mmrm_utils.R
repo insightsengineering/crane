@@ -1,22 +1,27 @@
 # Helper function to calculate relative reduction for each visit and arm combination
 .get_relative_reduc_df <- function(estimates, arm, visit) {
-  ref_arm_level <- estimates[[arm]][1L]
-  ref_estimates <- estimates[
-    estimates[[arm]] == ref_arm_level,
-    c(visit, "estimate")
-  ]
-  names(ref_estimates)[2L] <- "ref"
-  result <- merge(
-    estimates[estimates[[arm]] != ref_arm_level, ],
-    ref_estimates,
-    by = visit,
-    sort = FALSE
-  )
-  result$relative_reduc <- (result$ref - result$estimate) / result$ref
-  result[, c(visit, arm, "relative_reduc")]
+  ref_arm_level <- levels(estimates[[arm]])[1L]
+
+  estimates |>
+    dplyr::select(dplyr::all_of(c(visit, arm)), estimate) |>
+    tidyr::pivot_wider(names_from = dplyr::all_of(arm), values_from = estimate) |>
+    dplyr::mutate(
+      dplyr::across(
+        -dplyr::all_of(c(visit, ref_arm_level)),
+        # Replaced get() with .data[[]]
+        ~ (.data[[ref_arm_level]] - .x) / .data[[ref_arm_level]],
+        .names = "relative_reduc_{.col}"
+      )
+    ) |>
+    tidyr::pivot_longer(
+      cols = dplyr::starts_with("relative_reduc_"),
+      names_to = arm,
+      names_prefix = "relative_reduc_",
+      values_to = "relative_reduc"
+    )
 }
 
-# Helper function to onstruct single visit contrast specifications
+# Helper function to construct single visit contrast specifications
 .get_single_visit_contrast_specs <- function(emmeans_res, arm, visit) {
   emmeans_res$grid$index <- seq_len(nrow(emmeans_res$grid))
 
