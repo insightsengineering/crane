@@ -39,7 +39,7 @@
 #' mmrm_results <- get_mmrm_results(fit_mmrm, arm = "ARMCD", visit = "AVISIT", conf_level = 0.95)
 #'
 #' # Create a plot with SE bars, jittered by 0.2, legend inside bottom-left
-#' my_plot <- gg_lineplot_mmrm(
+#' my_plot <- gg_mmrm_lineplot(
 #'   mmrm_df = mmrm_results,
 #'   arm = "ARMCD",
 #'   visit = "AVISIT",
@@ -51,7 +51,7 @@
 #' print(my_plot)
 #'
 #' @export
-gg_lineplot_mmrm <- function(mmrm_df, arm, visit, error_bar = c("ci", "se"),
+gg_mmrm_lineplot <- function(mmrm_df, arm, visit, error_bar = c("ci", "se"),
                              dodge_width = 0.15, hline = 0, legend_pos = c(0.02, 0.02)) {
   error_bar <- match.arg(error_bar)
 

@@ -29,6 +29,8 @@
 #' @param baseline_aval ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   The column in `base_df` that contains the baseline values to be summarized.
 #'
+#' @seealso [gg_mmrm_lineplot()] for visualizing MMRM results.
+#'
 #' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true") && requireNamespace("mmrm", quietly = TRUE)
 #' library(mmrm)
 #' fv_dt <- mmrm::fev_data |>
