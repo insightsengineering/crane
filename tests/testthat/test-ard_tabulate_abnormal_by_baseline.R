@@ -65,12 +65,12 @@ test_that("ard_tabulate_abnormal_by_baseline() handles empty data gracefully", {
 
 test_that("ard_tabulate_abnormal_by_baseline() correctly calculates percentages", {
   # Create a small controlled dataset to verify math
-  df_small <- tibble::tribble(
-    ~USUBJID, ~TRTA, ~BNRIND, ~LBNRIND,
-    "1", "A", "NORMAL", "LOW", # Not Low at baseline -> 1 Abnormal
-    "2", "A", "NORMAL", "NORMAL", # Not Low at baseline -> 0 Abnormal
-    "3", "A", "LOW", "LOW", # Low at baseline -> 1 Abnormal
-    "4", "A", "LOW", "NORMAL" # Low at baseline -> 0 Abnormal
+  df_small <- data.frame(
+    USUBJID = c("1", "2", "3", "4"),
+    TRTA    = c("A", "A", "A", "A"),
+    BNRIND  = c("NORMAL", "NORMAL", "LOW", "LOW"),
+    LBNRIND = c("LOW", "NORMAL", "LOW", "NORMAL"),
+    stringsAsFactors = FALSE
   )
 
   res <- ard_tabulate_abnormal_by_baseline(
