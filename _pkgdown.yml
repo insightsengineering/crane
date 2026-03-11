@@ -27,21 +27,10 @@ reference:
       - tbl_survfit_quantiles
       - tbl_survfit_times
 
-  - title: "Standard Listings"
+  - title: "Mixed effect Models with Repeated Measures (MMRM) Tables"
     contents:
-      - tbl_listing
-
-  - title: "Null Reports"
-    contents:
-      - tbl_null_report
-
-  - title: "Styling"
-    contents:
-      - theme_gtsummary_roche
-      - modify_header_rm_md
-      - modify_zero_recode
-      - add_blank_rows
-      - label_roche
+      - get_mmrm_results
+      - tbl_mmrm
 
   - title: "Kaplan-Meier Plot"
     contents:
@@ -61,3 +50,19 @@ reference:
       - g_lineplot
       - g_lineplot_table
       - preprocess_lineplot_data
+
+  - title: "Standard Listings"
+    contents:
+      - tbl_listing
+
+  - title: "Null Reports"
+    contents:
+      - tbl_null_report
+
+  - title: "Styling"
+    contents:
+      - theme_gtsummary_roche
+      - modify_header_rm_md
+      - modify_zero_recode
+      - add_blank_rows
+      - label_roche
