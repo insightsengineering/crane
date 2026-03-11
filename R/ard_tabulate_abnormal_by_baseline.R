@@ -104,6 +104,7 @@ ard_tabulate_abnormal_by_baseline <- function(data,
 
 #' Internal Calculation Helper for Abnormality Tabulation
 #' @noRd
+#' @keywords internal
 .calc_abnormal_logic <- function(df, group_label, abn_val, postbaseline, id, by) {
   if (nrow(df) == 0) {
     return(NULL)
