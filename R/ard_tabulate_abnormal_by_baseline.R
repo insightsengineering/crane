@@ -130,9 +130,6 @@ ard_tabulate_abnormal_by_baseline <- function(data,
     )
   ) |>
     # FORCE level and variable_level to character strings.
-
-    # This fixes the 'Can't combine list and character' error.
-
     dplyr::mutate(
       variable_level = as.character(group_label),
       level = as.character(group_label)
