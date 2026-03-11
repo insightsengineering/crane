@@ -1,6 +1,10 @@
 # crane 0.3.1.9008
 
+## New Functions and Functionality
+
 * Added `g_lineplot()` for creating line plots with optional summary statistics table. Includes helper functions `calc_stats()`, `g_lineplot_table()`, and `preprocess_lineplot_data()`.
+
+* Added `tbl_mmrm()` and `get_mmrm_results()` functions to create regression tables for Mixed Models for Repeated Measures (MMRM). (#163)
 
 ### Other Updates
 
