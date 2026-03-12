@@ -1,8 +1,10 @@
-# crane 0.3.1.9009
+# crane 0.3.1.9010
 
 ## New Functions and Functionality
 
 * Added `g_lineplot()` for creating line plots with optional summary statistics table. Includes helper functions `calc_stats()`, `g_lineplot_table()`, and `preprocess_lineplot_data()`.
+
+* Added `ard_tabulate_abnormal_by_baseline()` for creating an Analysis Results Data (ARD) object counting participants with abnormal assessments, stratified by their baseline status.
 
 * Added `tbl_mmrm()` and `get_mmrm_results()` functions to create regression tables for Mixed Models for Repeated Measures (MMRM). (#163)
 
