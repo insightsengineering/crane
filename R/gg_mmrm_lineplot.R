@@ -96,7 +96,7 @@ gg_mmrm_lineplot <- function(mmrm_df, arm, visit, error_bar = c("ci", "se"),
 
   # 2. Inject the Baseline zero-point for Change from Baseline
   base_rows <- plot_df |>
-    dplyr::distinct(.data$ArmArm) |>
+    dplyr::distinct(.data$Arm) |>
     dplyr::mutate(
       Visit = "Baseline",
       est = 0,
@@ -118,17 +118,17 @@ gg_mmrm_lineplot <- function(mmrm_df, arm, visit, error_bar = c("ci", "se"),
   if (error_bar == "se") {
     plot_df <- plot_df |>
       dplyr::mutate(
-        plot_y = if (is_negative_trend) -.data$est else .data$est,
-        ymin   = if (is_negative_trend) -.data$est - .data$se else .data$est - .data$se,
-        ymax   = if (is_negative_trend) -.data$est + .data$se else .data$est + .data$se
+        plot_y = if (!is_negative_trend) -.data$est else .data$est,
+        ymin   = if (!is_negative_trend) -.data$est - .data$se else .data$est - .data$se,
+        ymax   = if (!is_negative_trend) -.data$est + .data$se else .data$est + .data$se
       )
     y_label <- "Mean (\u00B1 SE) Change from Baseline"
   } else {
     plot_df <- plot_df |>
       dplyr::mutate(
-        plot_y = if (is_negative_trend) -.data$est else .data$est,
-        ymin   = if (is_negative_trend) -.data$ucl else .data$lcl,
-        ymax   = if (is_negative_trend) -.data$lcl else .data$ucl
+        plot_y = if (!is_negative_trend) -.data$est else .data$est,
+        ymin   = if (!is_negative_trend) -.data$ucl else .data$lcl,
+        ymax   = if (!is_negative_trend) -.data$lcl else .data$ucl
       )
     y_label <- "Mean (\u00B1 95% CI) Change from Baseline"
   }
