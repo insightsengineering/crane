@@ -23,7 +23,7 @@
 #'
 #' @return A `ggplot` object.
 #'
-#' @seealso [get_mmrm_results()] to get the mmrm resuls, and [tbl_mmrm()] for a summary table of the MMRM results.
+#' @seealso [get_mmrm_results()] to get the MMRM results, and [tbl_mmrm()] for a summary table of the MMRM results.
 #'
 #' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true") && requireNamespace("mmrm", quietly = TRUE)
 #' library(mmrm)
@@ -50,6 +50,7 @@
 #'
 #' print(my_plot)
 #'
+#' @importFrom rlang .data
 #' @export
 gg_mmrm_lineplot <- function(mmrm_df, arm, visit, error_bar = c("ci", "se"),
                              dodge_width = 0.15, hline = 0, legend_pos = c(0.02, 0.02)) {
@@ -87,15 +88,15 @@ gg_mmrm_lineplot <- function(mmrm_df, arm, visit, error_bar = c("ci", "se"),
     dplyr::select(
       Arm = dplyr::all_of(arm),
       Visit = dplyr::all_of(visit),
-      est = estimate_est,
-      se = se_est,
-      lcl = lower_cl_est,
-      ucl = upper_cl_est
+      est = "estimate_est",
+      se = "se_est",
+      lcl = "lower_cl_est",
+      ucl = "upper_cl_est"
     )
 
   # 2. Inject the Baseline zero-point for Change from Baseline
   base_rows <- plot_df |>
-    dplyr::distinct(Arm) |>
+    dplyr::distinct(.data$ArmArm) |>
     dplyr::mutate(
       Visit = "Baseline",
       est = 0,
@@ -107,25 +108,27 @@ gg_mmrm_lineplot <- function(mmrm_df, arm, visit, error_bar = c("ci", "se"),
   # Combine and ensure Baseline is the first factor level
   plot_df <- dplyr::bind_rows(base_rows, plot_df) |>
     dplyr::mutate(
-      Visit = fct_relevel(factor(Visit), "Baseline")
+      Visit = fct_relevel(factor(.data$Visit), "Baseline")
     )
 
   # 3. Calculate plotting bounds based on SE or CI preference
-  # Note: Since estimates are inverted (-est), the CI bounds MUST also be inverted and swapped.
+  # Safely check if the overall post-baseline trend is negative
+  is_negative_trend <- mean(plot_df$est[plot_df$Visit != "Baseline"], na.rm = TRUE) < 0
+
   if (error_bar == "se") {
     plot_df <- plot_df |>
       dplyr::mutate(
-        plot_y = -est,
-        ymin = -est - se,
-        ymax = -est + se
+        plot_y = if (is_negative_trend) -.data$est else .data$est,
+        ymin   = if (is_negative_trend) -.data$est - .data$se else .data$est - .data$se,
+        ymax   = if (is_negative_trend) -.data$est + .data$se else .data$est + .data$se
       )
     y_label <- "Mean (\u00B1 SE) Change from Baseline"
   } else {
     plot_df <- plot_df |>
       dplyr::mutate(
-        plot_y = -est,
-        ymin = -ucl, # Negated and swapped because of the axis inversion
-        ymax = -lcl
+        plot_y = if (is_negative_trend) -.data$est else .data$est,
+        ymin   = if (is_negative_trend) -.data$ucl else .data$lcl,
+        ymax   = if (is_negative_trend) -.data$lcl else .data$ucl
       )
     y_label <- "Mean (\u00B1 95% CI) Change from Baseline"
   }
@@ -135,7 +138,14 @@ gg_mmrm_lineplot <- function(mmrm_df, arm, visit, error_bar = c("ci", "se"),
 
   p <- ggplot2::ggplot(
     plot_df,
-    ggplot2::aes(x = Visit, y = plot_y, group = Arm, color = Arm, shape = Arm, linetype = Arm)
+    ggplot2::aes(
+      x = .data$Visit,
+      y = .data$plot_y,
+      group = .data$Arm,
+      color = .data$Arm,
+      shape = .data$Arm,
+      linetype = .data$Arm
+    )
   )
 
   # Optional Reference Line
@@ -146,7 +156,9 @@ gg_mmrm_lineplot <- function(mmrm_df, arm, visit, error_bar = c("ci", "se"),
   # Add Lines, Points, and Error Bars
   p <- p +
     ggplot2::geom_line(position = pd, linewidth = 0.5) +
-    ggplot2::geom_errorbar(ggplot2::aes(ymin = ymin, ymax = ymax), width = 0.15, position = pd, linewidth = 0.6) +
+    ggplot2::geom_errorbar(ggplot2::aes(ymin = .data$ymin, ymax = .data$ymax),
+      width = 0.15, position = pd, linewidth = 0.6
+    ) +
     ggplot2::geom_point(position = pd, size = 1.5, fill = "white", stroke = 1) +
 
     # Formatting and Theming

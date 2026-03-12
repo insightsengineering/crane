@@ -74,5 +74,5 @@ print(my_plot)
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-\code{\link[=get_mmrm_results]{get_mmrm_results()}} to get the mmrm resuls, and \code{\link[=tbl_mmrm]{tbl_mmrm()}} for a summary table of the MMRM results.
+\code{\link[=get_mmrm_results]{get_mmrm_results()}} to get the MMRM results, and \code{\link[=tbl_mmrm]{tbl_mmrm()}} for a summary table of the MMRM results.
 }
