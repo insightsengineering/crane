@@ -87,3 +87,6 @@ tbl_mmrm(
 )
 \dontshow{\}) # examplesIf}
 }
+\seealso{
+\code{\link[=gg_mmrm_lineplot]{gg_mmrm_lineplot()}} for visualizing MMRM results.
+}

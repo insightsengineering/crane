@@ -29,6 +29,8 @@
 #' @param baseline_aval ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   The column in `base_df` that contains the baseline values to be summarized.
 #'
+#' @seealso [gg_mmrm_lineplot()] for visualizing MMRM results.
+#'
 #' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true") && requireNamespace("mmrm", quietly = TRUE)
 #' library(mmrm)
 #' fv_dt <- mmrm::fev_data |>
@@ -183,6 +185,7 @@ tbl_mmrm <- function(mmrm_df, base_df, arm, visit, baseline_aval, digits = c(2, 
   check_not_missing(arm)
   check_not_missing(visit)
   check_not_missing(baseline_aval)
+  check_not_missing(digits)
   cards::process_selectors(
     mmrm_df,
     arm = {{ arm }}, visit = {{ visit }}
@@ -197,6 +200,7 @@ tbl_mmrm <- function(mmrm_df, base_df, arm, visit, baseline_aval, digits = c(2, 
   check_string(visit)
   check_string(baseline_aval)
   check_class(mmrm_df, "mmrm_df")
+  check_numeric(digits)
 
   # Converts 0.95 into "95%"
   ci_pct_str <- sprintf("%.0f%%", mmrm_df$conf_level[1] * 100)
