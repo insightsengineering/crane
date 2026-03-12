@@ -94,9 +94,16 @@ gg_mmrm_lineplot <- function(mmrm_df, arm, visit, error_bar = c("ci", "se"),
       ucl = "upper_cl_est"
     )
 
+  # Capture the original chronological order of the visits
+  orig_visit_levels <- if (is.factor(mmrm_df[[visit]])) {
+    levels(mmrm_df[[visit]])
+  } else {
+    unique(as.character(mmrm_df[[visit]]))
+  }
+
   # 2. Inject the Baseline zero-point for Change from Baseline
   base_rows <- plot_df |>
-    dplyr::distinct(.data$Arm) |>
+    dplyr::distinct(Arm) |>
     dplyr::mutate(
       Visit = "Baseline",
       est = 0,
@@ -105,10 +112,10 @@ gg_mmrm_lineplot <- function(mmrm_df, arm, visit, error_bar = c("ci", "se"),
       ucl = 0
     )
 
-  # Combine and ensure Baseline is the first factor level
+  # Combine and explicitly enforce the exact original order
   plot_df <- dplyr::bind_rows(base_rows, plot_df) |>
     dplyr::mutate(
-      Visit = fct_relevel(factor(.data$Visit), "Baseline")
+      Visit = factor(Visit, levels = c("Baseline", orig_visit_levels))
     )
 
   # 3. Calculate plotting bounds based on SE or CI preference
