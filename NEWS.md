@@ -8,6 +8,8 @@
 
 * Added `tbl_mmrm()` and `get_mmrm_results()` functions to create regression tables for Mixed Models for Repeated Measures (MMRM). (#163)
 
+* Added `gtsummary_to_reporter_clinical()` to export `gtsummary` objects to clinical-style `reporter` RTF/TXT outputs, with optional ARD and processed data RDS export.
+
 ### Other Updates
 
 * Removed bold from headers when using `tbl_strata()` (#133).
