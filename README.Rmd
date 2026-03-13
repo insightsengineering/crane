@@ -63,3 +63,29 @@ knitr::include_graphics("man/figures/README-tbl_print_simple-1.png")
 ```
 
 The package also exports functions for Roche adverse event reporting, functions for shift tables, and others.
+
+### Export gtsummary tables to reporter RTF/TXT
+
+`gtsummary_to_reporter_clinical()` converts a `gtsummary` table (or plain data frame)
+into clinical-style `reporter` outputs. It supports RTF/TXT export, optional ARD/data
+RDS outputs, custom column labels/widths, spanning headers, and pagination.
+
+```{r reporter-export, eval = requireNamespace("reporter", quietly = TRUE)}
+library(crane)
+library(gtsummary)
+
+tbl_demo <- trial |>
+  select(trt, age, grade) |>
+  tbl_summary(by = trt) |>
+  add_p()
+
+out_files <- gtsummary_to_reporter_clinical(
+  gts_obj = tbl_demo,
+  file_path = tempfile("clinical_demo_", fileext = ".rtf"),
+  output_types = c("RTF", "TXT"),
+  column_widths = "8|4|4",
+  save_rds = FALSE
+)
+
+out_files
+```
