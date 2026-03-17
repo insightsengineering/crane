@@ -44,7 +44,7 @@
 #')
 #' 
 #' # Linear Scale Example (Baseline 0 is included)
-#' plot_pk_profile(
+#' gg_pkc_lineplot(
 #'   data = df_pk, 
 #'   time_var = ATPTN, 
 #'   analyte_var = AVAL, 
@@ -57,7 +57,7 @@
 #' # Log Scale Example (Filter out 0s first to avoid log(0) warnings)
 #' df_pk |>
 #'   dplyr::filter(AVAL > 0) |>
-#'   plot_pk_profile(
+#'   gg_pkc_lineplot(
 #'     time_var = ATPTN,
 #'     analyte_var = AVAL,
 #'     group = TRT,
@@ -66,7 +66,7 @@
 #'     log_y = TRUE,
 #'     lloq = 2.0
 #'   )
-plot_pk_profile <- function(data,
+gg_pkc_lineplot <- function(data,
                             time_var,
                             analyte_var,
                             group,
