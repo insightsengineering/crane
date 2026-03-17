@@ -23,11 +23,11 @@ mock_pk_df <- tibble::tribble(
 # ------------------------------------------------------------------------------
 # 2. TEST INPUT VALIDATION & ERROR HANDLING
 # ------------------------------------------------------------------------------
-test_that("plot_pk_profile catches invalid combinations and missing inputs", {
+test_that("gg_pkc_lineplot catches invalid combinations and missing inputs", {
   
   # Catch invalid combinations of stat and variability
   expect_error(
-    plot_pk_profile(
+    gg_pkc_lineplot(
       mock_pk_df, 
       time_var = ATPTN, 
       analyte_var = AVAL, 
@@ -39,7 +39,7 @@ test_that("plot_pk_profile catches invalid combinations and missing inputs", {
   )
   
   expect_error(
-    plot_pk_profile(
+    gg_pkc_lineplot(
       mock_pk_df, 
       time_var = ATPTN, 
       analyte_var = AVAL, 
@@ -52,7 +52,7 @@ test_that("plot_pk_profile catches invalid combinations and missing inputs", {
 
   # Catch invalid arguments trapped by match.arg
   expect_error(
-    plot_pk_profile(
+    gg_pkc_lineplot(
       mock_pk_df,
       time_var = ATPTN,
       analyte_var = AVAL,
@@ -64,17 +64,17 @@ test_that("plot_pk_profile catches invalid combinations and missing inputs", {
 
   # Catch missing mandatory arguments
   expect_error(
-    plot_pk_profile(data = mock_pk_df, analyte_var = AVAL, group = TRT)
+    gg_pkc_lineplot(data = mock_pk_df, analyte_var = AVAL, group = TRT)
   )
 })
 
 # ------------------------------------------------------------------------------
 # 3. TEST DATA MANIPULATION & MATH LOGIC
 # ------------------------------------------------------------------------------
-test_that("plot_pk_profile calculates statistics and floors negative bounds", {
+test_that("gg_pkc_lineplot calculates statistics and floors negative bounds", {
   
   # Generate Mean/SD plot
-  p_sd <- plot_pk_profile(
+  p_sd <- gg_pkc_lineplot(
     mock_pk_df,
     time_var = ATPTN,
     analyte_var = AVAL,
@@ -104,9 +104,9 @@ test_that("plot_pk_profile calculates statistics and floors negative bounds", {
   expect_equal(round(drug_a_12$ymax, 2), 11.86)
 })
 
-test_that("plot_pk_profile calculates median and IQR properly", {
+test_that("gg_pkc_lineplot calculates median and IQR properly", {
   
-  p_iqr <- plot_pk_profile(
+  p_iqr <- gg_pkc_lineplot(
     mock_pk_df,
     time_var = ATPTN,
     analyte_var = AVAL,
@@ -129,10 +129,10 @@ test_that("plot_pk_profile calculates median and IQR properly", {
 # ------------------------------------------------------------------------------
 # 4. TEST GGPLOT THEME AND GEOMS
 # ------------------------------------------------------------------------------
-test_that("plot_pk_profile applies graphical parameters correctly", {
+test_that("gg_pkc_lineplot applies graphical parameters correctly", {
   
   # Plot 1: Log scale, LLOQ provided
-  p_log_lloq <- plot_pk_profile(
+  p_log_lloq <- gg_pkc_lineplot(
     mock_pk_df |> dplyr::filter(AVAL > 0),
     time_var = ATPTN,
     analyte_var = AVAL,
@@ -150,7 +150,7 @@ test_that("plot_pk_profile applies graphical parameters correctly", {
 
 
   # Plot 2: Linear scale, no LLOQ, no variability
-  p_linear_none <- plot_pk_profile(
+  p_linear_none <- gg_pkc_lineplot(
     mock_pk_df,
     time_var = ATPTN,
     analyte_var = AVAL,
@@ -173,10 +173,10 @@ test_that("plot_pk_profile applies graphical parameters correctly", {
   expect_false("GeomErrorbar" %in% geoms_none)
 })
 
-test_that("plot_pk_profile warns when log transforming zeros", {
+test_that("gg_pkc_lineplot warns when log transforming zeros", {
   
   # Create the plot using data that STILL contains 0s at ATPTN = 0
-  p_zero_log <- plot_pk_profile(
+  p_zero_log <- gg_pkc_lineplot(
     data = mock_pk_df,
     time_var = ATPTN,
     analyte_var = AVAL,
