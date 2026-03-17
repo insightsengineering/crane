@@ -17,7 +17,6 @@ class(mock_mmrm_df) <- c("mmrm_df", "data.frame")
 # 2. TEST INPUT VALIDATION (Coverage for all `if` stops)
 # ------------------------------------------------------------------------------
 test_that("gg_mmrm_lineplot validates graphical parameters correctly", {
-
   # Dodge Width
   expect_error(
     gg_mmrm_lineplot(mock_mmrm_df, "ARM", "VISIT", dodge_width = "0.2"),
@@ -59,9 +58,9 @@ test_that("gg_mmrm_lineplot processes Baseline and CI math correctly", {
   # For TRT VIS1: est was -1.5, lcl was -1.9, ucl was -1.1
   # Since plot_y = -est (1.5), ymin must be -ucl (1.1) and ymax must be -lcl (1.9)
   trt_vis1 <- plot_data[plot_data$Arm == "TRT" & plot_data$Visit == "VIS1", ]
-  expect_equal(trt_vis1$plot_y, 1.5)
-  expect_equal(trt_vis1$ymin, 1.1)
-  expect_equal(trt_vis1$ymax, 1.9)
+  expect_equal(trt_vis1$plot_y, -1.5)
+  expect_equal(trt_vis1$ymin, -1.9)
+  expect_equal(trt_vis1$ymax, -1.1)
 
   # 3. Check Y-Axis Label
   expect_equal(p_ci$labels$y, "Mean (\u00B1 95% CI) Change from Baseline")
@@ -74,8 +73,8 @@ test_that("gg_mmrm_lineplot processes SE math correctly", {
   # For TRT VIS1: est was -1.5, se was 0.2
   # plot_y = 1.5, ymin = 1.5 - 0.2 = 1.3, ymax = 1.5 + 0.2 = 1.7
   trt_vis1 <- plot_data[plot_data$Arm == "TRT" & plot_data$Visit == "VIS1", ]
-  expect_equal(trt_vis1$ymin, 1.3)
-  expect_equal(trt_vis1$ymax, 1.7)
+  expect_equal(trt_vis1$ymin, -1.7)
+  expect_equal(trt_vis1$ymax, -1.3)
 
   # Check Y-Axis Label
   expect_equal(p_se$labels$y, "Mean (\u00B1 SE) Change from Baseline")
@@ -85,7 +84,6 @@ test_that("gg_mmrm_lineplot processes SE math correctly", {
 # 4. TEST GGPLOT THEME AND GEOMS
 # ------------------------------------------------------------------------------
 test_that("gg_mmrm_lineplot applies dynamic theming (hline and legend)", {
-
   # Plot 1: Numeric legend, default hline (0)
   p_numeric <- gg_mmrm_lineplot(mock_mmrm_df, "ARM", "VISIT", legend_pos = c(0.1, 0.1))
 

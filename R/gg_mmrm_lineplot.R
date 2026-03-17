@@ -86,8 +86,8 @@ gg_mmrm_lineplot <- function(mmrm_df, arm, visit, error_bar = c("ci", "se"),
   # 1. Standardize column names for easy plotting
   plot_df <- mmrm_df |>
     dplyr::select(
-      Arm = dplyr::all_of(arm),
-      Visit = dplyr::all_of(visit),
+      Arm = dplyr::any_of(arm),
+      Visit = dplyr::any_of(visit),
       est = "estimate_est",
       se = "se_est",
       lcl = "lower_cl_est",
@@ -103,7 +103,7 @@ gg_mmrm_lineplot <- function(mmrm_df, arm, visit, error_bar = c("ci", "se"),
 
   # 2. Inject the Baseline zero-point for Change from Baseline
   base_rows <- plot_df |>
-    dplyr::distinct(Arm) |>
+    dplyr::distinct(.data$Arm) |>
     dplyr::mutate(
       Visit = "Baseline",
       est = 0,
@@ -115,7 +115,7 @@ gg_mmrm_lineplot <- function(mmrm_df, arm, visit, error_bar = c("ci", "se"),
   # Combine and explicitly enforce the exact original order
   plot_df <- dplyr::bind_rows(base_rows, plot_df) |>
     dplyr::mutate(
-      Visit = factor(Visit, levels = c("Baseline", orig_visit_levels))
+      Visit = factor(.data$Visit, levels = c("Baseline", orig_visit_levels))
     )
 
   # 3. Calculate plotting bounds based on SE or CI preference
