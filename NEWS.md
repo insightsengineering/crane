@@ -18,6 +18,8 @@
 
 * Added example on how to stratify `tbl_baseline_chg()` by `PARAM` and split into a list.
 
+* Adjusted `tbl_mmrm()` to allow `base_df = NULL`.
+
 
 # crane 0.3.1
 

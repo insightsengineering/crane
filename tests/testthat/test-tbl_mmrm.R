@@ -154,3 +154,48 @@ test_that("tbl_mmrm falls back cleanly when base_df is empty", {
   # Should NOT be a stack, just a standalone tbl_strata/tbl_custom_summary
   expect_true(inherits(tbl_empty, "tbl_strata"))
 })
+
+
+test_that("tbl_mmrm handles base_df = NULL gracefully without baseline stacking", {
+
+  # 1. Setup minimal mock mmrm_df to bypass running a real model
+  mock_mmrm_df <- data.frame(
+    ARM = factor(c("TRT", "PBO")),
+    VISIT = factor(c("WEEK 1", "WEEK 1")),
+    n = c(50, 50),
+    estimate_est = c(10.1, 12.2),
+    se_est = c(1.1, 1.2),
+    lower_cl_est = c(8.0, 10.0),
+    upper_cl_est = c(12.2, 14.4),
+    estimate_contr = c(-2.1, NA),
+    se_contr = c(1.5, NA),
+    lower_cl_contr = c(-5.0, NA),
+    upper_cl_contr = c(0.8, NA),
+    p_value = c(0.04, NA),
+    conf_level = 0.95
+  )
+  class(mock_mmrm_df) <- c("mmrm_df", "data.frame")
+
+  # 2. Execute tbl_mmrm with base_df = NULL
+  result_tbl <- tbl_mmrm(
+    mmrm_df = mock_mmrm_df,
+    base_df = NULL,
+    arm = "ARM",
+    visit = "VISIT",
+    baseline_aval = "BASE_VAL" # Should be ignored entirely
+  )
+
+  # 3. Verify it returns a valid gtsummary object without crashing
+  expect_s3_class(result_tbl, "gtsummary")
+
+  # 4. Verify the structural integrity of the resulting table body
+  tbl_body <- result_tbl$table_body
+
+  # It should contain the standard MMRM statistic rows
+  expect_true(any(tbl_body$label == "Adjusted Mean (SE)"))
+  expect_true(any(tbl_body$label == "Difference in Adjusted Means (SE)"))
+
+  # It should NOT contain any baseline summary rows
+  # (If base_df was processed, 'BASE_VAL' or 'Mean (SE)' for baseline would exist)
+  expect_false(any(tbl_body$variable == "BASE_VAL"))
+})
