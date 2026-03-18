@@ -26,34 +26,34 @@
 #' @examples
 #' library(dplyr)
 #' library(tibble)
-#' 
-#'df_pk <- tibble::tribble(
-#'  ~USUBJID, ~TRT,     ~ATPTN, ~AVAL,
-#'  "P1",     "Drug A", 0,      0,
-#'  "P1",     "Drug A", 4,      10,
-#'  "P1",     "Drug A", 12,     1,   
-#'  "P2",     "Drug A", 0,      0,
-#'  "P2",     "Drug A", 4,      12,
-#'  "P2",     "Drug A", 12,     10,  
-#'  "P3",     "Drug B", 0,      0,
-#'  "P3",     "Drug B", 4,      20,
-#'  "P3",     "Drug B", 12,     10,
-#'  "P4",     "Drug B", 0,      0,
-#'  "P4",     "Drug B", 4,      18,
-#'  "P4",     "Drug B", 12,     12
-#')
-#' 
+#'
+#' df_pk <- tibble::tribble(
+#'   ~USUBJID, ~TRT,     ~ATPTN, ~AVAL,
+#'   "P1",     "Drug A", 0,      0,
+#'   "P1",     "Drug A", 4,      10,
+#'   "P1",     "Drug A", 12,     1,
+#'   "P2",     "Drug A", 0,      0,
+#'   "P2",     "Drug A", 4,      12,
+#'   "P2",     "Drug A", 12,     10,
+#'   "P3",     "Drug B", 0,      0,
+#'   "P3",     "Drug B", 4,      20,
+#'   "P3",     "Drug B", 12,     10,
+#'   "P4",     "Drug B", 0,      0,
+#'   "P4",     "Drug B", 4,      18,
+#'   "P4",     "Drug B", 12,     12
+#' )
+#'
 #' # Linear Scale Example (Baseline 0 is included)
 #' gg_pkc_lineplot(
-#'   data = df_pk, 
-#'   time_var = ATPTN, 
-#'   analyte_var = AVAL, 
+#'   data = df_pk,
+#'   time_var = ATPTN,
+#'   analyte_var = AVAL,
 #'   group = TRT,
 #'   stat = "mean",
 #'   variability = "sd",
 #'   log_y = FALSE
 #' )
-#' 
+#'
 #' # Log Scale Example (Filter out 0s first to avoid log(0) warnings)
 #' df_pk |>
 #'   dplyr::filter(AVAL > 0) |>
@@ -79,7 +79,6 @@ gg_pkc_lineplot <- function(data,
                             legend_pos = "bottom",
                             title = NULL,
                             subtitle = NULL) {
-  
   # Match standard arguments
   stat <- match.arg(stat)
   variability <- match.arg(variability)
@@ -89,7 +88,7 @@ gg_pkc_lineplot <- function(data,
   check_not_missing(time_var)
   check_not_missing(analyte_var)
   check_not_missing(group)
-  
+
   check_data_frame(data)
 
   # Tidy-selection processing
@@ -99,7 +98,7 @@ gg_pkc_lineplot <- function(data,
     analyte_var = {{ analyte_var }},
     group = {{ group }}
   )
-  
+
   # Ensure only single columns were selected
   check_string(time_var)
   check_string(analyte_var)
@@ -112,10 +111,10 @@ gg_pkc_lineplot <- function(data,
   p <- ggplot2::ggplot(
     data,
     ggplot2::aes(
-      x = .data[[time_var]], 
-      y = .data[[analyte_var]], 
-      color = .data[[group]], 
-      shape = .data[[group]], 
+      x = .data[[time_var]],
+      y = .data[[analyte_var]],
+      color = .data[[group]],
+      shape = .data[[group]],
       linetype = .data[[group]]
     )
   ) +
@@ -128,13 +127,13 @@ gg_pkc_lineplot <- function(data,
       fun.data = function(val) {
         m <- mean(val, na.rm = TRUE)
         se <- sd(val, na.rm = TRUE) / sqrt(sum(!is.na(val)))
-        
+
         err <- switch(variability,
           "sd" = sd(val, na.rm = TRUE),
           "se" = se,
           "ci" = qt(0.975, df = max(1, sum(!is.na(val)) - 1)) * se
         )
-        
+
         # Floor ymin to 1e-5 to prevent log(negative) errors
         data.frame(y = m, ymin = max(m - err, 1e-5), ymax = m + err)
       },
