@@ -157,7 +157,6 @@ test_that("tbl_mmrm falls back cleanly when base_df is empty", {
 
 
 test_that("tbl_mmrm handles base_df = NULL gracefully without baseline stacking", {
-
   # 1. Setup minimal mock mmrm_df to bypass running a real model
   mock_mmrm_df <- data.frame(
     ARM = factor(c("TRT", "PBO")),
