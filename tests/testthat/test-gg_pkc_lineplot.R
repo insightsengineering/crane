@@ -4,20 +4,11 @@
 # We create a lightweight mock dataset where we deliberately engineered a
 # situation where Mean - SD is a negative number (Drug A at ATPTN = 12).
 # Drug A at ATPTN 12: Values = 1 and 10. Mean = 5.5, SD = 6.36.
-mock_pk_df <- tibble::tribble(
-  ~USUBJID, ~TRT,     ~ATPTN, ~AVAL,
-  "P1",     "Drug A", 0,      0,
-  "P1",     "Drug A", 4,      10,
-  "P1",     "Drug A", 12,     1,
-  "P2",     "Drug A", 0,      0,
-  "P2",     "Drug A", 4,      12,
-  "P2",     "Drug A", 12,     10,
-  "P3",     "Drug B", 0,      0,
-  "P3",     "Drug B", 4,      20,
-  "P3",     "Drug B", 12,     10,
-  "P4",     "Drug B", 0,      0,
-  "P4",     "Drug B", 4,      18,
-  "P4",     "Drug B", 12,     12
+mock_pk_df <- data.frame(
+  USUBJID = c("P1", "P1", "P1", "P2", "P2", "P2", "P3", "P3", "P3", "P4", "P4", "P4"),
+  TRT = rep(c("Drug A", "Drug B"), each = 6),
+  ATPTN = rep(c(0, 4, 12), times = 4),
+  AVAL = c(0, 10, 1, 0, 12, 10, 0, 20, 10, 0, 18, 12)
 )
 
 # ------------------------------------------------------------------------------
