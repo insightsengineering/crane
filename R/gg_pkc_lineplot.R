@@ -5,24 +5,24 @@
 #' This function wraps `ggplot2` calls to consistently format PK profiles,
 #' handling log transformations, various summary statistics, and variability measures.
 #'
-#' @param data (`data.frame`)\cr The dataset containing PK data.
-#' @param time_var ([`tidy-select`][dplyr::dplyr_tidy_select])\cr The time variable (x-axis).
-#' @param analyte_var ([`tidy-select`][dplyr::dplyr_tidy_select])\cr The concentration/analyte variable (y-axis).
-#' @param group ([`tidy-select`][dplyr::dplyr_tidy_select])\cr The grouping/treatment variable.
-#' @param stat (`string`)\cr Primary summary statistic: `"mean"` or `"median"`. Default is `"mean"`.
-#' @param variability (`string`)\cr Variability measure: `"sd"`, `"se"`, `"ci"`, `"iqr"`, or `"none"`. Default is `"sd"`.
-#' @param log_y (`logical`)\cr Whether to apply log10 scale to the y-axis. Default is `TRUE`.
-#' @param lloq (`numeric` or `NULL`)\cr Lower Limit of Quantification. Default is `NA_real_`.
-#' @param x_label (`string`)\cr X-axis label. Default is `"Nominal time (hr)"`.
-#' @param y_label (`string`)\cr Y-axis label. Default is `"Concentration (ng/mL)"`.
-#' @param legend_pos (`string`)\cr Standard ggplot2 legend position options. Default is `"bottom"`.
-#' @param title (`string` or `NULL`)\cr Plot title.
-#' @param subtitle (`string` or `NULL`)\cr Plot subtitle.
+#' @param data (`data.frame`)\cr
+#'    The dataset containing PK data.
+#' @param time_var ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#'    The time variable (x-axis).
+#' @param analyte_var ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#'    The concentration/analyte variable (y-axis).
+#' @param group ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#'    The grouping/treatment variable.
+#' @param stat (`string`)\cr
+#'    Primary summary statistic: `"mean"` or `"median"`. Default is `"mean"`.
+#' @param variability (`string`)\cr
+#'    Variability measure: `"sd"`, `"se"`, `"ci"`, `"iqr"`, or `"none"`. Default is `"sd"`.
+#' @param log_y (`logical`)\cr
+#'    Whether to apply log10 scale to the y-axis. Default is `TRUE`.
+#' @param lloq (`numeric` or `NULL`)\cr
+#'    Lower Limit of Quantification. Default is `NA_real_`.
 #'
 #' @returns A `ggplot` object.
-#' @importFrom rlang .data
-#' @importFrom stats sd qt quantile median
-#' @export
 #'
 #' @examples
 #' df_pk <- data.frame(
@@ -55,6 +55,29 @@
 #'     log_y = TRUE,
 #'     lloq = 2.0
 #'   )
+#'
+#' # Title, subtitle, axes labels and legend position customization
+#' gg_pkc_lineplot(
+#'   data = df_pk,
+#'   time_var = ATPTN,
+#'   analyte_var = AVAL,
+#'   group = TRT,
+#'   stat = "mean",
+#'   variability = "sd",
+#'   log_y = FALSE
+#' ) +
+#'   ggplot2::labs(
+#'     x = "Nominal time (hr)",
+#'     y = "Concentration (ng/mL)",
+#'     title = "Title",
+#'     subtitle = "Subtitle"
+#'   ) +
+#'   ggplot2::theme(
+#'     legend.position = "top"
+#'   )
+#'
+#' @importFrom rlang .data
+#' @export
 gg_pkc_lineplot <- function(data,
                             time_var,
                             analyte_var,
@@ -62,12 +85,7 @@ gg_pkc_lineplot <- function(data,
                             stat = c("mean", "median"),
                             variability = c("sd", "se", "ci", "iqr", "none"),
                             log_y = TRUE,
-                            lloq = NA_real_,
-                            x_label = "Nominal time (hr)",
-                            y_label = "Concentration (ng/mL)",
-                            legend_pos = "bottom",
-                            title = NULL,
-                            subtitle = NULL) {
+                            lloq = NA_real_) {
   # Match standard arguments
   stat <- match.arg(stat)
   variability <- match.arg(variability)
@@ -115,12 +133,12 @@ gg_pkc_lineplot <- function(data,
     p <- p + ggplot2::stat_summary(
       fun.data = function(val) {
         m <- mean(val, na.rm = TRUE)
-        se <- sd(val, na.rm = TRUE) / sqrt(sum(!is.na(val)))
+        se <- stats::sd(val, na.rm = TRUE) / sqrt(sum(!is.na(val)))
 
         err <- switch(variability,
-          "sd" = sd(val, na.rm = TRUE),
+          "sd" = stats::sd(val, na.rm = TRUE),
           "se" = se,
-          "ci" = qt(0.975, df = max(1, sum(!is.na(val)) - 1)) * se
+          "ci" = stats::qt(0.975, df = max(1, sum(!is.na(val)) - 1)) * se
         )
 
         # Floor ymin to 1e-5 to prevent log(negative) errors
@@ -132,9 +150,9 @@ gg_pkc_lineplot <- function(data,
     p <- p + ggplot2::stat_summary(
       fun.data = function(val) {
         data.frame(
-          y = median(val, na.rm = TRUE),
-          ymin = quantile(val, 0.25, na.rm = TRUE),
-          ymax = quantile(val, 0.75, na.rm = TRUE)
+          y = stats::median(val, na.rm = TRUE),
+          ymin = stats::quantile(val, 0.25, na.rm = TRUE),
+          ymax = stats::quantile(val, 0.75, na.rm = TRUE)
         )
       },
       geom = "errorbar", width = 0.2, position = pd
@@ -158,15 +176,9 @@ gg_pkc_lineplot <- function(data,
 
   # Theming
   p <- p +
-    ggplot2::labs(
-      x = x_label,
-      y = y_label,
-      title = title,
-      subtitle = subtitle
-    ) +
     ggplot2::theme_classic() +
     ggplot2::theme(
-      legend.position = legend_pos,
+      legend.position = "bottom",
       legend.title.position = "top",
       legend.title.align = 0.5,
       legend.background = ggplot2::element_rect(fill = "white", color = "black", linewidth = 0.5),

@@ -120,7 +120,7 @@ test_that("gg_pkc_lineplot calculates median and IQR properly", {
 test_that("gg_pkc_lineplot applies graphical parameters correctly", {
   # Plot 1: Log scale, LLOQ provided
   p_log_lloq <- gg_pkc_lineplot(
-    mock_pk_df |> dplyr::filter(AVAL > 0),
+    mock_pk_df[mock_pk_df$AVAL > 0, ],
     time_var = ATPTN,
     analyte_var = AVAL,
     group = TRT,

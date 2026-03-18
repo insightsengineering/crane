@@ -12,40 +12,33 @@ gg_pkc_lineplot(
   stat = c("mean", "median"),
   variability = c("sd", "se", "ci", "iqr", "none"),
   log_y = TRUE,
-  lloq = NA_real_,
-  x_label = "Nominal time (hr)",
-  y_label = "Concentration (ng/mL)",
-  legend_pos = "bottom",
-  title = NULL,
-  subtitle = NULL
+  lloq = NA_real_
 )
 }
 \arguments{
-\item{data}{(\code{data.frame})\cr The dataset containing PK data.}
+\item{data}{(\code{data.frame})\cr
+The dataset containing PK data.}
 
-\item{time_var}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr The time variable (x-axis).}
+\item{time_var}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+The time variable (x-axis).}
 
-\item{analyte_var}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr The concentration/analyte variable (y-axis).}
+\item{analyte_var}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+The concentration/analyte variable (y-axis).}
 
-\item{group}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr The grouping/treatment variable.}
+\item{group}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+The grouping/treatment variable.}
 
-\item{stat}{(\code{string})\cr Primary summary statistic: \code{"mean"} or \code{"median"}. Default is \code{"mean"}.}
+\item{stat}{(\code{string})\cr
+Primary summary statistic: \code{"mean"} or \code{"median"}. Default is \code{"mean"}.}
 
-\item{variability}{(\code{string})\cr Variability measure: \code{"sd"}, \code{"se"}, \code{"ci"}, \code{"iqr"}, or \code{"none"}. Default is \code{"sd"}.}
+\item{variability}{(\code{string})\cr
+Variability measure: \code{"sd"}, \code{"se"}, \code{"ci"}, \code{"iqr"}, or \code{"none"}. Default is \code{"sd"}.}
 
-\item{log_y}{(\code{logical})\cr Whether to apply log10 scale to the y-axis. Default is \code{TRUE}.}
+\item{log_y}{(\code{logical})\cr
+Whether to apply log10 scale to the y-axis. Default is \code{TRUE}.}
 
-\item{lloq}{(\code{numeric} or \code{NULL})\cr Lower Limit of Quantification. Default is \code{NA_real_}.}
-
-\item{x_label}{(\code{string})\cr X-axis label. Default is \code{"Nominal time (hr)"}.}
-
-\item{y_label}{(\code{string})\cr Y-axis label. Default is \code{"Concentration (ng/mL)"}.}
-
-\item{legend_pos}{(\code{string})\cr Standard ggplot2 legend position options. Default is \code{"bottom"}.}
-
-\item{title}{(\code{string} or \code{NULL})\cr Plot title.}
-
-\item{subtitle}{(\code{string} or \code{NULL})\cr Plot subtitle.}
+\item{lloq}{(\code{numeric} or \code{NULL})\cr
+Lower Limit of Quantification. Default is \code{NA_real_}.}
 }
 \value{
 A \code{ggplot} object.
@@ -86,4 +79,25 @@ df_pk |>
     log_y = TRUE,
     lloq = 2.0
   )
+
+# Title, subtitle, axes labels and legend position customization
+gg_pkc_lineplot(
+  data = df_pk,
+  time_var = ATPTN,
+  analyte_var = AVAL,
+  group = TRT,
+  stat = "mean",
+  variability = "sd",
+  log_y = FALSE
+) +
+  ggplot2::labs(
+    x = "Nominal time (hr)",
+    y = "Concentration (ng/mL)",
+    title = "Title",
+    subtitle = "Subtitle"
+  ) +
+  ggplot2::theme(
+    legend.position = "top"
+  )
+
 }
