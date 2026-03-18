@@ -52,8 +52,13 @@
 #'
 #' @importFrom rlang .data
 #' @export
-gg_mmrm_lineplot <- function(mmrm_df, arm, visit, error_bar = c("ci", "se"),
-                             dodge_width = 0.15, hline = 0, legend_pos = c(0.02, 0.02)) {
+gg_mmrm_lineplot <- function(mmrm_df,
+                             arm,
+                             visit,
+                             error_bar = c("ci", "se"),
+                             dodge_width = 0.15,
+                             hline = 0,
+                             legend_pos = c(0.02, 0.02)) {
   error_bar <- match.arg(error_bar)
 
   # 1. Mandatory Arguments & Tidy-selection
@@ -130,7 +135,7 @@ gg_mmrm_lineplot <- function(mmrm_df, arm, visit, error_bar = c("ci", "se"),
         ymax   = if (!is_negative_trend) -.data$est + .data$se else .data$est + .data$se
       )
     y_label <- "Mean (\u00B1 SE) Change from Baseline"
-  } else {
+  } else if (error_bar == "ci") {
     plot_df <- plot_df |>
       dplyr::mutate(
         plot_y = if (!is_negative_trend) -.data$est else .data$est,
