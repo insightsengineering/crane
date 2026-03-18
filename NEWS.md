@@ -8,6 +8,8 @@
 
 * Added `tbl_mmrm()` and `get_mmrm_results()` functions to create regression tables for Mixed Models for Repeated Measures (MMRM). (#163)
 
+* Added `gg_mmrm_lineplot()` to create line plots of MMRM results. (#181)
+
 ### Other Updates
 
 * Removed bold from headers when using `tbl_strata()` (#133).
