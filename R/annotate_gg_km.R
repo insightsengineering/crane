@@ -297,3 +297,107 @@ annotate_coxph <- function(gg_plt, coxph_tbl, ...) {
 
   gg_plt
 }
+
+#' Annotate Plot with Numbers at Risk Table (Updated)
+#'
+#' @description Adds a "Numbers at Risk" table below a Kaplan-Meier plot.
+#'   This updated version uses patchwork for flawless axis alignment.
+#'
+#' @param gg_plt (`ggplot2`)\cr
+#'   The main KM plot.
+#' @param fit_km (`survfit`)\cr
+#'   The fitted survival object.
+#' @param title (`string`)\cr
+#'   Title for the table. Defaults to "Patients at Risk:".
+#' @param rel_height_plot (`numeric`)\cr
+#'   Proportion of vertical space for the main plot.
+#' @param xlab (`character`)\cr
+#'   X-axis label for the table.
+#' @param ... Additional arguments (e.g., `font_size`).
+#'
+#' @return A `patchwork` combined object.
+#' @export
+annotate_riskdf_2 <- function(gg_plt,
+                              fit_km,
+                              title = "Patients at Risk:",
+                              rel_height_plot = 0.75,
+                              xlab = "Days",
+                              ...) {
+  # 1. Input Checks
+  if (!inherits(gg_plt, c("gg", "ggplot"))) {
+    rlang::abort("`gg_plt` must be a ggplot object.")
+  }
+
+  if (!inherits(fit_km, "survfit")) {
+    rlang::abort("`fit_km` must be a survfit object.")
+  }
+
+  if (rel_height_plot <= 0 || rel_height_plot >= 1) {
+    rlang::abort("`rel_height_plot` must be between 0 and 1.")
+  }
+
+  default_eargs <- list(font_size = 10)
+  eargs <- utils::modifyList(default_eargs, list(...))
+
+  # 2. Extract Data and Timepoints
+  data <- broom::tidy(fit_km)
+  xticks <- h_xticks(data = data)
+  annot_tbl <- summary(fit_km, times = xticks, extend = TRUE)
+
+  # 3. Format Strata Levels
+  strata_levels <- if (is.null(fit_km$strata)) "All" else levels(fit_km$strata)
+
+  annot_tbl <- if (is.null(fit_km$strata)) {
+    data.frame(
+      n.risk = annot_tbl$n.risk,
+      time = annot_tbl$time,
+      strata = strata_levels
+    )
+  } else {
+    strata_lst <- strsplit(
+      sub("=", "equals", levels(annot_tbl$strata)),
+      "equals"
+    )
+    levels(annot_tbl$strata) <- matrix(
+      unlist(strata_lst),
+      ncol = 2,
+      byrow = TRUE
+    )[, 2]
+
+    data.frame(
+      n.risk = annot_tbl$n.risk,
+      time = annot_tbl$time,
+      strata = annot_tbl$strata
+    )
+  }
+
+  # 4. Pivot to Wide Risk Table
+  at_risk_tbl <- annot_tbl |>
+    tidyr::pivot_wider(names_from = "time", values_from = "n.risk") |>
+    dplyr::mutate(dplyr::across(dplyr::everything(), ~ tidyr::replace_na(.x, 0))) |>
+    tibble::column_to_rownames(var = "strata") |>
+    as.data.frame()
+
+  # 5. Format the Row Labels (Italics)
+  km_y_labels <- parse(text = paste0('italic("', rownames(at_risk_tbl), '")'))
+
+  # 6. Enforce vertical stacking for the legend inside the main plot
+  gg_plt <- gg_plt +
+    ggplot2::theme(legend.direction = "vertical")
+
+  # 7. Call the Universal Alignment Function
+  combined_plot <- df2gg_aligned(
+    df = at_risk_tbl,
+    gg_plt = gg_plt,
+    type = "KM",
+    y_labels = km_y_labels,
+    title = title,
+    xlab = xlab,
+    show_xaxis = TRUE,
+    text_size = eargs$font_size / ggplot2::.pt,
+    label_size = eargs$font_size,
+    rel_height_plot = rel_height_plot
+  )
+
+  combined_plot
+}

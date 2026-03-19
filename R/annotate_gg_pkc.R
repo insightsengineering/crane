@@ -5,7 +5,7 @@
 #' @param data (`data.frame`)\cr
 #'   The raw or summarized dataset used to generate the table.
 #' @param time_var,analyte_var,group ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
-#'   Optional. If `NULL` (default), the function automatically extracts these 
+#'   Optional. If `NULL` (default), the function automatically extracts these
 #'   from the `gg_plt` mapping.
 #' @param summary_stats (`character`)\cr
 #'   A vector of statistics to include. Defaults to `c("n", "mean", "sd")`.
@@ -16,7 +16,7 @@
 #' @param ... Additional args passed to `df2gg_2()`.
 #'
 #' @export
-annotate_gg_pkc <- function(data, 
+annotate_gg_pkc <- function(data,
                             gg_plt,
                             time_var = NULL,
                             analyte_var = NULL,
@@ -25,12 +25,15 @@ annotate_gg_pkc <- function(data,
                             text_size = 3.5,
                             rel_height_plot = 0.75,
                             ...) {
-
   # 1. Helper & Variable Extraction---------------------------------------------
   get_var <- function(mapping_quo) {
-    if (is.null(mapping_quo) || !rlang::is_quosure(mapping_quo)) return(NULL)
+    if (is.null(mapping_quo) || !rlang::is_quosure(mapping_quo)) {
+      return(NULL)
+    }
     expr <- rlang::quo_get_expr(mapping_quo)
-    if (rlang::is_symbol(expr)) return(as.character(expr))
+    if (rlang::is_symbol(expr)) {
+      return(as.character(expr))
+    }
     if (rlang::is_call(expr, "[[") && identical(expr[[2]], quote(.data))) {
       return(rlang::eval_bare(expr[[3]]))
     }
@@ -40,13 +43,14 @@ annotate_gg_pkc <- function(data,
   if (is.null(time_var)) time_var <- get_var(gg_plt$mapping$x)
   if (is.null(analyte_var)) analyte_var <- get_var(gg_plt$mapping$y)
   if (is.null(group)) group <- get_var(gg_plt$mapping$colour)
-  
+
   if (any(vapply(list(time_var, analyte_var, group), is.null, logical(1)))) {
     cli::cli_abort(
       paste0(
         "Missing variables. Specify {.arg time_var},",
-         "{.arg analyte_var}, and {.arg group}.")
-        )
+        "{.arg analyte_var}, and {.arg group}."
+      )
+    )
   }
 
   # 2. Stat Setup---------------------------------------------------------------
@@ -86,12 +90,12 @@ annotate_gg_pkc <- function(data,
           type = list(dplyr::all_of(analyte_var) ~ "continuous2"),
           statistic = list(dplyr::all_of(analyte_var) ~ gts_stat),
           missing = "no",
-          label = list(dplyr::all_of(analyte_var) ~ " ") 
+          label = list(dplyr::all_of(analyte_var) ~ " ")
         ) |>
         gtsummary::add_stat_label(
           label = dplyr::all_of(analyte_var) ~ gts_stat_labels
         ) |>
-        gtsummary::modify_header(gtsummary::all_stat_cols() ~ "{level}") 
+        gtsummary::modify_header(gtsummary::all_stat_cols() ~ "{level}")
     ) |>
     gtsummary::modify_header(label = "remove")
 
@@ -101,17 +105,34 @@ annotate_gg_pkc <- function(data,
   )
   formatted_df[is.na(formatted_df)] <- ""
   names(formatted_df) <- gsub("\\*", "", names(formatted_df))
-  
+
   strata_col_name <- names(formatted_df)[1]
-  
+
   formatted_df <- formatted_df |>
     dplyr::mutate(
       Group = paste0(.data[[strata_col_name]], .data[["remove"]])
     ) |>
     dplyr::select(-remove)
 
-  # 5. Table Plotting-----------------------------------------------------------
-  gg_table <- df2gg_2(formatted_df, gg_plt, ...)
+  # 5. Format Labels using plotmath---------------------------------------------
+  raw_labels <- as.character(formatted_df[[1]])
+  is_stat <- trimws(raw_labels) %in% c("n", "Mean", "SD", "Median", "IQR")
+
+  pk_y_labels <- parse(text = ifelse(
+    is_stat,
+    paste0('~~~~"', trimws(raw_labels), '"'),
+    paste0('bold("', trimws(raw_labels), '")')
+  ))
+
+  # 6. Table Plotting-----------------------------------------------------------
+  gg_table <- df2gg_aligned(
+    df = formatted_df,
+    gg_plt = gg_plt,
+    show_xaxis = FALSE,
+    type = "PK",
+    y_labels = pk_y_labels,
+    ...
+  )
 
   gg_table
 }

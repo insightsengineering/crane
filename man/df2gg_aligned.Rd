@@ -7,7 +7,7 @@
 df2gg_aligned(
   df,
   gg_plt,
-  y_col = NULL,
+  type = c("KM", "PK"),
   y_labels = NULL,
   title = NULL,
   xlab = NULL,
@@ -18,28 +18,36 @@ df2gg_aligned(
 )
 }
 \arguments{
-\item{df}{(\code{data.frame})\cr The summary table to render.}
+\item{df}{(\code{data.frame})\cr
+The summary table to render.}
 
-\item{gg_plt}{(\code{ggplot2})\cr The main plot to align to and stack on top of.}
+\item{gg_plt}{(\code{ggplot2})\cr
+The main plot to align to and stack on top of.}
 
-\item{y_col}{(\code{character} or \code{NULL})\cr The name of the column containing Y-axis
-labels. If \code{NULL}, the \code{rownames(df)} are used.}
+\item{type}{(\code{character})\cr
+The type of plot/table. Either \code{"KM"} (uses rownames for Y-axis) or \code{"PK"}
+(uses the first column for Y-axis).}
 
-\item{y_labels}{(\code{character} or \code{expression})\cr Optional. A vector of formatted
-labels (e.g., parsed plotmath) to override the raw strings extracted from \code{y_col}.}
+\item{y_labels}{(\code{character} or \code{expression})\cr
+Formatted labels override.}
 
-\item{title}{(\code{character} or \code{NULL})\cr Optional title for the table.}
+\item{title}{(\code{character} or \code{NULL})\cr
+Optional title for the table.}
 
-\item{xlab}{(\code{character} or \code{NULL})\cr Optional X-axis label for the table.}
+\item{xlab}{(\code{character} or \code{NULL})\cr
+Optional X-axis label for the table.}
 
-\item{show_xaxis}{(\code{logical})\cr Should the table display an X-axis line, ticks,
-and numeric text? Useful for risk tables. Defaults to \code{FALSE}.}
+\item{show_xaxis}{(\code{logical})\cr
+Should the table display an X-axis line?}
 
-\item{text_size}{(\code{numeric})\cr Size of the data values in the table.}
+\item{text_size}{(\code{numeric})\cr
+Size of the data values in the table.}
 
-\item{label_size}{(\code{numeric})\cr Size of the axis and title text.}
+\item{label_size}{(\code{numeric})\cr
+Size of the axis and title text.}
 
-\item{rel_height_plot}{(\code{numeric})\cr Proportion of vertical space given to the main plot.}
+\item{rel_height_plot}{(\code{numeric})\cr
+Vertical space for the main plot.}
 }
 \value{
 A combined \code{patchwork} object.
@@ -47,4 +55,6 @@ A combined \code{patchwork} object.
 \description{
 Generates a text table from a dataframe, perfectly aligns its
 X-axis to match a provided ggplot, and seamlessly stacks them vertically.
+Tailored specifically for Kaplan-Meier ("KM") or Pharmacokinetic ("PK")
+table structures.
 }
