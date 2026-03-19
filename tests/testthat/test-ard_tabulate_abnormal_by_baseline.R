@@ -67,8 +67,8 @@ test_that("ard_tabulate_abnormal_by_baseline() correctly calculates percentages"
   # Create a small controlled dataset to verify math
   df_small <- data.frame(
     USUBJID = c("1", "2", "3", "4"),
-    TRTA    = c("A", "A", "A", "A"),
-    BNRIND  = c("NORMAL", "NORMAL", "LOW", "LOW"),
+    TRTA = c("A", "A", "A", "A"),
+    BNRIND = c("NORMAL", "NORMAL", "LOW", "LOW"),
     LBNRIND = c("LOW", "NORMAL", "LOW", "NORMAL"),
     stringsAsFactors = FALSE
   )

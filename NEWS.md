@@ -8,6 +8,8 @@
 
 * Added `tbl_mmrm()` and `get_mmrm_results()` functions to create regression tables for Mixed Models for Repeated Measures (MMRM). (#163)
 
+* Added `gg_mmrm_lineplot()` to create line plots of MMRM results. (#181)
+
 ### Other Updates
 
 * Removed bold from headers when using `tbl_strata()` (#133).
@@ -15,6 +17,8 @@
 * Unified border width in `theme_gtsummary_roche()` to 0.5 for header. (#154)
 
 * Added example on how to stratify `tbl_baseline_chg()` by `PARAM` and split into a list.
+
+* Adjusted `tbl_mmrm()` to allow `base_df = NULL`.
 
 
 # crane 0.3.1
