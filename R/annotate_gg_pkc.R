@@ -9,7 +9,7 @@
 #'   from the `gg_plt` mapping.
 #' @param summary_stats (`character`)\cr
 #'   A vector of statistics to include. Defaults to `c("n", "mean", "sd")`.
-#' @param tbl_text_size (`numeric`)\cr
+#' @param text_size (`numeric`)\cr
 #'   The font size for the table text. Defaults to `3`.
 #' @param rel_height_plot (`numeric`)\cr
 #'   Relative height of the plot vs the table. Defaults to `0.75`.
@@ -111,7 +111,7 @@ annotate_gg_pkc <- function(data,
     dplyr::select(-remove)
 
   # 5. Table Plotting-----------------------------------------------------------
-  gg_table <- df2gg_2(formatted_df, gg_plt, text_size = tbl_text_size, ...)
+  gg_table <- df2gg_2(formatted_df, gg_plt, ...)
 
   gg_table
 }

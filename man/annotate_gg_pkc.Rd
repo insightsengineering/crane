@@ -30,13 +30,13 @@ from the \code{gg_plt} mapping.}
 \item{summary_stats}{(\code{character})\cr
 A vector of statistics to include. Defaults to \code{c("n", "mean", "sd")}.}
 
+\item{text_size}{(\code{numeric})\cr
+The font size for the table text. Defaults to \code{3}.}
+
 \item{rel_height_plot}{(\code{numeric})\cr
 Relative height of the plot vs the table. Defaults to \code{0.75}.}
 
 \item{...}{Additional args passed to \code{df2gg_2()}.}
-
-\item{tbl_text_size}{(\code{numeric})\cr
-The font size for the table text. Defaults to \code{3}.}
 }
 \description{
 Annotate PK Plot with Summary Table
