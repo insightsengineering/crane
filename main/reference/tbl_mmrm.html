@@ -19,7 +19,7 @@ following the style of the MMRM template. It combines baseline summary statistic
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1.9011</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1.9012</span>
       </span>
     </div>
 
@@ -72,7 +72,14 @@ following the style of the MMRM template. It combines baseline summary statistic
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_mmrm_results</span><span class="op">(</span><span class="va">fit_mmrm</span>, <span class="va">arm</span>, <span class="va">visit</span>, conf_level <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">tbl_mmrm</span><span class="op">(</span><span class="va">mmrm_df</span>, <span class="va">base_df</span>, <span class="va">arm</span>, <span class="va">visit</span>, <span class="va">baseline_aval</span>, digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">tbl_mmrm</span><span class="op">(</span></span>
+<span>  <span class="va">mmrm_df</span>,</span>
+<span>  base_df <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">arm</span>,</span>
+<span>  <span class="va">visit</span>,</span>
+<span>  baseline_aval <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -116,12 +123,15 @@ Usually the output of <code>get_mmrm_results()</code>.</p></dd>
 <dd><p>(<code>data.frame</code>)<br>
 A data frame containing baseline measurements. This should include columns for
 the visit, arm, and baseline values. The function will summarize this data
-to provide baseline statistics in the final table.</p></dd>
+to provide baseline statistics in the final table. If <code>base_df</code> is not provided
+or does not contain any rows, the function will simply omit the baseline summary
+section from the final table.</p></dd>
 
 
 <dt id="arg-baseline-aval">baseline_aval<a class="anchor" aria-label="anchor" href="#arg-baseline-aval"></a></dt>
 <dd><p>(<code><a href="https://dplyr.tidyverse.org/reference/dplyr_tidy_select.html" class="external-link">tidy-select</a></code>)<br>
-The column in <code>base_df</code> that contains the baseline values to be summarized.</p></dd>
+The column in <code>base_df</code> that contains the baseline values to be summarized.
+Unused if <code>base_df</code> is not provided or does not contain any rows.</p></dd>
 
 
 <dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
@@ -138,6 +148,10 @@ along with their standard errors, confidence intervals, degrees of freedom,
 and sample sizes. This data frame is structured to facilitate the creation of a
 formatted table using <code>tbl_mmrm()</code>.</p>
 <p><code>tbl_mmrm</code> returns a 'gtsummary' table object.</p>
+    </div>
+    <div id="see-also">
+    <h2>See also</h2>
+    <div class="dont-index"><p><code><a href="gg_mmrm_lineplot.html">gg_mmrm_lineplot()</a></code> for visualizing MMRM results.</p></div>
     </div>
 
     <div id="ref-examples">
