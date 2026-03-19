@@ -85,7 +85,8 @@ gg_pkc_lineplot <- function(data,
                             stat = c("mean", "median"),
                             variability = c("sd", "se", "ci", "iqr", "none"),
                             log_y = TRUE,
-                            lloq = NA_real_) {
+                            lloq = NA_real_
+                          ) {
   # Match standard arguments
   stat <- match.arg(stat)
   variability <- match.arg(variability)
@@ -181,9 +182,23 @@ gg_pkc_lineplot <- function(data,
       legend.position = "bottom",
       legend.title.position = "top",
       legend.title.align = 0.5,
-      legend.background = ggplot2::element_rect(fill = "white", color = "black", linewidth = 0.5),
+      legend.background = ggplot2::element_rect(
+        fill = "white",
+        color = "black",
+        linewidth = 0.5
+      ),
       plot.title = ggplot2::element_text(face = "bold")
     )
+  
+  # Aligning plot to actual timepoints in the data frame
+  
+  new_x_scale <- ggplot2::scale_x_continuous(
+    breaks = data[[time_var]],
+    expand = ggplot2::expansion(mult = 0.05)
+  )
+
+  p <- p + 
+    new_x_scale + ggplot2::coord_cartesian(xlim = range(data[[time_var]]))
 
   p
 }
