@@ -1,31 +1,53 @@
 #' Annotate Kaplan-Meier Plot
 #'
 #' @description
-#' These functions provide capabilities to annotate Kaplan-Meier plots ([gg_km()]) with additional summary tables,
-#' including median survival times, numbers at risk, and cox proportional hazards results.
-#' The annotations are added using the `cowplot` package for flexible placement.
+#' These functions provide capabilities to annotate Kaplan-Meier plots ([gg_km()])
+#' with additional summary tables, including median survival times, numbers at
+#' risk, and cox proportional hazards results. The annotations are added using
+#' the `cowplot` package for flexible placement.
 #'
 #' @param gg_plt (`ggplot2` or `cowplot`)\cr
-#'   The primary plot object (either a `ggplot2` or `cowplot` object) of the Kaplan-Meier plot.
-#' @param ... Additional arguments passed to the control list for the annotation box.
-#'   These arguments override the default values.
+#'   The primary plot object of the Kaplan-Meier plot. Note: While floating
+#'   tables accept `cowplot` objects, aligned tables (like the risk table)
+#'   require a pure `ggplot2` object.
+#' @param fit_km (`survfit`)\cr
+#'   A fitted Kaplan-Meier object of class `survfit` (from the `survival`
+#'   package). This object contains the necessary survival data used to
+#'   calculate and generate the content displayed in the annotation table.
+#' @param coxph_tbl (`data.frame`)\cr
+#'   A data frame containing the pre-calculated Cox-PH results, derived
+#'   using function `get_cox_pairwise_df()`.
+#' @param title (`character`)\cr
+#'   A single string value indicating whether to include a title above the
+#'   table. Defaults to `"Patients at Risk:"`. If `NULL`, no title is added.
+#' @param rel_height_plot (`numeric`)\cr
+#'   A single numeric value defining the **relative height** of the main
+#'   Kaplan-Meier plot area compared to the 'at-risk' table. This value should
+#'   be between 0 and 1, where a value closer to 1 gives the main plot more
+#'   vertical space. Defaults to `0.75`.
+#' @param xlab (`character`)\cr
+#'   A single character string for the **x-axis label** on the 'at-risk' table.
+#'   This typically represents time (e.g., "Days").
+#' @param ... Additional arguments passed to the control list for the annotation
+#'   box. These arguments override the default values.\cr
 #'   Accepted arguments include:
 #'   \itemize{
-#'     \item \code{x} (\code{numeric}): X-coordinate for the box anchor position (0 to 1). Default is
-#'       \code{0.8} (\code{0.29} for `annotate_coxph`).
-#'     \item \code{y} (\code{numeric}): Y-coordinate for the box anchor position (0 to 1). Default is
-#'       \code{0.85} (\code{0.51} for `annotate_coxph`).
-#'     \item \code{w} (\code{numeric}): Width of the annotation box (0 to 1). Default is
-#'       \code{0.32} (\code{0.4} for `annotate_coxph`).
-#'     \item \code{h} (\code{numeric}): Height of the annotation box (0 to 1). Default
-#'       is \code{0.16} (\code{0.125} for `annotate_coxph`).
-#'     \item \code{fill} (\code{logical}): Whether the annotation box should have a background fill. Default is
-#'       \code{TRUE}.
-#'     \item \code{font_size} (\code{numeric}): Base font size for the text inside the annotation box. Default
-#'       is \code{10}.
+#'     \item \code{x} (\code{numeric}): X-coordinate for the box anchor position
+#'       (0 to 1). Default is \code{0.8} (\code{0.29} for `annotate_coxph`).
+#'     \item \code{y} (\code{numeric}): Y-coordinate for the box anchor position
+#'       (0 to 1). Default is \code{0.85} (\code{0.51} for `annotate_coxph`).
+#'     \item \code{w} (\code{numeric}): Width of the annotation box (0 to 1).
+#'       Default is \code{0.32} (\code{0.4} for `annotate_coxph`).
+#'     \item \code{h} (\code{numeric}): Height of the annotation box (0 to 1).
+#'       Default is \code{0.16} (\code{0.125} for `annotate_coxph`).
+#'     \item \code{fill} (\code{logical}): Whether the annotation box should
+#'       have a background fill. Default is \code{TRUE}.
+#'     \item \code{font_size} (\code{numeric}): Base font size for the text
+#'       inside the annotation box. Default is \code{10}.
 #'   }
 #'
-#' @seealso [gg_km()], [process_survfit()], and [get_cox_pairwise_df()] for related functionalities.
+#' @seealso [gg_km()], [process_survfit()], and [get_cox_pairwise_df()] for
+#'   related functionalities.
 #'
 #' @examples
 #' # Preparing the Kaplan-Meier Plot
@@ -43,25 +65,14 @@
 #' @name annotate_gg_km
 NULL
 
-
-#' @describeIn annotate_gg_km The function `annotate_riskdf` adds a "Numbers at Risk" table below a
-#'   Kaplan-Meier plot ([gg_km()]) using `cowplot::plot_grid`.
+#' @describeIn annotate_gg_km The function `annotate_riskdf` adds a "Numbers
+#'   at Risk" table below a Kaplan-Meier plot using `patchwork`.\cr
+#'   **Note:** For this specific function, `gg_plt` must be a pure `ggplot2`
+#'   object (not a combined `cowplot` object) because it requires exact X-axis
+#'   extraction.
 #'
-#' @param fit_km (`survfit`)\cr
-#'   A fitted Kaplan-Meier object of class `survfit` (from the `survival` package). This object contains the necessary
-#'   survival data used to calculate and generate the content displayed in the annotation table.
-#' @param title (`string`)\cr
-#'   A single logical value indicating whether to include a above the table. Defaults to
-#'   `""Patients at Risk:""`. If `NULL`, no title is added.
-#' @param rel_height_plot (`numeric`)\cr
-#'   A single numeric value defining the **relative height** of the main Kaplan-Meier plot area compared
-#'   to the 'at-risk' table. This value should be between 0 and 1, where a value closer to 1 gives the main plot
-#'   more vertical space. Defaults to `0.75`.
-#' @param xlab (`character`)\cr
-#'   A single character string for the **x-axis label** on the 'at-risk' table. This typically represents
-#'   time (e.g., "Time (Days)").
-#' @return The function `annotate_riskdf` returns a `cowplot` object combining the KM plot and the 'Numbers at Risk'
-#'   table.
+#' @return The function `annotate_riskdf` returns a `cowplot` object combining
+#'   the KM plot and the 'Numbers at Risk' table.
 #'
 #' @examples
 #' # Annotate Plot with Numbers at Risk Table
@@ -74,34 +85,46 @@ NULL
 #' annotate_riskdf(plt_kmg01, fit_kmg01) # rerun gg_km to change legend order
 #'
 #' @export
-annotate_riskdf <- function(gg_plt, fit_km, title = "Patients at Risk:",
-                            rel_height_plot = 0.75, xlab = "Days",
+annotate_riskdf <- function(gg_plt,
+                            fit_km,
+                            title = "Patients at Risk:",
+                            rel_height_plot = 0.75,
+                            xlab = "Days",
                             ...) {
-  check_class(gg_plt, c("gg", "ggplot", "cowplot"))
-  check_class(fit_km, "survfit")
-  check_string(title, allow_empty = TRUE)
-  check_scalar(rel_height_plot)
-  check_numeric(rel_height_plot)
-  if (rel_height_plot <= 0 || rel_height_plot >= 1) {
-    cli::cli_abort(
-      "{.arg rel_height_plot} must be a single {.cls numeric} value between 0 and 1 (exclusive).",
-      call = get_cli_abort_call()
+  # 1. Input Checks - Strictly enforcing pure ggplot objects----------------------
+  is_cowplot <- inherits(gg_plt, "ggplot") &&
+    any(vapply(
+      gg_plt$layers,
+      function(l) inherits(l$geom, "GeomDrawGrob"),
+      logical(1)
+    ))
+
+  if (!inherits(gg_plt, c("gg", "ggplot")) || is_cowplot) {
+    rlang::abort(
+      paste0(
+        "`gg_plt` must be a pure ggplot object (not a cowplot object) for",
+        "`annotate_riskdf`."
+      )
     )
   }
-  check_string(xlab)
-  default_eargs <- list(
-    font_size = 10
-  )
-  eargs <- list(...)
-  eargs <- utils::modifyList(default_eargs, eargs)
-  font_size <- eargs[["font_size"]]
-  check_numeric(font_size)
 
+  if (!inherits(fit_km, "survfit")) {
+    rlang::abort("`fit_km` must be a survfit object.")
+  }
+
+  if (rel_height_plot <= 0 || rel_height_plot >= 1) {
+    rlang::abort("`rel_height_plot` must be between 0 and 1.")
+  }
+
+  default_eargs <- list(font_size = 10)
+  eargs <- utils::modifyList(default_eargs, list(...))
+
+  # 2. Extract Data and Timepoints----------------------------------------------
   data <- broom::tidy(fit_km)
   xticks <- h_xticks(data = data)
   annot_tbl <- summary(fit_km, times = xticks, extend = TRUE)
 
-  # Placeholder for strata_levels, should be retrieved from fit_km or passed as argument
+  # 3. Format Strata Levels-----------------------------------------------------
   strata_levels <- if (is.null(fit_km$strata)) "All" else levels(fit_km$strata)
 
   annot_tbl <- if (is.null(fit_km$strata)) {
@@ -111,8 +134,16 @@ annotate_riskdf <- function(gg_plt, fit_km, title = "Patients at Risk:",
       strata = strata_levels
     )
   } else {
-    strata_lst <- strsplit(sub("=", "equals", levels(annot_tbl$strata)), "equals")
-    levels(annot_tbl$strata) <- matrix(unlist(strata_lst), ncol = 2, byrow = TRUE)[, 2]
+    strata_lst <- strsplit(
+      sub("=", "equals", levels(annot_tbl$strata)),
+      "equals"
+    )
+    levels(annot_tbl$strata) <- matrix(
+      unlist(strata_lst),
+      ncol = 2,
+      byrow = TRUE
+    )[, 2]
+
     data.frame(
       n.risk = annot_tbl$n.risk,
       time = annot_tbl$time,
@@ -120,60 +151,42 @@ annotate_riskdf <- function(gg_plt, fit_km, title = "Patients at Risk:",
     )
   }
 
-  at_risk_tbl <- as.data.frame(
-    tidyr::pivot_wider(annot_tbl, names_from = "time", values_from = "n.risk")[, -1]
+  # 4. Pivot to Wide Risk Table-------------------------------------------------
+  at_risk_tbl <- annot_tbl |>
+    tidyr::pivot_wider(names_from = "time", values_from = "n.risk") |>
+    dplyr::mutate(dplyr::across(dplyr::everything(), ~ tidyr::replace_na(.x, 0))) |>
+    tibble::column_to_rownames(var = "strata") |>
+    as.data.frame()
+
+  # 5. Format the Row Labels (Italics)------------------------------------------
+  km_y_labels <- parse(text = paste0('italic("', rownames(at_risk_tbl), '")'))
+
+  # 6. Enforce vertical stacking for the legend inside the main plot------------
+  gg_plt <- gg_plt +
+    ggplot2::theme(legend.direction = "vertical")
+
+  # 7. Call the Engine----------------------------------------------------------
+  res <- df2gg_aligned(
+    df = at_risk_tbl,
+    gg_plt = gg_plt,
+    type = "KM",
+    y_labels = km_y_labels,
+    title = title,
+    xlab = xlab,
+    show_xaxis = TRUE,
+    text_size = eargs$font_size / ggplot2::.pt,
+    label_size = eargs$font_size,
+    rel_height_plot = rel_height_plot
   )
-  at_risk_tbl[is.na(at_risk_tbl)] <- 0
-  rownames(at_risk_tbl) <- levels(annot_tbl$strata)
 
-  gg_at_risk <- df2gg(
-    at_risk_tbl,
-    font_size = eargs$font_size, col_labels = FALSE, hline = FALSE,
-    colwidths = rep(1, ncol(at_risk_tbl)),
-    add_proper_xaxis = TRUE
-  ) +
-    ggplot2::labs(title = if (!is.null(title)) title else NULL, x = xlab) +
-    ggplot2::theme_bw(base_size = eargs$font_size) +
-    ggplot2::theme(
-      plot.title = ggplot2::element_text(size = eargs$font_size, vjust = 3, face = "bold"),
-      panel.border = ggplot2::element_blank(),
-      panel.grid = ggplot2::element_blank(),
-      axis.title.y = ggplot2::element_blank(),
-      axis.ticks.y = ggplot2::element_blank(),
-      axis.text.y = ggplot2::element_text(size = eargs$font_size, face = "italic", hjust = 1),
-      axis.text.x = ggplot2::element_text(size = eargs$font_size),
-      axis.line.x = ggplot2::element_line()
-    ) +
-    ggplot2::coord_cartesian(clip = "off", ylim = c(0.5, nrow(at_risk_tbl)))
-
-  # 1. Get the exact x-range from the top plot (e.g. 0-1200 range)
-  top_range <- layer_scales(gg_plt)$x$range$range
-  top_breaks <- layer_scales(gg_plt)$x$break_positions()
-
-  # 2. Force the bottom plot (table) to use the SAME range and breaks
-  # This ensures 0 on the top is exactly above 0 on the bottom
-  gg_at_risk <- gg_at_risk +
-    scale_x_continuous(
-      limits = top_range,
-      breaks = top_breaks
-    )
-
-  # 3. Force the top plot to also have no expansion so they match perfectly
-  gg_plt <- gg_plt + scale_x_continuous(limits = top_range)
-
-  gg_plt <- cowplot::plot_grid(
-    gg_plt, gg_at_risk,
-    align = "v", axis = "rl", ncol = 1,
-    rel_heights = c(rel_height_plot, 1 - rel_height_plot)
-  )
-  gg_plt
+  res
 }
 
-#' @describeIn annotate_gg_km The `annotate_surv_med` function adds a median survival time summary table as an
-#'   annotation box.
+#' @describeIn annotate_gg_km The `annotate_surv_med` function adds a
+#'   median survival time summary table as an annotation box.
 #'
-#' @return The function `annotate_surv_med` returns a `cowplot` object with the median survival table annotation
-#'   added, ready for final display or saving.
+#' @return The function `annotate_surv_med` returns a `cowplot` object\cr
+#'   with the median survival table annotation added.
 #'
 #' @examples
 #' # Annotate Kaplan-Meier Plot with Median Survival Table
@@ -182,6 +195,7 @@ annotate_riskdf <- function(gg_plt, fit_km, title = "Patients at Risk:",
 #' @export
 annotate_surv_med <- function(gg_plt, fit_km, ...) {
   set_cli_abort_call()
+
   default_eargs <- list(
     x = 0.8,
     y = 0.85,
@@ -190,110 +204,98 @@ annotate_surv_med <- function(gg_plt, fit_km, ...) {
     font_size = 10,
     fill = TRUE
   )
+
   eargs <- list(...)
   eargs <- utils::modifyList(default_eargs, eargs)
 
-  # Checks
-  check_class(fit_km, "survfit")
-  check_class(gg_plt, c("gg", "ggplot", "cowplot"))
-
-  # Check position/size (x, y, w, h, font_size) - Must be single non-missing numeric
-  for (arg_name in c("x", "y", "w", "h", "font_size")) {
-    check_numeric(eargs[[arg_name]])
+  # Check explicitly allows cowplot objects for floating tables
+  if (!inherits(gg_plt, c("gg", "ggplot", "cowplot"))) {
+    rlang::abort("`gg_plt` must be a ggplot or cowplot object.")
   }
-  check_logical(eargs[["fill"]])
 
-  # Determine strata_levels for h_tbl_median_surv, assuming it's available in the calling environment or logic should
-  # be updated. For now, keeping as is, but this typically requires strata_levels or inferring it from fit_km
-  strata_levels <- if (is.null(fit_km$strata)) "All" else levels(fit_km$strata) # Placeholder for strata_levels
+  if (!inherits(fit_km, "survfit")) {
+    rlang::abort("`fit_km` must be a survfit object.")
+  }
 
-  surv_med_tbl <- h_tbl_median_surv(fit_km = fit_km, strata_levels = strata_levels)
-  bg_fill <- if (isTRUE(eargs[["fill"]])) "#00000020" else eargs[["fill"]]
+  strata_levels <- if (is.null(fit_km$strata)) "All" else levels(fit_km$strata)
 
-  gg_surv_med <- df2gg(surv_med_tbl, font_size = eargs[["font_size"]], colwidths = c(1, 1, 2), bg_fill = bg_fill) +
-    ggplot2::theme(
-      axis.text.y = ggplot2::element_text(size = eargs[["font_size"]], face = "italic", hjust = 1),
-      plot.margin = ggplot2::margin(0, 2, 0, 5)
-    ) +
-    ggplot2::coord_cartesian(clip = "off", ylim = c(0.5, nrow(surv_med_tbl) + 1.5))
-  gg_surv_med <- suppressMessages(
-    gg_surv_med +
-      ggplot2::scale_x_continuous() +
-      ggplot2::scale_y_continuous(labels = rev(rownames(surv_med_tbl)), breaks = seq_len(nrow(surv_med_tbl)))
+  surv_med_tbl <- h_tbl_median_surv(
+    fit_km = fit_km,
+    strata_levels = strata_levels
   )
 
-  gg_plt <- cowplot::ggdraw(gg_plt) +
-    cowplot::draw_plot(
-      gg_surv_med, eargs[["x"]], eargs[["y"]],
-      width = eargs[["w"]], height = eargs[["h"]],
-      vjust = 0.5, hjust = 0.5
-    )
-  gg_plt
+  bg_fill <- if (isTRUE(eargs[["fill"]])) "#00000020" else eargs[["fill"]]
+
+  # Call the floating table engine
+  res <- df2gg_floating(
+    df = surv_med_tbl,
+    gg_plt = gg_plt,
+    x = eargs[["x"]],
+    y = eargs[["y"]],
+    w = eargs[["w"]],
+    h = eargs[["h"]],
+    font_size = eargs[["font_size"]],
+    colwidths = c(1, 1, 2),
+    bg_fill = bg_fill
+  )
+
+  res
 }
 
-#' @describeIn annotate_gg_km The function `annotate_coxph()` adds a Cox Proportional Hazards summary table created by
-#' the function [get_cox_pairwise_df()] as an annotation box.
+#' @describeIn annotate_gg_km The function `annotate_coxph()` adds a Cox
+#'   Proportional Hazards summary table as an annotation box.
 #'
-#' @param coxph_tbl (`data.frame`)\cr
-#'   A data frame containing the pre-calculated Cox-PH results, typically from a function like `get_cox_pairwise_df`.
-#'   This data is used to generate the annotation table content.
-#' @param ... Additional arguments passed to the control list for the annotation box.
-#'   These arguments override the default values.
-#'   Accepted arguments include:
-#'   \itemize{
-#'     \item \code{x} (`numeric`): X-coordinate for the box anchor position (0 to 1). Default is \code{0.29}.
-#'     \item \code{y} (`numeric`): Y-coordinate for the box anchor position (0 to 1). Default is \code{0.51}.
-#'     \item \code{w} (`numeric`): Width of the annotation box (0 to 1). Default is \code{0.4}.
-#'     \item \code{h} (`numeric`): Height of the annotation box (0 to 1). Default is \code{0.125}.
-#'   }
 #'
-#' @return The function `annotate_coxph` returns a `cowplot` object with the Cox-PH table annotation added.
+#' @return The function `annotate_coxph` returns a `cowplot` object\cr
+#'   with the Cox-PH table annotation added.
 #'
 #' @examples
 #' # Annotate Kaplan-Meier Plot with Cox-PH Table
-#' coxph_tbl <- get_cox_pairwise_df(formula, data = use_lung, arm = "arm", ref_group = "A")
+#' coxph_tbl <- get_cox_pairwise_df(
+#'   formula,
+#'   data = use_lung, arm = "arm", ref_group = "A"
+#' )
 #' annotate_coxph(plt_kmg01, coxph_tbl)
 #'
 #' @export
 annotate_coxph <- function(gg_plt, coxph_tbl, ...) {
   set_cli_abort_call()
+
   default_eargs <- list(
-    x = 0.29,
-    y = 0.51,
-    w = 0.4,
-    h = 0.125,
+    x = 0.8,
+    y = 0.85,
+    w = 0.32,
+    h = 0.16,
     fill = TRUE,
     font_size = 10
   )
+
   eargs <- list(...)
   eargs <- utils::modifyList(default_eargs, eargs)
 
-  # Check position/size (x, y, w, h, font_size) - Must be single non-missing numeric
-  for (arg_name in c("x", "y", "w", "h", "font_size")) {
-    check_numeric(eargs[[arg_name]])
+  # Check explicitly allows cowplot objects for floating tables
+  if (!inherits(gg_plt, c("gg", "ggplot", "cowplot"))) {
+    rlang::abort("`gg_plt` must be a ggplot or cowplot object.")
   }
-  check_logical(eargs[["fill"]])
+
+  if (!inherits(coxph_tbl, "data.frame")) {
+    rlang::abort("`coxph_tbl` must be a data.frame.")
+  }
 
   bg_fill <- if (isTRUE(eargs[["fill"]])) "#00000020" else eargs[["fill"]]
 
-  gg_coxph <- df2gg(coxph_tbl, font_size = eargs$font_size, colwidths = c(1.1, 1, 3), bg_fill = bg_fill) +
-    ggplot2::theme(
-      axis.text.y = ggplot2::element_text(size = eargs$font_size, face = "italic", hjust = 1),
-      plot.margin = ggplot2::margin(0, 2, 0, 5)
-    ) +
-    ggplot2::coord_cartesian(clip = "off", ylim = c(0.5, nrow(coxph_tbl) + 1.5))
-  gg_coxph <- suppressMessages(
-    gg_coxph +
-      ggplot2::scale_x_continuous() +
-      ggplot2::scale_y_continuous(labels = rev(rownames(coxph_tbl)), breaks = seq_len(nrow(coxph_tbl)))
+  # Call the floating table engine
+  res <- df2gg_floating(
+    df = coxph_tbl,
+    gg_plt = gg_plt,
+    x = eargs[["x"]],
+    y = eargs[["y"]],
+    w = eargs[["w"]],
+    h = eargs[["h"]],
+    font_size = eargs[["font_size"]],
+    colwidths = c(1.1, 1, 3),
+    bg_fill = bg_fill
   )
 
-  gg_plt <- cowplot::ggdraw(gg_plt) +
-    cowplot::draw_plot(
-      gg_coxph, eargs[["x"]], eargs[["y"]],
-      width = eargs[["w"]], height = eargs[["h"]],
-      vjust = 0.5, hjust = 0.5
-    )
-
-  gg_plt
+  res
 }
