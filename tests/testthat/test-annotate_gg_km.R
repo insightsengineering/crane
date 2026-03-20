@@ -38,12 +38,12 @@ test_that("annotate_riskdf generates a cowplot object", {
 
   # 1. Verify it is a ggplot object on the outside
   expect_s3_class(res, "ggplot")
-  
+
   # 2. Look inside the plot layers to prove it was built by cowplot
   has_cowplot_layer <- any(vapply(res$layers, function(layer) {
     inherits(layer$geom, "GeomDrawGrob")
   }, logical(1)))
-  
+
   # 3. Expect that the cowplot-specific drawing layer exists
   expect_true(has_cowplot_layer)
 })
@@ -140,16 +140,16 @@ test_that("annotate_coxph throws errors for invalid inputs", {
 test_that("annotate_riskdf handles unstratified (null) models correctly", {
   # 1. Create a model with NO strata (~ 1)
   fit_null <- survival::survfit(survival::Surv(time, status) ~ 1, data = use_lung)
-  
+
   # 2. Dummy plot for the alignment engine
   p_null <- ggplot2::ggplot() +
     ggplot2::scale_x_continuous(limits = c(0, 1000), breaks = c(0, 500, 1000))
-  
+
   # 3. Test that the unstratified block builds the table without error
   expect_no_error(
     res_null <- annotate_riskdf(gg_plt = p_null, fit_km = fit_null)
   )
-  
+
   expect_s3_class(res_null, "ggplot")
 })
 
