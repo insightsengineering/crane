@@ -29,7 +29,6 @@
 #'
 #' @examples
 #' \dontrun{
-#' \dontrun{
 #' library(ggplot2)
 #'
 #' # 1. Create a base plot with a continuous X-axis
@@ -55,7 +54,7 @@
 #'   show_xaxis = TRUE
 #' )
 #' }
-#' @return A combined `patchwork` object.
+#' @return A combined `cowplot` object.
 #' @keywords internal
 df2gg_aligned <- function(df,
                           gg_plt,
@@ -114,7 +113,6 @@ df2gg_aligned <- function(df,
       values_to = "value"
     ) |>
     dplyr::mutate(x = as.numeric(.data$x_chr))
-    dplyr::mutate(x = as.numeric(.data$x_chr))
 
   df_long$value[is.na(df_long$value)] <- ""
 
@@ -127,7 +125,6 @@ df2gg_aligned <- function(df,
   # 6. Build the aligned table--------------------------------------------------
   p_tbl <- ggplot2::ggplot(
     df_long,
-    ggplot2::aes(x = .data$x, y = .data$row_id, label = .data$value)
     ggplot2::aes(x = .data$x, y = .data$row_id, label = .data$value)
   ) +
     ggplot2::geom_text(size = text_size, vjust = 0.5, hjust = 0.5) +
@@ -231,9 +228,8 @@ df2gg_aligned <- function(df,
 #'   Whether to draw a horizontal line below the column labels.
 #' @param bg_fill (`character`)\cr
 #'   Optional color string for the plot background.
-#' 
+#'
 #' @examples
-#' \dontrun{
 #' \dontrun{
 #' library(ggplot2)
 #'
