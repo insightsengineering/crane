@@ -58,3 +58,31 @@ X-axis to match a provided ggplot, and seamlessly stacks them vertically.
 Tailored specifically for Kaplan-Meier ("KM") or Pharmacokinetic ("PK")
 table structures.
 }
+\examples{
+library(ggplot2)
+
+# 1. Create a base plot with a continuous X-axis
+p_base <- ggplot(mtcars, aes(x = mpg, y = disp)) +
+  geom_point() +
+  scale_x_continuous(limits = c(10, 35), breaks = c(10, 20, 30))
+
+# 2. Create a mock summary table matching the X-axis breaks
+mock_df <- data.frame(
+  `10` = c("15", "12"),
+  `20` = c("10", "8"),
+  `30` = c("5", "3"),
+  check.names = FALSE
+)
+rownames(mock_df) <- c("Group A", "Group B")
+
+# 3. Align and stack the table under the plot using the "KM" engine
+df2gg_aligned(
+  df = mock_df,
+  gg_plt = p_base,
+  type = "KM",
+  title = "Subjects at Risk",
+  show_xaxis = TRUE
+)
+
+}
+\keyword{internal}
