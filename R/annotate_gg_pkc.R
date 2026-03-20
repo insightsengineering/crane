@@ -47,7 +47,7 @@ annotate_gg_pkc <- function(data,
   if (any(vapply(list(time_var, analyte_var, group), is.null, logical(1)))) {
     cli::cli_abort(
       paste0(
-        "Missing variables. Specify {.arg time_var},",
+        "Missing variables. Specify {.arg time_var}, ",
         "{.arg analyte_var}, and {.arg group}."
       )
     )

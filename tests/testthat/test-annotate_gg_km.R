@@ -10,9 +10,12 @@ use_lung$arm <- factor(
 use_lung$status <- use_lung$status - 1
 use_lung <- na.omit(use_lung)
 
+# FIX: Filter out time points > 1000 to prevent ggplot scaling warnings
+use_lung <- use_lung[use_lung$time <= 1000, ]
+
 fit_mock <- survival::survfit(Surv(time, status) ~ arm, data = use_lung)
 
-# 2. Mock ggplot2 base plot (must have x-scale for df2gg_aligned to read)
+# 2. Mock ggplot2 base plot
 p_base <- ggplot2::ggplot(use_lung, aes(x = time, y = status, color = arm)) +
   ggplot2::geom_step() +
   ggplot2::scale_x_continuous(limits = c(0, 1000), breaks = seq(0, 1000, 250))
@@ -27,7 +30,6 @@ cox_mock <- data.frame(
   check.names = FALSE
 )
 rownames(cox_mock) <- c("B vs A", "C vs A")
-
 
 # --- Tests for annotate_riskdf ---
 
@@ -132,5 +134,29 @@ test_that("annotate_coxph throws errors for invalid inputs", {
   expect_error(
     annotate_coxph(gg_plt = p_base, coxph_tbl = list(a = 1)),
     regexp = "must be a data.frame"
+  )
+})
+
+test_that("annotate_riskdf handles unstratified (null) models correctly", {
+  # 1. Create a model with NO strata (~ 1)
+  fit_null <- survival::survfit(survival::Surv(time, status) ~ 1, data = use_lung)
+  
+  # 2. Dummy plot for the alignment engine
+  p_null <- ggplot2::ggplot() +
+    ggplot2::scale_x_continuous(limits = c(0, 1000), breaks = c(0, 500, 1000))
+  
+  # 3. Test that the unstratified block builds the table without error
+  expect_no_error(
+    res_null <- annotate_riskdf(gg_plt = p_null, fit_km = fit_null)
+  )
+  
+  expect_s3_class(res_null, "ggplot")
+})
+
+test_that("annotate_surv_med throws an error for invalid plot inputs", {
+  # Test that passing a string instead of a plot triggers the abort
+  expect_error(
+    annotate_surv_med(gg_plt = "this_is_not_a_plot", fit_km = fit_mock),
+    regexp = "must be a ggplot or cowplot object"
   )
 })

@@ -116,3 +116,26 @@ test_that("get_var helper correctly extracts .data[[var]] mappings", {
 
   expect_s3_class(res, "ggplot")
 })
+
+test_that("annotate_gg_pkc handles complex aesthetic mappings gracefully", {
+  # 1. Create a dummy PK dataset
+  df_dummy <- data.frame(
+    TIME = c(1, 2, 3), 
+    CONC = c(10, 5, 2.5), 
+    TRT = c("A", "A", "A")
+  )
+  
+  # 2. Build a plot using a mathematical expression in the aesthetic mapping
+  p_complex <- ggplot2::ggplot(
+    df_dummy, 
+    ggplot2::aes(x = TIME / 24, y = log(CONC), colour = TRT)
+  ) +
+    ggplot2::geom_point()
+  
+  # 3. The complex 'x' and 'y' aesthetics will cause `get_var()` to fall back 
+  # to `return(NULL)`, which then triggers the main function's missing variable error.
+  expect_error(
+    annotate_gg_pkc(data = df_dummy, gg_plt = p_complex),
+    regexp = "Missing variables"
+  )
+})
