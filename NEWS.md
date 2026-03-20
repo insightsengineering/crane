@@ -10,6 +10,11 @@
 
 * Added `gg_mmrm_lineplot()` to create line plots of MMRM results. (#181)
 
+* Added `gg_pkc_lineplot()` to create line plots for PK data. (#185)  
+
+* Added `annotate_gg_pkc()` to add optional summary statistics table to 
+`gg_pkc_lineplot()`. (#189)
+
 ### Other Updates
 
 * Removed bold from headers when using `tbl_strata()` (#133).
