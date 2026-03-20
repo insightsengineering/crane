@@ -59,6 +59,7 @@ Tailored specifically for Kaplan-Meier ("KM") or Pharmacokinetic ("PK")
 table structures.
 }
 \examples{
+\dontrun{
 library(ggplot2)
 
 # 1. Create a base plot with a continuous X-axis
@@ -83,6 +84,6 @@ df2gg_aligned(
   title = "Subjects at Risk",
   show_xaxis = TRUE
 )
-
+}
 }
 \keyword{internal}
