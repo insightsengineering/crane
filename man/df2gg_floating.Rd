@@ -58,8 +58,6 @@ Optional color string for the plot background.}
 }
 \value{
 A \code{cowplot} object representing the combined plot and table.
-
-keywords @internal
 }
 \description{
 Creates a standalone \code{ggplot2} table and overlays it onto a base plot
@@ -91,3 +89,4 @@ df2gg_floating(
 )
 
 }
+\keyword{internal}

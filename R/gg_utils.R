@@ -255,7 +255,7 @@ df2gg_aligned <- function(df,
 #'
 #' @return A `cowplot` object representing the combined plot and table.
 #'
-#' keywords @internal
+#' @keywords internal
 df2gg_floating <- function(df,
                            gg_plt,
                            x = 0.8,
