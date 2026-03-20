@@ -50,7 +50,7 @@ Size of the axis and title text.}
 Vertical space for the main plot.}
 }
 \value{
-A combined \code{patchwork} object.
+A combined \code{cowplot} object.
 }
 \description{
 Generates a text table from a dataframe, perfectly aligns its
