@@ -73,6 +73,9 @@ test_that("gg_pkc_lineplot calculates statistics and floors negative bounds", {
     log_y = FALSE
   )
 
+  # Ensure the ad-hoc class was attached correctly
+  expect_s3_class(p_sd, "crane_gg_pkc")
+
   # Extract the computed statistical data from the ggplot object
   # Layer 1 = Line, Layer 2 = Point, Layer 3 = Errorbar
   pb <- ggplot2::ggplot_build(p_sd)

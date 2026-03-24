@@ -49,12 +49,13 @@ This function wraps \code{ggplot2} calls to consistently format PK profiles,
 handling log transformations, various summary statistics, and variability measures.
 }
 \examples{
-df_pk <- data.frame(
-  USUBJID = c("P1", "P1", "P1", "P2", "P2", "P2", "P3", "P3", "P3", "P4", "P4", "P4"),
-  TRT = rep(c("Drug A", "Drug B"), each = 6),
-  ATPTN = rep(c(0, 4, 12), times = 4),
-  AVAL = c(0, 10, 1, 0, 12, 10, 0, 20, 10, 0, 18, 12)
-)
+# Prepare PK Data using the built-in Theoph dataset
+df_pk <- Theoph
+df_pk$Time_Nominal <- round(df_pk$Time)
+# Filter to specific timepoints to keep the table clean
+df_pk <- df_pk[df_pk$Time_Nominal \%in\% c(0, 2, 4, 8, 24), ]
+# Create a mock treatment group based on Dose
+df_pk$Dose_Group <- ifelse(df_pk$Dose > 4.5, "High Dose", "Low Dose")
 
 # Linear Scale Example (Baseline 0 is included)
 gg_pkc_lineplot(

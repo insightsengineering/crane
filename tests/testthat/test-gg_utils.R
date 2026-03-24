@@ -23,7 +23,6 @@ df_pk_dummy <- data.frame(
   check.names = FALSE
 )
 
-
 # --- Tests for df2gg_aligned() ---
 
 test_that("df2gg_aligned input validation and error handling works", {
@@ -65,6 +64,36 @@ test_that("df2gg_aligned warns and handles non-numeric column names", {
   expect_s3_class(res, "ggplot")
 })
 
+test_that("df2gg_aligned fully formats a PK table with title and x-axis", {
+  # Tests the success path for type = "PK", title formatting, and show_xaxis formatting
+  expect_no_error(
+    res <- df2gg_aligned(
+      df = df_pk_dummy,
+      gg_plt = p_dummy,
+      type = "PK",
+      title = "PK Summary",
+      xlab = "Time (hr)",
+      show_xaxis = TRUE
+    )
+  )
+
+  expect_s3_class(res, "ggplot")
+})
+
+test_that("df2gg_aligned formats x-axis correctly when xlab is NULL", {
+  # Tests the else branch for axis.title.x (Coverage Line 181)
+  expect_no_error(
+    res <- df2gg_aligned(
+      df = df_pk_dummy,
+      gg_plt = p_dummy,
+      type = "PK",
+      xlab = NULL, # <--- Forces the element_blank() branch
+      show_xaxis = TRUE # <--- Required to enter the block
+    )
+  )
+
+  expect_s3_class(res, "ggplot")
+})
 
 # --- Tests for df2gg_floating() ---
 
@@ -75,7 +104,7 @@ test_that("df2gg_floating works when col_labels = FALSE", {
     Value = c(50, 15.5)
   )
 
-  # Run the engine with col_labels explicitly turned off (Coverage Line 309)
+  # Run the engine with col_labels explicitly turned off
   res <- df2gg_floating(
     df = df_float,
     gg_plt = p_dummy,
@@ -84,4 +113,55 @@ test_that("df2gg_floating works when col_labels = FALSE", {
 
   # Verify it returns a valid cowplot/ggplot object
   expect_s3_class(res, "ggplot")
+})
+
+test_that("df2gg_floating works with column labels, NAs, and background fill", {
+  # Dataframe with an NA value
+  df_float_na <- data.frame(
+    Statistic = c("N", "Median"),
+    Value = c(50, NA)
+  )
+
+  # Run the engine with default col_labels = TRUE and a bg_fill
+  expect_no_error(
+    res <- df2gg_floating(
+      df = df_float_na,
+      gg_plt = p_dummy,
+      col_labels = TRUE,
+      bg_fill = "white"
+    )
+  )
+
+  expect_s3_class(res, "ggplot")
+})
+
+
+# --- Tests for gg_varname_extraction() ---
+
+test_that("gg_varname_extraction correctly extracts standard symbols", {
+  p <- ggplot2::ggplot(mtcars, ggplot2::aes(x = mpg, y = disp))
+
+  # Standard aes() calls map to symbols
+  expect_equal(gg_varname_extraction(p$mapping$x), "mpg")
+  expect_equal(gg_varname_extraction(p$mapping$y), "disp")
+})
+
+test_that("gg_varname_extraction correctly extracts .data pronoun strings", {
+  p <- ggplot2::ggplot(mtcars, ggplot2::aes(x = .data[["mpg"]], y = .data[["disp"]]))
+
+  # .data[[]] syntax results in an evaluation call, which the function should parse
+  expect_equal(gg_varname_extraction(p$mapping$x), "mpg")
+  expect_equal(gg_varname_extraction(p$mapping$y), "disp")
+})
+
+test_that("gg_varname_extraction returns NULL for complex expressions or invalid inputs", {
+  p <- ggplot2::ggplot(mtcars, ggplot2::aes(x = mpg / 2, y = log(disp)))
+
+  # Complex mathematical expressions should safely fallback to NULL
+  expect_null(gg_varname_extraction(p$mapping$x))
+  expect_null(gg_varname_extraction(p$mapping$y))
+
+  # Invalid inputs (NULL or non-quosures) should safely fallback to NULL
+  expect_null(gg_varname_extraction(NULL))
+  expect_null(gg_varname_extraction("this_is_a_string"))
 })

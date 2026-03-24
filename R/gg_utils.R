@@ -352,3 +352,48 @@ df2gg_floating <- function(df,
 
   res
 }
+
+#' Extract Variable Names from ggplot2 Aesthetic Mappings
+#'
+#' @description
+#' This internal helper function safely extracts variable names as character
+#' strings from `ggplot2` aesthetic mappings (quosures). It is designed to
+#' handle both simple symbols (e.g., `aes(x = TIME)`) and `.data` pronouns (e.g.,
+#' `aes(x = .data[["TIME"]])`). Complex expressions or mathematical operations
+#' (e.g., `aes(x = TIME / 24)`) will safely fall back to returning `NULL`.
+#'
+#' @param mapping_quo (`quosure`)\cr
+#'   A quosure extracted from a `ggplot2` aesthetic mapping list (for example,
+#'   `gg_plt$mapping$x`).
+#'
+#' @return A single character string containing the extracted variable name, or
+#'   `NULL` if the variable cannot be safely extracted or is missing.
+#'
+#' @examples
+#' \dontrun{
+#' library(ggplot2)
+#'
+#' # Create a plot with both standard and .data pronoun mappings
+#' p <- ggplot(mtcars, aes(x = mpg, y = .data[["wt"]]))
+#'
+#' # Extracts "mpg"
+#' gg_varname_extraction(p$mapping$x)
+#'
+#' # Extracts "wt"
+#' gg_varname_extraction(p$mapping$y)
+#' }
+#'
+#' @keywords internal
+gg_varname_extraction <- function(mapping_quo) {
+  if (is.null(mapping_quo) || !rlang::is_quosure(mapping_quo)) {
+    return(NULL)
+  }
+  expr <- rlang::quo_get_expr(mapping_quo)
+  if (rlang::is_symbol(expr)) {
+    return(as.character(expr))
+  }
+  if (rlang::is_call(expr, "[[") && identical(expr[[2]], quote(.data))) {
+    return(rlang::eval_bare(expr[[3]]))
+  }
+  return(NULL)
+}
