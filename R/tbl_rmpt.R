@@ -110,7 +110,7 @@
 #'   person_time_footnote = "Total person-time in days"
 #' )
 #'
-#' # Example 3 --------------------------------
+#' # Example 4 --------------------------------
 #' # RMPT table for another variable (e.g. ethnicity), stratified by treatment arm
 #' tbl_rmpt(
 #'  data = df_adex,
@@ -120,6 +120,15 @@
 #'  denominator = df_adsl
 #')
 #'
+#' # Example 5 --------------------------------
+#' # RMPT table for another variable (e.g. age group and sex)
+#' tbl_rmpt(
+#'  data = df_adex,
+#'  variable = AGEGR1,
+#'  aval = AVAL,
+#'  by = SEX,
+#'  denominator = df_adsl
+#' )
 NULL
 
 #' @rdname tbl_rmpt
