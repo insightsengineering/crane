@@ -60,9 +60,9 @@ df_pk$Dose_Group <- ifelse(df_pk$Dose > 4.5, "High Dose", "Low Dose")
 # Linear Scale Example (Baseline 0 is included)
 gg_pkc_lineplot(
   data = df_pk,
-  time_var = ATPTN,
-  analyte_var = AVAL,
-  group = TRT,
+  time_var = Time_Nominal,
+  analyte_var = conc,
+  group = Dose_Group,
   stat = "mean",
   variability = "sd",
   log_y = FALSE
@@ -70,11 +70,11 @@ gg_pkc_lineplot(
 
 # Log Scale Example (Filter out 0s first to avoid log(0) warnings)
 df_pk |>
-  dplyr::filter(AVAL > 0) |>
+  dplyr::filter(conc > 0) |>
   gg_pkc_lineplot(
-    time_var = ATPTN,
-    analyte_var = AVAL,
-    group = TRT,
+    time_var = Time_Nominal,
+    analyte_var = conc,
+    group = Dose_Group,
     stat = "mean",
     variability = "se",
     log_y = TRUE,
@@ -84,9 +84,9 @@ df_pk |>
 # Title, subtitle, axes labels and legend position customization
 gg_pkc_lineplot(
   data = df_pk,
-  time_var = ATPTN,
-  analyte_var = AVAL,
-  group = TRT,
+  time_var = Time_Nominal,
+  analyte_var = conc,
+  group = Dose_Group,
   stat = "mean",
   variability = "sd",
   log_y = FALSE

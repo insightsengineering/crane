@@ -12,8 +12,7 @@ annotate_pkc_df(
   group = NULL,
   summary_stats = c("n", "mean", "sd"),
   text_size = 3.5,
-  rel_height_plot = 0.75,
-  ...
+  rel_height_plot = 0.75
 )
 }
 \arguments{
@@ -35,8 +34,6 @@ The font size for the table text. Defaults to \code{3}.}
 
 \item{rel_height_plot}{(\code{numeric})\cr
 Relative height of the plot vs the table. Defaults to \code{0.75}.}
-
-\item{...}{Additional args .}
 }
 \description{
 These functions provide capabilities to annotate Pharmacokinetics plot
@@ -52,12 +49,12 @@ df_pk <- df_pk[df_pk$Time_Nominal \%in\% c(0, 2, 4, 8, 24), ]
 # Create a mock treatment group based on Dose
 df_pk$Dose_Group <- ifelse(df_pk$Dose > 4.5, "High Dose", "Low Dose")
 
-# Create the Base Plot
+# Create the Base Plot using actual Theoph column names
 p_pk <- gg_pkc_lineplot(
   data = df_pk,
-  time_var = ATPTN,
-  analyte_var = AVAL,
-  group = TRT,
+  time_var = Time_Nominal,
+  analyte_var = conc,
+  group = Dose_Group,
   stat = "mean",
   variability = "sd",
   log_y = FALSE

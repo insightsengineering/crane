@@ -18,7 +18,6 @@
 #'   The font size for the table text. Defaults to `3`.
 #' @param rel_height_plot (`numeric`)\cr
 #'   Relative height of the plot vs the table. Defaults to `0.75`.
-#' @param ... Additional args .
 #'
 #' @seealso [gg_pkc_lineplot()] for related functionalities.
 #' @examples
@@ -30,12 +29,12 @@
 #' # Create a mock treatment group based on Dose
 #' df_pk$Dose_Group <- ifelse(df_pk$Dose > 4.5, "High Dose", "Low Dose")
 #'
-#' # Create the Base Plot
+#' # Create the Base Plot using actual Theoph column names
 #' p_pk <- gg_pkc_lineplot(
 #'   data = df_pk,
-#'   time_var = ATPTN,
-#'   analyte_var = AVAL,
-#'   group = TRT,
+#'   time_var = Time_Nominal,
+#'   analyte_var = conc,
+#'   group = Dose_Group,
 #'   stat = "mean",
 #'   variability = "sd",
 #'   log_y = FALSE
@@ -64,8 +63,7 @@ annotate_pkc_df <- function(data,
                             group = NULL,
                             summary_stats = c("n", "mean", "sd"),
                             text_size = 3.5,
-                            rel_height_plot = 0.75,
-                            ...) {
+                            rel_height_plot = 0.75) {
   # 1. Input Validation---------------------------------------------------------
   if (!inherits(gg_plt, "crane_gg_pkc")) {
     cli::cli_warn(c(
@@ -166,8 +164,7 @@ annotate_pkc_df <- function(data,
     gg_plt = gg_plt,
     show_xaxis = FALSE,
     type = "PK",
-    y_labels = pk_y_labels,
-    ...
+    y_labels = pk_y_labels
   )
 
   gg_table
