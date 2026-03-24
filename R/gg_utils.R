@@ -29,7 +29,6 @@
 #'
 #' @examples
 #' \dontrun{
-#' library(ggplot2)
 #'
 #' # 1. Create a base plot with a continuous X-axis
 #' p_base <- ggplot(mtcars, aes(x = mpg, y = disp)) +
@@ -231,7 +230,6 @@ df2gg_aligned <- function(df,
 #'
 #' @examples
 #' \dontrun{
-#' library(ggplot2)
 #'
 #' # 1. Create a base plot
 #' p_base <- ggplot(mtcars, aes(x = wt, y = mpg)) +
@@ -371,7 +369,6 @@ df2gg_floating <- function(df,
 #'
 #' @examples
 #' \dontrun{
-#' library(ggplot2)
 #'
 #' # Create a plot with both standard and .data pronoun mappings
 #' p <- ggplot(mtcars, aes(x = mpg, y = .data[["wt"]]))
