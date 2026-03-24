@@ -19,7 +19,9 @@
 #' @param base_df (`data.frame`)\cr
 #'   A data frame containing baseline measurements. This should include columns for
 #'   the visit, arm, and baseline values. The function will summarize this data
-#'   to provide baseline statistics in the final table.
+#'   to provide baseline statistics in the final table. If `base_df` is not provided
+#'   or does not contain any rows, the function will simply omit the baseline summary
+#'   section from the final table.
 #' @param arm (`string`)\cr
 #'   The column in `mmrm_df` and `base_df` that identifies the treatment arms.
 #'   This will be used to divide the results in columns. First value is reference.
@@ -28,6 +30,9 @@
 #'   This will be used to stratify the results in rows.
 #' @param baseline_aval ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   The column in `base_df` that contains the baseline values to be summarized.
+#'   Unused if `base_df` is not provided or does not contain any rows.
+#'
+#' @seealso [gg_mmrm_lineplot()] for visualizing MMRM results.
 #'
 #' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true") && requireNamespace("mmrm", quietly = TRUE)
 #' library(mmrm)
@@ -177,33 +182,35 @@ get_mmrm_results <- function(fit_mmrm, arm, visit, conf_level = 0.95) {
 #'
 #' @rdname tbl_mmrm
 #' @export
-tbl_mmrm <- function(mmrm_df, base_df, arm, visit, baseline_aval, digits = c(2, 3, 4)) {
+tbl_mmrm <- function(mmrm_df, base_df = NULL, arm, visit, baseline_aval = NULL, digits = c(2, 3, 4)) {
   check_not_missing(mmrm_df)
-  check_not_missing(base_df)
   check_not_missing(arm)
   check_not_missing(visit)
-  check_not_missing(baseline_aval)
+  check_not_missing(digits)
   cards::process_selectors(
     mmrm_df,
     arm = {{ arm }}, visit = {{ visit }}
   )
-  cards::process_selectors(
-    base_df,
-    arm = arm, visit = visit, baseline_aval = {{ baseline_aval }}
-  )
+  if (NROW(base_df) > 0) {
+    cards::process_selectors(
+      base_df,
+      arm = arm, visit = visit, baseline_aval = {{ baseline_aval }}
+    )
+    check_data_frame(base_df)
+    check_string(baseline_aval)
+  }
   check_data_frame(mmrm_df)
-  check_data_frame(base_df)
   check_string(arm)
   check_string(visit)
-  check_string(baseline_aval)
   check_class(mmrm_df, "mmrm_df")
+  check_integerish(digits)
 
   # Converts 0.95 into "95%"
   ci_pct_str <- sprintf("%.0f%%", mmrm_df$conf_level[1] * 100)
 
   # 3. Build Baseline Table (if baseline data exists)
   gts_baseline <- NULL
-  if (nrow(base_df) > 0) {
+  if (NROW(base_df) > 0) {
     gts_baseline <- base_df |>
       gtsummary::tbl_strata(
         strata = any_of(visit), # or visit, depending on your column name

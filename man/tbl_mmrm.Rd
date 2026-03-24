@@ -7,7 +7,14 @@
 \usage{
 get_mmrm_results(fit_mmrm, arm, visit, conf_level = 0.95)
 
-tbl_mmrm(mmrm_df, base_df, arm, visit, baseline_aval, digits = c(2, 3, 4))
+tbl_mmrm(
+  mmrm_df,
+  base_df = NULL,
+  arm,
+  visit,
+  baseline_aval = NULL,
+  digits = c(2, 3, 4)
+)
 }
 \arguments{
 \item{fit_mmrm}{(\code{mmrm} model object)\cr
@@ -36,10 +43,13 @@ Usually the output of \code{\link[=get_mmrm_results]{get_mmrm_results()}}.}
 \item{base_df}{(\code{data.frame})\cr
 A data frame containing baseline measurements. This should include columns for
 the visit, arm, and baseline values. The function will summarize this data
-to provide baseline statistics in the final table.}
+to provide baseline statistics in the final table. If \code{base_df} is not provided
+or does not contain any rows, the function will simply omit the baseline summary
+section from the final table.}
 
 \item{baseline_aval}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-The column in \code{base_df} that contains the baseline values to be summarized.}
+The column in \code{base_df} that contains the baseline values to be summarized.
+Unused if \code{base_df} is not provided or does not contain any rows.}
 
 \item{digits}{(\code{numeric})\cr
 A numeric vector of length 3 specifying the number of decimal places for: 1) Estimates/CIs, 2) Standard
@@ -86,4 +96,7 @@ tbl_mmrm(
   arm = "ARMCD", visit = "AVISIT", baseline_aval = "FEV1"
 )
 \dontshow{\}) # examplesIf}
+}
+\seealso{
+\code{\link[=gg_mmrm_lineplot]{gg_mmrm_lineplot()}} for visualizing MMRM results.
 }
