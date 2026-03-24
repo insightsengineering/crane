@@ -28,18 +28,15 @@
 #' @param xlab (`character`)\cr
 #'   A single character string for the **x-axis label** on the 'at-risk' table.
 #'   This typically represents time (e.g., "Days").
+#' @param table_position (`numeric`)\cr
+#'   A named numeric vector `c(x, y, w, h)` defining the position and size of
+#'   the floating table. `x` and `y` are the coordinates (0 to 1),
+#'   while `w` and `h` represent width and height (0 to 1). Defaults vary
+#'   by function.
 #' @param ... Additional arguments passed to the control list for the annotation
 #'   box. These arguments override the default values.\cr
 #'   Accepted arguments include:
 #'   \itemize{
-#'     \item \code{x} (\code{numeric}): X-coordinate for the box anchor position
-#'       (0 to 1). Default is \code{0.8} (\code{0.29} for `annotate_coxph`).
-#'     \item \code{y} (\code{numeric}): Y-coordinate for the box anchor position
-#'       (0 to 1). Default is \code{0.85} (\code{0.51} for `annotate_coxph`).
-#'     \item \code{w} (\code{numeric}): Width of the annotation box (0 to 1).
-#'       Default is \code{0.32} (\code{0.4} for `annotate_coxph`).
-#'     \item \code{h} (\code{numeric}): Height of the annotation box (0 to 1).
-#'       Default is \code{0.16} (\code{0.125} for `annotate_coxph`).
 #'     \item \code{fill} (\code{logical}): Whether the annotation box should
 #'       have a background fill. Default is \code{TRUE}.
 #'     \item \code{font_size} (\code{numeric}): Base font size for the text
@@ -104,6 +101,10 @@ annotate_riskdf <- function(gg_plt,
       paste0(
         "`gg_plt` must be a pure ggplot object (not a cowplot object) for",
         "`annotate_riskdf`."
+      ),
+      "i" = paste0(
+        "cowplot objects are not supported because",
+        "exact X-axis extraction is required."
       )
     )
   }
@@ -193,14 +194,18 @@ annotate_riskdf <- function(gg_plt,
 #' annotate_surv_med(plt_kmg01, fit_kmg01)
 #'
 #' @export
-annotate_surv_med <- function(gg_plt, fit_km, ...) {
+annotate_surv_med <- function(gg_plt,
+                              fit_km,
+                              table_position = c(
+                                x = 0.8,
+                                y = 0.85,
+                                w = 0.32,
+                                h = 0.16
+                              ),
+                              ...) {
   set_cli_abort_call()
 
   default_eargs <- list(
-    x = 0.8,
-    y = 0.85,
-    w = 0.32,
-    h = 0.16,
     font_size = 10,
     fill = TRUE
   )
@@ -230,10 +235,10 @@ annotate_surv_med <- function(gg_plt, fit_km, ...) {
   res <- df2gg_floating(
     df = surv_med_tbl,
     gg_plt = gg_plt,
-    x = eargs[["x"]],
-    y = eargs[["y"]],
-    w = eargs[["w"]],
-    h = eargs[["h"]],
+    x = table_position["x"],
+    y = table_position["y"],
+    w = table_position["w"],
+    h = table_position["h"],
     font_size = eargs[["font_size"]],
     colwidths = c(1, 1, 2),
     bg_fill = bg_fill
@@ -258,14 +263,18 @@ annotate_surv_med <- function(gg_plt, fit_km, ...) {
 #' annotate_coxph(plt_kmg01, coxph_tbl)
 #'
 #' @export
-annotate_coxph <- function(gg_plt, coxph_tbl, ...) {
+annotate_coxph <- function(gg_plt,
+                           coxph_tbl,
+                           table_position = c(
+                             x = 0.29,
+                             y = 0.51,
+                             w = 0.4,
+                             h = 0.125
+                           ),
+                           ...) {
   set_cli_abort_call()
 
   default_eargs <- list(
-    x = 0.8,
-    y = 0.85,
-    w = 0.32,
-    h = 0.16,
     fill = TRUE,
     font_size = 10
   )
@@ -288,10 +297,10 @@ annotate_coxph <- function(gg_plt, coxph_tbl, ...) {
   res <- df2gg_floating(
     df = coxph_tbl,
     gg_plt = gg_plt,
-    x = eargs[["x"]],
-    y = eargs[["y"]],
-    w = eargs[["w"]],
-    h = eargs[["h"]],
+    x = table_position["x"],
+    y = table_position["y"],
+    w = table_position["w"],
+    h = table_position["h"],
     font_size = eargs[["font_size"]],
     colwidths = c(1.1, 1, 3),
     bg_fill = bg_fill

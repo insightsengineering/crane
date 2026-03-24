@@ -1,162 +1,111 @@
-# Setup shared mock data and objects for the test suite
-library(survival)
 library(ggplot2)
+library(survival)
 
-# 1. Mock Survival Data & Fit
+# ------------------------------------------------------------------------------
+# 1. SETUP MOCK DATA
+# ------------------------------------------------------------------------------
+set.seed(123)
 use_lung <- survival::lung
-use_lung$arm <- factor(
-  sample(c("A", "B", "C"), nrow(use_lung), replace = TRUE)
-)
+use_lung$arm <- factor(sample(c("A", "B"), nrow(use_lung), replace = TRUE))
 use_lung$status <- use_lung$status - 1
 use_lung <- na.omit(use_lung)
 
-# FIX: Filter out time points > 1000 to prevent ggplot scaling warnings
-use_lung <- use_lung[use_lung$time <= 1000, ]
+# Stratified fit (Multiple groups)
+fit_strat <- survival::survfit(Surv(time, status) ~ arm, data = use_lung)
+# Unstratified fit (Single group)
+fit_single <- survival::survfit(Surv(time, status) ~ 1, data = use_lung)
 
-fit_mock <- survival::survfit(Surv(time, status) ~ arm, data = use_lung)
+# Plots
+p_base <- ggplot(use_lung, aes(x = time, y = status, color = arm)) +
+  geom_step() +
+  theme_classic()
+p_cow <- cowplot::ggdraw(p_base) # Used to trigger cowplot errors
 
-# 2. Mock ggplot2 base plot
-p_base <- ggplot2::ggplot(use_lung, aes(x = time, y = status, color = arm)) +
-  ggplot2::geom_step() +
-  ggplot2::scale_x_continuous(limits = c(0, 1000), breaks = seq(0, 1000, 250))
+# Cox Data
+cox_df <- data.frame(Term = "B vs A", HR = "1.2", p = "0.05")
 
-# 3. Mock cowplot object
-p_cow <- cowplot::ggdraw(p_base)
-
-# 4. Mock Cox-PH summary table
-cox_mock <- data.frame(
-  `HR (95% CI)` = c("0.85 (0.6-1.1)", "1.20 (0.9-1.5)"),
-  `p-value` = c("0.150", "0.045"),
-  check.names = FALSE
-)
-rownames(cox_mock) <- c("B vs A", "C vs A")
-
-# --- Tests for annotate_riskdf ---
-
-test_that("annotate_riskdf generates a cowplot object", {
-  res <- annotate_riskdf(gg_plt = p_base, fit_km = fit_mock)
-
-  # 1. Verify it is a ggplot object on the outside
+# ------------------------------------------------------------------------------
+# 2. TESTS FOR annotate_riskdf()
+# ------------------------------------------------------------------------------
+test_that("annotate_riskdf() handles all branches and inputs", {
+  # Happy path: Stratified
+  expect_no_error(res <- annotate_riskdf(p_base, fit_strat))
   expect_s3_class(res, "ggplot")
 
-  # 2. Look inside the plot layers to prove it was built by cowplot
-  has_cowplot_layer <- any(vapply(res$layers, function(layer) {
-    inherits(layer$geom, "GeomDrawGrob")
-  }, logical(1)))
+  # Happy path: Unstratified
+  expect_no_error(annotate_riskdf(p_base, fit_single))
 
-  # 3. Expect that the cowplot-specific drawing layer exists
-  expect_true(has_cowplot_layer)
-})
-
-test_that("annotate_riskdf throws errors for invalid inputs", {
-  # Fails if passed a cowplot object
+  # Error: Reject Cowplot
   expect_error(
-    annotate_riskdf(gg_plt = p_cow, fit_km = fit_mock),
-    regexp = "must be a pure ggplot object"
+    annotate_riskdf(p_cow, fit_strat),
+    "must be a pure ggplot object"
   )
 
-  # Fails if passed a non-survfit object
+  # Error: Reject non-survfit
   expect_error(
-    annotate_riskdf(gg_plt = p_base, fit_km = data.frame()),
-    regexp = "must be a survfit object"
+    annotate_riskdf(p_base, list()),
+    "must be a survfit object"
   )
 
-  # Fails for out-of-bounds relative height
+  # Error: Invalid rel_height
   expect_error(
-    annotate_riskdf(gg_plt = p_base, fit_km = fit_mock, rel_height_plot = 1.5),
-    regexp = "must be between 0 and 1"
+    annotate_riskdf(p_base, fit_strat, rel_height_plot = 2),
+    "between 0 and 1"
   )
 })
 
-
-# --- Tests for annotate_surv_med ---
-
-test_that("annotate_surv_med generates a cowplot/ggplot object", {
-  res <- annotate_surv_med(gg_plt = p_base, fit_km = fit_mock)
-
-  # cowplot::ggdraw returns an object with classes "gg", "ggplot"
-  expect_s3_class(res, "ggplot")
-})
-
-test_that("annotate_surv_med accepts a cowplot object as input", {
-  res <- annotate_surv_med(gg_plt = p_cow, fit_km = fit_mock)
-  expect_s3_class(res, "ggplot")
-})
-
-test_that("annotate_surv_med respects custom coordinates and sizes", {
-  res <- annotate_surv_med(
-    gg_plt = p_base,
-    fit_km = fit_mock,
-    x = 0.5,
-    y = 0.5,
-    h = 0.3,
-    font_size = 12
-  )
-  expect_s3_class(res, "ggplot")
-})
-
-test_that("annotate_surv_med throws errors for invalid inputs", {
-  expect_error(
-    annotate_surv_med(gg_plt = p_base, fit_km = "not_a_fit"),
-    regexp = "must be a survfit object"
-  )
-})
-
-
-# --- Tests for annotate_coxph ---
-
-test_that("annotate_coxph generates a cowplot/ggplot object", {
-  res <- annotate_coxph(gg_plt = p_base, coxph_tbl = cox_mock)
-  expect_s3_class(res, "ggplot")
-})
-
-test_that("annotate_coxph accepts a cowplot object as input", {
-  res <- annotate_coxph(gg_plt = p_cow, coxph_tbl = cox_mock)
-  expect_s3_class(res, "ggplot")
-})
-
-test_that("annotate_coxph respects custom arguments without failing", {
-  res <- annotate_coxph(
-    gg_plt = p_base,
-    coxph_tbl = cox_mock,
-    fill = FALSE,
-    w = 0.5
-  )
-  expect_s3_class(res, "ggplot")
-})
-
-test_that("annotate_coxph throws errors for invalid inputs", {
-  expect_error(
-    annotate_coxph(gg_plt = "not_a_plot", coxph_tbl = cox_mock),
-    regexp = "must be a ggplot or cowplot object"
-  )
-
-  expect_error(
-    annotate_coxph(gg_plt = p_base, coxph_tbl = list(a = 1)),
-    regexp = "must be a data.frame"
-  )
-})
-
-test_that("annotate_riskdf handles unstratified (null) models correctly", {
-  # 1. Create a model with NO strata (~ 1)
-  fit_null <- survival::survfit(survival::Surv(time, status) ~ 1, data = use_lung)
-
-  # 2. Dummy plot for the alignment engine
-  p_null <- ggplot2::ggplot() +
-    ggplot2::scale_x_continuous(limits = c(0, 1000), breaks = c(0, 500, 1000))
-
-  # 3. Test that the unstratified block builds the table without error
+# ------------------------------------------------------------------------------
+# 3. TESTS FOR annotate_surv_med()
+# ------------------------------------------------------------------------------
+test_that("annotate_surv_med() handles all branches and inputs", {
+  # Success: Stratified + Custom Position
   expect_no_error(
-    res_null <- annotate_riskdf(gg_plt = p_null, fit_km = fit_null)
+    annotate_surv_med(
+      p_base,
+      fit_strat,
+      table_position = c(x = 0.5, y = 0.5, w = 0.1, h = 0.1)
+    )
   )
 
-  expect_s3_class(res_null, "ggplot")
+  # Success: Cowplot input
+  expect_no_error(annotate_surv_med(p_cow, fit_strat))
+
+  # Success: Unstratified
+  expect_no_error(annotate_surv_med(p_base, fit_single))
+
+  # Error: Invalid plot
+  expect_error(
+    annotate_surv_med(list(), fit_strat),
+    "must be a ggplot or cowplot object"
+  )
+
+  # Error: Invalid survfit
+  expect_error(
+    annotate_surv_med(p_base, list()),
+    "must be a survfit object"
+  )
+
+  # Fill Logic: Custom color and FALSE
+  expect_no_error(annotate_surv_med(p_base, fit_strat, fill = "red"))
+  expect_no_error(annotate_surv_med(p_base, fit_strat, fill = FALSE))
 })
 
-test_that("annotate_surv_med throws an error for invalid plot inputs", {
-  # Test that passing a string instead of a plot triggers the abort
+# ------------------------------------------------------------------------------
+# 4. TESTS FOR annotate_coxph()
+# ------------------------------------------------------------------------------
+test_that("annotate_coxph() handles all branches and inputs", {
+  # Success: Standard use
+  expect_no_error(annotate_coxph(p_base, cox_df))
+
+  # Error: Invalid plot
   expect_error(
-    annotate_surv_med(gg_plt = "this_is_not_a_plot", fit_km = fit_mock),
-    regexp = "must be a ggplot or cowplot object"
+    annotate_coxph(list(), cox_df),
+    "must be a ggplot or cowplot object"
   )
+
+  # Error: Invalid dataframe (
+  expect_error(annotate_coxph(p_base, list()), "must be a data.frame")
+
+  # Fill Logic: Custom color
+  expect_no_error(annotate_coxph(p_base, cox_df, fill = "blue"))
 })

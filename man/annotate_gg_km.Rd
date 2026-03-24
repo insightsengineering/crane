@@ -16,9 +16,19 @@ annotate_riskdf(
   ...
 )
 
-annotate_surv_med(gg_plt, fit_km, ...)
+annotate_surv_med(
+  gg_plt,
+  fit_km,
+  table_position = c(x = 0.8, y = 0.85, w = 0.32, h = 0.16),
+  ...
+)
 
-annotate_coxph(gg_plt, coxph_tbl, ...)
+annotate_coxph(
+  gg_plt,
+  coxph_tbl,
+  table_position = c(x = 0.29, y = 0.51, w = 0.4, h = 0.125),
+  ...
+)
 }
 \arguments{
 \item{gg_plt}{(\code{ggplot2} or \code{cowplot})\cr
@@ -49,19 +59,17 @@ This typically represents time (e.g., "Days").}
 box. These arguments override the default values.\cr
 Accepted arguments include:
 \itemize{
-\item \code{x} (\code{numeric}): X-coordinate for the box anchor position
-(0 to 1). Default is \code{0.8} (\code{0.29} for \code{annotate_coxph}).
-\item \code{y} (\code{numeric}): Y-coordinate for the box anchor position
-(0 to 1). Default is \code{0.85} (\code{0.51} for \code{annotate_coxph}).
-\item \code{w} (\code{numeric}): Width of the annotation box (0 to 1).
-Default is \code{0.32} (\code{0.4} for \code{annotate_coxph}).
-\item \code{h} (\code{numeric}): Height of the annotation box (0 to 1).
-Default is \code{0.16} (\code{0.125} for \code{annotate_coxph}).
 \item \code{fill} (\code{logical}): Whether the annotation box should
 have a background fill. Default is \code{TRUE}.
 \item \code{font_size} (\code{numeric}): Base font size for the text
 inside the annotation box. Default is \code{10}.
 }}
+
+\item{table_position}{(\code{numeric})\cr
+A named numeric vector \code{c(x, y, w, h)} defining the position and size of
+the floating table. \code{x} and \code{y} are the coordinates (0 to 1),
+while \code{w} and \code{h} represent width and height (0 to 1). Defaults vary
+by function.}
 
 \item{coxph_tbl}{(\code{data.frame})\cr
 A data frame containing the pre-calculated Cox-PH results, derived
