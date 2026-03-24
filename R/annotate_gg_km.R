@@ -222,12 +222,21 @@ annotate_surv_med <- function(gg_plt,
     rlang::abort("`fit_km` must be a survfit object.")
   }
 
+
   strata_levels <- if (is.null(fit_km$strata)) "All" else levels(fit_km$strata)
 
   surv_med_tbl <- h_tbl_median_surv(
     fit_km = fit_km,
     strata_levels = strata_levels
   )
+
+  if (!identical(rownames(surv_med_tbl), as.character(seq_len(nrow(surv_med_tbl))))) {
+    surv_med_tbl <- data.frame(
+      " " = rownames(surv_med_tbl),
+      surv_med_tbl,
+      check.names = FALSE
+    )
+  }
 
   bg_fill <- if (isTRUE(eargs[["fill"]])) "#00000020" else eargs[["fill"]]
 
@@ -240,7 +249,7 @@ annotate_surv_med <- function(gg_plt,
     w = table_position["w"],
     h = table_position["h"],
     font_size = eargs[["font_size"]],
-    colwidths = c(1, 1, 2),
+    colwidths = NULL,
     bg_fill = bg_fill
   )
 
@@ -291,6 +300,14 @@ annotate_coxph <- function(gg_plt,
     rlang::abort("`coxph_tbl` must be a data.frame.")
   }
 
+  if (!identical(rownames(coxph_tbl), as.character(seq_len(nrow(coxph_tbl))))) {
+    coxph_tbl <- data.frame(
+      " " = rownames(coxph_tbl),
+      coxph_tbl,
+      check.names = FALSE
+    )
+  }
+
   bg_fill <- if (isTRUE(eargs[["fill"]])) "#00000020" else eargs[["fill"]]
 
   # Call the floating table engine
@@ -302,7 +319,7 @@ annotate_coxph <- function(gg_plt,
     w = table_position["w"],
     h = table_position["h"],
     font_size = eargs[["font_size"]],
-    colwidths = c(1.1, 1, 3),
+    colwidths = NULL,
     bg_fill = bg_fill
   )
 

@@ -304,10 +304,13 @@ df2gg_floating <- function(df,
       sum(colwidths[1:i])
     )
 
+    # NEW: Use italics for the first column's data rows
+    col_data_face <- if (i == 1) "italic" else "plain"
+
     font_faces <- if (col_labels) {
-      c(col_lab_fontface, rep("plain", nrow(df_char) - 1))
+      c(col_lab_fontface, rep(col_data_face, nrow(df_char) - 1))
     } else {
-      rep("plain", nrow(df_char))
+      rep(col_data_face, nrow(df_char))
     }
 
     tbl_p <- tbl_p + ggplot2::annotate(
@@ -323,7 +326,8 @@ df2gg_floating <- function(df,
   if (hline) {
     tbl_p <- tbl_p + ggplot2::annotate(
       "segment",
-      x = 0 + 0.2 * colwidths[2],
+      # NEW: Start the line precisely AFTER the first column
+      x = colwidths[1],
       xend = tot_width - 0.1 * utils::tail(colwidths, 1),
       y = nrow(df_char) - 0.5,
       yend = nrow(df_char) - 0.5
