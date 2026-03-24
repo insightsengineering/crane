@@ -56,8 +56,8 @@
 #'   summary_stats = c("n", "median", "iqr")
 #' )
 #' @export
-annotate_pkc_df <- function(data,
-                            gg_plt,
+annotate_pkc_df <- function(gg_plt,
+                            data,
                             time_var = NULL,
                             analyte_var = NULL,
                             group = NULL,

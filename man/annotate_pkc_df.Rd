@@ -5,8 +5,8 @@
 \title{Annotate PK Plot with Summary Table}
 \usage{
 annotate_pkc_df(
-  data,
   gg_plt,
+  data,
   time_var = NULL,
   analyte_var = NULL,
   group = NULL,
@@ -16,11 +16,11 @@ annotate_pkc_df(
 )
 }
 \arguments{
-\item{data}{(\code{data.frame})\cr
-The raw or summarized dataset used to generate the table.}
-
 \item{gg_plt}{(\code{ggplot2})\cr
 The PK plot.}
+
+\item{data}{(\code{data.frame})\cr
+The raw or summarized dataset used to generate the table.}
 
 \item{time_var, analyte_var, group}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 Optional. If \code{NULL} (default), the function automatically extracts these

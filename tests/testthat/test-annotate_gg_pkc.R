@@ -6,7 +6,7 @@ test_that("annotate_pkc_df() warns when given a standard ggplot object", {
 
   # Expect the specific warning
   expect_warning(
-    annotate_pkc_df(data = df_pk, gg_plt = p_standard),
+    annotate_pkc_df(gg_plt = p_standard, data = df_pk),
     regexp = "This function was specifically designed"
   )
 })
@@ -29,7 +29,7 @@ test_that("annotate_pkc_df() works with automatic variable extraction", {
 
   # Test that the function runs without error and returns a plot
   expect_no_error(
-    res <- annotate_pkc_df(data = df_pk, gg_plt = p)
+    res <- annotate_pkc_df(gg_plt = p, data = df_pk)
   )
 
   # Check that the output is still a plot object (ggplot/cowplot)
@@ -54,8 +54,8 @@ test_that("annotate_pkc_df() works when variables are explicitly provided", {
   # Explicitly override auto-extraction
   expect_no_error(
     res <- annotate_pkc_df(
-      data = df_pk,
       gg_plt = p,
+      data = df_pk,
       time_var = "time_hr",
       analyte_var = "pk_conc",
       group = "cohort",
@@ -78,7 +78,7 @@ test_that("annotate_pkc_df() throws error when variables are missing", {
 
   # Should fail because `group` cannot be extracted and isn't provided
   expect_error(
-    annotate_pkc_df(data = df_pk, gg_plt = p_no_group),
+    annotate_pkc_df(gg_plt = p_no_group, data = df_pk),
     "Missing variables. Specify `time_var`"
   )
 })
@@ -95,8 +95,8 @@ test_that("annotate_pkc_df() correctly handles invalid summary_stats", {
   # Pass ONLY an invalid statistic.
   expect_error(
     annotate_pkc_df(
-      data = df_pk,
       gg_plt = p,
+      data = df_pk,
       summary_stats = "invalid_stat"
     ),
     "should be one of"
@@ -115,7 +115,7 @@ test_that("get_var helper correctly extracts .data[[var]] mappings", {
   p <- gg_pkc_lineplot(df_pk, time_var, conc, arm, log_y = FALSE)
 
   expect_no_error(
-    res <- annotate_pkc_df(data = df_pk, gg_plt = p)
+    res <- annotate_pkc_df(gg_plt = p, data = df_pk)
   )
 
   expect_s3_class(res, "ggplot")
@@ -141,7 +141,7 @@ test_that("annotate_pkc_df handles complex aesthetic mappings", {
   # The complex 'x' and 'y' aesthetics will cause `get_var()` to fall back
   # to `return(NULL)`, triggering the missing variable error.
   expect_error(
-    annotate_pkc_df(data = df_dummy, gg_plt = p_complex),
+    annotate_pkc_df(gg_plt = p_complex, data = df_dummy),
     regexp = "Missing variables"
   )
 })
