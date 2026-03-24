@@ -60,7 +60,6 @@ table structures.
 }
 \examples{
 \dontrun{
-library(ggplot2)
 
 # 1. Create a base plot with a continuous X-axis
 p_base <- ggplot(mtcars, aes(x = mpg, y = disp)) +

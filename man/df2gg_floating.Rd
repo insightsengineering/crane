@@ -65,7 +65,6 @@ using \code{cowplot} at specified coordinates.
 }
 \examples{
 \dontrun{
-library(ggplot2)
 
 # 1. Create a base plot
 p_base <- ggplot(mtcars, aes(x = wt, y = mpg)) +

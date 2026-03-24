@@ -24,7 +24,6 @@ handle both simple symbols (e.g., \code{aes(x = TIME)}) and \code{.data} pronoun
 }
 \examples{
 \dontrun{
-library(ggplot2)
 
 # Create a plot with both standard and .data pronoun mappings
 p <- ggplot(mtcars, aes(x = mpg, y = .data[["wt"]]))
