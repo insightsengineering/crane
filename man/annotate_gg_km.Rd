@@ -16,69 +16,94 @@ annotate_riskdf(
   ...
 )
 
-annotate_surv_med(gg_plt, fit_km, ...)
+annotate_surv_med(
+  gg_plt,
+  fit_km,
+  table_position = c(x = 0.8, y = 0.85, w = 0.32, h = 0.16),
+  ...
+)
 
-annotate_coxph(gg_plt, coxph_tbl, ...)
+annotate_coxph(
+  gg_plt,
+  coxph_tbl,
+  table_position = c(x = 0.29, y = 0.51, w = 0.4, h = 0.125),
+  ...
+)
 }
 \arguments{
 \item{gg_plt}{(\code{ggplot2} or \code{cowplot})\cr
-The primary plot object (either a \code{ggplot2} or \code{cowplot} object) of the Kaplan-Meier plot.}
+The primary plot object of the Kaplan-Meier plot. Note: While floating
+tables accept \code{cowplot} objects, aligned tables (like the risk table)
+require a pure \code{ggplot2} object.}
 
 \item{fit_km}{(\code{survfit})\cr
-A fitted Kaplan-Meier object of class \code{survfit} (from the \code{survival} package). This object contains the necessary
-survival data used to calculate and generate the content displayed in the annotation table.}
+A fitted Kaplan-Meier object of class \code{survfit} (from the \code{survival}
+package). This object contains the necessary survival data used to
+calculate and generate the content displayed in the annotation table.}
 
-\item{title}{(\code{string})\cr
-A single logical value indicating whether to include a above the table. Defaults to
-\verb{""Patients at Risk:""}. If \code{NULL}, no title is added.}
+\item{title}{(\code{character})\cr
+A single string value indicating whether to include a title above the
+table. Defaults to \code{"Patients at Risk:"}. If \code{NULL}, no title is added.}
 
 \item{rel_height_plot}{(\code{numeric})\cr
-A single numeric value defining the \strong{relative height} of the main Kaplan-Meier plot area compared
-to the 'at-risk' table. This value should be between 0 and 1, where a value closer to 1 gives the main plot
-more vertical space. Defaults to \code{0.75}.}
+A single numeric value defining the \strong{relative height} of the main
+Kaplan-Meier plot area compared to the 'at-risk' table. This value should
+be between 0 and 1, where a value closer to 1 gives the main plot more
+vertical space. Defaults to \code{0.75}.}
 
 \item{xlab}{(\code{character})\cr
-A single character string for the \strong{x-axis label} on the 'at-risk' table. This typically represents
-time (e.g., "Time (Days)").}
+A single character string for the \strong{x-axis label} on the 'at-risk' table.
+This typically represents time (e.g., "Days").}
 
-\item{...}{Additional arguments passed to the control list for the annotation box.
-These arguments override the default values.
+\item{...}{Additional arguments passed to the control list for the annotation
+box. These arguments override the default values.\cr
 Accepted arguments include:
 \itemize{
-\item \code{x} (\code{numeric}): X-coordinate for the box anchor position (0 to 1). Default is \code{0.29}.
-\item \code{y} (\code{numeric}): Y-coordinate for the box anchor position (0 to 1). Default is \code{0.51}.
-\item \code{w} (\code{numeric}): Width of the annotation box (0 to 1). Default is \code{0.4}.
-\item \code{h} (\code{numeric}): Height of the annotation box (0 to 1). Default is \code{0.125}.
+\item \code{fill} (\code{logical}): Whether the annotation box should
+have a background fill. Default is \code{TRUE}.
+\item \code{font_size} (\code{numeric}): Base font size for the text
+inside the annotation box. Default is \code{10}.
 }}
 
+\item{table_position}{(\code{numeric})\cr
+A named numeric vector \code{c(x, y, w, h)} defining the position and size of
+the floating table. \code{x} and \code{y} are the coordinates (0 to 1),
+while \code{w} and \code{h} represent width and height (0 to 1). Defaults vary
+by function.}
+
 \item{coxph_tbl}{(\code{data.frame})\cr
-A data frame containing the pre-calculated Cox-PH results, typically from a function like \code{get_cox_pairwise_df}.
-This data is used to generate the annotation table content.}
+A data frame containing the pre-calculated Cox-PH results, derived
+using function \code{get_cox_pairwise_df()}.}
 }
 \value{
-The function \code{annotate_riskdf} returns a \code{cowplot} object combining the KM plot and the 'Numbers at Risk'
-table.
+The function \code{annotate_riskdf} returns a \code{cowplot} object combining
+the KM plot and the 'Numbers at Risk' table.
 
-The function \code{annotate_surv_med} returns a \code{cowplot} object with the median survival table annotation
-added, ready for final display or saving.
+The function \code{annotate_surv_med} returns a \code{cowplot} object\cr
+with the median survival table annotation added.
 
-The function \code{annotate_coxph} returns a \code{cowplot} object with the Cox-PH table annotation added.
+The function \code{annotate_coxph} returns a \code{cowplot} object\cr
+with the Cox-PH table annotation added.
 }
 \description{
-These functions provide capabilities to annotate Kaplan-Meier plots (\code{\link[=gg_km]{gg_km()}}) with additional summary tables,
-including median survival times, numbers at risk, and cox proportional hazards results.
-The annotations are added using the \code{cowplot} package for flexible placement.
+These functions provide capabilities to annotate Kaplan-Meier plots (\code{\link[=gg_km]{gg_km()}})
+with additional summary tables, including median survival times, numbers at
+risk, and cox proportional hazards results. The annotations are added using
+the \code{cowplot} package for flexible placement.
 }
 \section{Functions}{
 \itemize{
-\item \code{annotate_riskdf()}: The function \code{annotate_riskdf} adds a "Numbers at Risk" table below a
-Kaplan-Meier plot (\code{\link[=gg_km]{gg_km()}}) using \code{cowplot::plot_grid}.
+\item \code{annotate_riskdf()}: The function \code{annotate_riskdf} adds a "Numbers
+at Risk" table below a Kaplan-Meier plot using \code{patchwork}.\cr
+\strong{Note:} For this specific function, \code{gg_plt} must be a pure \code{ggplot2}
+object (not a combined \code{cowplot} object) because it requires exact X-axis
+extraction.
 
-\item \code{annotate_surv_med()}: The \code{annotate_surv_med} function adds a median survival time summary table as an
-annotation box.
+\item \code{annotate_surv_med()}: The \code{annotate_surv_med} function adds a
+median survival time summary table as an annotation box.
 
-\item \code{annotate_coxph()}: The function \code{annotate_coxph()} adds a Cox Proportional Hazards summary table created by
-the function \code{\link[=get_cox_pairwise_df]{get_cox_pairwise_df()}} as an annotation box.
+\item \code{annotate_coxph()}: The function \code{annotate_coxph()} adds a Cox
+Proportional Hazards summary table as an annotation box.
 
 }}
 \examples{
@@ -107,10 +132,14 @@ annotate_riskdf(plt_kmg01, fit_kmg01) # rerun gg_km to change legend order
 annotate_surv_med(plt_kmg01, fit_kmg01)
 
 # Annotate Kaplan-Meier Plot with Cox-PH Table
-coxph_tbl <- get_cox_pairwise_df(formula, data = use_lung, arm = "arm", ref_group = "A")
+coxph_tbl <- get_cox_pairwise_df(
+  formula,
+  data = use_lung, arm = "arm", ref_group = "A"
+)
 annotate_coxph(plt_kmg01, coxph_tbl)
 
 }
 \seealso{
-\code{\link[=gg_km]{gg_km()}}, \code{\link[=process_survfit]{process_survfit()}}, and \code{\link[=get_cox_pairwise_df]{get_cox_pairwise_df()}} for related functionalities.
+\code{\link[=gg_km]{gg_km()}}, \code{\link[=process_survfit]{process_survfit()}}, and \code{\link[=get_cox_pairwise_df]{get_cox_pairwise_df()}} for
+related functionalities.
 }

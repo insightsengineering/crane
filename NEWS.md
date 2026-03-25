@@ -10,6 +10,13 @@
 
 * Added `gg_mmrm_lineplot()` to create line plots of MMRM results. (#181)
 
+* Added `gg_pkc_lineplot()` to create line plots for PK data. (#185)  
+
+* Added `annotate_gg_pkc()` to add optional summary statistics table to 
+`gg_pkc_lineplot()`. (#189)
+
+* Refactored the underlying `data.frame` alignment and rendering methodology used for plot annotations. Functions for table annotation now use a completely rebuilt engine that ensures X-axis synchronization for stacked tables (`annotate_riskdf()`) and flexible, reliable placement for floating tables (`annotate_surv_med()`, `annotate_coxph()`). (#189)
+
 ### Other Updates
 
 * Changed the default `conf.type` from `"log"` to `"plain"` (linear) in `tbl_survfit_times()` and `tbl_survfit_quantiles()` to align with GDSR guidelines. (#197)
