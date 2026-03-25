@@ -103,7 +103,7 @@ ard_tabulate_abnormal_by_baseline <- function(data,
       as.character
     )) |>
     cards::as_card(check = FALSE)
-  class(res$variable_level) <- "list"
+  class(stats_for_tbl$variable_level) <- "list"
 
   stats_for_tbl
 }
