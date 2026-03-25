@@ -63,28 +63,34 @@ ard_tabulate_abnormal_by_baseline <- function(data,
     return(NULL)
   }
 
-  current_gp <- unique(data[[postbaseline_name]])
+  # There was an lapply statement before that had a bug
+  # I changed it to for loop cause the lapply thing was harder to read
+  current_gp <- as.character(unique(data[[postbaseline_name]]))
+  names_present <- c(rep(FALSE, length(abnormal)))
+  for (i in seq_along(abnormal)) {
+    names_present[[i]] <- any(current_gp %in% abnormal[[i]])
+  }
 
-  map(names(abnormal)[unlist(lapply(abnormal, function(x) {
-    current_gp %in% x
-  }))], function(abn_name) {
+  valid_abnormal_names <- names(abnormal)[names_present]
+
+  stats_for_tbl <- map(valid_abnormal_names, function(abn_name) {
     abn_val <- abnormal[[abn_name]]
-
     # Tier: Not [Abnormal] at baseline
     res_not_abn <- data |>
-      dplyr::filter(!(.data[[baseline_name]] %in% abn_val) | is.na(.data[[baseline_name]])) |>
+      dplyr::filter(!(.data[[baseline_name]] %in% abn_val) & !is.na(.data[[baseline_name]])) |>
       .calc_abnormal_logic(paste("Not", abn_name), abn_val, postbaseline_name, id, by)
 
     # Tier: [Abnormal] at baseline
     res_is_abn <- data |>
-      dplyr::filter(.data[[baseline_name]] %in% abn_val) |>
+      dplyr::filter(.data[[baseline_name]] %in% abn_val & !is.na(.data[[baseline_name]])) |>
       .calc_abnormal_logic(abn_name, abn_val, postbaseline_name, id, by)
 
     # Tier: Total
     res_total <- data |>
       .calc_abnormal_logic("Total", abn_val, postbaseline_name, id, by)
 
-    cards::bind_ard(res_not_abn, res_is_abn, res_total)
+    cards::bind_ard(res_not_abn, res_is_abn, res_total) |>
+      dplyr::mutate(variable = abn_name)
   }) |>
     cards::bind_ard() |>
     dplyr::mutate(
@@ -96,43 +102,8 @@ ard_tabulate_abnormal_by_baseline <- function(data,
       dplyr::any_of(c("variable", "variable_level", "context", "stat_name", "stat_label", "level")),
       as.character
     )) |>
-    cards::as_card(check = FALSE) -> ret
-  class(ret$variable_level) <- "list"
-  ret
-}
+    cards::as_card(check = FALSE)
+  class(res$variable_level) <- "list"
 
-
-#' Internal Calculation Helper for Abnormality Tabulation
-#' @noRd
-#' @keywords internal
-.calc_abnormal_logic <- function(df, group_label, abn_val, postbaseline, id, by) {
-  if (nrow(df) == 0) {
-    return(NULL)
-  }
-
-  cards::ard_mvsummary(
-    data = df,
-    variables = all_of(postbaseline),
-    by = any_of(by),
-    statistic = ~ list(
-      abnormal = \(x, data, ...) {
-        n_abn <- data |>
-          dplyr::filter(.data[[postbaseline]] %in% abn_val) |>
-          dplyr::pull(all_of(id)) |>
-          dplyr::n_distinct()
-
-
-        N_total <- data |>
-          dplyr::pull(all_of(id)) |>
-          dplyr::n_distinct()
-
-        dplyr::tibble(n = n_abn, N = N_total, p = n / N)
-      }
-    )
-  ) |>
-    # FORCE level and variable_level to character strings.
-    dplyr::mutate(
-      variable_level = as.character(group_label),
-      level = as.character(group_label)
-    )
+  stats_for_tbl
 }
