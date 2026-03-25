@@ -107,3 +107,63 @@ ard_tabulate_abnormal_by_baseline <- function(data,
 
   stats_for_tbl
 }
+
+#' Internal Calculation Helper for Abnormality Tabulation
+#'
+#' @description
+#' Acts as the calculation engine for baseline-stratified abnormality summaries.
+#' It computes the numerator (`n`, unique patients with the abnormality),
+#' denominator (`N`, total unique patients in the subset), and proportion (`p`)
+#' using `cards::ard_mvsummary`. It then forcefully applies the specified
+#' baseline tier label to the resulting ARD object.
+#'
+#' @param df (`data.frame`)\cr
+#'   A pre-filtered data frame containing the clinical results for a specific baseline status tier.
+#' @param group_label (`character`)\cr
+#'   The label to assign to the calculated statistics (e.g., `"Not Low"`, `"Total"`).
+#'   This will overwrite the `variable_level` and `level` columns in the output ARD.
+#' @param abn_val (`character` vector)\cr
+#'   A vector of values defining the target abnormality in the post-baseline column
+#'   (e.g., `c("LOW", "LOW LOW")`).
+#' @param postbaseline (`character`)\cr
+#'   The column name containing the post-baseline reference range indicators.
+#' @param id (`character`)\cr
+#'   The column name for the unique subject identifier.
+#' @param by (`character` vector or `NULL`)\cr
+#'   Optional column names for grouping variables (e.g., `"TRT01A"`).
+#'
+#' @return An ARD data frame containing the customized `abnormal` statistic (`n`, `N`, `p`),
+#'   or `NULL` if the input `df` has zero rows.
+#'
+#' @keywords internal
+#' @noRd
+.calc_abnormal_logic <- function(df, group_label, abn_val, postbaseline, id, by) {
+  if (nrow(df) == 0) {
+    return(NULL)
+  }
+
+  cards::ard_mvsummary(
+    data = df,
+    variables = all_of(postbaseline),
+    by = any_of(by),
+    statistic = ~ list(
+      abnormal = \(x, data, ...) {
+        n_abn <- data |>
+          dplyr::filter(.data[[postbaseline]] %in% abn_val) |>
+          dplyr::pull(all_of(id)) |>
+          dplyr::n_distinct()
+
+        N_total <- data |>
+          dplyr::pull(all_of(id)) |>
+          dplyr::n_distinct()
+
+        dplyr::tibble(n = n_abn, N = N_total, p = n / N)
+      }
+    )
+  ) |>
+    # FORCE level and variable_level to character strings.
+    dplyr::mutate(
+      variable_level = as.character(group_label),
+      level = as.character(group_label)
+    )
+}
