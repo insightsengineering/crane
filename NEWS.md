@@ -1,4 +1,4 @@
-# crane 0.3.1.9012
+# crane 0.3.1.9013
 
 ## New Functions and Functionality
 
@@ -9,6 +9,13 @@
 * Added `tbl_mmrm()` and `get_mmrm_results()` functions to create regression tables for Mixed Models for Repeated Measures (MMRM). (#163)
 
 * Added `gg_mmrm_lineplot()` to create line plots of MMRM results. (#181)
+
+* Added `gg_pkc_lineplot()` to create line plots for PK data. (#185)  
+
+* Added `annotate_gg_pkc()` to add optional summary statistics table to 
+`gg_pkc_lineplot()`. (#189)
+
+* Refactored the underlying `data.frame` alignment and rendering methodology used for plot annotations. Functions for table annotation now use a completely rebuilt engine that ensures X-axis synchronization for stacked tables (`annotate_riskdf()`) and flexible, reliable placement for floating tables (`annotate_surv_med()`, `annotate_coxph()`). (#189)
 
 ### Other Updates
 

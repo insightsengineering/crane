@@ -25,19 +25,20 @@
 #' @returns A `ggplot` object.
 #'
 #' @examples
-#' df_pk <- data.frame(
-#'   USUBJID = c("P1", "P1", "P1", "P2", "P2", "P2", "P3", "P3", "P3", "P4", "P4", "P4"),
-#'   TRT = rep(c("Drug A", "Drug B"), each = 6),
-#'   ATPTN = rep(c(0, 4, 12), times = 4),
-#'   AVAL = c(0, 10, 1, 0, 12, 10, 0, 20, 10, 0, 18, 12)
-#' )
+#' # Prepare PK Data using the built-in Theoph dataset
+#' df_pk <- Theoph
+#' df_pk$Time_Nominal <- round(df_pk$Time)
+#' # Filter to specific timepoints to keep the table clean
+#' df_pk <- df_pk[df_pk$Time_Nominal %in% c(0, 2, 4, 8, 24), ]
+#' # Create a mock treatment group based on Dose
+#' df_pk$Dose_Group <- ifelse(df_pk$Dose > 4.5, "High Dose", "Low Dose")
 #'
 #' # Linear Scale Example (Baseline 0 is included)
 #' gg_pkc_lineplot(
 #'   data = df_pk,
-#'   time_var = ATPTN,
-#'   analyte_var = AVAL,
-#'   group = TRT,
+#'   time_var = Time_Nominal,
+#'   analyte_var = conc,
+#'   group = Dose_Group,
 #'   stat = "mean",
 #'   variability = "sd",
 #'   log_y = FALSE
@@ -45,11 +46,11 @@
 #'
 #' # Log Scale Example (Filter out 0s first to avoid log(0) warnings)
 #' df_pk |>
-#'   dplyr::filter(AVAL > 0) |>
+#'   dplyr::filter(conc > 0) |>
 #'   gg_pkc_lineplot(
-#'     time_var = ATPTN,
-#'     analyte_var = AVAL,
-#'     group = TRT,
+#'     time_var = Time_Nominal,
+#'     analyte_var = conc,
+#'     group = Dose_Group,
 #'     stat = "mean",
 #'     variability = "se",
 #'     log_y = TRUE,
@@ -59,9 +60,9 @@
 #' # Title, subtitle, axes labels and legend position customization
 #' gg_pkc_lineplot(
 #'   data = df_pk,
-#'   time_var = ATPTN,
-#'   analyte_var = AVAL,
-#'   group = TRT,
+#'   time_var = Time_Nominal,
+#'   analyte_var = conc,
+#'   group = Dose_Group,
 #'   stat = "mean",
 #'   variability = "sd",
 #'   log_y = FALSE
@@ -181,9 +182,25 @@ gg_pkc_lineplot <- function(data,
       legend.position = "bottom",
       legend.title.position = "top",
       legend.title.align = 0.5,
-      legend.background = ggplot2::element_rect(fill = "white", color = "black", linewidth = 0.5),
+      legend.background = ggplot2::element_rect(
+        fill = "white",
+        color = "black",
+        linewidth = 0.5
+      ),
       plot.title = ggplot2::element_text(face = "bold")
     )
+
+  # Aligning plot to actual timepoints in the data frame
+
+  new_x_scale <- ggplot2::scale_x_continuous(
+    breaks = data[[time_var]],
+    expand = ggplot2::expansion(mult = 0.05)
+  )
+
+  p <- p +
+    new_x_scale + ggplot2::coord_cartesian(xlim = range(data[[time_var]]))
+
+  class(p) <- c("crane_gg_pkc", class(p))
 
   p
 }
