@@ -63,28 +63,34 @@ ard_tabulate_abnormal_by_baseline <- function(data,
     return(NULL)
   }
 
-  current_gp <- unique(data[[postbaseline_name]])
+  # There was an lapply statement before that had a bug
+  # I changed it to for loop cause the lapply thing was harder to read
+  current_gp <- as.character(unique(data[[postbaseline_name]]))
+  names_present <- c(rep(FALSE, length(abnormal)))
+  for (i in seq_along(abnormal)) {
+    names_present[[i]] <- any(current_gp %in% abnormal[[i]])
+  }
 
-  map(names(abnormal)[unlist(lapply(abnormal, function(x) {
-    current_gp %in% x
-  }))], function(abn_name) {
+  valid_abnormal_names <- names(abnormal)[names_present]
+
+  stats_for_tbl <- map(valid_abnormal_names, function(abn_name) {
     abn_val <- abnormal[[abn_name]]
-
     # Tier: Not [Abnormal] at baseline
     res_not_abn <- data |>
-      dplyr::filter(!(.data[[baseline_name]] %in% abn_val) | is.na(.data[[baseline_name]])) |>
+      dplyr::filter(!(.data[[baseline_name]] %in% abn_val) & !is.na(.data[[baseline_name]])) |>
       .calc_abnormal_logic(paste("Not", abn_name), abn_val, postbaseline_name, id, by)
 
     # Tier: [Abnormal] at baseline
     res_is_abn <- data |>
-      dplyr::filter(.data[[baseline_name]] %in% abn_val) |>
+      dplyr::filter(.data[[baseline_name]] %in% abn_val & !is.na(.data[[baseline_name]])) |>
       .calc_abnormal_logic(abn_name, abn_val, postbaseline_name, id, by)
 
     # Tier: Total
     res_total <- data |>
       .calc_abnormal_logic("Total", abn_val, postbaseline_name, id, by)
 
-    cards::bind_ard(res_not_abn, res_is_abn, res_total)
+    cards::bind_ard(res_not_abn, res_is_abn, res_total) |>
+      dplyr::mutate(variable = abn_name)
   }) |>
     cards::bind_ard() |>
     dplyr::mutate(
@@ -96,15 +102,41 @@ ard_tabulate_abnormal_by_baseline <- function(data,
       dplyr::any_of(c("variable", "variable_level", "context", "stat_name", "stat_label", "level")),
       as.character
     )) |>
-    cards::as_card(check = FALSE) -> ret
-  class(ret$variable_level) <- "list"
-  ret
+    cards::as_card(check = FALSE)
+  class(stats_for_tbl$variable_level) <- "list"
+
+  stats_for_tbl
 }
 
-
 #' Internal Calculation Helper for Abnormality Tabulation
-#' @noRd
+#'
+#' @description
+#' Acts as the calculation engine for baseline-stratified abnormality summaries.
+#' It computes the numerator (`n`, unique patients with the abnormality),
+#' denominator (`N`, total unique patients in the subset), and proportion (`p`)
+#' using `cards::ard_mvsummary`. It then forcefully applies the specified
+#' baseline tier label to the resulting ARD object.
+#'
+#' @param df (`data.frame`)\cr
+#'   A pre-filtered data frame containing the clinical results for a specific baseline status tier.
+#' @param group_label (`character`)\cr
+#'   The label to assign to the calculated statistics (e.g., `"Not Low"`, `"Total"`).
+#'   This will overwrite the `variable_level` and `level` columns in the output ARD.
+#' @param abn_val (`character` vector)\cr
+#'   A vector of values defining the target abnormality in the post-baseline column
+#'   (e.g., `c("LOW", "LOW LOW")`).
+#' @param postbaseline (`character`)\cr
+#'   The column name containing the post-baseline reference range indicators.
+#' @param id (`character`)\cr
+#'   The column name for the unique subject identifier.
+#' @param by (`character` vector or `NULL`)\cr
+#'   Optional column names for grouping variables (e.g., `"TRT01A"`).
+#'
+#' @return An ARD data frame containing the customized `abnormal` statistic (`n`, `N`, `p`),
+#'   or `NULL` if the input `df` has zero rows.
+#'
 #' @keywords internal
+#' @noRd
 .calc_abnormal_logic <- function(df, group_label, abn_val, postbaseline, id, by) {
   if (nrow(df) == 0) {
     return(NULL)
@@ -120,7 +152,6 @@ ard_tabulate_abnormal_by_baseline <- function(data,
           dplyr::filter(.data[[postbaseline]] %in% abn_val) |>
           dplyr::pull(all_of(id)) |>
           dplyr::n_distinct()
-
 
         N_total <- data |>
           dplyr::pull(all_of(id)) |>
