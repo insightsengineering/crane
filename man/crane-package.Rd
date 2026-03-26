@@ -27,6 +27,7 @@ Authors:
   \item Daniel D. Sjoberg \email{danield.sjoberg@gmail.com} (\href{https://orcid.org/0000-0003-0862-2018}{ORCID}) (Original creator of the package)
   \item Emily de la Rua \email{emilydelarua@gmail.com} (\href{https://orcid.org/0009-0000-8738-5561}{ORCID})
   \item Davide Garolini \email{davide.garolini@roche.com} (\href{https://orcid.org/0000-0002-1445-1369}{ORCID})
+  \item Chi Zhang \email{chi.zhang.cz7@roche.com} (\href{https://orcid.org/0000-0003-0501-5909}{ORCID})
 }
 
 Other contributors:
