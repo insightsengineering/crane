@@ -12,10 +12,7 @@ tbl_rmpt(
   by = NULL,
   id = "USUBJID",
   denominator,
-  label = "Duration of exposure",
-  participant_footnote = "Number of participants in each exposure duration category",
-  person_time_footnote =
-    "Person time is the sum of exposure duration across all participants"
+  label = "Duration of exposure"
 )
 
 \method{add_overall}{tbl_rmpt}(
@@ -53,12 +50,6 @@ Should contain columns for \code{id} and \code{by} variables.}
 Label for the exposure duration variable that appears in the table header.
 Default is \code{"Duration of exposure"}.}
 
-\item{participant_footnote}{(\code{string})\cr
-Footnote text for participant count columns. Default explains participant counting.}
-
-\item{person_time_footnote}{(\code{string})\cr
-Footnote text for person-time columns. Default explains person-time calculation.}
-
 \item{x}{(\code{tbl_rmpt})\cr
 Object of class \code{'tbl_rmpt'}.}
 
@@ -83,7 +74,7 @@ across categories of exposure duration. The table displays both:
 \item Total person-time (sum of exposure durations) for each category
 }
 
-By default, the table does not stratify by treatment arms. Please refer to the RMP Best Pracice documents for guidance.
+By default, the table does not stratify by treatment arms. Please refer to the RMP Best Practice documents for guidance.
 
 Total person-time is computed by summing up the exposure duration (e.g., \code{AVAL}) across all participants within each category.
 The unit can be days, months or years depending on the use-case.
@@ -93,7 +84,7 @@ The unit can be days, months or years depending on the use-case.
 
 df_adsl <- pharmaverseadam::adsl |> dplyr::filter(SAFFL == "Y")
 df_adex <- pharmaverseadam::adex |>
-  dplyr::filter(PARAMCD == 'TDURD', PARCAT1 == 'OVERALL', SAFFL == "Y") |>
+  dplyr::filter(PARAMCD == "TDURD", PARCAT1 == "OVERALL", SAFFL == "Y") |>
   dplyr::mutate(
     AVAL_MONTH = AVAL / 30.4375,
     AVAL_CAT = factor(
@@ -139,26 +130,14 @@ tbl_rmpt(
   add_overall(last = TRUE)
 
 # Example 3 --------------------------------
-# Customize labels and footnotes
+# RMPT table for other variables (age group and sex), add label
 tbl_rmpt(
   data = df_adex,
-  variable = AVAL_CAT,
+  variable = AGEGR1,
   aval = AVAL,
-  by = TRT01A,
+  by = SEX,
   denominator = df_adsl,
-  label = "Treatment Exposure Duration",
-  participant_footnote = "Number of patients in each category",
-  person_time_footnote = "Total person-time in days"
-)
-
-# Example 3 --------------------------------
-# RMPT table for another variable (e.g. ethnicity), stratified by treatment arm
-tbl_rmpt(
- data = df_adex,
- variable = ETHNIC,
- aval = AVAL,
- by = TRT01A,
- denominator = df_adsl
+  label = "Treatment Exposure Duration"
 )
 
 }

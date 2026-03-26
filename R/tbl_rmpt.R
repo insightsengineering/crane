@@ -6,7 +6,7 @@
 #' - Number and percentage of participants in each exposure duration category
 #' - Total person-time (sum of exposure durations) for each category
 #'
-#' By default, the table does not stratify by treatment arms. Please refer to the RMP Best Pracice documents for guidance.
+#' By default, the table does not stratify by treatment arms. Please refer to the RMP Best Practice documents for guidance.
 #'
 #' Total person-time is computed by summing up the exposure duration (e.g., `AVAL`) across all participants within each category.
 #' The unit can be days, months or years depending on the use-case.
@@ -34,10 +34,6 @@
 #' @param label (`string`)\cr
 #'   Label for the exposure duration variable that appears in the table header.
 #'   Default is `"Duration of exposure"`.
-#' @param participant_footnote (`string`)\cr
-#'   Footnote text for participant count columns. Default explains participant counting.
-#' @param person_time_footnote (`string`)\cr
-#'   Footnote text for person-time columns. Default explains person-time calculation.
 #' @param x (`tbl_rmpt`)\cr
 #'   Object of class `'tbl_rmpt'`.
 #' @param col_label (`string`)\cr
@@ -52,7 +48,7 @@
 #'
 #' df_adsl <- pharmaverseadam::adsl |> dplyr::filter(SAFFL == "Y")
 #' df_adex <- pharmaverseadam::adex |>
-#'   dplyr::filter(PARAMCD == 'TDURD', PARCAT1 == 'OVERALL', SAFFL == "Y") |>
+#'   dplyr::filter(PARAMCD == "TDURD", PARCAT1 == "OVERALL", SAFFL == "Y") |>
 #'   dplyr::mutate(
 #'     AVAL_MONTH = AVAL / 30.4375,
 #'     AVAL_CAT = factor(
@@ -98,39 +94,17 @@
 #'   add_overall(last = TRUE)
 #'
 #' # Example 3 --------------------------------
-#' # Customize labels and footnotes
+#' # RMPT table for other variables (age group and sex), add label
 #' tbl_rmpt(
 #'   data = df_adex,
-#'   variable = AVAL_CAT,
+#'   variable = AGEGR1,
 #'   aval = AVAL,
-#'   by = TRT01A,
+#'   by = SEX,
 #'   denominator = df_adsl,
-#'   label = "Treatment Exposure Duration",
-#'   participant_footnote = "Number of patients in each category",
-#'   person_time_footnote = "Total person-time in days"
+#'   label = "Treatment Exposure Duration"
 #' )
 #'
-#' # Example 4 --------------------------------
-#' # RMPT table for another variable (e.g. ethnicity), stratified by treatment arm
-#' tbl_rmpt(
-#'  data = df_adex,
-#'  variable = ETHNIC,
-#'  aval = AVAL,
-#'  by = TRT01A,
-#'  denominator = df_adsl
-#')
-#'
-#' # Example 5 --------------------------------
-#' # RMPT table for another variable (e.g. age group and sex)
-#' tbl_rmpt(
-#'  data = df_adex,
-#'  variable = AGEGR1,
-#'  aval = AVAL,
-#'  by = SEX,
-#'  denominator = df_adsl
-#' )
 NULL
-
 #' @rdname tbl_rmpt
 #' @export
 tbl_rmpt <- function(
@@ -140,9 +114,7 @@ tbl_rmpt <- function(
   by = NULL,
   id = "USUBJID",
   denominator,
-  label = "Duration of exposure",
-  participant_footnote = "Number of participants in each exposure duration category",
-  person_time_footnote = "Person time is the sum of exposure duration across all participants"
+  label = "Duration of exposure"
 ) {
   set_cli_abort_call()
 
@@ -154,8 +126,6 @@ tbl_rmpt <- function(
   check_data_frame(data)
   check_data_frame(denominator)
   check_string(label)
-  check_string(participant_footnote)
-  check_string(person_time_footnote)
 
   cards::process_selectors(
     data,
@@ -270,17 +240,6 @@ tbl_rmpt <- function(
           sort()
         dplyr::relocate(.x, all_of(stat_cols), .after = "label")
       }
-    ) |>
-    # Add footnotes
-    gtsummary::modify_footnote_header(
-      footnote = participant_footnote,
-      columns = gtsummary::all_stat_cols() & ends_with("_1"),
-      replace = TRUE
-    ) |>
-    gtsummary::modify_footnote_header(
-      footnote = person_time_footnote,
-      columns = gtsummary::all_stat_cols() & ends_with("_2"),
-      replace = TRUE
     )
 
   # Return table ---------------------------------------------------------------
