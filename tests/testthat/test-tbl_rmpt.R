@@ -35,7 +35,7 @@ setup_test_data <- function() {
 test_that("tbl_rmpt() works with default parameters (Example 1)", {
   skip_if_not_installed("pharmaverseadam")
   withr::local_options(list(width = 190))
-  
+
   data <- setup_test_data()
   df_adex <- data$adex
   df_adsl <- data$adsl
@@ -55,7 +55,7 @@ test_that("tbl_rmpt() works with default parameters (Example 1)", {
   expect_true("call_list" %in% names(tbl))
   expect_true("inputs" %in% names(tbl))
   expect_true("cards" %in% names(tbl))
-  
+
   # Snapshot test
   expect_snapshot(as.data.frame(tbl))
 })
