@@ -61,9 +61,9 @@ test_that("gg_pkc_lineplot catches invalid combinations and missing inputs", {
 # ------------------------------------------------------------------------------
 # 3. TEST DATA MANIPULATION & MATH LOGIC
 # ------------------------------------------------------------------------------
-test_that("gg_pkc_lineplot calculates statistics and floors negative bounds", {
-  # Generate Mean/SD plot
-  p_sd <- gg_pkc_lineplot(
+test_that("gg_pkc_lineplot calculates statistics and floors negative bounds appropriately", {
+  # --- Test 1: Linear Scale (log_y = FALSE) ---
+  p_sd_linear <- gg_pkc_lineplot(
     mock_pk_df,
     time_var = ATPTN,
     analyte_var = AVAL,
@@ -74,26 +74,50 @@ test_that("gg_pkc_lineplot calculates statistics and floors negative bounds", {
   )
 
   # Ensure the ad-hoc class was attached correctly
-  expect_s3_class(p_sd, "crane_gg_pkc")
+  expect_s3_class(p_sd_linear, "crane_gg_pkc")
 
   # Extract the computed statistical data from the ggplot object
   # Layer 1 = Line, Layer 2 = Point, Layer 3 = Errorbar
-  pb <- ggplot2::ggplot_build(p_sd)
-  err_data <- pb$data[[3]]
+  pb_linear <- ggplot2::ggplot_build(p_sd_linear)
+  err_data_linear <- pb_linear$data[[3]]
 
   # Test standard Mean and SD calculation
   # Drug B at ATPTN 4: Values = 20 and 18. Mean = 19. SD = 1.414.
   # ymax should be 19 + 1.414 = 20.414
-  drug_b_4 <- err_data[round(err_data$x, 0) == 4 & err_data$y > 15, ]
+  drug_b_4 <- err_data_linear[round(err_data_linear$x, 0) == 4 & err_data_linear$y > 15, ]
   expect_equal(drug_b_4$y, 19)
   expect_equal(round(drug_b_4$ymax, 3), 20.414)
 
-  # Test Negative Flooring Logic (1e-5)
+  # Test Negative Flooring Logic for Linear Scale (1e-5)
   # Drug A at ATPTN 12: Mean = 5.5, SD = 6.36.
   # Mean - SD = -0.86 (Negative!). It should be floored to 1e-5.
-  drug_a_12 <- err_data[round(err_data$x, 0) == 12 & err_data$y == 5.5, ]
-  expect_equal(drug_a_12$ymin, 1e-5)
-  expect_equal(round(drug_a_12$ymax, 2), 11.86)
+  drug_a_12_linear <- err_data_linear[round(err_data_linear$x, 0) == 12 & err_data_linear$y == 5.5, ]
+  expect_equal(drug_a_12_linear$ymin, 1e-5)
+  expect_equal(round(drug_a_12_linear$ymax, 2), 11.86)
+
+  # --- Test 2: Log Scale (log_y = TRUE) ---
+  p_sd_log <- suppressWarnings(gg_pkc_lineplot(
+    mock_pk_df,
+    time_var = ATPTN,
+    analyte_var = AVAL,
+    group = TRT,
+    stat = "mean",
+    variability = "sd",
+    log_y = TRUE
+  ))
+
+  pb_log <- suppressWarnings(ggplot2::ggplot_build(p_sd_log))
+  err_data_log <- pb_log$data[[3]]
+
+  # Test Negative Bounds Logic for Log Scale (NA_real_)
+  # NOTE: Because scale_y_log10() transforms data BEFORE stat_summary computes,
+  # calculations are done on log10 values.
+  # Drug A at ATPTN 12: AVAL = 1 and 10 -> Log10 values are 0 and 1.
+  # Mean = 0.5. SD = 0.707.
+  # ymin_val = 0.5 - 0.707 = -0.207. Since -0.207 <= 0, it becomes NA_real_.
+  drug_a_12_log <- err_data_log[round(err_data_log$x, 0) == 12 & round(err_data_log$y, 1) == 0.5, ]
+  expect_true(is.na(drug_a_12_log$ymin))
+  expect_equal(round(drug_a_12_log$ymax, 3), 1.207)
 })
 
 test_that("gg_pkc_lineplot calculates median and IQR properly", {
