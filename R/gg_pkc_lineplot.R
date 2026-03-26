@@ -110,7 +110,9 @@ gg_pkc_lineplot <- function(data,
   check_string(analyte_var)
   check_string(group)
 
-  # Build Plot
+  # ----------------------------------------------------------------------------
+  # BUILD PLOT
+  # ----------------------------------------------------------------------------
   pd <- ggplot2::position_dodge(width = 0.2)
 
   p <- ggplot2::ggplot(
@@ -126,7 +128,7 @@ gg_pkc_lineplot <- function(data,
     ggplot2::stat_summary(fun = stat, geom = "line", linewidth = 0.8, position = pd) +
     ggplot2::stat_summary(fun = stat, geom = "point", size = 2, position = pd)
 
-  # Add Variability (Error Bars)
+  # Add Variability (Error Bars) - RAW MATH ONLY
   if (stat == "mean" && variability %in% c("sd", "se", "ci")) {
     p <- p + ggplot2::stat_summary(
       fun.data = function(val) {
@@ -139,17 +141,7 @@ gg_pkc_lineplot <- function(data,
           "ci" = stats::qt(0.975, df = max(1, sum(!is.na(val)) - 1)) * se
         )
 
-        ymin_val <- m - err
-
-        # --- LOG SCALE ADJUSTMENT ---
-        if (log_y) {
-          if (ymin_val <= 0) ymin_val <- NA_real_
-        } else {
-          # Keep original clamping behavior for linear scale
-          ymin_val <- max(ymin_val, 1e-5)
-        }
-
-        data.frame(y = m, ymin = ymin_val, ymax = m + err)
+        data.frame(y = m, ymin = m - err, ymax = m + err)
       },
       geom = "errorbar", width = 0.2, position = pd
     )
@@ -160,14 +152,6 @@ gg_pkc_lineplot <- function(data,
         ymin_val <- unname(stats::quantile(val, 0.25, na.rm = TRUE))
         ymax_val <- unname(stats::quantile(val, 0.75, na.rm = TRUE))
 
-        # --- LOG SCALE ADJUSTMENT ---
-        if (log_y) {
-          if (ymin_val <= 0) ymin_val <- NA_real_
-        } else {
-          # Keep original clamping behavior for linear scale
-          ymin_val <- max(ymin_val, 1e-5)
-        }
-
         data.frame(y = m, ymin = ymin_val, ymax = ymax_val)
       },
       geom = "errorbar", width = 0.2, position = pd
@@ -176,7 +160,9 @@ gg_pkc_lineplot <- function(data,
     cli::cli_abort("Invalid combination of stat ({.val {stat}}) and variability ({.val {variability}}).")
   }
 
+  # ----------------------------------------------------------------------------
   # Log Scale & LLOQ
+  # ----------------------------------------------------------------------------
   if (log_y) {
     p <- p + ggplot2::scale_y_log10()
   }
@@ -189,7 +175,9 @@ gg_pkc_lineplot <- function(data,
     )
   }
 
-  # Theming & Scales
+  # ----------------------------------------------------------------------------
+  # THEMING & SCALES
+  # ----------------------------------------------------------------------------
   p <- p +
     ggplot2::theme_classic() +
     ggplot2::theme(
@@ -200,11 +188,13 @@ gg_pkc_lineplot <- function(data,
       plot.title = ggplot2::element_text(face = "bold")
     ) +
     ggplot2::scale_x_continuous(
-      breaks = data[[time_var]],
+      breaks = unique(data[[time_var]]),
       expand = ggplot2::expansion(mult = 0.05)
-    ) +
-    ggplot2::coord_cartesian(xlim = range(data[[time_var]]))
+    )
 
+  # ----------------------------------------------------------------------------
+  # COORDINATES (No Limits applied)
+  # ----------------------------------------------------------------------------
   class(p) <- c("crane_gg_pkc", class(p))
   p
 }

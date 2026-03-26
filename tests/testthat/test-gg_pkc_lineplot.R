@@ -61,7 +61,7 @@ test_that("gg_pkc_lineplot catches invalid combinations and missing inputs", {
 # ------------------------------------------------------------------------------
 # 3. TEST DATA MANIPULATION & MATH LOGIC
 # ------------------------------------------------------------------------------
-test_that("gg_pkc_lineplot calculates statistics and floors negative bounds appropriately", {
+test_that("gg_pkc_lineplot calculates statistics natively without bounds flooring", {
   # --- Test 1: Linear Scale (log_y = FALSE) ---
   p_sd_linear <- gg_pkc_lineplot(
     mock_pk_df,
@@ -88,12 +88,12 @@ test_that("gg_pkc_lineplot calculates statistics and floors negative bounds appr
   expect_equal(drug_b_4$y, 19)
   expect_equal(round(drug_b_4$ymax, 3), 20.414)
 
-  # Test Negative Flooring Logic for Linear Scale (1e-5)
-  # Drug A at ATPTN 12: Mean = 5.5, SD = 6.36.
-  # Mean - SD = -0.86 (Negative!). It should be floored to 1e-5.
+  # Test Native Bounds for Linear Scale
+  # Drug A at ATPTN 12: Mean = 5.5, SD = 6.364.
+  # Mean - SD = -0.864. Plotted natively below 0.
   drug_a_12_linear <- err_data_linear[round(err_data_linear$x, 0) == 12 & err_data_linear$y == 5.5, ]
-  expect_equal(drug_a_12_linear$ymin, 1e-5)
-  expect_equal(round(drug_a_12_linear$ymax, 2), 11.86)
+  expect_equal(round(drug_a_12_linear$ymin, 3), -0.864)
+  expect_equal(round(drug_a_12_linear$ymax, 3), 11.864)
 
   # --- Test 2: Log Scale (log_y = TRUE) ---
   p_sd_log <- suppressWarnings(gg_pkc_lineplot(
@@ -109,14 +109,14 @@ test_that("gg_pkc_lineplot calculates statistics and floors negative bounds appr
   pb_log <- suppressWarnings(ggplot2::ggplot_build(p_sd_log))
   err_data_log <- pb_log$data[[3]]
 
-  # Test Negative Bounds Logic for Log Scale (NA_real_)
+  # Test Native Bounds Logic for Log Scale
   # NOTE: Because scale_y_log10() transforms data BEFORE stat_summary computes,
-  # calculations are done on log10 values.
+  # calculations are done directly on log10 values.
   # Drug A at ATPTN 12: AVAL = 1 and 10 -> Log10 values are 0 and 1.
-  # Mean = 0.5. SD = 0.707.
-  # ymin_val = 0.5 - 0.707 = -0.207. Since -0.207 <= 0, it becomes NA_real_.
+  # Mean = 0.5. SD = 0.7071.
+  # ymin_val = 0.5 - 0.7071 = -0.207 (Negative in log space, representing ~0.62)
   drug_a_12_log <- err_data_log[round(err_data_log$x, 0) == 12 & round(err_data_log$y, 1) == 0.5, ]
-  expect_true(is.na(drug_a_12_log$ymin))
+  expect_equal(round(drug_a_12_log$ymin, 3), -0.207)
   expect_equal(round(drug_a_12_log$ymax, 3), 1.207)
 })
 
