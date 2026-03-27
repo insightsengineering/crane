@@ -100,13 +100,14 @@ get_cox_pairwise_df <- function(model_formula, data, arm, ref_group = NULL) {
     )
     orginal_survdiff <- survdiff(formula = model_formula, data = comp_df)
     log_rank_pvalue <- 1 - stats::pchisq(orginal_survdiff$chisq, length(orginal_survdiff$n) - 1)
+    conf_int_row <- paste0(arm, current_arm)
     current_row <- data.frame(
-      hr = sprintf("%.2f", coxph_ans$conf.int[1, 1]),
+      hr = sprintf("%.2f", coxph_ans$conf.int[conf_int_row, 1]),
       ci = paste0(
         "(",
-        sprintf("%.2f", coxph_ans$conf.int[1, 3]),
+        sprintf("%.2f", coxph_ans$conf.int[conf_int_row, 3]),
         ", ",
-        sprintf("%.2f", coxph_ans$conf.int[1, 4]),
+        sprintf("%.2f", coxph_ans$conf.int[conf_int_row, 4]),
         ")"
       ),
       pval = log_rank_pvalue
