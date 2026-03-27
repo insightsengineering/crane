@@ -1,4 +1,4 @@
-# crane 0.3.1.9013
+# crane 0.3.1.9015
 
 ## New Functions and Functionality
 
@@ -27,6 +27,7 @@
 
 * Adjusted `tbl_mmrm()` to allow `base_df = NULL`.
 
+* Fixed two bugs related to summary statistics calculation in `ard_tabulate_abnormal_by_baseline()`. (#198)
 
 # crane 0.3.1
 
