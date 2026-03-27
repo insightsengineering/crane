@@ -128,7 +128,7 @@ gg_pkc_lineplot <- function(data,
     ggplot2::stat_summary(fun = stat, geom = "line", linewidth = 0.8, position = pd) +
     ggplot2::stat_summary(fun = stat, geom = "point", size = 2, position = pd)
 
-  # Add Variability (Error Bars) - RAW MATH ONLY
+  # Add Variability (Error Bars)
   if (stat == "mean" && variability %in% c("sd", "se", "ci")) {
     p <- p + ggplot2::stat_summary(
       fun.data = function(val) {
@@ -186,15 +186,15 @@ gg_pkc_lineplot <- function(data,
       legend.title.align = 0.5,
       legend.background = ggplot2::element_rect(fill = "white", color = "black", linewidth = 0.5),
       plot.title = ggplot2::element_text(face = "bold")
-    ) +
-    ggplot2::scale_x_continuous(
-      breaks = unique(data[[time_var]]),
-      expand = ggplot2::expansion(mult = 0.05)
     )
+  new_x_scale <- ggplot2::scale_x_continuous(
+    breaks = unique(data[[time_var]]),
+    expand = ggplot2::expansion(mult = 0.05)
+  )
+  p <- p +
+    new_x_scale + ggplot2::coord_cartesian(xlim = range(data[[time_var]]))
 
-  # ----------------------------------------------------------------------------
-  # COORDINATES (No Limits applied)
-  # ----------------------------------------------------------------------------
   class(p) <- c("crane_gg_pkc", class(p))
+
   p
 }
