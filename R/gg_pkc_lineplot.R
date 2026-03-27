@@ -77,7 +77,6 @@
 #'     legend.position = "top"
 #'   )
 #'
-#' @importFrom rlang .data
 #' @export
 gg_pkc_lineplot <- function(data,
                             time_var,

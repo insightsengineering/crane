@@ -82,8 +82,9 @@ gg_get_summary_stats <- function(
 
 #' @title Generate a Summary Line Plot from Raw Data
 #'
-#' @description Calculates summary statistics inline generating a line plot 
-#'   directly from raw data without needing external calculation functions.
+#' @description Calculates summary statistics inline using `ggplot2::stat_summary()`,
+#'   generating a line plot directly from raw data. Supports configurable central 
+#'   tendencies and dispersion metrics.
 #'
 #' @param data (`data.frame`)\cr
 #'   The raw data frame (e.g., ADaM dataset).
@@ -93,29 +94,39 @@ gg_get_summary_stats <- function(
 #'   Column name for the continuous variable to summarize (e.g., `AVAL`).
 #' @param group ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   Optional column name for the grouping/treatment variable.
+#' @param stat (`string`)\cr
+#'   Primary summary statistic: `"mean"` or `"median"`. Default is `"mean"`.
+#' @param variability (`string`)\cr
+#'   Variability measure: `"sd"`, `"se"`, `"ci"`, `"iqr"`, or `"none"`. 
+#'   Default is `"ci"`.
 #' @param conf_level (`numeric`)\cr
-#'   Confidence level for error bars (default: `0.95`).
+#'   Confidence level for error bars when `variability = "ci"` (default: `0.95`).
 #'
 #' @return A `ggplot` object of class `crane_gg_line`.
 #'
-#' @examples
-#' set.seed(123)
-#' adlb <- data.frame(
-#'   ARM = rep(c("Treatment A", "Treatment B"), each = 30),
-#'   AVISIT = rep(c(0, 4, 8), 20),
-#'   AVAL = rnorm(60, mean = 10, sd = 2)
-#' )
-#' 
-#' p <- gg_lineplot(data = adlb, x = AVISIT, y = AVAL, group = ARM)
-#' p
-#'
 #' @export
+#' @importFrom rlang .data
 gg_lineplot <- function(data,
                         x,
                         y,
                         group = NULL,
+                        stat = c("mean", "median"),
+                        variability = c("ci", "sd", "se", "iqr", "none"),
                         conf_level = 0.95) {
   
+  # 1. Argument Matching and Validation
+  stat <- match.arg(stat)
+  variability <- match.arg(variability)
+  
+  # Prevent mathematically invalid combinations
+  if (stat == "mean" && variability == "iqr") {
+    cli::cli_abort("Invalid combination: Cannot plot IQR around a mean.")
+  } else if (stat == "median" && variability %in% c("sd", "se", "ci")) {
+    cli::cli_abort(
+      "Invalid combination of stat ({.val {stat}}) and variability ({.val {variability}})."
+    )
+  }
+
   cards::process_selectors(
     data,
     x = {{ x }},
@@ -123,6 +134,7 @@ gg_lineplot <- function(data,
     group = {{ group }}
   )
 
+  # 2. Data Preprocessing
   # Expand grid ensures missing timepoints in specific groups are explicitly 
   # populated with NAs. This prevents ggplot from drawing misleading lines 
   # that bridge across missing visits.
@@ -136,18 +148,32 @@ gg_lineplot <- function(data,
 
   pd <- ggplot2::position_dodge(width = 0.4)
 
-  p <- ggplot2::ggplot(
-    data = df_plot,
-    ggplot2::aes(
-      x = .data[[x]],
-      y = .data[[y]],
-      color = if (length(group) > 0) .data[[group]] else NULL,
-      shape = if (length(group) > 0) .data[[group]] else NULL,
-      group = if (length(group) > 0) .data[[group]] else NULL
+  # 3. Build Plot: Use clean aes() mapping so gg_varname_extraction succeeds
+  if (length(group) > 0) {
+    p <- ggplot2::ggplot(
+      data = df_plot,
+      ggplot2::aes(
+        x = .data[[x]],
+        y = .data[[y]],
+        color = .data[[group]],
+        shape = .data[[group]],
+        linetype = .data[[group]],
+        group = .data[[group]]
+      )
     )
-  ) +
+  } else {
+    p <- ggplot2::ggplot(
+      data = df_plot,
+      ggplot2::aes(
+        x = .data[[x]],
+        y = .data[[y]]
+      )
+    )
+  }
+
+  p <- p + 
     ggplot2::stat_summary(
-      fun = "mean", 
+      fun = stat, 
       geom = "point", 
       position = pd, 
       size = 2, 
@@ -156,34 +182,44 @@ gg_lineplot <- function(data,
     
   if (length(group) > 0) {
     p <- p + ggplot2::stat_summary(
-      fun = "mean", 
+      fun = stat, 
       geom = "line", 
       position = pd, 
       na.rm = TRUE
     )
   }
 
-  # Utilize the abstracted function factory to generate CI bounds
-  p <- p + 
-    ggplot2::stat_summary(
-    fun.data = gg_get_summary_stats(
-      stat = "mean", 
-      variability = "ci", 
-      conf_level = conf_level
-    ),
-    geom = "errorbar",
-    width = 0.45,
-    position = pd,
-    na.rm = TRUE
-  )
+  # 4. Add Variability Layer conditionally to avoid drawing degenerate lines
+  if (variability != "none") {
+    p <- p + ggplot2::stat_summary(
+      fun.data = gg_get_summary_stats(
+        stat = stat, 
+        variability = variability, 
+        conf_level = conf_level
+      ),
+      geom = "errorbar",
+      width = 0.45,
+      position = pd,
+      na.rm = TRUE
+    )
+  }
 
+  # 5. Theming
   p <- p +
     ggplot2::scale_y_continuous(labels = scales::label_comma()) +
     ggplot2::theme_classic() +
     ggplot2::theme(
       legend.position = "bottom",
+      legend.title.position = "top",
+      legend.title.align = 0.5,
+      legend.background = ggplot2::element_rect(fill = "white", color = "black", linewidth = 0.5),
       plot.title = ggplot2::element_text(face = "bold")
     )
+    
+  # Dynamically label the legends to overwrite the ugly ".data[[group]]" default
+  if (length(group) > 0) {
+    p <- p + ggplot2::labs(color = group, linetype = group, shape = group)
+  }
 
   class(p) <- c("crane_gg_line", class(p))
 

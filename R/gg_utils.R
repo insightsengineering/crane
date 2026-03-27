@@ -3,7 +3,7 @@
 #' @description Generates a text table from a dataframe, perfectly aligns its
 #'   X-axis to match a provided ggplot, and seamlessly stacks them vertically.
 #'   Tailored specifically for Kaplan-Meier ("KM") or Pharmacokinetic ("PK")
-#'   table structures.
+#'   table structures. Supports both continuous and discrete X-axes.
 #'
 #' @param df (`data.frame`)\cr
 #'   The summary table to render.
@@ -27,32 +27,6 @@
 #' @param rel_height_plot (`numeric`)\cr
 #'   Vertical space for the main plot.
 #'
-#' @examples
-#' \dontrun{
-#'
-#' # 1. Create a base plot with a continuous X-axis
-#' p_base <- ggplot(mtcars, aes(x = mpg, y = disp)) +
-#'   geom_point() +
-#'   scale_x_continuous(limits = c(10, 35), breaks = c(10, 20, 30))
-#'
-#' # 2. Create a mock summary table matching the X-axis breaks
-#' mock_df <- data.frame(
-#'   `10` = c("15", "12"),
-#'   `20` = c("10", "8"),
-#'   `30` = c("5", "3"),
-#'   check.names = FALSE
-#' )
-#' rownames(mock_df) <- c("Group A", "Group B")
-#'
-#' # 3. Align and stack the table under the plot using the "KM" engine
-#' df2gg_aligned(
-#'   df = mock_df,
-#'   gg_plt = p_base,
-#'   type = "KM",
-#'   title = "Subjects at Risk",
-#'   show_xaxis = TRUE
-#' )
-#' }
 #' @return A combined `cowplot` object.
 #' @keywords internal
 df2gg_aligned <- function(df,
@@ -78,11 +52,9 @@ df2gg_aligned <- function(df,
 
   # 2. Extract Y-axis labels and isolate X-columns based on `type`--------------
   if (type == "KM") {
-    # KM Tables use rownames for their Y-axis labels
     raw_y_labels <- rownames(df)
     df_x <- df
   } else if (type == "PK") {
-    # PK Tables use the very first column for their Y-axis labels
     if (ncol(df) < 2) {
       rlang::abort("PK tables must have at least 2 columns (labels + data).")
     }
@@ -93,35 +65,67 @@ df2gg_aligned <- function(df,
 
   final_y_labels <- if (!is.null(y_labels)) y_labels else raw_y_labels
 
-  # 3. Ensure remaining columns are numeric timepoints--------------------------
+  # 3. Extract Plot Mapping Details & Map X-Coordinates-------------------------
+  plot_build <- ggplot2::ggplot_build(gg_plt)
+  x_params <- plot_build$layout$panel_params[[1]]
+  x_range <- x_params$x.range
+
   x_cols <- names(df_x)
   x_num <- suppressWarnings(as.numeric(x_cols))
-
+  
   if (any(is.na(x_num))) {
-    rlang::warn("Some columns cannot be coerced to numeric. Omitting them.")
-    x_cols <- x_cols[!is.na(x_num)]
-    df_x <- df_x[, x_cols, drop = FALSE]
+    # Discrete Axis Handling: ggplot maps categories to integer coordinates (1, 2, 3) 
+    # corresponding to the scale's discrete limits. We extract those limits to
+    # find exactly where each column should be plotted.
+    x_limits <- if (!is.null(x_params$x$get_limits)) x_params$x$get_limits() else x_params$x$limits
+    
+    if (is.null(x_limits)) {
+      rlang::abort("Cannot extract discrete limits from the plot for alignment.")
+    }
+    
+    valid_cols <- intersect(x_cols, x_limits)
+    if (length(valid_cols) == 0) {
+      rlang::abort("None of the table columns match the categorical X-axis levels in the plot.")
+    }
+    
+    # Map category names directly to their integer positions in the ggplot
+    col_x_map <- stats::setNames(match(valid_cols, x_limits), valid_cols)
+    
+    # Define breaks for the continuous scale based on the visible categorical breaks
+    x_breaks <- match(x_params$x$get_breaks(), x_limits)
+    x_breaks <- x_breaks[!is.na(x_breaks)]
+    
+  } else {
+    # Continuous Axis Handling: Standard numeric extraction
+    valid_cols <- x_cols[!is.na(x_num)]
+    if (length(valid_cols) == 0) {
+      rlang::abort("None of the table columns could be coerced to numeric coordinates.")
+    }
+    
+    col_x_map <- stats::setNames(as.numeric(valid_cols), valid_cols)
+    
+    x_breaks <- x_params$x$breaks
+    x_breaks <- x_breaks[!is.na(x_breaks)]
   }
+  
+  df_x <- df_x[, valid_cols, drop = FALSE]
 
   # 4. Pivot data to long format------------------------------------------------
   df_long <- df_x |>
     dplyr::mutate(row_id = dplyr::row_number()) |>
     tidyr::pivot_longer(
-      cols = dplyr::all_of(x_cols),
+      cols = dplyr::all_of(valid_cols),
       names_to = "x_chr",
       values_to = "value"
     ) |>
-    dplyr::mutate(x = as.numeric(.data$x_chr))
+    # Translate the column name to the mathematical X-coordinate in the plot
+    dplyr::mutate(x = col_x_map[.data$x_chr])
 
   df_long$value[is.na(df_long$value)] <- ""
 
-  # 5. Extract Limits & Breaks safely from the built plot-----------------------
-  plot_build <- ggplot2::ggplot_build(gg_plt)
-  x_range <- plot_build$layout$panel_params[[1]]$x.range
-  x_breaks <- plot_build$layout$panel_params[[1]]$x$breaks
-  x_breaks <- x_breaks[!is.na(x_breaks)]
-
-  # 6. Build the aligned table--------------------------------------------------
+  # 5. Build the aligned table--------------------------------------------------
+  # We ALWAYS use scale_x_continuous for the table because we mathematically 
+  # mapped discrete categories to their true integer coordinates above.
   p_tbl <- ggplot2::ggplot(
     df_long,
     ggplot2::aes(x = .data$x, y = .data$row_id, label = .data$value)
@@ -162,7 +166,7 @@ df2gg_aligned <- function(df,
       )
     )
 
-  # 7. Apply specific formatting based on show_xaxis----------------------------
+  # 6. Apply specific formatting based on show_xaxis----------------------------
   if (show_xaxis) {
     p_tbl <- p_tbl + ggplot2::theme(
       axis.text.x = ggplot2::element_text(
@@ -182,7 +186,7 @@ df2gg_aligned <- function(df,
     )
   }
 
-  # 8. Combine using cowplot----------------------------------------------------
+  # 7. Combine using cowplot----------------------------------------------------
   table_height <- 1 - rel_height_plot
 
   combined_plot <- cowplot::plot_grid(
