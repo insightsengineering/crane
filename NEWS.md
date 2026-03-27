@@ -29,6 +29,8 @@
 
 * Fixed two bugs related to summary statistics calculation in `ard_tabulate_abnormal_by_baseline()`. (#198)
 
+* Fixed a bug in `gg_pkc_lineplot()` causing misplaced error bars on a log scale. (#199)
+
 # crane 0.3.1
 
 ## New Functions and Functionality

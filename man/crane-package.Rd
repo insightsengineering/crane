@@ -28,6 +28,7 @@ Authors:
   \item Emily de la Rua \email{emilydelarua@gmail.com} (\href{https://orcid.org/0009-0000-8738-5561}{ORCID})
   \item Davide Garolini \email{davide.garolini@roche.com} (\href{https://orcid.org/0000-0002-1445-1369}{ORCID})
   \item Chi Zhang \email{chi.zhang.cz7@roche.com} (\href{https://orcid.org/0000-0003-0501-5909}{ORCID})
+  \item Jan Szczypiński \email{jan.szczypinski@external.roche.com} (\href{https://orcid.org/0000-0002-5682-5840}{ORCID})
 }
 
 Other contributors:
