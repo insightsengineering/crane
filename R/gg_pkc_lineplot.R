@@ -108,7 +108,7 @@ gg_pkc_lineplot <- function(data,
   check_string(time_var)
   check_string(analyte_var)
   check_string(group)
-  
+
   # ----------------------------------------------------------------------------
   # BUILD PLOT
   # ----------------------------------------------------------------------------
@@ -186,13 +186,13 @@ gg_pkc_lineplot <- function(data,
       legend.background = ggplot2::element_rect(fill = "white", color = "black", linewidth = 0.5),
       plot.title = ggplot2::element_text(face = "bold")
     )
-    new_x_scale <- ggplot2::scale_x_continuous(
-      breaks = unique(data[[time_var]]),
-      expand = ggplot2::expansion(mult = 0.05)
-    )
+  new_x_scale <- ggplot2::scale_x_continuous(
+    breaks = unique(data[[time_var]]),
+    expand = ggplot2::expansion(mult = 0.05)
+  )
   p <- p +
     new_x_scale + ggplot2::coord_cartesian(xlim = range(data[[time_var]]))
-  
+
   class(p) <- c("crane_gg_pkc", class(p))
 
   p
