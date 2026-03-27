@@ -3,14 +3,20 @@
 #' @description Calculates N, mean, standard deviation, and a two-sided confidence
 #' interval for the mean of a numeric vector.
 #'
-#' @param x (`numeric`)\cr vector to summarize.
-#' @param conf_level (`probability`)\cr The confidence level for the interval (default is 0.95).
-#' @param decimal_places (`integer`)\cr Number of decimal places for numeric values in the table.
+#' @param x (`numeric`)\cr 
+#'    vector to summarize.
+#' @param conf_level (`probability`)\cr 
+#'    The confidence level for the interval (default is 0.95).
+#' @param decimal_places (`integer`)\cr 
+#'    Number of decimal places for numeric values in the table.
+#' 
 #' @return A `list` with statistics: `n`, `mean`, `mean_ci_lwr`, `mean_ci_upr`, `median`, `sd`.
-#' @export
+#' 
 #' @examples
 #' x <- c(10, 20, 40, NA, 30)
 #' calc_stats(x, conf_level = 0.95, decimal_places = 2)
+#' 
+#' @export
 calc_stats <- function(x, conf_level = 0.95, decimal_places = 2) {
   n <- sum(!is.na(x))
   if (n == 0) {
