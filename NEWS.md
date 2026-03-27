@@ -1,4 +1,4 @@
-# crane 0.3.1.9015
+# crane 0.3.1.9016
 
 ## New Functions and Functionality
 
@@ -28,6 +28,8 @@
 * Adjusted `tbl_mmrm()` to allow `base_df = NULL`.
 
 * Fixed two bugs related to summary statistics calculation in `ard_tabulate_abnormal_by_baseline()`. (#198)
+
+* Fixed a bug in `gg_pkc_lineplot()` causing misplaced error bars on a log scale. (#199)
 
 # crane 0.3.1
 
