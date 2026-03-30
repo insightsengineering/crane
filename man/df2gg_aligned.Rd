@@ -7,7 +7,7 @@
 df2gg_aligned(
   df,
   gg_plt,
-  type = c("KM", "PK"),
+  type = c("KM", "PK", "GEN"),
   y_labels = NULL,
   title = NULL,
   xlab = NULL,
@@ -56,7 +56,7 @@ A combined \code{cowplot} object.
 Generates a text table from a dataframe, perfectly aligns its
 X-axis to match a provided ggplot, and seamlessly stacks them vertically.
 Tailored specifically for Kaplan-Meier ("KM") or Pharmacokinetic ("PK")
-table structures.
+table structures. Supports both continuous and discrete X-axes.
 }
 \examples{
 \dontrun{

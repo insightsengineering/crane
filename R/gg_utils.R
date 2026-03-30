@@ -27,11 +27,37 @@
 #' @param rel_height_plot (`numeric`)\cr
 #'   Vertical space for the main plot.
 #'
+#' @examples
+#' \dontrun{
+#'
+#' # 1. Create a base plot with a continuous X-axis
+#' p_base <- ggplot(mtcars, aes(x = mpg, y = disp)) +
+#'   geom_point() +
+#'   scale_x_continuous(limits = c(10, 35), breaks = c(10, 20, 30))
+#'
+#' # 2. Create a mock summary table matching the X-axis breaks
+#' mock_df <- data.frame(
+#'   `10` = c("15", "12"),
+#'   `20` = c("10", "8"),
+#'   `30` = c("5", "3"),
+#'   check.names = FALSE
+#' )
+#' rownames(mock_df) <- c("Group A", "Group B")
+#'
+#' # 3. Align and stack the table under the plot using the "KM" engine
+#' df2gg_aligned(
+#'   df = mock_df,
+#'   gg_plt = p_base,
+#'   type = "KM",
+#'   title = "Subjects at Risk",
+#'   show_xaxis = TRUE
+#' )
+#' }
 #' @return A combined `cowplot` object.
 #' @keywords internal
 df2gg_aligned <- function(df,
                           gg_plt,
-                          type = c("KM", "PK"),
+                          type = c("KM", "PK", "GEN"),
                           y_labels = NULL,
                           title = NULL,
                           xlab = NULL,
@@ -54,9 +80,11 @@ df2gg_aligned <- function(df,
   if (type == "KM") {
     raw_y_labels <- rownames(df)
     df_x <- df
-  } else if (type == "PK") {
+  } else if (type %in% c("PK", "GEN")) {
     if (ncol(df) < 2) {
-      rlang::abort("PK tables must have at least 2 columns (labels + data).")
+      rlang::abort(
+        "PK and GEN tables must have at least 2 columns (labels + data)."
+      )
     }
     y_col_name <- names(df)[1]
     raw_y_labels <- as.character(df[[y_col_name]])
@@ -69,45 +97,41 @@ df2gg_aligned <- function(df,
   plot_build <- ggplot2::ggplot_build(gg_plt)
   x_params <- plot_build$layout$panel_params[[1]]
   x_range <- x_params$x.range
+  x_scale <- plot_build$layout$panel_scales_x[[1]]
 
   x_cols <- names(df_x)
   x_num <- suppressWarnings(as.numeric(x_cols))
-  
-  if (any(is.na(x_num))) {
-    # Discrete Axis Handling: ggplot maps categories to integer coordinates (1, 2, 3) 
-    # corresponding to the scale's discrete limits. We extract those limits to
-    # find exactly where each column should be plotted.
-    x_limits <- if (!is.null(x_params$x$get_limits)) x_params$x$get_limits() else x_params$x$limits
-    
-    if (is.null(x_limits)) {
+
+  if (isTRUE(x_scale$is_discrete())) {
+    # Discrete Axis Handling
+    x_limits <- x_scale$get_limits()
+
+    if (is.null(x_limits) || length(x_limits) == 0) {
       rlang::abort("Cannot extract discrete limits from the plot for alignment.")
     }
-    
+
     valid_cols <- intersect(x_cols, x_limits)
     if (length(valid_cols) == 0) {
       rlang::abort("None of the table columns match the categorical X-axis levels in the plot.")
     }
-    
-    # Map category names directly to their integer positions in the ggplot
+
     col_x_map <- stats::setNames(match(valid_cols, x_limits), valid_cols)
-    
-    # Define breaks for the continuous scale based on the visible categorical breaks
-    x_breaks <- match(x_params$x$get_breaks(), x_limits)
+
+    x_breaks <- match(x_scale$get_breaks(), x_limits)
     x_breaks <- x_breaks[!is.na(x_breaks)]
-    
   } else {
-    # Continuous Axis Handling: Standard numeric extraction
+    # Continuous Axis Handling
     valid_cols <- x_cols[!is.na(x_num)]
     if (length(valid_cols) == 0) {
       rlang::abort("None of the table columns could be coerced to numeric coordinates.")
     }
-    
+
     col_x_map <- stats::setNames(as.numeric(valid_cols), valid_cols)
-    
+
     x_breaks <- x_params$x$breaks
     x_breaks <- x_breaks[!is.na(x_breaks)]
   }
-  
+
   df_x <- df_x[, valid_cols, drop = FALSE]
 
   # 4. Pivot data to long format------------------------------------------------
@@ -118,14 +142,11 @@ df2gg_aligned <- function(df,
       names_to = "x_chr",
       values_to = "value"
     ) |>
-    # Translate the column name to the mathematical X-coordinate in the plot
     dplyr::mutate(x = col_x_map[.data$x_chr])
 
   df_long$value[is.na(df_long$value)] <- ""
 
   # 5. Build the aligned table--------------------------------------------------
-  # We ALWAYS use scale_x_continuous for the table because we mathematically 
-  # mapped discrete categories to their true integer coordinates above.
   p_tbl <- ggplot2::ggplot(
     df_long,
     ggplot2::aes(x = .data$x, y = .data$row_id, label = .data$value)
@@ -401,4 +422,82 @@ gg_varname_extraction <- function(mapping_quo) {
     return(rlang::eval_bare(expr[[3]]))
   }
   return(NULL)
+}
+
+#' @title Generate Summary Statistic Function for ggplot2
+#'
+#' @description
+#' A function factory that produces a summary closure compatible with
+#' `ggplot2::stat_summary(fun.data = ...)`. It computes a central tendency
+#' (mean or median) alongside a specified measure of dispersion.
+#'
+#' @param stat (`string`)\cr
+#'   Primary statistic to calculate (`"mean"` or `"median"`).
+#' @param variability (`string`)\cr
+#'   Measure of variability (`"sd"`, `"se"`, `"ci"`, `"iqr"`, or `"none"`).
+#' @param conf_level (`numeric`)\cr
+#'   Confidence level for `"ci"` (default `0.95`).
+#'
+#' @return A `function` that takes a numeric vector and returns a `data.frame`
+#'   with `y`, `ymin`, and `ymax`.
+#' @examples
+#' \dontrun{
+#' # Generate a closure for Mean and 90% CI
+#' my_summary_fun <- gg_get_summary_stats(
+#'   stat = "mean",
+#'   variability = "ci",
+#'   conf_level = 0.90
+#' )
+#' }
+#' # Apply to a vector
+#' my_summary_fun(rnorm(100, mean = 10, sd = 2))
+#'
+#' @keywords internal
+gg_get_summary_stats <- function(
+  stat = c("mean", "median"),
+  variability = c("sd", "se", "ci", "iqr", "none"),
+  conf_level = 0.95
+) {
+  stat <- match.arg(stat)
+  variability <- match.arg(variability)
+
+  # Return the mathematical closure that ggplot2 will evaluate during rendering
+  function(val) {
+    val <- stats::na.omit(val)
+    n <- length(val)
+
+    # Return NAs to prevent ggplot2 from drawing artifact geometries on empty subsets
+    if (n == 0) {
+      return(data.frame(y = NA_real_, ymin = NA_real_, ymax = NA_real_))
+    }
+
+    if (stat == "median") {
+      y_val <- stats::median(val)
+
+      if (variability == "iqr") {
+        ymin_val <- stats::quantile(val, 0.25)
+        ymax_val <- stats::quantile(val, 0.75)
+      } else {
+        ymin_val <- y_val
+        ymax_val <- y_val
+      }
+    } else if (stat == "mean") {
+      y_val <- mean(val)
+      se <- stats::sd(val) / sqrt(n)
+
+      # Determine the error margin based on the requested dispersion metric
+      err <- switch(variability,
+        "sd" = stats::sd(val),
+        "se" = se,
+        "ci" = stats::qt((1 + conf_level) / 2, df = max(1, n - 1)) * se,
+        "none" = 0,
+        0
+      )
+
+      ymin_val <- y_val - err
+      ymax_val <- y_val + err
+    }
+
+    data.frame(y = y_val, ymin = ymin_val, ymax = ymax_val)
+  }
 }

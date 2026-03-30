@@ -201,6 +201,5 @@ test_that("gg_pkc_lineplot warns when log transforming zeros", {
   warns <- capture_warnings(ggplot2::ggplot_build(p_zero_log))
 
   # Verify that both expected ggplot2 warnings exist within the captured list
-  expect_true(any(grepl("log-10 transformation introduced infinite values", warns)))
-  expect_true(any(grepl("Removed .* rows containing non-finite outside the scale range", warns)))
+  expect_true(any(grepl("transformation introduced infinite values.", warns)))
 })

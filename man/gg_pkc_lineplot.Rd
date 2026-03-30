@@ -11,6 +11,7 @@ gg_pkc_lineplot(
   group,
   stat = c("mean", "median"),
   variability = c("sd", "se", "ci", "iqr", "none"),
+  conf_level = 0.95,
   log_y = TRUE,
   lloq = NA_real_
 )
@@ -33,6 +34,9 @@ Primary summary statistic: \code{"mean"} or \code{"median"}. Default is \code{"m
 
 \item{variability}{(\code{string})\cr
 Variability measure: \code{"sd"}, \code{"se"}, \code{"ci"}, \code{"iqr"}, or \code{"none"}. Default is \code{"sd"}.}
+
+\item{conf_level}{(\code{numeric})\cr
+Confidence level for error bars when \code{variability = "ci"} (default: \code{0.95}).}
 
 \item{log_y}{(\code{logical})\cr
 Whether to apply log10 scale to the y-axis. Default is \code{TRUE}.}
@@ -79,26 +83,6 @@ df_pk |>
     variability = "se",
     log_y = TRUE,
     lloq = 2.0
-  )
-
-# Title, subtitle, axes labels and legend position customization
-gg_pkc_lineplot(
-  data = df_pk,
-  time_var = Time_Nominal,
-  analyte_var = conc,
-  group = Dose_Group,
-  stat = "mean",
-  variability = "sd",
-  log_y = FALSE
-) +
-  ggplot2::labs(
-    x = "Nominal time (hr)",
-    y = "Concentration (ng/mL)",
-    title = "Title",
-    subtitle = "Subtitle"
-  ) +
-  ggplot2::theme(
-    legend.position = "top"
   )
 
 }
