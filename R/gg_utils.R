@@ -447,11 +447,11 @@ gg_varname_extraction <- function(mapping_quo) {
 #'   variability = "ci",
 #'   conf_level = 0.90
 #' )
-#' 
+#'
 #' # Apply to a vector
 #' my_summary_fun(rnorm(100, mean = 10, sd = 2))
-#'}
-#' 
+#' }
+#'
 #' @keywords internal
 gg_get_summary_stats <- function(
   stat = c("mean", "median"),
