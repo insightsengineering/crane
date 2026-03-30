@@ -37,9 +37,10 @@ my_summary_fun <- gg_get_summary_stats(
   variability = "ci",
   conf_level = 0.90
 )
-}
+
 # Apply to a vector
 my_summary_fun(rnorm(100, mean = 10, sd = 2))
+}
 
 }
 \keyword{internal}

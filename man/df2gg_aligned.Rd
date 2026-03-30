@@ -60,7 +60,6 @@ table structures. Supports both continuous and discrete X-axes.
 }
 \examples{
 \dontrun{
-
 # 1. Create a base plot with a continuous X-axis
 p_base <- ggplot(mtcars, aes(x = mpg, y = disp)) +
   geom_point() +

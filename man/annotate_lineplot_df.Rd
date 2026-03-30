@@ -38,3 +38,31 @@ A \code{cowplot} object.
 Aligns and appends a \code{gtsummary}-generated statistics table
 beneath a standard line plot using \code{cowplot}.
 }
+\examples{
+# 1. Create a mock dataset
+set.seed(123)
+mock_adlb <- data.frame(
+  ARM = rep(c("Treatment A", "Treatment B"), each = 30),
+  AVISIT = rep(c(0, 4, 8), 20),
+  AVAL = rnorm(60, mean = 10, sd = 2)
+)
+
+# 2. Generate the base line plot
+p_base <- gg_lineplot_2(
+  data = mock_adlb,
+  x = AVISIT,
+  y = AVAL,
+  group = ARM
+)
+
+# 3. Annotate with default stats (auto-extracts variables from p_base)
+annotate_lineplot_df(gg_plt = p_base, data = mock_adlb)
+
+# 4. Annotate with custom statistics (Median and IQR)
+annotate_lineplot_df(
+  gg_plt = p_base,
+  data = mock_adlb,
+  summary_stats = c("n", "median", "iqr")
+)
+
+}

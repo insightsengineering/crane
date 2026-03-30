@@ -45,3 +45,39 @@ Calculates summary statistics inline using \code{ggplot2::stat_summary()},
 generating a line plot directly from raw data. Supports configurable central
 tendencies and dispersion metrics.
 }
+\examples{
+set.seed(123)
+mock_adlb <- data.frame(
+  ARM = rep(c("Treatment A", "Treatment B"), each = 30),
+  AVISIT = rep(c(0, 4, 8), 20),
+  AVAL = rnorm(60, mean = 10, sd = 2)
+)
+
+# 1. Default Plot: Mean with 95\% Confidence Intervals
+gg_lineplot_2(
+  data = mock_adlb,
+  x = AVISIT,
+  y = AVAL,
+  group = ARM
+)
+
+# 2. Median with Interquartile Range (IQR)
+gg_lineplot_2(
+  data = mock_adlb,
+  x = AVISIT,
+  y = AVAL,
+  group = ARM,
+  stat = "median",
+  variability = "iqr"
+)
+
+# 3. Ungrouped data with Mean and Standard Deviation
+gg_lineplot_2(
+  data = mock_adlb,
+  x = AVISIT,
+  y = AVAL,
+  stat = "mean",
+  variability = "sd"
+)
+
+}
