@@ -48,15 +48,21 @@
 #'   variability = "iqr"
 #' )
 #'
-#' # 3. Ungrouped data with Mean and Standard Deviation
+#' # 3. Ungrouped data with Mean and Standard Deviation +
+#' # Change legend position to top and add horizontal reference line
 #' gg_lineplot_2(
 #'   data = mock_adlb,
 #'   x = AVISIT,
 #'   y = AVAL,
 #'   stat = "mean",
 #'   variability = "sd"
-#' )
-#'
+#' ) +
+#'   ggplot2::theme(legend.position = "top") +
+#'   ggplot2::geom_hline(
+#'     yintercept = 30,
+#'     linetype = "dashed",
+#'     color = "gray50"
+#'   )
 #' @export
 #' @importFrom rlang .data
 gg_lineplot_2 <- function(data,

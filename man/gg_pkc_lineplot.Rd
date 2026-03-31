@@ -85,4 +85,24 @@ df_pk |>
     lloq = 2.0
   )
 
+# Title, subtitle, axes labels and legend position customization
+gg_pkc_lineplot(
+  data = df_pk,
+  time_var = Time_Nominal,
+  analyte_var = conc,
+  group = Dose_Group,
+  stat = "mean",
+  variability = "sd",
+  log_y = FALSE
+) +
+  ggplot2::labs(
+    x = "Nominal time (hr)",
+    y = "Concentration (ng/mL)",
+    title = "Title",
+    subtitle = "Subtitle"
+  ) +
+  ggplot2::theme(
+    legend.position = "top"
+  )
+
 }
