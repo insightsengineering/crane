@@ -27,7 +27,7 @@ test_that("reverse_rate_difference() handles zero values", {
 })
 
 test_that("reverse_rate_difference() returns original for non-numeric", {
- expect_equal(
+  expect_equal(
     reverse_rate_difference("abc"),
     "abc"
   )
