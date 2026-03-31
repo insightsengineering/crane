@@ -52,10 +52,6 @@ reference:
 
   - title: "Line Plot"
     contents:
-      - calc_stats
-      - g_lineplot
-      - g_lineplot_table
-      - preprocess_lineplot_data
       - gg_lineplot_2
       - annotate_lineplot_df
 
@@ -78,3 +74,10 @@ reference:
       - modify_zero_recode
       - add_blank_rows
       - label_roche
+
+  - title: "Deprecated"
+    contents:
+      - calc_stats
+      - g_lineplot
+      - g_lineplot_table
+      - preprocess_lineplot_data
