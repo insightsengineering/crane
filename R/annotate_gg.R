@@ -107,12 +107,12 @@ annotate_lineplot_df <- function(gg_plt,
       strata = if (!is.null(group)) dplyr::all_of(group) else NULL,
       .combine_with = "tbl_stack",
       .tbl_fun = ~ .x |>
-        gtsummary::tbl_summary(
+        tbl_roche_summary(
           by = "..time_factor..",
           include = dplyr::all_of(y),
           type = list(dplyr::all_of(y) ~ "continuous2"),
           statistic = list(dplyr::all_of(y) ~ gts_stat),
-          missing = "no",
+          nonmissing = "no",
           label = list(dplyr::all_of(y) ~ " ")
         ) |>
         gtsummary::add_stat_label(label = dplyr::all_of(y) ~ gts_stat_labels) |>

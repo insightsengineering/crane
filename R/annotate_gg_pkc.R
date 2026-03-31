@@ -118,12 +118,12 @@ annotate_pkc_df <- function(gg_plt,
       strata = dplyr::all_of(group),
       .combine_with = "tbl_stack",
       .tbl_fun = ~ .x |>
-        gtsummary::tbl_summary(
+        tbl_roche_summary(
           by = "..time_factor..",
           include = dplyr::all_of(analyte_var),
           type = list(dplyr::all_of(analyte_var) ~ "continuous2"),
           statistic = list(dplyr::all_of(analyte_var) ~ gts_stat),
-          missing = "no",
+          nonmissing = "no",
           label = list(dplyr::all_of(analyte_var) ~ " ")
         ) |>
         gtsummary::add_stat_label(

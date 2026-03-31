@@ -107,6 +107,22 @@ gg_pkc_lineplot <- function(data,
     group = {{ group }}
   )
 
+  # change from factor to numeric
+  # time_var can be factor or numeric - factor allow for correct n of decimals
+  # in the summary table
+  # factor is
+  if (!is.numeric(data[[time_var]])) {
+    data <- data |>
+      mutate(!!time_var := as.numeric(as.character(.data[[time_var]])))
+  } else if (is.numeric(data[[time_var]])) {
+    cli::cli_warn(
+      "i" = paste0(
+        "We encourage to supply `time_var` as a factor, since it supports ",
+        "correct decimals formatting in the summary table."
+      )
+    )
+  }
+
   # Ensure only single columns were selected
   check_string(time_var)
   check_string(analyte_var)
