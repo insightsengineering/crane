@@ -54,15 +54,17 @@ tbl |>
         dplyr::across(
           dplyr::starts_with("stat_"),
           ~ ifelse(variable == "response-row_difference" & label == "Rate Difference",
-                   reverse_rate_difference(.x), .x)
+            reverse_rate_difference(.x), .x
+          )
         )
       ) |>
       dplyr::mutate(
         dplyr::across(
           dplyr::starts_with("stat_"),
           ~ ifelse(variable == "response-row_difference" &
-                     label == "(CI Lower Bound, CI Upper Bound)",
-                   reverse_ci(.x), .x)
+            label == "(CI Lower Bound, CI Upper Bound)",
+          reverse_ci(.x), .x
+          )
         )
       )
   )
