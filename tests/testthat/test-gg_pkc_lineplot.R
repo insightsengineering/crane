@@ -203,3 +203,18 @@ test_that("gg_pkc_lineplot warns when log transforming zeros", {
   # Verify that both expected ggplot2 warnings exist within the captured list
   expect_true(any(grepl("transformation introduced infinite values.", warns)))
 })
+
+test_that("gg_pkc_lineplot with factor time_var ", {
+  mock_pk_df$ATPTN <- factor(mock_pk_df$ATPTN)
+
+  # Create the plot using data that STILL contains 0s at ATPTN = 0
+  p_zero_log <- gg_pkc_lineplot(
+    data = mock_pk_df,
+    time_var = ATPTN,
+    analyte_var = AVAL,
+    group = TRT,
+    log_y = FALSE
+  )
+
+  expect_no_message(p_zero_log)
+})

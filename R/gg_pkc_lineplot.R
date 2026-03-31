@@ -115,10 +115,12 @@ gg_pkc_lineplot <- function(data,
     data <- data |>
       mutate(!!time_var := as.numeric(as.character(.data[[time_var]])))
   } else if (is.numeric(data[[time_var]])) {
-    cli::cli_warn(
-      "i" = paste0(
-        "We encourage to supply `time_var` as a factor, since it supports ",
-        "correct decimals formatting in the summary table."
+    cli::cli_inform(
+      c(
+        "i" = paste0(
+          "We encourage to supply `time_var` as a factor, since it supports ",
+          "correct decimals formatting in the summary table."
+        )
       )
     )
   }
