@@ -64,7 +64,6 @@
 #'     color = "gray50"
 #'   )
 #' @export
-#' @importFrom rlang .data
 gg_lineplot_2 <- function(data,
                           x,
                           y,

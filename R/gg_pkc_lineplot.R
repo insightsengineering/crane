@@ -80,7 +80,6 @@
 #'   )
 #'
 #' @export
-#' @importFrom rlang .data
 gg_pkc_lineplot <- function(data,
                             time_var,
                             analyte_var,
