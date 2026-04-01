@@ -19,7 +19,7 @@
 
 ### Other Updates
 
-* Addded functions `reverse_ci()`, `reverse_rate_difference()` to reverse confidence intervals and rate differences in tables from `add_row_difference()`. (#204)
+* Added functions `reverse_ci()`, `reverse_rate_difference()` to reverse confidence intervals and rate differences in tables from `add_row_difference()`. (#204)
 
 * Removed bold from headers when using `tbl_strata()` (#133).
 
