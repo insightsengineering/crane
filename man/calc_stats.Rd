@@ -31,9 +31,9 @@ This serves as the computational engine for \code{gg_add_error_bars}.
 # Calculate the mean and 95\% Confidence Interval for a numeric vector
 mpg_data <- mtcars$mpg
 mean_ci_stats <- calc_error_bars(
-  x = mpg_data, 
-  stat = "mean", 
-  variability = "ci", 
+  x = mpg_data,
+  stat = "mean",
+  variability = "ci",
   conf_level = 0.95
 )
 }
