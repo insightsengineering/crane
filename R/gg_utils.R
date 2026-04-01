@@ -2,16 +2,19 @@
 #'
 #' @description Generates a text table from a dataframe, perfectly aligns its
 #'   X-axis to match a provided ggplot, and seamlessly stacks them vertically.
-#'   Tailored specifically for Kaplan-Meier ("KM") or Pharmacokinetic ("PK")
-#'   table structures. Supports both continuous and discrete X-axes.
+#'   Allow annotation of general "GEN" plots and more specific plots such as
+#'   Pharmacokinetic ("PK") or Kaplan-Meier ("KM").
+#'   Supports both continuous and discrete X-axes.
 #'
 #' @param df (`data.frame`)\cr
 #'   The summary table to render.
 #' @param gg_plt (`ggplot2`)\cr
 #'   The main plot to align to and stack on top of.
 #' @param type (`character`)\cr
-#'   The type of plot/table. Either `"KM"` (uses rownames for Y-axis) or `"PK"`
-#'   (uses the first column for Y-axis).
+#'   The type of plot/table.
+#'   Can be `"GEN"`, `"PK"` (use the first column for Y-axis), or
+#'   `"KM"` (uses rownames for Y-axis).
+#'   Default is `"GEN"`.
 #' @param y_labels (`character` or `expression`)\cr
 #'   Formatted labels override.
 #' @param title (`character` or `NULL`)\cr
@@ -56,7 +59,7 @@
 #' @keywords internal
 df2gg_aligned <- function(df,
                           gg_plt,
-                          type = c("KM", "PK", "GEN"),
+                          type = c("GEN", "PK", "KM"),
                           y_labels = NULL,
                           title = NULL,
                           xlab = NULL,
@@ -423,13 +426,14 @@ gg_varname_extraction <- function(mapping_quo) {
   return(NULL)
 }
 
-#' @title Generate Summary Statistic Function for ggplot2
+#' Calculate Error Bar Statistics
 #'
 #' @description
-#' A function factory that produces a summary closure compatible with
-#' `ggplot2::stat_summary(fun.data = ...)`. It computes a central tendency
-#' (mean or median) alongside a specified measure of dispersion.
+#' Computes central tendency and dispersion metrics for a given numeric vector.
+#' This serves as the computational engine for `gg_add_error_bars`.
 #'
+#' @param x (`numeric`)\cr
+#'   The numeric vector to summarize.
 #' @param stat (`string`)\cr
 #'   Primary statistic to calculate (`"mean"` or `"median"`).
 #' @param variability (`string`)\cr
@@ -437,67 +441,113 @@ gg_varname_extraction <- function(mapping_quo) {
 #' @param conf_level (`numeric`)\cr
 #'   Confidence level for `"ci"` (default `0.95`).
 #'
-#' @return A `function` that takes a numeric vector and returns a `data.frame`
-#'   with `y`, `ymin`, and `ymax`.
+#' @return A `data.frame` with columns `y`, `ymin`, and `ymax`.
+#'
 #' @examples
 #' \dontrun{
-#' # Generate a closure for Mean and 90% CI
-#' my_summary_fun <- gg_get_summary_stats(
+#' # Calculate the mean and 95% Confidence Interval for a numeric vector
+#' mpg_data <- mtcars$mpg
+#' mean_ci_stats <- calc_error_bars(
+#'   x = mpg_data,
 #'   stat = "mean",
 #'   variability = "ci",
-#'   conf_level = 0.90
+#'   conf_level = 0.95
 #' )
-#'
-#' # Apply to a vector
-#' my_summary_fun(rnorm(100, mean = 10, sd = 2))
 #' }
 #'
 #' @keywords internal
-gg_get_summary_stats <- function(
-  stat = c("mean", "median"),
-  variability = c("sd", "se", "ci", "iqr", "none"),
-  conf_level = 0.95
-) {
+calc_stats <- function(x, stat, variability, conf_level) {
+  x <- stats::na.omit(x)
+  n <- length(x)
+
+  # Return NAs to prevent ggplot2 from drawing artifact geometries
+  # on empty subsets, ensuring accurate visual representation
+  if (n == 0) {
+    return(data.frame(y = NA_real_, ymin = NA_real_, ymax = NA_real_))
+  }
+
+  if (stat == "median") {
+    y_val <- stats::median(x)
+
+    if (variability == "iqr") {
+      ymin_val <- stats::quantile(x, 0.25)
+      ymax_val <- stats::quantile(x, 0.75)
+    } else {
+      ymin_val <- y_val
+      ymax_val <- y_val
+    }
+  } else if (stat == "mean") {
+    y_val <- mean(x)
+    se <- stats::sd(x) / sqrt(n)
+
+    # Determine the error margin dynamically to support
+    # multiple standard statistical dispersion metrics
+    err <- switch(variability,
+      "sd" = stats::sd(x),
+      "se" = se,
+      "ci" = stats::qt((1 + conf_level) / 2, df = max(1, n - 1)) * se,
+      "none" = 0,
+      0
+    )
+
+    ymin_val <- y_val - err
+    ymax_val <- y_val + err
+  }
+
+  data.frame(y = y_val, ymin = ymin_val, ymax = ymax_val)
+}
+
+#' Add Error Bars to a ggplot2 Object
+#'
+#' @description
+#' Enhances an existing `ggplot2` object by adding a `stat_summary` layer
+#' that displays a central tendency (mean or median) alongside a specified
+#' measure of dispersion.
+#'
+#' @param gg_plt (`ggplot`)\cr
+#'   The base `ggplot2` object to modify.
+#' @param stat (`string`)\cr
+#'   Primary statistic to calculate (`"mean"` or `"median"`).
+#' @param variability (`string`)\cr
+#'   Measure of variability (`"sd"`, `"se"`, `"ci"`, `"iqr"`, or `"none"`).
+#' @param conf_level (`numeric`)\cr
+#'   Confidence level for `"ci"` (default `0.95`).
+#'
+#' @return A modified `ggplot2` object with an added error bar layer.
+#'
+#' @examples
+#' \dontrun{
+#' # Create a base plot with realistic data
+#' p <- ggplot(mtcars, aes(x = factor(cyl), y = mpg)) +
+#'   geom_point(alpha = 0.5)
+#'
+#' # Add mean and 95% CI error bars
+#' gg_add_stats(
+#'   gg_plt = p,
+#'   stat = "mean",
+#'   variability = "ci"
+#' )
+#' }
+#'
+#' @keywords internal
+gg_add_stats <- function(gg_plt,
+                         stat = c("mean", "median"),
+                         variability = c("sd", "se", "ci", "iqr", "none"),
+                         conf_level = 0.95) {
   stat <- match.arg(stat)
   variability <- match.arg(variability)
 
-  # Return the mathematical closure that ggplot2 will evaluate during rendering
-  function(val) {
-    val <- stats::na.omit(val)
-    n <- length(val)
-
-    # Return NAs to prevent ggplot2 from drawing artifact geometries on empty subsets
-    if (n == 0) {
-      return(data.frame(y = NA_real_, ymin = NA_real_, ymax = NA_real_))
-    }
-
-    if (stat == "median") {
-      y_val <- stats::median(val)
-
-      if (variability == "iqr") {
-        ymin_val <- stats::quantile(val, 0.25)
-        ymax_val <- stats::quantile(val, 0.75)
-      } else {
-        ymin_val <- y_val
-        ymax_val <- y_val
-      }
-    } else if (stat == "mean") {
-      y_val <- mean(val)
-      se <- stats::sd(val) / sqrt(n)
-
-      # Determine the error margin based on the requested dispersion metric
-      err <- switch(variability,
-        "sd" = stats::sd(val),
-        "se" = se,
-        "ci" = stats::qt((1 + conf_level) / 2, df = max(1, n - 1)) * se,
-        "none" = 0,
-        0
-      )
-
-      ymin_val <- y_val - err
-      ymax_val <- y_val + err
-    }
-
-    data.frame(y = y_val, ymin = ymin_val, ymax = ymax_val)
-  }
+  # Delegate to a standalone helper function via fun.data and fun.args
+  # to keep the code flat and allow the helper to be independently unit-testable
+  gg_plt + ggplot2::stat_summary(
+    fun.data = calc_stats,
+    fun.args = list(
+      stat = stat,
+      variability = variability,
+      conf_level = conf_level
+    ),
+    geom = "errorbar",
+    width = 0.45,
+    na.rm = TRUE
+  )
 }

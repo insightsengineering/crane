@@ -3,7 +3,6 @@
 \name{deprecated}
 \alias{deprecated}
 \alias{tbl_demographics}
-\alias{calc_stats}
 \alias{g_lineplot}
 \alias{g_lineplot_table}
 \alias{preprocess_lineplot_data}
@@ -11,42 +10,11 @@
 \usage{
 tbl_demographics(..., nonmissing = "always")
 
-calc_stats(x, conf_level = 0.95, decimal_places = 2)
+g_lineplot(...)
 
-g_lineplot(
-  df_stats,
-  x = "AVISIT",
-  mid = "mean",
-  strata_N = NULL,
-  whiskers = c("mean_ci_lwr", "mean_ci_upr"),
-  mid_type = "pl",
-  mid_point_size = 2,
-  position = position_dodge(width = 0.4),
-  errorbar_width = 0.45,
-  col = NULL,
-  linetype = NULL
-)
+g_lineplot_table(...)
 
-g_lineplot_table(
-  df_stats,
-  x = "AVISIT",
-  group_var = NULL,
-  table = c("n", "mean"),
-  table_font_size = 3,
-  decimal_places = 2
-)
-
-preprocess_lineplot_data(
-  df,
-  alt_counts_df = NULL,
-  x = "AVISIT",
-  y = "AVAL",
-  group_var = "ARM",
-  subject_var = "USUBJID",
-  mid = "mean",
-  calc_stats_func = calc_stats,
-  ...
-)
+preprocess_lineplot_data(...)
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}\cr

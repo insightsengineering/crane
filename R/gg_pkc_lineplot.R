@@ -129,7 +129,6 @@ gg_pkc_lineplot <- function(data,
   # change from factor to numeric
   # time_var can be factor or numeric - factor allow for correct n of decimals
   # in the summary table
-  # factor is
   if (!is.numeric(data[[time_var]])) {
     data <- data |>
       mutate(!!time_var := as.numeric(as.character(.data[[time_var]])))
@@ -171,17 +170,8 @@ gg_pkc_lineplot <- function(data,
 
   # Add Variability (Error Bars) using our unified math engine
   if (variability != "none") {
-    p <- p + ggplot2::stat_summary(
-      fun.data = gg_get_summary_stats(
-        stat = stat,
-        variability = variability,
-        conf_level = conf_level
-      ),
-      geom = "errorbar",
-      width = 0.2,
-      position = pd,
-      na.rm = TRUE
-    )
+    p <- p |>
+      gg_add_stats(stat, variability, conf_level)
   }
 
   # Log Scale & LLOQ
@@ -224,5 +214,5 @@ gg_pkc_lineplot <- function(data,
 
   class(p) <- c("crane_gg_pkc", class(p))
 
-  return(p)
+  p
 }

@@ -1,4 +1,4 @@
-#' @title Generate a Summary Line Plot from Raw Data
+#' Generate a Summary Line Plot from Raw Data
 #'
 #' @description Calculates summary statistics inline using `ggplot2::stat_summary()`,
 #'   generating a line plot directly from raw data. Supports configurable central
@@ -31,7 +31,7 @@
 #' )
 #'
 #' # 1. Default Plot: Mean with 95% Confidence Intervals
-#' gg_lineplot_2(
+#' gg_lineplot(
 #'   data = mock_adlb,
 #'   x = AVISIT,
 #'   y = AVAL,
@@ -39,7 +39,7 @@
 #' )
 #'
 #' # 2. Median with Interquartile Range (IQR)
-#' gg_lineplot_2(
+#' gg_lineplot(
 #'   data = mock_adlb,
 #'   x = AVISIT,
 #'   y = AVAL,
@@ -50,7 +50,7 @@
 #'
 #' # 3. Ungrouped data with Mean and Standard Deviation +
 #' # Change legend position to top and add horizontal reference line
-#' gg_lineplot_2(
+#' gg_lineplot(
 #'   data = mock_adlb,
 #'   x = AVISIT,
 #'   y = AVAL,
@@ -64,13 +64,13 @@
 #'     color = "gray50"
 #'   )
 #' @export
-gg_lineplot_2 <- function(data,
-                          x,
-                          y,
-                          group = NULL,
-                          stat = c("mean", "median"),
-                          variability = c("ci", "sd", "se", "iqr", "none"),
-                          conf_level = 0.95) {
+gg_lineplot <- function(data,
+                        x,
+                        y,
+                        group = NULL,
+                        stat = c("mean", "median"),
+                        variability = c("ci", "sd", "se", "iqr", "none"),
+                        conf_level = 0.95) {
   # 1. Argument Matching and Validation
   stat <- match.arg(stat)
   variability <- match.arg(variability)
@@ -80,7 +80,10 @@ gg_lineplot_2 <- function(data,
     cli::cli_abort("Invalid combination: Cannot plot IQR around a mean.")
   } else if (stat == "median" && variability %in% c("sd", "se", "ci")) {
     cli::cli_abort(
-      "Invalid combination of stat ({.val {stat}}) and variability ({.val {variability}})."
+      paste0(
+        "Invalid combination of stat ({.val {stat}}) ",
+        "and variability ({.val {variability}})."
+      )
     )
   }
 
@@ -148,17 +151,8 @@ gg_lineplot_2 <- function(data,
 
   # 4. Add Variability Layer conditionally to avoid drawing degenerate lines
   if (variability != "none") {
-    p <- p + ggplot2::stat_summary(
-      fun.data = gg_get_summary_stats(
-        stat = stat,
-        variability = variability,
-        conf_level = conf_level
-      ),
-      geom = "errorbar",
-      width = 0.45,
-      position = pd,
-      na.rm = TRUE
-    )
+    p <- p |>
+      gg_add_stats(stat, variability, conf_level)
   }
 
   # 5. Theming
@@ -180,5 +174,5 @@ gg_lineplot_2 <- function(data,
 
   class(p) <- c("crane_gg_line", class(p))
 
-  return(p)
+  p
 }

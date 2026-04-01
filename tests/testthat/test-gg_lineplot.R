@@ -16,10 +16,10 @@ mock_adlb <- mock_adlb[!(mock_adlb$ARM == "Treatment A" & mock_adlb$AVISIT == 8)
 
 # --- Tests ---
 
-test_that("gg_lineplot_2 input validation catches invalid statistical combinations", {
+test_that("gg_lineplot input validation catches invalid statistical combinations", {
   # Mean + IQR is mathematically invalid
   expect_error(
-    gg_lineplot_2(
+    gg_lineplot(
       data = mock_adlb, x = AVISIT, y = AVAL, group = ARM,
       stat = "mean", variability = "iqr"
     ),
@@ -28,7 +28,7 @@ test_that("gg_lineplot_2 input validation catches invalid statistical combinatio
 
   # Median + SD/SE/CI is mathematically invalid
   expect_error(
-    gg_lineplot_2(
+    gg_lineplot(
       data = mock_adlb, x = AVISIT, y = AVAL, group = ARM,
       stat = "median", variability = "sd"
     ),
@@ -36,7 +36,7 @@ test_that("gg_lineplot_2 input validation catches invalid statistical combinatio
   )
 
   expect_error(
-    gg_lineplot_2(
+    gg_lineplot(
       data = mock_adlb, x = AVISIT, y = AVAL, group = ARM,
       stat = "median", variability = "ci"
     ),
@@ -44,9 +44,9 @@ test_that("gg_lineplot_2 input validation catches invalid statistical combinatio
   )
 })
 
-test_that("gg_lineplot_2 builds correctly with grouped data (Mean + CI)", {
+test_that("gg_lineplot builds correctly with grouped data (Mean + CI)", {
   expect_no_error(
-    p <- gg_lineplot_2(
+    p <- gg_lineplot(
       data = mock_adlb, x = AVISIT, y = AVAL, group = ARM,
       stat = "mean", variability = "ci"
     )
@@ -63,9 +63,9 @@ test_that("gg_lineplot_2 builds correctly with grouped data (Mean + CI)", {
   expect_equal(p$labels$colour, "ARM")
 })
 
-test_that("gg_lineplot_2 builds correctly with ungrouped data (Mean + SD)", {
+test_that("gg_lineplot builds correctly with ungrouped data (Mean + SD)", {
   expect_no_error(
-    p <- gg_lineplot_2(
+    p <- gg_lineplot(
       data = mock_adlb, x = AVISIT, y = AVAL,
       stat = "mean", variability = "sd"
     )
@@ -80,9 +80,9 @@ test_that("gg_lineplot_2 builds correctly with ungrouped data (Mean + SD)", {
   expect_null(p$mapping$group)
 })
 
-test_that("gg_lineplot_2 builds correctly for median and IQR", {
+test_that("gg_lineplot builds correctly for median and IQR", {
   expect_no_error(
-    p <- gg_lineplot_2(
+    p <- gg_lineplot(
       data = mock_adlb, x = AVISIT, y = AVAL, group = ARM,
       stat = "median", variability = "iqr"
     )
@@ -90,9 +90,9 @@ test_that("gg_lineplot_2 builds correctly for median and IQR", {
   expect_s3_class(p, "ggplot")
 })
 
-test_that("gg_lineplot_2 correctly skips errorbar layer when variability is 'none'", {
+test_that("gg_lineplot correctly skips errorbar layer when variability is 'none'", {
   expect_no_error(
-    p_grouped <- gg_lineplot_2(
+    p_grouped <- gg_lineplot(
       data = mock_adlb, x = AVISIT, y = AVAL, group = ARM,
       stat = "mean", variability = "none"
     )
@@ -101,7 +101,7 @@ test_that("gg_lineplot_2 correctly skips errorbar layer when variability is 'non
   expect_equal(length(p_grouped$layers), 2)
 
   expect_no_error(
-    p_ungrouped <- gg_lineplot_2(
+    p_ungrouped <- gg_lineplot(
       data = mock_adlb, x = AVISIT, y = AVAL,
       stat = "mean", variability = "none"
     )

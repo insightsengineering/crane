@@ -7,7 +7,7 @@
 df2gg_aligned(
   df,
   gg_plt,
-  type = c("KM", "PK", "GEN"),
+  type = c("GEN", "PK", "KM"),
   y_labels = NULL,
   title = NULL,
   xlab = NULL,
@@ -25,8 +25,10 @@ The summary table to render.}
 The main plot to align to and stack on top of.}
 
 \item{type}{(\code{character})\cr
-The type of plot/table. Either \code{"KM"} (uses rownames for Y-axis) or \code{"PK"}
-(uses the first column for Y-axis).}
+The type of plot/table.
+Can be \code{"GEN"}, \code{"PK"} (use the first column for Y-axis), or
+\code{"KM"} (uses rownames for Y-axis).
+Default is \code{"GEN"}.}
 
 \item{y_labels}{(\code{character} or \code{expression})\cr
 Formatted labels override.}
@@ -55,8 +57,9 @@ A combined \code{cowplot} object.
 \description{
 Generates a text table from a dataframe, perfectly aligns its
 X-axis to match a provided ggplot, and seamlessly stacks them vertically.
-Tailored specifically for Kaplan-Meier ("KM") or Pharmacokinetic ("PK")
-table structures. Supports both continuous and discrete X-axes.
+Allow annotation of general "GEN" plots and more specific plots such as
+Pharmacokinetic ("PK") or Kaplan-Meier ("KM").
+Supports both continuous and discrete X-axes.
 }
 \examples{
 \dontrun{
