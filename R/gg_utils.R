@@ -456,7 +456,7 @@ gg_varname_extraction <- function(mapping_quo) {
 #' }
 #'
 #' @keywords internal
-calc_stats <- function(x, stat, variability, conf_level) {
+.calc_stats <- function(x, stat, variability, conf_level) {
   x <- stats::na.omit(x)
   n <- length(x)
 
@@ -540,7 +540,7 @@ gg_add_stats <- function(gg_plt,
   # Delegate to a standalone helper function via fun.data and fun.args
   # to keep the code flat and allow the helper to be independently unit-testable
   gg_plt + ggplot2::stat_summary(
-    fun.data = calc_stats,
+    fun.data = .calc_stats,
     fun.args = list(
       stat = stat,
       variability = variability,

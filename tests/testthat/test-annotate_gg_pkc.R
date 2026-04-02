@@ -145,3 +145,32 @@ test_that("annotate_pkc_df handles complex aesthetic mappings", {
     regexp = "Missing variables"
   )
 })
+
+test_that("annotate_pkc_df formats numeric digits correctly", {
+  # Passing a numeric vector to hit the `!is.null(digits) && is.numeric(digits)` branch
+
+  df_pk <- data.frame(
+    time = rep(c(0, 1, 2, 4), each = 4),
+    conc = runif(16, 10, 100),
+    arm = rep(c("Cohort A", "Cohort B"), times = 8)
+  )
+
+  p <- gg_pkc_lineplot(
+    data = df_pk,
+    time_var = time,
+    analyte_var = conc,
+    group = arm,
+    log_y = FALSE
+  )
+
+  expect_no_error(
+    res <- annotate_pkc_df(
+      gg_plt = p,
+      data = df_pk,
+      summary_stats = c("n", "mean", "sd"),
+      digits = c(0, 2, 2)
+    )
+  )
+
+  expect_s3_class(res, "ggplot")
+})

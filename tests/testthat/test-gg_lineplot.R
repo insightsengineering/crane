@@ -109,3 +109,73 @@ test_that("gg_lineplot correctly skips errorbar layer when variability is 'none'
   # Ungrouped with no variability: point only (1 layer)
   expect_equal(length(p_ungrouped$layers), 1)
 })
+
+test_that("gg_lineplot converts factor y to numeric automatically", {
+  # Create a copy of the data and force AVAL to be a factor
+  mock_factor_y <- mock_adlb
+  mock_factor_y$AVISIT <- as.factor(mock_factor_y$AVISIT)
+
+  # The plot should build without error and silently convert AVAL back to numeric
+  expect_no_error(
+    p_factor <- gg_lineplot(
+      data = mock_factor_y,
+      x = AVISIT,
+      y = AVAL,
+      stat = "mean",
+      variability = "none"
+    )
+  )
+
+  expect_s3_class(p_factor, "crane_gg_line")
+})
+
+
+test_that("gg_lineplot converts character y to numeric automatically", {
+  # Create a copy of the data and force AVAL to be a factor
+  mock_factor_y <- mock_adlb
+  mock_factor_y$AVISIT <- as.character(mock_factor_y$AVISIT)
+
+  # The plot should build without error and silently convert AVAL back to numeric
+  expect_no_error(
+    p_factor <- gg_lineplot(
+      data = mock_factor_y,
+      x = AVISIT,
+      y = AVAL,
+      stat = "mean",
+      variability = "none"
+    )
+  )
+
+  expect_s3_class(p_factor, "crane_gg_line")
+})
+
+test_that("gg_lineplot informs users about numeric vs categorical x-axis", {
+  # 1. Numeric x-axis hits the final `else` branch (encourages using factor)
+  expect_message(
+    gg_lineplot(
+      data = mock_adlb,
+      x = AVISIT,
+      y = AVAL,
+      group = ARM,
+      stat = "mean",
+      variability = "none"
+    ),
+    regexp = "We encourage you to supply `x` as a factor"
+  )
+
+  # 2. True categorical factor hits the "Categorical X-axis detected" branch
+  mock_adlb_cat <- mock_adlb
+  mock_adlb_cat$AVISIT <- factor(ifelse(mock_adlb_cat$AVISIT == 0, "Baseline", "Week 4"))
+
+  expect_message(
+    gg_lineplot(
+      data = mock_adlb_cat,
+      x = AVISIT,
+      y = AVAL,
+      group = ARM,
+      stat = "mean",
+      variability = "none"
+    ),
+    regexp = "Categorical X-axis detected"
+  )
+})

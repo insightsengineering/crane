@@ -14,12 +14,18 @@
 #'   automatically extracts these from the `gg_plt` mapping.
 #' @param summary_stats (`character`)\cr
 #'   Vector of statistics to include. Defaults to `c("n", "mean", "sd")`.
+#' @param digits (`numeric`, `list`, or `formula`)\cr
+#'   Optional specification for the number of decimal places for the summary statistics.
+#'   Can be a single integer (e.g., `2`), a vector of integers matching the statistics
+#'   (e.g., `c(0, 2, 2)`), or a `gtsummary` style formula. Defaults to `NULL`
+#'   (uses `gtsummary` default auto-formatting).
 #' @param rel_height_plot (`numeric`)\cr
 #'   Relative height of the plot vs the table. Defaults to `0.75`.
 #'
 #' @return A `cowplot` object.
 #'
 #' @seealso [gg_lineplot()] for related functionalities.
+#'
 #' @examples
 #' # 1. Create a mock dataset
 #' set.seed(123)
@@ -40,11 +46,12 @@
 #' # 3. Annotate with default stats (auto-extracts variables from p_base)
 #' annotate_lineplot_df(gg_plt = p_base, data = mock_adlb)
 #'
-#' # 4. Annotate with custom statistics (Median and IQR)
+#' # 4. Annotate with custom statistics and exactly 2 decimal places
 #' annotate_lineplot_df(
 #'   gg_plt = p_base,
 #'   data = mock_adlb,
-#'   summary_stats = c("n", "median", "iqr")
+#'   summary_stats = c("n", "median", "iqr"),
+#'   digits = c(0, 2, 2)
 #' )
 #'
 #' @export
@@ -54,6 +61,7 @@ annotate_lineplot_df <- function(gg_plt,
                                  y = NULL,
                                  group = NULL,
                                  summary_stats = c("n", "mean", "sd"),
+                                 digits = NULL,
                                  rel_height_plot = 0.75) {
   if (!inherits(gg_plt, "crane_gg_line")) {
     cli::cli_warn(c(
@@ -100,6 +108,13 @@ annotate_lineplot_df <- function(gg_plt,
   gts_stat <- stat_syntax[summary_stats]
   gts_stat_labels <- stat_labels[summary_stats]
 
+  # Format digits argument for gtsummary
+  gts_digits <- if (!is.null(digits) && is.numeric(digits)) {
+    list(dplyr::all_of(y) ~ digits)
+  } else {
+    digits # Allows advanced users to pass standard gtsummary list/formulas directly
+  }
+
   # Compute statistics across timepoints utilizing gtsummary
   gts_tbl <- data |>
     dplyr::mutate(..time_factor.. = as.factor(.data[[x]])) |>
@@ -113,7 +128,8 @@ annotate_lineplot_df <- function(gg_plt,
           type = list(dplyr::all_of(y) ~ "continuous2"),
           statistic = list(dplyr::all_of(y) ~ gts_stat),
           nonmissing = "no",
-          label = list(dplyr::all_of(y) ~ " ")
+          label = list(dplyr::all_of(y) ~ " "),
+          digits = gts_digits
         ) |>
         gtsummary::add_stat_label(label = dplyr::all_of(y) ~ gts_stat_labels) |>
         gtsummary::modify_header(gtsummary::all_stat_cols() ~ "{level}")

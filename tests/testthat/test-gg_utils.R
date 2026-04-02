@@ -201,29 +201,29 @@ test_that("gg_varname_extraction returns NULL for complex or invalid inputs", {
   expect_null(gg_varname_extraction(NULL))
 })
 
-# --- Tests for calc_stats() ---
+# --- Tests for .calc_stats() ---
 
-test_that("calc_stats calculates mean and variabilities correctly", {
+test_that(".calc_stats calculates mean and variabilities correctly", {
   val <- c(10, 20, 30)
 
   # SD branch
-  res_sd <- calc_stats(val, stat = "mean", variability = "sd", conf_level = 0.95)
+  res_sd <- .calc_stats(val, stat = "mean", variability = "sd", conf_level = 0.95)
   expect_equal(res_sd$y, 20)
   expect_equal(res_sd$ymin, 20 - stats::sd(val))
   expect_equal(res_sd$ymax, 20 + stats::sd(val))
 
   # SE branch
-  res_se <- calc_stats(val, stat = "mean", variability = "se", conf_level = 0.95)
+  res_se <- .calc_stats(val, stat = "mean", variability = "se", conf_level = 0.95)
   se_val <- stats::sd(val) / sqrt(3)
   expect_equal(res_se$ymin, 20 - se_val)
 
   # CI branch
-  res_ci <- calc_stats(val, stat = "mean", variability = "ci", conf_level = 0.95)
+  res_ci <- .calc_stats(val, stat = "mean", variability = "ci", conf_level = 0.95)
   ci_val <- stats::qt(0.975, df = 2) * se_val
   expect_equal(res_ci$ymin, 20 - ci_val)
 
   # None branch
-  res_none <- calc_stats(
+  res_none <- .calc_stats(
     val,
     stat = "mean", variability = "none", conf_level = 0.95
   )
@@ -231,7 +231,7 @@ test_that("calc_stats calculates mean and variabilities correctly", {
   expect_equal(res_none$ymax, 20)
 
   # Default switch branch (unrecognized variability falls back to 0)
-  res_other <- calc_stats(
+  res_other <- .calc_stats(
     val,
     stat = "mean", variability = "unknown", conf_level = 0.95
   )
@@ -239,24 +239,24 @@ test_that("calc_stats calculates mean and variabilities correctly", {
   expect_equal(res_other$ymax, 20)
 })
 
-test_that("calc_stats calculates median and variabilities correctly", {
+test_that(".calc_stats calculates median and variabilities correctly", {
   val <- 1:10
 
   # IQR branch
-  res_iqr <- calc_stats(val, stat = "median", variability = "iqr", conf_level = 0.95)
+  res_iqr <- .calc_stats(val, stat = "median", variability = "iqr", conf_level = 0.95)
   expect_equal(res_iqr$y, 5.5)
   expect_equal(res_iqr$ymin, unname(stats::quantile(val, 0.25)))
   expect_equal(res_iqr$ymax, unname(stats::quantile(val, 0.75)))
 
   # None/Fallback branch
-  res_none <- calc_stats(val, stat = "median", variability = "none", conf_level = 0.95)
+  res_none <- .calc_stats(val, stat = "median", variability = "none", conf_level = 0.95)
   expect_equal(res_none$ymin, 5.5)
   expect_equal(res_none$ymax, 5.5)
 })
 
-test_that("calc_stats handles empty and NA vectors cleanly", {
+test_that(".calc_stats handles empty and NA vectors cleanly", {
   # Zero length
-  res_empty <- calc_stats(
+  res_empty <- .calc_stats(
     numeric(0),
     stat = "mean", variability = "sd", conf_level = 0.95
   )
@@ -264,7 +264,7 @@ test_that("calc_stats handles empty and NA vectors cleanly", {
   expect_true(is.na(res_empty$ymin))
 
   # Only NAs
-  res_na <- calc_stats(
+  res_na <- .calc_stats(
     c(NA_real_, NA_real_),
     stat = "mean", variability = "sd", conf_level = 0.95
   )

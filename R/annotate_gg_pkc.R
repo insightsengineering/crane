@@ -14,8 +14,13 @@
 #'   from the `gg_plt` mapping.
 #' @param summary_stats (`character`)\cr
 #'   A vector of statistics to include. Defaults to `c("n", "mean", "sd")`.
+#' @param digits (`numeric`, `list`, or `formula`)\cr
+#'   Optional specification for the number of decimal places for the summary statistics.
+#'   Can be a single integer (e.g., `2`), a vector of integers matching the statistics
+#'   (e.g., `c(0, 2, 2)`), or a `gtsummary` style formula. Defaults to `NULL`
+#'   (uses `gtsummary` default auto-formatting).
 #' @param text_size (`numeric`)\cr
-#'   The font size for the table text. Defaults to `3`.
+#'   The font size for the table text. Defaults to `3.5`.
 #' @param rel_height_plot (`numeric`)\cr
 #'   Relative height of the plot vs the table. Defaults to `0.75`.
 #'
@@ -46,14 +51,15 @@
 #'   gg_plt = p_pk
 #' )
 #'
-#' # Annotate with specific statistics and explicit variable names
+#' # Annotate with specific statistics, explicit variable names, and explicit digits
 #' annotate_pkc_df(
 #'   data = df_pk,
 #'   gg_plt = p_pk,
 #'   time_var = "Time_Nominal",
 #'   analyte_var = "conc",
 #'   group = "Dose_Group",
-#'   summary_stats = c("n", "median", "iqr")
+#'   summary_stats = c("n", "median", "iqr"),
+#'   digits = c(0, 2, 2)
 #' )
 #' @export
 annotate_pkc_df <- function(gg_plt,
@@ -62,6 +68,7 @@ annotate_pkc_df <- function(gg_plt,
                             analyte_var = NULL,
                             group = NULL,
                             summary_stats = c("n", "mean", "sd"),
+                            digits = NULL,
                             text_size = 3.5,
                             rel_height_plot = 0.75) {
   # 1. Input Validation---------------------------------------------------------
@@ -87,6 +94,7 @@ annotate_pkc_df <- function(gg_plt,
       )
     )
   }
+
   # 2. Stat Setup---------------------------------------------------------------
   stat_syntax <- c(
     "n" = "{N_nonmiss}",
@@ -111,6 +119,13 @@ annotate_pkc_df <- function(gg_plt,
   gts_stat <- stat_syntax[summary_stats]
   gts_stat_labels <- stat_labels[summary_stats]
 
+  # Format digits argument for gtsummary
+  gts_digits <- if (!is.null(digits) && is.numeric(digits)) {
+    list(dplyr::all_of(analyte_var) ~ digits)
+  } else {
+    digits # Allows advanced users to pass standard gtsummary list/formulas directly
+  }
+
   # 3. Table Generation---------------------------------------------------------
   gts_tbl <- data |>
     dplyr::mutate(..time_factor.. = as.factor(.data[[time_var]])) |>
@@ -124,7 +139,8 @@ annotate_pkc_df <- function(gg_plt,
           type = list(dplyr::all_of(analyte_var) ~ "continuous2"),
           statistic = list(dplyr::all_of(analyte_var) ~ gts_stat),
           nonmissing = "no",
-          label = list(dplyr::all_of(analyte_var) ~ " ")
+          label = list(dplyr::all_of(analyte_var) ~ " "),
+          digits = gts_digits
         ) |>
         gtsummary::add_stat_label(
           label = dplyr::all_of(analyte_var) ~ gts_stat_labels
@@ -164,7 +180,8 @@ annotate_pkc_df <- function(gg_plt,
     gg_plt = gg_plt,
     show_xaxis = FALSE,
     type = "PK",
-    y_labels = pk_y_labels
+    y_labels = pk_y_labels,
+    rel_height_plot = rel_height_plot
   )
 
   gg_table

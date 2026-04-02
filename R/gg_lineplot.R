@@ -22,6 +22,8 @@
 #'
 #' @return A `ggplot` object of class `crane_gg_line`.
 #'
+#' @seealso [annotate_lineplot_df()] for related functionalities.
+#'
 #' @examples
 #' set.seed(123)
 #' mock_adlb <- data.frame(
@@ -54,6 +56,7 @@
 #'   data = mock_adlb,
 #'   x = AVISIT,
 #'   y = AVAL,
+#'   group = ARM,
 #'   stat = "mean",
 #'   variability = "sd"
 #' ) +
@@ -93,6 +96,34 @@ gg_lineplot <- function(data,
     y = {{ y }},
     group = {{ group }}
   )
+
+  # change from factor to numeric
+  # x can be factor or numeric - factor allow for correct n of decimals
+  # in the summary table
+  if (!is.numeric(data[[x]])) {
+    # 1. "Test" the conversion silently to see if it results in NAs
+    test_numeric <- suppressWarnings(as.numeric(as.character(data[[x]])))
+
+    # 2. Only overwrite the data if the conversion was 100% successful
+    if (!any(is.na(test_numeric) & !is.na(data[[x]]))) {
+      data <- data |>
+        dplyr::mutate(!!x := as.numeric(as.character(.data[[x]])))
+    } else {
+      # If it has text like "week 1", leave it as a factor and let ggplot2 handle it natively!
+      cli::cli_inform(
+        c("i" = "Categorical X-axis detected. Leaving as factor for discrete plotting.")
+      )
+    }
+  } else {
+    cli::cli_inform(
+      c(
+        "i" = paste0(
+          "We encourage you to supply `x` as a factor, since it supports ",
+          "correct decimals formatting in the summary table."
+        )
+      )
+    )
+  }
 
   # 2. Data Preprocessing
   # Expand grid ensures missing timepoints in specific groups are explicitly
@@ -170,6 +201,14 @@ gg_lineplot <- function(data,
   # Dynamically label the legends to overwrite the ugly ".data[[group]]" default
   if (length(group) > 0) {
     p <- p + ggplot2::labs(color = group, linetype = group, shape = group)
+  }
+
+
+  # If the x-axis is numeric, force it to only show ticks for actual data points
+  if (is.numeric(data[[x]])) {
+    p <- p + ggplot2::scale_x_continuous(
+      breaks = sort(unique(data[[x]]))
+    )
   }
 
   class(p) <- c("crane_gg_line", class(p))

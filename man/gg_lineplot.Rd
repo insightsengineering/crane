@@ -77,6 +77,7 @@ gg_lineplot(
   data = mock_adlb,
   x = AVISIT,
   y = AVAL,
+  group = ARM,
   stat = "mean",
   variability = "sd"
 ) +
@@ -86,4 +87,7 @@ gg_lineplot(
     linetype = "dashed",
     color = "gray50"
   )
+}
+\seealso{
+\code{\link[=annotate_lineplot_df]{annotate_lineplot_df()}} for related functionalities.
 }

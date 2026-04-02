@@ -25,6 +25,7 @@
 #'   Lower Limit of Quantification. Default is `NA_real_`.
 #'
 #' @returns A `ggplot` object.
+#' @seealso [annotate_pkc_df()] for related functionalities.
 #'
 #' @examples
 #' # Prepare PK Data using the built-in Theoph dataset
@@ -130,13 +131,24 @@ gg_pkc_lineplot <- function(data,
   # time_var can be factor or numeric - factor allow for correct n of decimals
   # in the summary table
   if (!is.numeric(data[[time_var]])) {
-    data <- data |>
-      mutate(!!time_var := as.numeric(as.character(.data[[time_var]])))
-  } else if (is.numeric(data[[time_var]])) {
+    # 1. "Test" the conversion silently to see if it results in NAs
+    test_numeric <- suppressWarnings(as.numeric(as.character(data[[time_var]])))
+
+    # 2. Only overwrite the data if the conversion was 100% successful
+    if (!any(is.na(test_numeric) & !is.na(data[[time_var]]))) {
+      data <- data |>
+        dplyr::mutate(!!time_var := as.numeric(as.character(.data[[time_var]])))
+    } else {
+      # If it has text like "week 1", leave it as a factor and let ggplot2 handle it natively!
+      cli::cli_inform(
+        c("i" = "Categorical X-axis detected. Leaving as factor for discrete plotting.")
+      )
+    }
+  } else {
     cli::cli_inform(
       c(
         "i" = paste0(
-          "We encourage to supply `time_var` as a factor, since it supports ",
+          "We encourage you to supply `time_var` as a factor, since it supports ",
           "correct decimals formatting in the summary table."
         )
       )
@@ -202,15 +214,18 @@ gg_pkc_lineplot <- function(data,
       plot.title = ggplot2::element_text(face = "bold")
     )
 
-  # Aligning plot to actual timepoints in the data frame to ensure
-  # categorical mapping scales appropriately for cowplot alignments downstream
-  new_x_scale <- ggplot2::scale_x_continuous(
-    breaks = data[[time_var]],
-    expand = ggplot2::expansion(mult = 0.05)
-  )
-
-  p <- p +
-    new_x_scale + ggplot2::coord_cartesian(xlim = range(data[[time_var]]))
+  if (is.numeric(data[[time_var]])) {
+    # Aligning plot to actual timepoints in the data frame to ensure
+    # categorical mapping scales appropriately for cowplot alignments downstream
+    new_x_scale <- ggplot2::scale_x_continuous(
+      breaks = data[[time_var]],
+      expand = ggplot2::expansion(mult = 0.05)
+    )
+    p <- p +
+      new_x_scale +
+      ggplot2::coord_cartesian(xlim = range(data[[time_var]])) +
+      ggplot2::scale_x_continuous(breaks = sort(unique(data[[time_var]])))
+  }
 
   class(p) <- c("crane_gg_pkc", class(p))
 

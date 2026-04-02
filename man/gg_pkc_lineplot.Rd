@@ -106,3 +106,6 @@ gg_pkc_lineplot(
   )
 
 }
+\seealso{
+\code{\link[=annotate_pkc_df]{annotate_pkc_df()}} for related functionalities.
+}

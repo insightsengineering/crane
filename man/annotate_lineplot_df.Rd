@@ -11,6 +11,7 @@ annotate_lineplot_df(
   y = NULL,
   group = NULL,
   summary_stats = c("n", "mean", "sd"),
+  digits = NULL,
   rel_height_plot = 0.75
 )
 }
@@ -27,6 +28,12 @@ automatically extracts these from the \code{gg_plt} mapping.}
 
 \item{summary_stats}{(\code{character})\cr
 Vector of statistics to include. Defaults to \code{c("n", "mean", "sd")}.}
+
+\item{digits}{(\code{numeric}, \code{list}, or \code{formula})\cr
+Optional specification for the number of decimal places for the summary statistics.
+Can be a single integer (e.g., \code{2}), a vector of integers matching the statistics
+(e.g., \code{c(0, 2, 2)}), or a \code{gtsummary} style formula. Defaults to \code{NULL}
+(uses \code{gtsummary} default auto-formatting).}
 
 \item{rel_height_plot}{(\code{numeric})\cr
 Relative height of the plot vs the table. Defaults to \code{0.75}.}
@@ -59,11 +66,12 @@ p_base <- gg_lineplot(
 # 3. Annotate with default stats (auto-extracts variables from p_base)
 annotate_lineplot_df(gg_plt = p_base, data = mock_adlb)
 
-# 4. Annotate with custom statistics (Median and IQR)
+# 4. Annotate with custom statistics and exactly 2 decimal places
 annotate_lineplot_df(
   gg_plt = p_base,
   data = mock_adlb,
-  summary_stats = c("n", "median", "iqr")
+  summary_stats = c("n", "median", "iqr"),
+  digits = c(0, 2, 2)
 )
 
 }

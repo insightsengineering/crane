@@ -95,3 +95,17 @@ test_that("annotate_lineplot_df errors on invalid summary stats", {
     regexp = "should be one of"
   )
 })
+
+test_that("annotate_lineplot_df formats numeric digits correctly", {
+  # Passing a numeric vector to hit the `!is.null(digits) && is.numeric(digits)` branch
+  expect_no_error(
+    res <- annotate_lineplot_df(
+      gg_plt = p_valid,
+      data = mock_adlb,
+      summary_stats = c("n", "mean", "sd"),
+      digits = c(0, 2, 2)
+    )
+  )
+
+  expect_s3_class(res, "ggplot")
+})
