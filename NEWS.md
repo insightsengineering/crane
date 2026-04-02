@@ -1,4 +1,4 @@
-# crane 0.3.1.9013
+# crane 0.3.1.9018
 
 ## New Functions and Functionality
 
@@ -17,6 +17,8 @@
 
 * Refactored the underlying `data.frame` alignment and rendering methodology used for plot annotations. Functions for table annotation now use a completely rebuilt engine that ensures X-axis synchronization for stacked tables (`annotate_riskdf()`) and flexible, reliable placement for floating tables (`annotate_surv_med()`, `annotate_coxph()`). (#189)
 
+* Added functions `reverse_ci()`, `reverse_rate_difference()` to reverse confidence intervals and rate differences in tables from `add_row_difference()`. (#204)
+
 ### Other Updates
 
 * Changed the default `conf.type` from `"log"` to `"plain"` (linear) in `tbl_survfit_times()` and `tbl_survfit_quantiles()` to align with GDSR guidelines. (#197)
@@ -30,6 +32,8 @@
 * Adjusted `tbl_mmrm()` to allow `base_df = NULL`.
 
 * Fixed two bugs related to summary statistics calculation in `ard_tabulate_abnormal_by_baseline()`. (#198)
+
+* Fixed a bug in `gg_pkc_lineplot()` causing misplaced error bars on a log scale. (#199)
 
 # crane 0.3.1
 

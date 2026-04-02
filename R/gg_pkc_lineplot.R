@@ -77,7 +77,6 @@
 #'     legend.position = "top"
 #'   )
 #'
-#' @importFrom rlang .data
 #' @export
 gg_pkc_lineplot <- function(data,
                             time_var,
@@ -87,7 +86,6 @@ gg_pkc_lineplot <- function(data,
                             variability = c("sd", "se", "ci", "iqr", "none"),
                             log_y = TRUE,
                             lloq = NA_real_) {
-  # Match standard arguments
   stat <- match.arg(stat)
   variability <- match.arg(variability)
 
@@ -96,7 +94,6 @@ gg_pkc_lineplot <- function(data,
   check_not_missing(time_var)
   check_not_missing(analyte_var)
   check_not_missing(group)
-
   check_data_frame(data)
 
   # Tidy-selection processing
@@ -112,10 +109,11 @@ gg_pkc_lineplot <- function(data,
   check_string(analyte_var)
   check_string(group)
 
-  # 4Build Plot
+  # ----------------------------------------------------------------------------
+  # BUILD PLOT
+  # ----------------------------------------------------------------------------
   pd <- ggplot2::position_dodge(width = 0.2)
 
-  # Base Plot (Lines and Points are drawn regardless of variability setting)
   p <- ggplot2::ggplot(
     data,
     ggplot2::aes(
@@ -142,31 +140,32 @@ gg_pkc_lineplot <- function(data,
           "ci" = stats::qt(0.975, df = max(1, sum(!is.na(val)) - 1)) * se
         )
 
-        # Floor ymin to 1e-5 to prevent log(negative) errors
-        data.frame(y = m, ymin = max(m - err, 1e-5), ymax = m + err)
+        data.frame(y = m, ymin = m - err, ymax = m + err)
       },
       geom = "errorbar", width = 0.2, position = pd
     )
   } else if (stat == "median" && variability == "iqr") {
     p <- p + ggplot2::stat_summary(
       fun.data = function(val) {
-        data.frame(
-          y = stats::median(val, na.rm = TRUE),
-          ymin = stats::quantile(val, 0.25, na.rm = TRUE),
-          ymax = stats::quantile(val, 0.75, na.rm = TRUE)
-        )
+        m <- stats::median(val, na.rm = TRUE)
+        ymin_val <- unname(stats::quantile(val, 0.25, na.rm = TRUE))
+        ymax_val <- unname(stats::quantile(val, 0.75, na.rm = TRUE))
+
+        data.frame(y = m, ymin = ymin_val, ymax = ymax_val)
       },
       geom = "errorbar", width = 0.2, position = pd
     )
   } else if (variability != "none") {
-    # Safety catch for invalid combinations (e.g., stat = "median", variability = "sd")
     cli::cli_abort("Invalid combination of stat ({.val {stat}}) and variability ({.val {variability}}).")
   }
 
+  # ----------------------------------------------------------------------------
   # Log Scale & LLOQ
+  # ----------------------------------------------------------------------------
   if (log_y) {
     p <- p + ggplot2::scale_y_log10()
   }
+
   if (!is.na(lloq)) {
     p <- p + ggplot2::geom_hline(
       yintercept = lloq,
@@ -175,28 +174,22 @@ gg_pkc_lineplot <- function(data,
     )
   }
 
-  # Theming
+  # ----------------------------------------------------------------------------
+  # THEMING & SCALES
+  # ----------------------------------------------------------------------------
   p <- p +
     ggplot2::theme_classic() +
     ggplot2::theme(
       legend.position = "bottom",
       legend.title.position = "top",
       legend.title.align = 0.5,
-      legend.background = ggplot2::element_rect(
-        fill = "white",
-        color = "black",
-        linewidth = 0.5
-      ),
+      legend.background = ggplot2::element_rect(fill = "white", color = "black", linewidth = 0.5),
       plot.title = ggplot2::element_text(face = "bold")
     )
-
-  # Aligning plot to actual timepoints in the data frame
-
   new_x_scale <- ggplot2::scale_x_continuous(
-    breaks = data[[time_var]],
+    breaks = unique(data[[time_var]]),
     expand = ggplot2::expansion(mult = 0.05)
   )
-
   p <- p +
     new_x_scale + ggplot2::coord_cartesian(xlim = range(data[[time_var]]))
 
