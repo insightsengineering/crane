@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0.970432617491441" branch-rate="0" lines-covered="3118" lines-valid="3213" branches-covered="0" branches-valid="0" complexity="0" version="3.6.5" timestamp="2026-03-27 11:42:04.352836">
+<coverage line-rate="0.970733210104744" branch-rate="0" lines-covered="3151" lines-valid="3246" branches-covered="0" branches-valid="0" complexity="0" version="3.6.5" timestamp="2026-04-02 08:22:24.468103">
   <sources>
     <source>/__w/crane/crane/crane</source>
   </sources>
   <packages>
-    <package name="crane" line-rate="0.970432617491441" branch-rate="0" complexity="0">
+    <package name="crane" line-rate="0.970733210104744" branch-rate="0" complexity="0">
       <classes>
         <class name="add_blank_rows.R" filename="R/add_blank_rows.R" line-rate="1" branch-rate="0" complexity="0">
           <methods>
@@ -3303,6 +3303,86 @@
             <line number="62" hits="124" branch="false"/>
             <line number="63" hits="124" branch="false"/>
             <line number="64" hits="124" branch="false"/>
+          </lines>
+        </class>
+        <class name="reverse_difference_ci.R" filename="R/reverse_difference_ci.R" line-rate="1" branch-rate="0" complexity="0">
+          <methods>
+            <method name="reverse_rate_difference" signature="" line-rate="1" branch-rate="0" complexity="0">
+              <lines>
+                <line number="27" hits="5" branch="false"/>
+                <line number="28" hits="5" branch="false"/>
+                <line number="29" hits="5" branch="false"/>
+                <line number="30" hits="5" branch="false"/>
+                <line number="31" hits="2" branch="false"/>
+                <line number="32" hits="5" branch="false"/>
+                <line number="33" hits="5" branch="false"/>
+                <line number="34" hits="5" branch="false"/>
+                <line number="35" hits="1" branch="false"/>
+                <line number="36" hits="5" branch="false"/>
+                <line number="37" hits="5" branch="false"/>
+                <line number="38" hits="5" branch="false"/>
+                <line number="39" hits="5" branch="false"/>
+                <line number="40" hits="5" branch="false"/>
+                <line number="41" hits="5" branch="false"/>
+              </lines>
+            </method>
+            <method name="reverse_ci" signature="" line-rate="1" branch-rate="0" complexity="0">
+              <lines>
+                <line number="110" hits="6" branch="false"/>
+                <line number="111" hits="6" branch="false"/>
+                <line number="112" hits="6" branch="false"/>
+                <line number="113" hits="6" branch="false"/>
+                <line number="114" hits="2" branch="false"/>
+                <line number="115" hits="6" branch="false"/>
+                <line number="116" hits="6" branch="false"/>
+                <line number="117" hits="6" branch="false"/>
+                <line number="118" hits="2" branch="false"/>
+                <line number="119" hits="6" branch="false"/>
+                <line number="120" hits="5" branch="false"/>
+                <line number="121" hits="5" branch="false"/>
+                <line number="122" hits="5" branch="false"/>
+                <line number="123" hits="5" branch="false"/>
+                <line number="124" hits="5" branch="false"/>
+                <line number="125" hits="6" branch="false"/>
+                <line number="126" hits="6" branch="false"/>
+                <line number="127" hits="6" branch="false"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="27" hits="5" branch="false"/>
+            <line number="28" hits="5" branch="false"/>
+            <line number="29" hits="5" branch="false"/>
+            <line number="30" hits="5" branch="false"/>
+            <line number="31" hits="2" branch="false"/>
+            <line number="32" hits="5" branch="false"/>
+            <line number="33" hits="5" branch="false"/>
+            <line number="34" hits="5" branch="false"/>
+            <line number="35" hits="1" branch="false"/>
+            <line number="36" hits="5" branch="false"/>
+            <line number="37" hits="5" branch="false"/>
+            <line number="38" hits="5" branch="false"/>
+            <line number="39" hits="5" branch="false"/>
+            <line number="40" hits="5" branch="false"/>
+            <line number="41" hits="5" branch="false"/>
+            <line number="110" hits="6" branch="false"/>
+            <line number="111" hits="6" branch="false"/>
+            <line number="112" hits="6" branch="false"/>
+            <line number="113" hits="6" branch="false"/>
+            <line number="114" hits="2" branch="false"/>
+            <line number="115" hits="6" branch="false"/>
+            <line number="116" hits="6" branch="false"/>
+            <line number="117" hits="6" branch="false"/>
+            <line number="118" hits="2" branch="false"/>
+            <line number="119" hits="6" branch="false"/>
+            <line number="120" hits="5" branch="false"/>
+            <line number="121" hits="5" branch="false"/>
+            <line number="122" hits="5" branch="false"/>
+            <line number="123" hits="5" branch="false"/>
+            <line number="124" hits="5" branch="false"/>
+            <line number="125" hits="6" branch="false"/>
+            <line number="126" hits="6" branch="false"/>
+            <line number="127" hits="6" branch="false"/>
           </lines>
         </class>
         <class name="tbl_baseline_chg.R" filename="R/tbl_baseline_chg.R" line-rate="1" branch-rate="0" complexity="0">
