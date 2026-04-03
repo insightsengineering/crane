@@ -160,7 +160,7 @@ test_that("gg_lineplot informs users about numeric vs categorical x-axis", {
       stat = "mean",
       variability = "none"
     ),
-    regexp = "We encourage you to supply `x` as a factor"
+    regexp = "We encourage to supply `x` as a factor"
   )
 
   # 2. True categorical factor hits the "Categorical X-axis detected" branch

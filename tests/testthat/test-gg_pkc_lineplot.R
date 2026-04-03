@@ -246,7 +246,7 @@ test_that("gg_pkc_lineplot informs users about numeric vs categorical time_var",
       variability = "none",
       log_y = FALSE
     ),
-    regexp = "We encourage you to supply `time_var` as a factor"
+    regexp = "We encourage to supply `time_var` as a factor"
   )
 
   # 2. True categorical factor hits the "Categorical X-axis detected" branch
