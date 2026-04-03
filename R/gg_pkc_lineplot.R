@@ -148,7 +148,7 @@ gg_pkc_lineplot <- function(data,
     cli::cli_inform(
       c(
         "i" = paste0(
-          "We encourage you to supply `time_var` as a factor, since it supports ",
+          "We encourage to supply `time_var` as a factor, since it supports ",
           "correct decimals formatting in the summary table."
         )
       )

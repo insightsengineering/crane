@@ -97,15 +97,41 @@ test_that("annotate_lineplot_df errors on invalid summary stats", {
 })
 
 test_that("annotate_lineplot_df formats numeric digits correctly", {
-  # Passing a numeric vector to hit the `!is.null(digits) && is.numeric(digits)` branch
-  expect_no_error(
-    res <- annotate_lineplot_df(
-      gg_plt = p_valid,
-      data = mock_adlb,
-      summary_stats = c("n", "mean", "sd"),
-      digits = c(0, 2, 2)
-    )
+  # 1. Mock df2gg_aligned to intercept the data frame before plotting
+  mock_df2gg <- function(df, ...) {
+    return(df) # Return the data frame instead of generating the ggplot
+  }
+
+  # 2. Run the function using the mocked binding
+  res_df <- testthat::with_mocked_bindings(
+    {
+      annotate_lineplot_df(
+        gg_plt = p_valid,
+        data = mock_adlb,
+        summary_stats = c("n", "mean", "sd"),
+        digits = c(0, 2, 2) # n = 0, mean = 2, sd = 2
+      )
+    },
+    df2gg_aligned = mock_df2gg
   )
 
-  expect_s3_class(res, "ggplot")
+  # 3. Verify we intercepted the data frame
+  expect_s3_class(res_df, "data.frame")
+
+  # 4. Extract Visit '0' values for n, Mean, and SD from the first treatment group
+  # (Using trimws() ensures we don't fail due to hidden trailing spaces)
+  val_n <- trimws(res_df[grepl("n$", trimws(res_df$Group)), "0"][1])
+  val_mean <- trimws(res_df[grepl("Mean$", trimws(res_df$Group)), "0"][1])
+  val_sd <- trimws(res_df[grepl("SD$", trimws(res_df$Group)), "0"][1])
+
+  # 5. Assertions using Regular Expressions
+
+  # Check 'n' has NO decimal point (e.g., "2" not "2.0")
+  expect_false(grepl("\\.", val_n))
+
+  # Check 'mean' has a decimal point followed by EXACTLY 2 digits (e.g., "10.50")
+  expect_true(grepl("\\.[0-9]{2}$", val_mean))
+
+  # Check 'sd' has a decimal point followed by EXACTLY 2 digits (e.g., "0.71")
+  expect_true(grepl("\\.[0-9]{2}$", val_sd))
 })
