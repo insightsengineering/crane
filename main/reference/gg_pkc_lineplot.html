@@ -19,7 +19,7 @@ handling log transformations, various summary statistics, and variability measur
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1.9018</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1.9019</span>
       </span>
     </div>
 
@@ -77,6 +77,7 @@ handling log transformations, various summary statistics, and variability measur
 <span>  <span class="va">group</span>,</span>
 <span>  stat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"median"</span><span class="op">)</span>,</span>
 <span>  variability <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sd"</span>, <span class="st">"se"</span>, <span class="st">"ci"</span>, <span class="st">"iqr"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
+<span>  conf_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
 <span>  log_y <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  lloq <span class="op">=</span> <span class="cn">NA_real_</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -116,6 +117,11 @@ Primary summary statistic: <code>"mean"</code> or <code>"median"</code>. Default
 Variability measure: <code>"sd"</code>, <code>"se"</code>, <code>"ci"</code>, <code>"iqr"</code>, or <code>"none"</code>. Default is <code>"sd"</code>.</p></dd>
 
 
+<dt id="arg-conf-level">conf_level<a class="anchor" aria-label="anchor" href="#arg-conf-level"></a></dt>
+<dd><p>(<code>numeric</code>)<br>
+Confidence level for error bars when <code>variability = "ci"</code> (default: <code>0.95</code>).</p></dd>
+
+
 <dt id="arg-log-y">log_y<a class="anchor" aria-label="anchor" href="#arg-log-y"></a></dt>
 <dd><p>(<code>logical</code>)<br>
 Whether to apply log10 scale to the y-axis. Default is <code>TRUE</code>.</p></dd>
@@ -129,6 +135,10 @@ Lower Limit of Quantification. Default is <code>NA_real_</code>.</p></dd>
     <div id="value">
     <h2>Value</h2>
     <p>A <code>ggplot</code> object.</p>
+    </div>
+    <div id="see-also">
+    <h2>See also</h2>
+    <div class="dont-index"><p><code><a href="annotate_pkc_df.html">annotate_pkc_df()</a></code> for related functionalities.</p></div>
     </div>
 
     <div id="ref-examples">
@@ -151,6 +161,10 @@ Lower Limit of Quantification. Default is <code>NA_real_</code>.</p></dd>
 <span class="r-in"><span>  variability <span class="op">=</span> <span class="st">"sd"</span>,</span></span>
 <span class="r-in"><span>  log_y <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> We encourage to supply `time_var` as a factor, since it supports correct</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   decimals formatting in the summary table.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Scale for <span style="color: #00BB00;">x</span> is already present.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Adding another scale for <span style="color: #00BB00;">x</span>, which will replace the existing scale.</span>
 <span class="r-plt img"><img src="gg_pkc_lineplot-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Log Scale Example (Filter out 0s first to avoid log(0) warnings)</span></span></span>
@@ -165,6 +179,10 @@ Lower Limit of Quantification. Default is <code>NA_real_</code>.</p></dd>
 <span class="r-in"><span>    log_y <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>    lloq <span class="op">=</span> <span class="fl">2.0</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> We encourage to supply `time_var` as a factor, since it supports correct</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   decimals formatting in the summary table.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Scale for <span style="color: #00BB00;">x</span> is already present.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Adding another scale for <span style="color: #00BB00;">x</span>, which will replace the existing scale.</span>
 <span class="r-plt img"><img src="gg_pkc_lineplot-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Title, subtitle, axes labels and legend position customization</span></span></span>
@@ -186,6 +204,10 @@ Lower Limit of Quantification. Default is <code>NA_real_</code>.</p></dd>
 <span class="r-in"><span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    legend.position <span class="op">=</span> <span class="st">"top"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> We encourage to supply `time_var` as a factor, since it supports correct</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   decimals formatting in the summary table.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Scale for <span style="color: #00BB00;">x</span> is already present.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Adding another scale for <span style="color: #00BB00;">x</span>, which will replace the existing scale.</span>
 <span class="r-plt img"><img src="gg_pkc_lineplot-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

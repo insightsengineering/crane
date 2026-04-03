@@ -19,7 +19,7 @@ The annotations are added using the cowplot package for flexible placement."><me
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1.9018</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1.9019</span>
       </span>
     </div>
 
@@ -77,6 +77,7 @@ The annotations are added using the <code>cowplot</code> package for flexible pl
 <span>  analyte_var <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  group <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  summary_stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"mean"</span>, <span class="st">"sd"</span><span class="op">)</span>,</span>
+<span>  digits <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  text_size <span class="op">=</span> <span class="fl">3.5</span>,</span>
 <span>  rel_height_plot <span class="op">=</span> <span class="fl">0.75</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -107,9 +108,17 @@ from the <code>gg_plt</code> mapping.</p></dd>
 A vector of statistics to include. Defaults to <code>c("n", "mean", "sd")</code>.</p></dd>
 
 
+<dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
+<dd><p>(<code>numeric</code>, <code>list</code>, or <code>formula</code>)<br>
+Optional specification for the number of decimal places for the summary statistics.
+Can be a single integer (e.g., <code>2</code>), a vector of integers matching the statistics
+(e.g., <code>c(0, 2, 2)</code>), or a <code>gtsummary</code> style formula. Defaults to <code>NULL</code>
+(uses <code>gtsummary</code> default auto-formatting).</p></dd>
+
+
 <dt id="arg-text-size">text_size<a class="anchor" aria-label="anchor" href="#arg-text-size"></a></dt>
 <dd><p>(<code>numeric</code>)<br>
-The font size for the table text. Defaults to <code>3</code>.</p></dd>
+The font size for the table text. Defaults to <code>3.5</code>.</p></dd>
 
 
 <dt id="arg-rel-height-plot">rel_height_plot<a class="anchor" aria-label="anchor" href="#arg-rel-height-plot"></a></dt>
@@ -142,6 +151,10 @@ Relative height of the plot vs the table. Defaults to <code>0.75</code>.</p></dd
 <span class="r-in"><span>  variability <span class="op">=</span> <span class="st">"sd"</span>,</span></span>
 <span class="r-in"><span>  log_y <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> We encourage to supply `time_var` as a factor, since it supports correct</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   decimals formatting in the summary table.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Scale for <span style="color: #00BB00;">x</span> is already present.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Adding another scale for <span style="color: #00BB00;">x</span>, which will replace the existing scale.</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Annotate the Plot (Auto-detects variables from aesthetic mapping)</span></span></span>
 <span class="r-in"><span><span class="fu">annotate_pkc_df</span><span class="op">(</span></span></span>
@@ -150,14 +163,15 @@ Relative height of the plot vs the table. Defaults to <code>0.75</code>.</p></dd
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="annotate_pkc_df-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Annotate with specific statistics and explicit variable names</span></span></span>
+<span class="r-in"><span><span class="co"># Annotate with specific statistics, explicit variable names, and explicit digits</span></span></span>
 <span class="r-in"><span><span class="fu">annotate_pkc_df</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">df_pk</span>,</span></span>
 <span class="r-in"><span>  gg_plt <span class="op">=</span> <span class="va">p_pk</span>,</span></span>
 <span class="r-in"><span>  time_var <span class="op">=</span> <span class="st">"Time_Nominal"</span>,</span></span>
 <span class="r-in"><span>  analyte_var <span class="op">=</span> <span class="st">"conc"</span>,</span></span>
 <span class="r-in"><span>  group <span class="op">=</span> <span class="st">"Dose_Group"</span>,</span></span>
-<span class="r-in"><span>  summary_stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"median"</span>, <span class="st">"iqr"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  summary_stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"median"</span>, <span class="st">"iqr"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-plt img"><img src="annotate_pkc_df-2.png" alt="" width="700" height="433"></span>
 </code></pre></div>
