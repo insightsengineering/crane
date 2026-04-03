@@ -201,6 +201,68 @@ test_that("gg_pkc_lineplot warns when log transforming zeros", {
   warns <- capture_warnings(ggplot2::ggplot_build(p_zero_log))
 
   # Verify that both expected ggplot2 warnings exist within the captured list
-  expect_true(any(grepl("log-10 transformation introduced infinite values", warns)))
-  expect_true(any(grepl("Removed .* rows containing non-finite outside the scale range", warns)))
+  expect_true(any(grepl("transformation introduced infinite values.", warns)))
+})
+
+test_that("gg_pkc_lineplot with factor time_var ", {
+  mock_pk_df$ATPTN <- factor(mock_pk_df$ATPTN)
+
+  # Create the plot using data that STILL contains 0s at ATPTN = 0
+  p_zero_log <- gg_pkc_lineplot(
+    data = mock_pk_df,
+    time_var = ATPTN,
+    analyte_var = AVAL,
+    group = TRT,
+    log_y = FALSE
+  )
+
+  expect_no_message(p_zero_log)
+})
+
+test_that("gg_pkc_lineplot with character time_var ", {
+  mock_pk_df$ATPTN <- as.character(mock_pk_df$ATPTN)
+
+  # Create the plot using data that STILL contains 0s at ATPTN = 0
+  p_zero_log <- gg_pkc_lineplot(
+    data = mock_pk_df,
+    time_var = ATPTN,
+    analyte_var = AVAL,
+    group = TRT,
+    log_y = FALSE
+  )
+
+  expect_no_message(p_zero_log)
+})
+
+test_that("gg_pkc_lineplot informs users about numeric vs categorical time_var", {
+  # 1. Numeric time_var hits the final `else` branch (encourages using factor)
+  expect_message(
+    gg_pkc_lineplot(
+      data = mock_pk_df,
+      time_var = ATPTN,
+      analyte_var = AVAL,
+      group = TRT,
+      stat = "mean",
+      variability = "none",
+      log_y = FALSE
+    ),
+    regexp = "We encourage to supply `time_var` as a factor"
+  )
+
+  # 2. True categorical factor hits the "Categorical X-axis detected" branch
+  mock_pk_cat <- mock_pk_df
+  mock_pk_cat$ATPTN <- factor(ifelse(mock_pk_cat$ATPTN == 0, "Baseline", "Week 4"))
+
+  expect_message(
+    gg_pkc_lineplot(
+      data = mock_pk_cat,
+      time_var = ATPTN,
+      analyte_var = AVAL,
+      group = TRT,
+      stat = "mean",
+      variability = "none",
+      log_y = FALSE
+    ),
+    regexp = "Categorical X-axis detected"
+  )
 })

@@ -50,12 +50,10 @@ reference:
       - add_forest
       - tbl_roche_subgroups
 
-  - title: "Line Plot"
+  - title: "Line Plots"
     contents:
-      - calc_stats
-      - g_lineplot
-      - g_lineplot_table
-      - preprocess_lineplot_data
+      - gg_lineplot
+      - annotate_lineplot_df
 
   - title: "Standard Listings"
     contents:
@@ -78,3 +76,10 @@ reference:
       - label_roche
       - reverse_ci
       - reverse_rate_difference
+
+  - title: "Deprecated"
+    contents:
+      - g_lineplot
+      - g_lineplot_table
+      - preprocess_lineplot_data
+

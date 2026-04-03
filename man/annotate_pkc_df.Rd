@@ -11,6 +11,7 @@ annotate_pkc_df(
   analyte_var = NULL,
   group = NULL,
   summary_stats = c("n", "mean", "sd"),
+  digits = NULL,
   text_size = 3.5,
   rel_height_plot = 0.75
 )
@@ -29,8 +30,14 @@ from the \code{gg_plt} mapping.}
 \item{summary_stats}{(\code{character})\cr
 A vector of statistics to include. Defaults to \code{c("n", "mean", "sd")}.}
 
+\item{digits}{(\code{numeric}, \code{list}, or \code{formula})\cr
+Optional specification for the number of decimal places for the summary statistics.
+Can be a single integer (e.g., \code{2}), a vector of integers matching the statistics
+(e.g., \code{c(0, 2, 2)}), or a \code{gtsummary} style formula. Defaults to \code{NULL}
+(uses \code{gtsummary} default auto-formatting).}
+
 \item{text_size}{(\code{numeric})\cr
-The font size for the table text. Defaults to \code{3}.}
+The font size for the table text. Defaults to \code{3.5}.}
 
 \item{rel_height_plot}{(\code{numeric})\cr
 Relative height of the plot vs the table. Defaults to \code{0.75}.}
@@ -66,14 +73,15 @@ annotate_pkc_df(
   gg_plt = p_pk
 )
 
-# Annotate with specific statistics and explicit variable names
+# Annotate with specific statistics, explicit variable names, and explicit digits
 annotate_pkc_df(
   data = df_pk,
   gg_plt = p_pk,
   time_var = "Time_Nominal",
   analyte_var = "conc",
   group = "Dose_Group",
-  summary_stats = c("n", "median", "iqr")
+  summary_stats = c("n", "median", "iqr"),
+  digits = c(0, 2, 2)
 )
 }
 \seealso{
