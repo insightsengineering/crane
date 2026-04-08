@@ -145,3 +145,59 @@ test_that("annotate_pkc_df handles complex aesthetic mappings", {
     regexp = "Missing variables"
   )
 })
+
+test_that("annotate_pkc_df formats numeric digits correctly", {
+  # 1. Setup Data
+  set.seed(123)
+  df_pk <- data.frame(
+    time = rep(c(0, 1, 2, 4), each = 4),
+    conc = runif(16, 10, 100),
+    arm = rep(c("Cohort A", "Cohort B"), times = 8)
+  )
+
+  p <- gg_pkc_lineplot(
+    data = df_pk,
+    time_var = time,
+    analyte_var = conc,
+    group = arm,
+    log_y = FALSE
+  )
+
+  # 2. Mock df2gg_aligned to intercept the data frame before plotting
+  mock_df2gg <- function(df, ...) {
+    return(df) # Return the data frame instead of generating the ggplot
+  }
+
+  # 3. Run the function using the mocked binding
+  res_df <- testthat::with_mocked_bindings(
+    {
+      annotate_pkc_df(
+        gg_plt = p,
+        data = df_pk,
+        summary_stats = c("n", "mean", "sd"),
+        digits = c(0, 2, 2)
+      )
+    },
+    df2gg_aligned = mock_df2gg
+  )
+
+  # 4. Verify we intercepted the data frame
+  expect_s3_class(res_df, "data.frame")
+
+  # 5. Extract Time '0' values for n, Mean, and SD from the first treatment group
+  # (Using trimws() ensures we don't fail due to hidden trailing spaces)
+  val_n <- trimws(res_df[grepl("n$", trimws(res_df$Group)), "0"][1])
+  val_mean <- trimws(res_df[grepl("Mean$", trimws(res_df$Group)), "0"][1])
+  val_sd <- trimws(res_df[grepl("SD$", trimws(res_df$Group)), "0"][1])
+
+  # 6. Assertions using Regular Expressions
+
+  # Check 'n' has NO decimal point (e.g., "2" not "2.0")
+  expect_false(grepl("\\.", val_n))
+
+  # Check 'mean' has a decimal point followed by EXACTLY 2 digits (e.g., "55.50")
+  expect_true(grepl("\\.[0-9]{2}$", val_mean))
+
+  # Check 'sd' has a decimal point followed by EXACTLY 2 digits (e.g., "12.34")
+  expect_true(grepl("\\.[0-9]{2}$", val_sd))
+})

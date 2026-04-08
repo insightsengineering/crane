@@ -1,352 +1,217 @@
-#' @title Calculate Summary Statistics for a Vector
+#' Generate a Summary Line Plot from Raw Data
 #'
-#' @description Calculates N, mean, standard deviation, and a two-sided confidence
-#' interval for the mean of a numeric vector.
+#' @description Calculates summary statistics inline using `ggplot2::stat_summary()`,
+#'   generating a line plot directly from raw data. Supports configurable central
+#'   tendencies and dispersion metrics.
 #'
-#' @param x (`numeric`)\cr vector to summarize.
-#' @param conf_level (`probability`)\cr The confidence level for the interval (default is 0.95).
-#' @param decimal_places (`integer`)\cr Number of decimal places for numeric values in the table.
-#' @return A `list` with statistics: `n`, `mean`, `mean_ci_lwr`, `mean_ci_upr`, `median`, `sd`.
-#' @export
-#' @examples
-#' x <- c(10, 20, 40, NA, 30)
-#' calc_stats(x, conf_level = 0.95, decimal_places = 2)
-calc_stats <- function(x, conf_level = 0.95, decimal_places = 2) {
-  n <- sum(!is.na(x))
-  if (n == 0) {
-    return(list(n = 0, mean = NA, mean_ci_lwr = NA, mean_ci_upr = NA, median = NA, sd = NA))
-  }
-
-  m <- mean(x, na.rm = TRUE)
-  se <- stats::sd(x, na.rm = TRUE) / sqrt(n)
-  ci_val <- stats::qt((1 + conf_level) / 2, df = n - 1) * se
-  mean_ci_lwr <- round(m - ci_val, decimal_places)
-  mean_ci_upr <- round(m + ci_val, decimal_places)
-
-  list(
-    n = n,
-    mean = round(m, decimal_places),
-    mean_ci = paste(
-      mean_ci_lwr,
-      mean_ci_upr
-    ),
-    mean_ci_lwr = mean_ci_lwr,
-    mean_ci_upr = mean_ci_upr,
-    median = stats::median(x, na.rm = TRUE),
-    sd = stats::sd(x, na.rm = TRUE)
-  )
-}
-
-
-#' @title Generate a Line Plot from Pre-calculated Statistics
+#' @param data (`data.frame`)\cr
+#'   The raw data frame (e.g., ADaM dataset).
+#' @param x ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#'   Column name for the x-axis timepoints (e.g., `AVISIT`).
+#' @param y ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#'   Column name for the continuous variable to summarize (e.g., `AVAL`).
+#' @param group ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#'   Optional column name for the grouping/treatment variable.
+#' @param stat (`string`)\cr
+#'   Primary summary statistic: `"mean"` or `"median"`. Default is `"mean"`.
+#' @param variability (`string`)\cr
+#'   Variability measure: `"sd"`, `"se"`, `"ci"`, `"iqr"`, or `"none"`.
+#'   Default is `"ci"`.
+#' @param conf_level (`numeric`)\cr
+#'   Confidence level for error bars when `variability = "ci"` (default: `0.95`).
 #'
-#' @description Creates a `ggplot` line plot of mean (or other mid-point) and
-#' confidence intervals from a summary data frame.
+#' @return A `ggplot` object of class `crane_gg_line`.
 #'
-#' @param df_stats (`data.frame`)\cr containing pre-calculated statistics (e.g., mean, CIs, N).
-#' @param x (`string`)\cr Column name for the x-axis (must be in `df_stats`).
-#' @param mid (`string`)\cr Column name for the y-axis middle point (e.g., "mean").
-#' @param strata_N (`string`)\cr Column name for the stratification variable used for grouping/coloring (can be `NULL`).
-#' @param whiskers (`character`)\cr A vector of two column names for the lower and upper error bar limits.
-#' @param mid_type (`string`)\cr String indicating whether to plot points ("p"), lines ("l"), or both ("pl").
-#' @param mid_point_size (`numeric`)\cr Numeric value for the size of points.
-#' @param position (`position`)\cr Position adjustment for dodging points and lines (default: `position_dodge(width = 0.4)`).
-#' @param errorbar_width (`numeric`)\cr Width of error bars (default: 0.45).
-#' @param col (`character`)\cr Vector of color values for manual color scaling.
-#' @param linetype (`character`)\cr Vector of line type values for manual line type scaling.
-#' @return A `ggplot` object.
-#'
-#' @export
+#' @seealso [annotate_lineplot_df()] for related functionalities.
 #'
 #' @examples
-#' library(ggplot2)
-#'
-#' # Create example statistics data frame
-#' df_stats <- data.frame(
-#'   AVISIT = factor(c("Baseline", "Week 4", "Week 8")),
-#'   ARM = c("Treatment", "Treatment", "Treatment"),
-#'   mean = c(10.5, 12.3, 14.1),
-#'   mean_ci_lwr = c(9.2, 11.0, 12.8),
-#'   mean_ci_upr = c(11.8, 13.6, 15.4)
+#' set.seed(123)
+#' mock_adlb <- data.frame(
+#'   ARM = rep(c("Treatment A", "Treatment B"), each = 30),
+#'   AVISIT = rep(c(0, 4, 8), 20),
+#'   AVAL = rnorm(60, mean = 10, sd = 2)
 #' )
 #'
-#' # Basic line plot without stratification
-#' g_lineplot(
-#'   df_stats = df_stats,
-#'   x = "AVISIT",
-#'   mid = "mean",
-#'   whiskers = c("mean_ci_lwr", "mean_ci_upr")
+#' # 1. Default Plot: Mean with 95% Confidence Intervals
+#' gg_lineplot(
+#'   data = mock_adlb,
+#'   x = AVISIT,
+#'   y = AVAL,
+#'   group = ARM
 #' )
 #'
-#' # Line plot with stratification
-#' df_stats_strat <- rbind(
-#'   transform(df_stats, ARM = "Treatment A"),
-#'   transform(df_stats,
-#'     ARM = "Treatment B", mean = mean + 2,
-#'     mean_ci_lwr = mean_ci_lwr + 2, mean_ci_upr = mean_ci_upr + 2
+#' # 2. Median with Interquartile Range (IQR)
+#' gg_lineplot(
+#'   data = mock_adlb,
+#'   x = AVISIT,
+#'   y = AVAL,
+#'   group = ARM,
+#'   stat = "median",
+#'   variability = "iqr"
+#' )
+#'
+#' # 3. Ungrouped data with Mean and Standard Deviation +
+#' # Change legend position to top and add horizontal reference line
+#' gg_lineplot(
+#'   data = mock_adlb,
+#'   x = AVISIT,
+#'   y = AVAL,
+#'   group = ARM,
+#'   stat = "mean",
+#'   variability = "sd"
+#' ) +
+#'   ggplot2::theme(legend.position = "top") +
+#'   ggplot2::geom_hline(
+#'     yintercept = 30,
+#'     linetype = "dashed",
+#'     color = "gray50"
 #'   )
-#' )
-#' g_lineplot(
-#'   df_stats = df_stats_strat,
-#'   x = "AVISIT",
-#'   mid = "mean",
-#'   strata_N = "ARM",
-#'   whiskers = c("mean_ci_lwr", "mean_ci_upr")
-#' )
-g_lineplot <- function(df_stats,
-                       x = "AVISIT",
-                       mid = "mean",
-                       strata_N = NULL,
-                       whiskers = c("mean_ci_lwr", "mean_ci_upr"),
-                       mid_type = "pl",
-                       mid_point_size = 2,
-                       position = position_dodge(width = 0.4),
-                       errorbar_width = 0.45,
-                       col = NULL,
-                       linetype = NULL) {
-  p <- ggplot(
-    data = df_stats,
-    aes(
-      x = .data[[x]],
-      y = .data[[mid]],
-      color = if (is.null(strata_N)) NULL else .data[[strata_N]],
-      shape = if (is.null(strata_N)) NULL else .data[[strata_N]],
-      lty = if (is.null(strata_N)) NULL else .data[[strata_N]],
-      group = if (is.null(strata_N)) NULL else .data[[strata_N]]
+#' @export
+gg_lineplot <- function(data,
+                        x,
+                        y,
+                        group = NULL,
+                        stat = c("mean", "median"),
+                        variability = c("ci", "sd", "se", "iqr", "none"),
+                        conf_level = 0.95) {
+  # 1. Argument Matching and Validation
+  stat <- match.arg(stat)
+  variability <- match.arg(variability)
+
+  # Prevent mathematically invalid combinations
+  if (stat == "mean" && variability == "iqr") {
+    cli::cli_abort("Invalid combination: Cannot plot IQR around a mean.")
+  } else if (stat == "median" && variability %in% c("sd", "se", "ci")) {
+    cli::cli_abort(
+      paste0(
+        "Invalid combination of stat ({.val {stat}}) ",
+        "and variability ({.val {variability}})."
+      )
     )
+  }
+
+  cards::process_selectors(
+    data,
+    x = {{ x }},
+    y = {{ y }},
+    group = {{ group }}
   )
 
-  # Add points
-  if (grepl("p", mid_type, fixed = TRUE)) {
-    p <- p + geom_point(position = position, size = mid_point_size, na.rm = TRUE)
+  # change from factor to numeric
+  # x can be factor or numeric - factor allow for correct n of decimals
+  # in the summary table
+  if (!is.numeric(data[[x]])) {
+    # 1. "Test" the conversion silently to see if it results in NAs
+    test_numeric <- suppressWarnings(as.numeric(as.character(data[[x]])))
+
+    # 2. Only overwrite the data if the conversion was 100% successful
+    if (!any(is.na(test_numeric) & !is.na(data[[x]]))) {
+      data <- data |>
+        dplyr::mutate(!!x := as.numeric(as.character(.data[[x]])))
+    } else {
+      # If it has text like "week 1", leave it as a factor and let ggplot2 handle it natively!
+      cli::cli_inform(
+        c("i" = "Categorical X-axis detected. Leaving as factor for discrete plotting.")
+      )
+    }
+  } else {
+    cli::cli_inform(
+      c(
+        "i" = paste0(
+          "We encourage to supply `x` as a factor, since it supports ",
+          "correct decimals formatting in the summary table."
+        )
+      )
+    )
   }
 
-  # Add lines
-  if (grepl("l", mid_type, fixed = TRUE) && !is.null(strata_N)) {
-    p <- p + geom_line(position = position, na.rm = TRUE)
+  # 2. Data Preprocessing
+  # Expand grid ensures missing timepoints in specific groups are explicitly
+  # populated with NAs. This prevents ggplot from drawing misleading lines
+  # that bridge across missing visits.
+  if (length(group) > 0) {
+    df_plot <- tidyr::expand(data, .data[[group]], .data[[x]]) |>
+      dplyr::left_join(data, by = c(group, x))
+  } else {
+    df_plot <- tidyr::expand(data, .data[[x]]) |>
+      dplyr::left_join(data, by = x)
   }
 
-  # Add error bars
-  if (!is.null(whiskers) && length(whiskers) >= 2) {
-    p <- p + geom_errorbar(
-      aes(ymin = .data[[whiskers[1]]], ymax = .data[[whiskers[2]]]),
-      width = errorbar_width,
-      position = position,
+  pd <- ggplot2::position_dodge(width = 0.4)
+
+  # 3. Build Plot: Use clean aes() mapping so gg_varname_extraction succeeds
+  if (length(group) > 0) {
+    p <- ggplot2::ggplot(
+      data = df_plot,
+      ggplot2::aes(
+        x = .data[[x]],
+        y = .data[[y]],
+        color = .data[[group]],
+        shape = .data[[group]],
+        linetype = .data[[group]],
+        group = .data[[group]]
+      )
+    )
+  } else {
+    p <- ggplot2::ggplot(
+      data = df_plot,
+      ggplot2::aes(
+        x = .data[[x]],
+        y = .data[[y]]
+      )
+    )
+  }
+
+  p <- p +
+    ggplot2::stat_summary(
+      fun = stat,
+      geom = "point",
+      position = pd,
+      size = 2,
+      na.rm = TRUE
+    )
+
+  if (length(group) > 0) {
+    p <- p + ggplot2::stat_summary(
+      fun = stat,
+      geom = "line",
+      position = pd,
       na.rm = TRUE
     )
   }
 
-  # Add labels and theme
+  # 4. Add Variability Layer conditionally to avoid drawing degenerate lines
+  if (variability != "none") {
+    p <- p |>
+      gg_add_stats(stat, variability, conf_level)
+  }
+
+  # 5. Theming
   p <- p +
-    scale_y_continuous(labels = scales::label_comma())
-
-
-  if (!is.null(col)) {
-    p <- p + scale_color_manual(values = col)
-  }
-  if (!is.null(linetype)) {
-    p <- p + scale_linetype_manual(values = linetype)
-  }
-
-  return(p)
-}
-
-#' @title Generate a ggplot Table from Pre-calculated Statistics
-#'
-#' @description Creates a ggplot object containing text data for use as a table
-#' component beneath a main plot.
-#'
-#' @param df_stats (`data.frame`)\cr containing pre-calculated statistics.
-#' @param x (`string`)\cr Column name for the x-axis (must be in `df_stats`).
-#' @param group_var (`string`)\cr Column name for the grouping/stratification variable (can be `NULL`).
-#' @param table (`character`)\cr A character vector of statistic column names to display in the table (e.g., c(`"n"`, `"mean"`, `"mean_ci"`)).
-#' @param table_font_size (`integer`)\cr Font size for the table text.
-#' @param decimal_places (`integer`)\cr Integer specifying the number of decimal places for numeric statistics (like 'mean').
-#' @return A `ggplot` object formatted as a table.
-#'
-#' @export
-#'
-#' @examples
-#' # Create example statistics data frame
-#' df_stats <- data.frame(
-#'   AVISIT = factor(c("Baseline", "Week 4", "Week 8")),
-#'   ARM = c("Treatment", "Treatment", "Treatment"),
-#'   n = c(50, 48, 45),
-#'   mean = c(10.5, 12.3, 14.1),
-#'   mean_ci = c("9.20 11.80", "11.00 13.60", "12.80 15.40")
-#' )
-#'
-#' # Generate table with n and mean
-#' g_lineplot_table(
-#'   df_stats = df_stats,
-#'   x = "AVISIT",
-#'   group_var = "ARM",
-#'   table = c("n", "mean")
-#' )
-g_lineplot_table <- function(df_stats,
-                             x = "AVISIT",
-                             group_var = NULL,
-                             table = c("n", "mean"),
-                             table_font_size = 3,
-                             decimal_places = 2) {
-  # Format numeric columns to character strings with specified decimal places
-  fmt <- paste0("%.", decimal_places, "f")
-  df_stats_formatted <- df_stats |>
-    mutate(across(all_of(table) & where(is.numeric), ~ sprintf(fmt, .)))
-
-  # Select and pivot the formatted data
-  df_stats_table <- df_stats_formatted |>
-    dplyr::select(all_of(c(group_var, x, table))) |>
-    tidyr::pivot_longer(
-      cols = -all_of(c(group_var, x)),
-      names_to = "stat",
-      values_to = "value"
+    ggplot2::scale_y_continuous(labels = scales::label_comma()) +
+    ggplot2::theme_classic() +
+    ggplot2::theme(
+      legend.position = "bottom",
+      legend.title.position = "top",
+      legend.title.align = 0.5,
+      legend.background = ggplot2::element_rect(fill = "white", color = "black", linewidth = 0.5),
+      plot.title = ggplot2::element_text(face = "bold")
     )
 
-  tbl <- ggplot(df_stats_table, aes(x = .data[[x]], y = .data[["stat"]], label = .data[["value"]])) +
-    geom_text(size = table_font_size) +
-    theme_bw() +
-    theme(
-      panel.border = element_blank(),
-      panel.grid = element_blank(),
-      axis.ticks = element_blank(),
-      axis.title = element_blank(),
-      axis.text.x = element_blank(),
-      legend.position = "none"
+  # Dynamically label the legends to overwrite the ugly ".data[[group]]" default
+  if (length(group) > 0) {
+    p <- p + ggplot2::labs(color = group, linetype = group, shape = group)
+  }
+
+
+  # If the x-axis is numeric, force it to only show ticks for actual data points
+  if (is.numeric(data[[x]])) {
+    p <- p + ggplot2::scale_x_continuous(
+      breaks = sort(unique(data[[x]]))
     )
-
-  if (!is.null(group_var)) {
-    tbl <- tbl + facet_wrap(stats::as.formula(paste("~", group_var)), ncol = 1)
-  }
-  return(tbl)
-}
-
-#' @title Preprocess Data for Line Plot Statistics
-#'
-#' @description Cleans, expands, joins, and computes summary statistics
-#' (using [calc_stats]) from the raw data frame, preparing it for plotting.
-#'
-#' @param df (`data.frame`)\cr The primary data frame containing the data to plot (e.g., ADaM BDS).
-#' @param alt_counts_df (`data.frame`)\cr An optional data frame for calculating N counts (e.g., ADSL).
-#' @param x (`string`)\cr Column name for the x-axis (e.g., `"AVISIT"`).
-#' @param y (`string`)\cr Column name for the y-axis values (e.g., `"AVAL"`).
-#' @param group_var (`string`)\cr Column name for the grouping variable (e.g., `"ARM"`).
-#' @param subject_var (`string`)\cr Column name for the subject ID (e.g., `"USUBJID"`).
-#' @param mid (`string`)\cr Column name for the mean/median statistic to be plotted (e.g., `"mean"`).
-#' @param calc_stats_func (`function`)\cr A function to calculate summary statistics, defaulting to the provided `calc_stats` function.
-#' @param ... Additional arguments passed to the `calc_stats` function (e.g., `conf_level`, `decimal_places`).
-#' @return A data frame (`df_stats`) containing the calculated statistics, ready for plotting.
-#' @export
-#'
-#' @examples
-#' library(dplyr)
-#' library(tidyr)
-#'
-#' # Create example ADaM-like data
-#' set.seed(123)
-#' adlb <- data.frame(
-#'   USUBJID = rep(paste0("SUBJ-", 1:20), each = 3),
-#'   ARM = rep(c(rep("Treatment A", 10), rep("Treatment B", 10)), each = 3),
-#'   AVISIT = rep(factor(c("Baseline", "Week 4", "Week 8")), 20),
-#'   AVAL = rnorm(60, mean = 12, sd = 2)
-#' )
-#'
-#' adsl <- data.frame(
-#'   USUBJID = paste0("SUBJ-", 1:20),
-#'   ARM = c(rep("Treatment A", 10), rep("Treatment B", 10))
-#' )
-#'
-#' # Preprocess data for line plot with default confidence level
-#' df_stats <- preprocess_lineplot_data(
-#'   df = adlb,
-#'   alt_counts_df = adsl,
-#'   x = "AVISIT",
-#'   y = "AVAL",
-#'   group_var = "ARM",
-#'   subject_var = "USUBJID"
-#' )
-#'
-#' # Custom confidence level using ...
-#' df_stats_90ci <- preprocess_lineplot_data(
-#'   df = adlb,
-#'   alt_counts_df = adsl,
-#'   x = "AVISIT",
-#'   y = "AVAL",
-#'   group_var = "ARM",
-#'   subject_var = "USUBJID",
-#'   conf_level = 0.90
-#' )
-#'
-#' # Custom decimal places using ...
-#' df_stats_3dec <- preprocess_lineplot_data(
-#'   df = adlb,
-#'   alt_counts_df = adsl,
-#'   x = "AVISIT",
-#'   y = "AVAL",
-#'   group_var = "ARM",
-#'   subject_var = "USUBJID",
-#'   decimal_places = 3
-#' )
-#'
-#' # Without grouping variable
-#' df_stats_ungrouped <- preprocess_lineplot_data(
-#'   df = adlb,
-#'   x = "AVISIT",
-#'   y = "AVAL",
-#'   group_var = NULL
-#' )
-preprocess_lineplot_data <- function(df,
-                                     alt_counts_df = NULL,
-                                     x = "AVISIT",
-                                     y = "AVAL",
-                                     group_var = "ARM",
-                                     subject_var = "USUBJID",
-                                     mid = "mean",
-                                     calc_stats_func = calc_stats,
-                                     ...) {
-  # Remove unused factor levels
-  if (is.factor(df[[x]])) {
-    df[[x]] <- droplevels(df[[x]])
   }
 
-  # Expand grid for all combinations (Handles NULL group_var)
-  if (!is.null(group_var)) {
-    df_grp <- tidyr::expand(df, .data[[group_var]], .data[[x]])
-  } else {
-    df_grp <- tidyr::expand(df, .data[[x]])
-  }
+  class(p) <- c("crane_gg_line", class(p))
 
-  # Join with actual data and compute statistics
-  df_grp <- df_grp |>
-    dplyr::full_join(df[, c(group_var, x, y)], by = c(group_var, x), multiple = "all") |>
-    dplyr::group_by(across(all_of(c(group_var, x))))
-
-  # 2. CALCULATE STATISTICS
-  # Ensure stats column contains only vectors
-  df_stats <- df_grp |>
-    dplyr::summarise(
-      stats = list(as.list(calc_stats_func(.data[[y]], ...))), # Convert to list to ensure compatibility
-      .groups = "drop"
-    ) |>
-    tidyr::unnest_wider(all_of("stats"))
-
-  # Remove NA rows where the midpoint statistic is missing
-  df_stats <- df_stats[!is.na(df_stats[[mid]]), ]
-
-  # Add N counts to group labels if alt_counts_df provided
-  strata_N <- NULL
-  if (!is.null(group_var) && !is.null(alt_counts_df)) {
-    strata_N <- paste0(group_var, "_N")
-
-    df_N <- alt_counts_df |>
-      dplyr::group_by(.data[[group_var]]) |>
-      dplyr::summarise(N = dplyr::n_distinct(.data[[subject_var]]), .groups = "drop") |>
-      dplyr::mutate(!!strata_N := paste0(.data[[group_var]], " (N = ", .data[["N"]], ")"))
-
-    df_stats <- df_stats |>
-      dplyr::left_join(df_N[, c(group_var, strata_N)], by = group_var) |>
-      dplyr::mutate(!!strata_N := factor(.data[[strata_N]], levels = unique(df_N[[strata_N]])))
-  }
-
-  return(df_stats)
+  p
 }
