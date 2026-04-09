@@ -7,11 +7,11 @@
       1                    Time 30                <NA>                             <NA>                            <NA>
       2 Patients remaining at risk                  69                               38                              42
       3        Event Free Rate (%)                84.4                             53.0                            53.4
-      4                     95% CI        (77.0, 92.6)                     (42.8, 65.7)                    (43.4, 65.6)
+      4                     95% CI        (76.7, 92.2)                     (41.7, 64.4)                    (42.3, 64.4)
       5                    Time 60                <NA>                             <NA>                            <NA>
       6 Patients remaining at risk                  59                               14                              20
       7        Event Free Rate (%)                76.8                             24.3                            31.1
-      8                     95% CI        (68.2, 86.6)                     (15.8, 37.3)                    (21.9, 44.1)
+      8                     95% CI        (67.7, 86.0)                     (13.9, 34.7)                    (20.2, 41.9)
 
 ---
 
@@ -22,11 +22,11 @@
       1                    Time 12               <NA>                <NA>
       2 Patients remaining at risk                 89                  88
       3        Event Free Rate (%)               90.8                86.3
-      4                     95% CI       (85.3, 96.7)        (79.8, 93.2)
+      4                     95% CI       (85.1, 96.5)        (79.6, 93.0)
       5                    Time 15               <NA>                <NA>
       6 Patients remaining at risk                 83                  75
       7        Event Free Rate (%)               84.7                73.5
-      8                     95% CI       (77.9, 92.1)        (65.4, 82.6)
+      8                     95% CI       (77.6, 91.8)        (65.0, 82.1)
 
 ---
 
@@ -69,5 +69,5 @@
       1                     Day 30                <NA>                             <NA>                            <NA>                        <NA>
       2 Patients remaining at risk                  69                               38                              42                         149
       3        Event Free Rate (%)                84.4                             53.0                            53.4                        64.1
-      4                     95% CI        (77.0, 92.6)                     (42.8, 65.7)                    (43.4, 65.6)                (58.2, 70.5)
+      4                     95% CI        (76.7, 92.2)                     (41.7, 64.4)                    (42.3, 64.4)                (58.0, 70.2)
 
