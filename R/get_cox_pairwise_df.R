@@ -1,46 +1,58 @@
 #' Generate Table of Pairwise Cox-PH and Log-Rank Results
 #'
 #' @description
-#' This function performs pairwise comparisons of treatment arms using the **Cox Proportional Hazards model** and
-#' calculates the corresponding **log-rank p-value**. Each comparison tests a non-reference group against a specified
-#' reference group.
+#' This function performs pairwise comparisons of treatment arms using the
+#' **Cox Proportional Hazards model** and calculates the corresponding
+#' **log-rank p-value**. Each comparison tests a non-reference group
+#' against a specified reference group.
 #'
 #' @param model_formula (`formula`)\cr
-#'   A `formula` object specifying the survival model, typically in the form `Surv(time, status) ~ arm + covariates`.
+#'   A `formula` object specifying the survival model,
+#'   typically in the form `Surv(time, status) ~ arm + covariates`.
 #' @param data (`data.frame`)\cr
-#'   A `data.frame` containing the survival data, including time, status, and the arm variable.
+#'   A `data.frame` containing the survival data,
+#'  including time, status, and the arm variable.
 #' @param arm (`character`)\cr
-#'   A single character string specifying the name of the column in `data` that contains the grouping/treatment
-#'   **arm variable**. This column **must be a factor** for correct stratification and comparison.
+#'   A single character string specifying the name of the column in `data`
+#'   that contains the grouping/treatment
+#'   **arm variable**. This column **must be a factor**
+#'   for correct stratification and comparison.
 #' @param ref_group (`character` or `NULL`)\cr
-#'   A single character string specifying the level of the `arm` variable to be used as the **reference group** for
-#'   all pairwise comparisons. If `NULL` (the default), the **first unique level** of the `arm` column is automatically
+#'   A single character string specifying the level of the `arm` variable
+#'   to be used as the **reference group** for
+#'   all pairwise comparisons. If `NULL` (the default),
+#'   the **first unique level** of the `arm` column is automatically
 #'   selected as the reference group.
 #'
-#' @return A `data.frame` with the results of the pairwise comparisons. The columns include:
+#' @return A `data.frame` with the results of the pairwise comparisons.
+#' The columns include:
 #' \itemize{
-#'   \item `arm`: (rownames of the `data.frame`) The comparison arm (group) being tested against the reference group.
-#'   \item `hr`: The Hazard Ratio (HR) for the comparison arm vs. the reference arm, formatted to two decimal places.
-#'   \item `ci`: The 95% confidence interval for the HR, presented as a string in the format "(lower, upper)", with
-#'     values formatted to two decimal places.
+#'   \item `arm`: (rownames of the `data.frame`) The comparison arm (group)
+#'   being tested against the reference group.
+#'   \item `hr`: The Hazard Ratio (HR) for the comparison arm vs.
+#'   the reference arm, formatted to two decimal places.
+#'   \item `ci`: The 95% confidence interval for the HR, presented as
+#'   a string in the format "(lower, upper)", with values formatted
+#'   to two decimal places.
 #'   \item `pval`: The log-rank p-value for the comparison.
 #' }
 #'
-#' @details The function iterates through each unique arm (excluding the reference group). For each iteration, it
-#'   filters the data to include only the current comparison arm and the reference arm, and then:
+#' @details The function iterates through each unique arm
+#'   (excluding the reference group). For each iteration, it filters the data
+#'   to include only the current comparison arm and the reference arm, and then:
 #'   \itemize{
 #'     \item Fits a Cox model using `survival::coxph`.
 #'     \item Performs a log-rank test using `survival::survdiff`.
 #'   }
-#'   The Hazard Ratio and its 95% confidence interval are extracted from the Cox model summary, and the p-value is
-#'   extracted from the log-rank test.
+#'   The Hazard Ratio and its 95% confidence interval are extracted from the
+#'   Cox model summary, and the p-value is extracted from the log-rank test.
 #'
-#' @seealso `annotate_gg_km()`, `gg_km()`, and the `survival` package functions `survival::coxph` and
-#'   `survival::survdiff`.
+#' @seealso `annotate_gg_km()`, `gg_km()`, and the `survival`
+#'   package functions `survival::coxph` and `survival::survdiff`.
 #'
 #' @examples
-#' # Example data setup (assuming 'time' is event time, 'status' is event indicator (1=event),
-#' # and 'arm' is the treatment group)
+#' # Example data setup (assuming 'time' is event time, 'status'
+#' # is event indicator (1=event), and 'arm' is the treatment group)
 #' library(dplyr) # For better data handling
 #'
 #' # Prepare data in a modern dplyr-friendly way
@@ -90,7 +102,10 @@ get_cox_pairwise_df <- function(model_formula, data, arm, ref_group = NULL) {
     subset_arm <- c(ref_group, current_arm)
     if (length(subset_arm) != 2) {
       cli::cli_abort(
-        "{.arg subset_arm} must contain exactly 2 arms/groups (current length is {length(subset_arm)}).",
+        paste0(
+          "{.arg subset_arm} must contain exactly 2 arms/groups ",
+          "(current length is {length(subset_arm)})."
+        ),
         call = get_cli_abort_call()
       )
     }
@@ -99,14 +114,18 @@ get_cox_pairwise_df <- function(model_formula, data, arm, ref_group = NULL) {
       coxph_ans <- coxph(formula = model_formula, data = comp_df) |> summary()
     )
     orginal_survdiff <- survdiff(formula = model_formula, data = comp_df)
-    log_rank_pvalue <- 1 - stats::pchisq(orginal_survdiff$chisq, length(orginal_survdiff$n) - 1)
+    log_rank_pvalue <- 1 - stats::pchisq(
+      orginal_survdiff$chisq,
+      length(orginal_survdiff$n) - 1
+    )
+    conf_int_row <- paste0(arm, current_arm)
     current_row <- data.frame(
-      hr = sprintf("%.2f", coxph_ans$conf.int[1, 1]),
+      hr = sprintf("%.2f", coxph_ans$conf.int[conf_int_row, 1]),
       ci = paste0(
         "(",
-        sprintf("%.2f", coxph_ans$conf.int[1, 3]),
+        sprintf("%.2f", coxph_ans$conf.int[conf_int_row, 3]),
         ", ",
-        sprintf("%.2f", coxph_ans$conf.int[1, 4]),
+        sprintf("%.2f", coxph_ans$conf.int[conf_int_row, 4]),
         ")"
       ),
       pval = log_rank_pvalue

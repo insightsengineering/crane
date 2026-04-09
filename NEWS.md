@@ -1,4 +1,4 @@
-# crane 0.3.1.9018
+# crane 0.3.1.9020
 
 ## New Functions and Functionality
 
@@ -17,7 +17,11 @@
 
 * Refactored the underlying `data.frame` alignment and rendering methodology used for plot annotations. Functions for table annotation now use a completely rebuilt engine that ensures X-axis synchronization for stacked tables (`annotate_riskdf()`) and flexible, reliable placement for floating tables (`annotate_surv_med()`, `annotate_coxph()`). (#189)
 
+* Refactored functions for lineplot plotting - added `gg_lineplot()` and `annotate_gg()` to create lineplots and annotate summary statistics table. (#184)
+
 * Added functions `reverse_ci()`, `reverse_rate_difference()` to reverse confidence intervals and rate differences in tables from `add_row_difference()`. (#204)
+
+* `g_lineplot()`, `g_lineplot_table()`, and `preprocess_lineplot_data()` were deprecated. (#184)
 
 ### Other Updates
 
@@ -35,6 +39,7 @@
 
 * Fixed a bug in `gg_pkc_lineplot()` causing misplaced error bars on a log scale. (#199)
 
+* Adjusted `gg_pkc_lineplot()` to use `tbl_roche_summary()` for automatic decimals formatting.
 # crane 0.3.1
 
 ## New Functions and Functionality

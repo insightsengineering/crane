@@ -3,9 +3,18 @@
 \name{deprecated}
 \alias{deprecated}
 \alias{tbl_demographics}
+\alias{g_lineplot}
+\alias{g_lineplot_table}
+\alias{preprocess_lineplot_data}
 \title{Deprecated functions}
 \usage{
 tbl_demographics(..., nonmissing = "always")
+
+g_lineplot(...)
+
+g_lineplot_table(...)
+
+preprocess_lineplot_data(...)
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}\cr

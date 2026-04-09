@@ -2,16 +2,19 @@
 #'
 #' @description Generates a text table from a dataframe, perfectly aligns its
 #'   X-axis to match a provided ggplot, and seamlessly stacks them vertically.
-#'   Tailored specifically for Kaplan-Meier ("KM") or Pharmacokinetic ("PK")
-#'   table structures.
+#'   Allow annotation of general "GEN" plots and more specific plots such as
+#'   Pharmacokinetic ("PK") or Kaplan-Meier ("KM").
+#'   Supports both continuous and discrete X-axes.
 #'
 #' @param df (`data.frame`)\cr
 #'   The summary table to render.
 #' @param gg_plt (`ggplot2`)\cr
 #'   The main plot to align to and stack on top of.
 #' @param type (`character`)\cr
-#'   The type of plot/table. Either `"KM"` (uses rownames for Y-axis) or `"PK"`
-#'   (uses the first column for Y-axis).
+#'   The type of plot/table.
+#'   Can be `"GEN"`, `"PK"` (use the first column for Y-axis), or
+#'   `"KM"` (uses rownames for Y-axis).
+#'   Default is `"GEN"`.
 #' @param y_labels (`character` or `expression`)\cr
 #'   Formatted labels override.
 #' @param title (`character` or `NULL`)\cr
@@ -29,7 +32,6 @@
 #'
 #' @examples
 #' \dontrun{
-#'
 #' # 1. Create a base plot with a continuous X-axis
 #' p_base <- ggplot(mtcars, aes(x = mpg, y = disp)) +
 #'   geom_point() +
@@ -57,7 +59,7 @@
 #' @keywords internal
 df2gg_aligned <- function(df,
                           gg_plt,
-                          type = c("KM", "PK"),
+                          type = c("GEN", "PK", "KM"),
                           y_labels = NULL,
                           title = NULL,
                           xlab = NULL,
@@ -78,13 +80,13 @@ df2gg_aligned <- function(df,
 
   # 2. Extract Y-axis labels and isolate X-columns based on `type`--------------
   if (type == "KM") {
-    # KM Tables use rownames for their Y-axis labels
     raw_y_labels <- rownames(df)
     df_x <- df
-  } else if (type == "PK") {
-    # PK Tables use the very first column for their Y-axis labels
+  } else if (type %in% c("PK", "GEN")) {
     if (ncol(df) < 2) {
-      rlang::abort("PK tables must have at least 2 columns (labels + data).")
+      rlang::abort(
+        "PK and GEN tables must have at least 2 columns (labels + data)."
+      )
     }
     y_col_name <- names(df)[1]
     raw_y_labels <- as.character(df[[y_col_name]])
@@ -93,35 +95,60 @@ df2gg_aligned <- function(df,
 
   final_y_labels <- if (!is.null(y_labels)) y_labels else raw_y_labels
 
-  # 3. Ensure remaining columns are numeric timepoints--------------------------
+  # 3. Extract Plot Mapping Details & Map X-Coordinates-------------------------
+  plot_build <- ggplot2::ggplot_build(gg_plt)
+  x_params <- plot_build$layout$panel_params[[1]]
+  x_range <- x_params$x.range
+  x_scale <- plot_build$layout$panel_scales_x[[1]]
+
   x_cols <- names(df_x)
   x_num <- suppressWarnings(as.numeric(x_cols))
 
-  if (any(is.na(x_num))) {
-    rlang::warn("Some columns cannot be coerced to numeric. Omitting them.")
-    x_cols <- x_cols[!is.na(x_num)]
-    df_x <- df_x[, x_cols, drop = FALSE]
+  if (isTRUE(x_scale$is_discrete())) {
+    # Discrete Axis Handling
+    x_limits <- x_scale$get_limits()
+
+    if (is.null(x_limits) || length(x_limits) == 0) {
+      rlang::abort("Cannot extract discrete limits from the plot for alignment.")
+    }
+
+    valid_cols <- intersect(x_cols, x_limits)
+    if (length(valid_cols) == 0) {
+      rlang::abort("None of the table columns match the categorical X-axis levels in the plot.")
+    }
+
+    col_x_map <- stats::setNames(match(valid_cols, x_limits), valid_cols)
+
+    x_breaks <- match(x_scale$get_breaks(), x_limits)
+    x_breaks <- x_breaks[!is.na(x_breaks)]
+  } else {
+    # Continuous Axis Handling
+    valid_cols <- x_cols[!is.na(x_num)]
+    if (length(valid_cols) == 0) {
+      rlang::abort("None of the table columns could be coerced to numeric coordinates.")
+    }
+
+    col_x_map <- stats::setNames(as.numeric(valid_cols), valid_cols)
+
+    x_breaks <- x_params$x$breaks
+    x_breaks <- x_breaks[!is.na(x_breaks)]
   }
+
+  df_x <- df_x[, valid_cols, drop = FALSE]
 
   # 4. Pivot data to long format------------------------------------------------
   df_long <- df_x |>
     dplyr::mutate(row_id = dplyr::row_number()) |>
     tidyr::pivot_longer(
-      cols = dplyr::all_of(x_cols),
+      cols = dplyr::all_of(valid_cols),
       names_to = "x_chr",
       values_to = "value"
     ) |>
-    dplyr::mutate(x = as.numeric(.data$x_chr))
+    dplyr::mutate(x = col_x_map[.data$x_chr])
 
   df_long$value[is.na(df_long$value)] <- ""
 
-  # 5. Extract Limits & Breaks safely from the built plot-----------------------
-  plot_build <- ggplot2::ggplot_build(gg_plt)
-  x_range <- plot_build$layout$panel_params[[1]]$x.range
-  x_breaks <- plot_build$layout$panel_params[[1]]$x$breaks
-  x_breaks <- x_breaks[!is.na(x_breaks)]
-
-  # 6. Build the aligned table--------------------------------------------------
+  # 5. Build the aligned table--------------------------------------------------
   p_tbl <- ggplot2::ggplot(
     df_long,
     ggplot2::aes(x = .data$x, y = .data$row_id, label = .data$value)
@@ -162,7 +189,7 @@ df2gg_aligned <- function(df,
       )
     )
 
-  # 7. Apply specific formatting based on show_xaxis----------------------------
+  # 6. Apply specific formatting based on show_xaxis----------------------------
   if (show_xaxis) {
     p_tbl <- p_tbl + ggplot2::theme(
       axis.text.x = ggplot2::element_text(
@@ -182,7 +209,7 @@ df2gg_aligned <- function(df,
     )
   }
 
-  # 8. Combine using cowplot----------------------------------------------------
+  # 7. Combine using cowplot----------------------------------------------------
   table_height <- 1 - rel_height_plot
 
   combined_plot <- cowplot::plot_grid(
@@ -397,4 +424,130 @@ gg_varname_extraction <- function(mapping_quo) {
     return(rlang::eval_bare(expr[[3]]))
   }
   return(NULL)
+}
+
+#' Calculate Error Bar Statistics
+#'
+#' @description
+#' Computes central tendency and dispersion metrics for a given numeric vector.
+#' This serves as the computational engine for `gg_add_error_bars`.
+#'
+#' @param x (`numeric`)\cr
+#'   The numeric vector to summarize.
+#' @param stat (`string`)\cr
+#'   Primary statistic to calculate (`"mean"` or `"median"`).
+#' @param variability (`string`)\cr
+#'   Measure of variability (`"sd"`, `"se"`, `"ci"`, `"iqr"`, or `"none"`).
+#' @param conf_level (`numeric`)\cr
+#'   Confidence level for `"ci"` (default `0.95`).
+#'
+#' @return A `data.frame` with columns `y`, `ymin`, and `ymax`.
+#'
+#' @examples
+#' \dontrun{
+#' # Calculate the mean and 95% Confidence Interval for a numeric vector
+#' mpg_data <- mtcars$mpg
+#' mean_ci_stats <- calc_error_bars(
+#'   x = mpg_data,
+#'   stat = "mean",
+#'   variability = "ci",
+#'   conf_level = 0.95
+#' )
+#' }
+#'
+#' @keywords internal
+.calc_stats <- function(x, stat, variability, conf_level) {
+  x <- stats::na.omit(x)
+  n <- length(x)
+
+  # Return NAs to prevent ggplot2 from drawing artifact geometries
+  # on empty subsets, ensuring accurate visual representation
+  if (n == 0) {
+    return(data.frame(y = NA_real_, ymin = NA_real_, ymax = NA_real_))
+  }
+
+  if (stat == "median") {
+    y_val <- stats::median(x)
+
+    if (variability == "iqr") {
+      ymin_val <- stats::quantile(x, 0.25)
+      ymax_val <- stats::quantile(x, 0.75)
+    } else {
+      ymin_val <- y_val
+      ymax_val <- y_val
+    }
+  } else if (stat == "mean") {
+    y_val <- mean(x)
+    se <- stats::sd(x) / sqrt(n)
+
+    # Determine the error margin dynamically to support
+    # multiple standard statistical dispersion metrics
+    err <- switch(variability,
+      "sd" = stats::sd(x),
+      "se" = se,
+      "ci" = stats::qt((1 + conf_level) / 2, df = max(1, n - 1)) * se,
+      "none" = 0,
+      0
+    )
+
+    ymin_val <- y_val - err
+    ymax_val <- y_val + err
+  }
+
+  data.frame(y = y_val, ymin = ymin_val, ymax = ymax_val)
+}
+
+#' Add Error Bars to a ggplot2 Object
+#'
+#' @description
+#' Enhances an existing `ggplot2` object by adding a `stat_summary` layer
+#' that displays a central tendency (mean or median) alongside a specified
+#' measure of dispersion.
+#'
+#' @param gg_plt (`ggplot`)\cr
+#'   The base `ggplot2` object to modify.
+#' @param stat (`string`)\cr
+#'   Primary statistic to calculate (`"mean"` or `"median"`).
+#' @param variability (`string`)\cr
+#'   Measure of variability (`"sd"`, `"se"`, `"ci"`, `"iqr"`, or `"none"`).
+#' @param conf_level (`numeric`)\cr
+#'   Confidence level for `"ci"` (default `0.95`).
+#'
+#' @return A modified `ggplot2` object with an added error bar layer.
+#'
+#' @examples
+#' \dontrun{
+#' # Create a base plot with realistic data
+#' p <- ggplot(mtcars, aes(x = factor(cyl), y = mpg)) +
+#'   geom_point(alpha = 0.5)
+#'
+#' # Add mean and 95% CI error bars
+#' gg_add_stats(
+#'   gg_plt = p,
+#'   stat = "mean",
+#'   variability = "ci"
+#' )
+#' }
+#'
+#' @keywords internal
+gg_add_stats <- function(gg_plt,
+                         stat = c("mean", "median"),
+                         variability = c("sd", "se", "ci", "iqr", "none"),
+                         conf_level = 0.95) {
+  stat <- match.arg(stat)
+  variability <- match.arg(variability)
+
+  # Delegate to a standalone helper function via fun.data and fun.args
+  # to keep the code flat and allow the helper to be independently unit-testable
+  gg_plt + ggplot2::stat_summary(
+    fun.data = .calc_stats,
+    fun.args = list(
+      stat = stat,
+      variability = variability,
+      conf_level = conf_level
+    ),
+    geom = "errorbar",
+    width = 0.45,
+    na.rm = TRUE
+  )
 }
