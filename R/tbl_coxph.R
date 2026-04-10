@@ -1,4 +1,4 @@
-#' @title Pairwise Cox Proportional Hazards Table
+#' Pairwise Cox Proportional Hazards Table
 #'
 #' @description
 #' Computes pairwise Cox proportional hazards tests and returns a `gtsummary`
@@ -6,20 +6,29 @@
 #' p-value, Hazard Ratio, and 95% Confidence Interval in a stacked layout where
 #' statistics form the rows of the table.
 #'
-#' @param data (`data.frame`)\cr
-#'   The dataset containing the variables for the survival model.
 #' @param model_formula (`formula`)\cr
-#'   A survival formula, e.g., `survival::Surv(time, status) ~ arm`.
+#'   A `formula` object specifying the survival model,
+#'   typically in the form `Surv(time, status) ~ arm + covariates`.
+#' @param data (`data.frame`)\cr
+#'   A `data.frame` containing the survival data,
+#'   including time, status, and the arm variable.
 #' @param arm (`character`)\cr
-#'   The name of the treatment arm variable (must be a factor).
-#' @param ref_group (`character`)\cr
-#'   The reference group level for the treatment arm. Defaults to the first
-#'   factor level of the `arm` variable.
+#'   A single character string specifying the name of the column in `data`
+#'   that contains the grouping/treatment
+#'   **arm variable**. This column **must be a factor**
+#'   for correct stratification and comparison.
+#' @param ref_group (`character` or `NULL`)\cr
+#'   A single character string specifying the level of the `arm` variable
+#'   to be used as the **reference group** for
+#'   all pairwise comparisons. If `NULL` (the default),
+#'   the **first unique level** of the `arm` column is automatically
+#'   selected as the reference group.
 #'
 #' @return A `gtsummary` object summarizing the pairwise Cox PH results.
 #'
-#' @examples
+#' @examplesIf requireNamespace("survival", quietly = TRUE)
 #' # Setup sample survival data with 3 arms to test pairwise comparisons
+#' library(survival)
 #' surv_data <- survival::lung |>
 #'   dplyr::mutate(
 #'     arm = factor(sample(c("A", "B", "C"), dplyr::n(), replace = TRUE)),
@@ -37,15 +46,16 @@
 #'
 #' # Setup sample survival data with 2 arms to test if table drops comparison
 #' # column
-#' surv_data <- survival::lung |>
+#' surv_data_2arm <- survival::lung |>
 #'   dplyr::mutate(
 #'     arm = factor(sample(c("A", "B"), dplyr::n(), replace = TRUE)),
 #'     status = status - 1
 #'   ) |>
 #'   dplyr::filter(dplyr::if_all(dplyr::everything(), ~ !is.na(.)))
-#' # Generate the gtsummary table
+#'
+#' # Generate the 2-arm gtsummary table
 #' tbl_coxph(
-#'   data = surv_data,
+#'   data = surv_data_2arm,
 #'   model_formula = survival::Surv(time, status) ~ arm,
 #'   arm = "arm",
 #'   ref_group = "A"
@@ -53,49 +63,68 @@
 #'
 #' @export
 tbl_coxph <- function(data, model_formula, arm, ref_group = NULL) {
-  if (!is.data.frame(data)) {
-    cli::cli_abort("{.arg data} must be a data.frame.")
-  }
-  if (!inherits(model_formula, "formula")) {
-    cli::cli_abort("{.arg model_formula} must be a formula.")
-  }
+  # Do checks of input arguments -----------------------------------------------
+  set_cli_abort_call()
+
+  check_not_missing(data)
+  check_not_missing(model_formula)
+  check_not_missing(arm)
+
+  check_data_frame(data)
+  check_class(model_formula, "formula")
+
   if (!is.factor(data[[arm]])) {
-    cli::cli_abort("{.arg arm} column must be a factor.")
+    data[[arm]] <- as.factor(data[[arm]])
   }
 
-  # Establish reference level for clear header labelling
-  ref_level <- ref_group
-  if (is.null(ref_level)) {
-    ref_level <- levels(data[[arm]])[1]
+  check_factor_has_levels(data)
+  # Fit model ------------------------------------------------------------------
+
+  # set reference
+  if (!is.null(ref_group)) {
+    data[[arm]] <- stats::relevel(data[[arm]], ref = ref_group)
   }
 
-  # Delegate computation to the backend calculation engine
-  df_res <- get_cox_pairwise_df(
-    model_formula = model_formula,
-    data = data,
-    arm = arm,
-    ref_group = ref_group
-  )
+  ref_level <- levels(data[[arm]])[1]
+  non_ref_levels <- levels(data[[arm]])[-1]
 
-  # Reshape data dynamically so that `tbl_custom_summary` can evaluate it.
-  df_tidy <- df_res |>
-    tibble::as_tibble(rownames = "comparison_arm") |>
+  # Fit the Cox Proportional Hazards model
+  fit <- survival::coxph(model_formula, data = data)
+  fit_summary <- summary(fit)
+
+  # Extract coefficients mapping to the pairwise arm comparisons.
+  # coxph appends the factor level to the variable name (e.g. "armB", "armC")
+  arm_terms <- paste0(arm, non_ref_levels)
+  idx <- match(arm_terms, rownames(fit_summary$coefficients))
+
+  # Safely handle any dropped factor levels (e.g., zero variance/missing data)
+  valid_mask <- !is.na(idx)
+  valid_idx <- idx[valid_mask]
+  valid_non_ref <- non_ref_levels[valid_mask]
+
+  # Extract and format the raw statistics into the tidy structure
+  df_tidy <- tibble::tibble(
+    comparison_arm = valid_non_ref,
+    comparison_label = sprintf("%s vs %s", comparison_arm, ref_level),
+    p_num = as.numeric(fit_summary$coefficients[valid_idx, "Pr(>|z|)"]),
+    HR = as.numeric(fit_summary$conf.int[valid_idx, "exp(coef)"]),
+    ci_lower = as.numeric(fit_summary$conf.int[valid_idx, "lower .95"]),
+    ci_upper = as.numeric(fit_summary$conf.int[valid_idx, "upper .95"])
+  ) |>
     dplyr::mutate(
-      comparison_label = sprintf("%s vs %s", comparison_arm, ref_level),
-      p_num = as.numeric(`p-value (log-rank)`),
       pval_formatted = dplyr::case_when(
         is.na(p_num) ~ NA_character_,
         p_num < 0.0001 ~ "<0.0001",
         TRUE ~ sprintf("%.4f", p_num)
       ),
-      hr_formatted = gtsummary::style_ratio(as.numeric(`HR`), digits = 2),
-      ci_formatted = as.character(`95% CI`)
-    ) |>
-    dplyr::mutate(
+      hr_formatted = gtsummary::style_ratio(as.numeric(HR), digits = 2),
       ci_formatted = dplyr::case_when(
-        is.na(ci_formatted) ~ "",
-        grepl("^\\(", ci_formatted) ~ ci_formatted,
-        TRUE ~ sprintf("(%s)", ci_formatted)
+        is.na(ci_lower) | is.na(ci_upper) ~ "",
+        TRUE ~ sprintf(
+          "(%s, %s)",
+          gtsummary::style_ratio(as.numeric(ci_lower), digits = 2),
+          gtsummary::style_ratio(as.numeric(ci_upper), digits = 2)
+        )
       )
     )
 
@@ -125,7 +154,7 @@ tbl_coxph <- function(data, model_formula, arm, ref_group = NULL) {
   res
 }
 
-#' @title Build Single Comparison Table for Cox PH
+#' Build Single Comparison Table for Cox PH
 #'
 #' @description
 #' Internal helper function to build a formatted `gtsummary` table for a single

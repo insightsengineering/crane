@@ -8,17 +8,25 @@ tbl_coxph(data, model_formula, arm, ref_group = NULL)
 }
 \arguments{
 \item{data}{(\code{data.frame})\cr
-The dataset containing the variables for the survival model.}
+A \code{data.frame} containing the survival data,
+including time, status, and the arm variable.}
 
 \item{model_formula}{(\code{formula})\cr
-A survival formula, e.g., \code{survival::Surv(time, status) ~ arm}.}
+A \code{formula} object specifying the survival model,
+typically in the form \code{Surv(time, status) ~ arm + covariates}.}
 
 \item{arm}{(\code{character})\cr
-The name of the treatment arm variable (must be a factor).}
+A single character string specifying the name of the column in \code{data}
+that contains the grouping/treatment
+\strong{arm variable}. This column \strong{must be a factor}
+for correct stratification and comparison.}
 
-\item{ref_group}{(\code{character})\cr
-The reference group level for the treatment arm. Defaults to the first
-factor level of the \code{arm} variable.}
+\item{ref_group}{(\code{character} or \code{NULL})\cr
+A single character string specifying the level of the \code{arm} variable
+to be used as the \strong{reference group} for
+all pairwise comparisons. If \code{NULL} (the default),
+the \strong{first unique level} of the \code{arm} column is automatically
+selected as the reference group.}
 }
 \value{
 A \code{gtsummary} object summarizing the pairwise Cox PH results.
@@ -30,7 +38,9 @@ p-value, Hazard Ratio, and 95\% Confidence Interval in a stacked layout where
 statistics form the rows of the table.
 }
 \examples{
+\dontshow{if (requireNamespace("survival", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 # Setup sample survival data with 3 arms to test pairwise comparisons
+library(survival)
 surv_data <- survival::lung |>
   dplyr::mutate(
     arm = factor(sample(c("A", "B", "C"), dplyr::n(), replace = TRUE)),
@@ -48,18 +58,19 @@ tbl_coxph(
 
 # Setup sample survival data with 2 arms to test if table drops comparison
 # column
-surv_data <- survival::lung |>
+surv_data_2arm <- survival::lung |>
   dplyr::mutate(
     arm = factor(sample(c("A", "B"), dplyr::n(), replace = TRUE)),
     status = status - 1
   ) |>
   dplyr::filter(dplyr::if_all(dplyr::everything(), ~ !is.na(.)))
-# Generate the gtsummary table
+
+# Generate the 2-arm gtsummary table
 tbl_coxph(
-  data = surv_data,
+  data = surv_data_2arm,
   model_formula = survival::Surv(time, status) ~ arm,
   arm = "arm",
   ref_group = "A"
 )
-
+\dontshow{\}) # examplesIf}
 }

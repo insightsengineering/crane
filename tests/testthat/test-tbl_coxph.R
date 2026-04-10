@@ -1,4 +1,5 @@
 # Setup shared test data -------------------------------------------------------
+suppressPackageStartupMessages(library(survival))
 
 set.seed(42)
 surv_data_2arm <- survival::lung |>
@@ -15,30 +16,39 @@ surv_data_3arm <- survival::lung |>
   ) |>
   dplyr::filter(dplyr::if_all(dplyr::everything(), ~ !is.na(.)))
 
-# Tests: Input Validation ------------------------------------------------------
+
+# Tests: Input Validation & Coercion -------------------------------------------
 test_that("tbl_coxph() errors on invalid inputs", {
   form <- survival::Surv(time, status) ~ arm
 
   # data must be a data.frame
   expect_error(
-    tbl_coxph(data = "not_a_df", model_formula = form, arm = "arm"),
-    "must be a data.frame"
+    tbl_coxph(data = "not_a_df", model_formula = form, arm = "arm")
   )
 
   # model_formula must be a formula
   expect_error(
-    tbl_coxph(data = surv_data_2arm, model_formula = "time ~ arm", arm = "arm"),
-    "must be a formula"
-  )
-
-  # arm column must be a factor
-  bad_data <- surv_data_2arm
-  bad_data$arm <- as.character(bad_data$arm)
-  expect_error(
-    tbl_coxph(data = bad_data, model_formula = form, arm = "arm"),
-    "column must be a factor"
+    tbl_coxph(data = surv_data_2arm, model_formula = "time ~ arm", arm = "arm")
   )
 })
+
+test_that("tbl_coxph() converts character arm to factor natively", {
+  form <- survival::Surv(time, status) ~ arm
+
+  char_data <- surv_data_2arm
+  char_data$arm <- as.character(char_data$arm)
+
+  # The function should auto-coerce to factor and succeed without error
+  expect_no_error(
+    res <- tbl_coxph(
+      data = char_data,
+      model_formula = form,
+      arm = "arm"
+    )
+  )
+  expect_s3_class(res, "tbl_coxph")
+})
+
 
 # Tests: 2-Arm Configuration (Single Comparison) -------------------------------
 test_that("tbl_coxph() works with 2 arms and uses default ref_group", {
@@ -58,7 +68,10 @@ test_that("tbl_coxph() works with 2 arms and uses default ref_group", {
   # applied in the internal `.get_single_comp_table()` helper
   tb <- res$table_body
   expect_true(all(c("p-value (log-rank)", "Hazard Ratio", "95% CI") %in% tb$label))
+  # check if groupname_col is not present
+  expect_false("groupname_col" %in% colnames(tb))
 })
+
 
 # Tests: 3-Arm Configuration (Stacked Strata) ----------------------------------
 test_that("tbl_coxph() works with >2 arms (uses tbl_strata)", {
@@ -74,62 +87,34 @@ test_that("tbl_coxph() works with >2 arms (uses tbl_strata)", {
   expect_s3_class(res, "tbl_coxph")
   # When >1 comparison, gtsummary natively wraps it in tbl_strata
   expect_s3_class(res, "tbl_strata")
+
+  tb <- res$table_body
+  expect_true("B vs A" %in% tb$groupname_col)
+  expect_true("C vs A" %in% tb$groupname_col)
 })
 
-# Tests: Formatting Edge Cases (100% Coverage via Mocking) ---------------------
-test_that("tbl_coxph() correctly formats extreme p-values, NAs, and CIs", {
-  # We mock `get_cox_pairwise_df` to force specific data states that trigger
-  # the edge-case branches in our custom dplyr::case_when() formatters.
-  mock_backend <- function(...) {
-    data.frame(
-      `HR` = c(1.5, NA, 2.0),
-      `95% CI` = c("(1.0, 2.0)", NA, "1.5, 2.5"), # Note the missing parentheses on row 3
-      `p-value (log-rank)` = c(0.00005, NA, 0.05),
-      row.names = c("B", "C", "D"),
-      check.names = FALSE
+
+# Tests: Formatting Edge Cases (Extreme P-values) ------------------------------
+test_that("tbl_coxph() correctly formats extreme p-values (<0.0001)", {
+  # To safely test the `<0.0001` formatter we artificially inflate
+  # the sample size of an overlapping dataset.
+  lung_huge <- survival::lung[rep(1:nrow(survival::lung), 10), ]
+  lung_huge$arm <- factor(ifelse(lung_huge$sex == 1, "A", "B"))
+
+  res <- suppressWarnings(
+    tbl_coxph(
+      data = lung_huge,
+      model_formula = survival::Surv(time, status) ~ arm,
+      arm = "arm",
+      ref_group = "A"
     )
-  }
-
-  form <- survival::Surv(time, status) ~ arm
-
-  # Create a dummy 4-arm dataset to match the mocked comparisons (A vs B, C, D)
-  dummy_4arm <- surv_data_2arm
-  dummy_4arm$arm <- factor(
-    sample(c("A", "B", "C", "D"), nrow(dummy_4arm), replace = TRUE)
   )
 
-  # Intercept the backend call and inject our edge-case data
-  testthat::with_mocked_bindings(
-    get_cox_pairwise_df = mock_backend,
-    code = {
-      res <- tbl_coxph(
-        data = dummy_4arm,
-        model_formula = form,
-        arm = "arm",
-        ref_group = "A"
-      )
+  tb <- res$table_body
 
-      # Extract the internal tbl_stack to verify formatted values
-      tb <- res$table_body
+  # Isolate the exact comparison block and label to ensure strict matching
+  pval_block <- tb |> dplyr::filter(variable == "pval_formatted")
+  extreme_pval <- pval_block$stat_0[pval_block$label == "p-value (log-rank)"]
 
-      # Test 1: p < 0.0001 formatter
-      # Isolate the exact comparison block and label to ensure strict matching
-      pval_block <- tb |> dplyr::filter(groupname_col == "B vs A")
-      extreme_pval <- pval_block$stat_0[pval_block$label == "p-value (log-rank)"]
-      expect_equal(extreme_pval, "<0.0001")
-
-      # Test 2: NA handlers for P-value and CI
-      # NA values should be converted to NA_character_ and "" respectively,
-      # which gtsummary renders as empty strings or skips appropriately.
-      na_block <- tb |> dplyr::filter(groupname_col == "C vs A")
-      ci_na_val <- na_block$stat_0[na_block$label == "95% CI"]
-      expect_equal(ci_na_val, "")
-
-      # Test 3: Missing parentheses formatter
-      # The raw mocked CI "1.5, 2.5" should have been wrapped in ()
-      parens_block <- tb |> dplyr::filter(groupname_col == "D vs A")
-      ci_parens_val <- parens_block$stat_0[parens_block$label == "95% CI"]
-      expect_equal(ci_parens_val, "(1.5, 2.5)")
-    }
-  )
+  expect_equal(extreme_pval, "<0.0001")
 })
