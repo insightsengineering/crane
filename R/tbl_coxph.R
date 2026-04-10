@@ -138,7 +138,7 @@ tbl_coxph <- function(data, model_formula, arm, ref_group = NULL) {
     # the default "Group" column header injected by tbl_stack.
     res <- df_tidy |>
       gtsummary::tbl_strata(
-        strata = comparison_label,
+        strata = "comparison_label",
         .combine_with = "tbl_stack",
         .header = "{strata}",
         .tbl_fun = ~ .get_single_comp_table(.x)
