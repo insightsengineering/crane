@@ -78,6 +78,7 @@ tbl_coxph <- function(data, model_formula, arm, ref_group = NULL) {
   }
 
   check_factor_has_levels(data)
+
   # Fit model ------------------------------------------------------------------
 
   # set reference
@@ -105,7 +106,7 @@ tbl_coxph <- function(data, model_formula, arm, ref_group = NULL) {
   # Extract and format the raw statistics into the tidy structure
   df_tidy <- tibble::tibble(
     comparison_arm = valid_non_ref,
-    comparison_label = sprintf("%s vs %s", comparison_arm, ref_level),
+    comparison_label = sprintf("%s vs %s", valid_non_ref, ref_level),
     p_num = as.numeric(fit_summary$coefficients[valid_idx, "Pr(>|z|)"]),
     HR = as.numeric(fit_summary$conf.int[valid_idx, "exp(coef)"]),
     ci_lower = as.numeric(fit_summary$conf.int[valid_idx, "lower .95"]),
@@ -113,17 +114,17 @@ tbl_coxph <- function(data, model_formula, arm, ref_group = NULL) {
   ) |>
     dplyr::mutate(
       pval_formatted = dplyr::case_when(
-        is.na(p_num) ~ NA_character_,
-        p_num < 0.0001 ~ "<0.0001",
-        TRUE ~ sprintf("%.4f", p_num)
+        is.na(.data$p_num) ~ NA_character_,
+        .data$p_num < 0.0001 ~ "<0.0001",
+        TRUE ~ sprintf("%.4f", .data$p_num)
       ),
-      hr_formatted = gtsummary::style_ratio(as.numeric(HR), digits = 2),
+      hr_formatted = gtsummary::style_ratio(as.numeric(.data$HR), digits = 2),
       ci_formatted = dplyr::case_when(
-        is.na(ci_lower) | is.na(ci_upper) ~ "",
+        is.na(.data$ci_lower) | is.na(.data$ci_upper) ~ "",
         TRUE ~ sprintf(
           "(%s, %s)",
-          gtsummary::style_ratio(as.numeric(ci_lower), digits = 2),
-          gtsummary::style_ratio(as.numeric(ci_upper), digits = 2)
+          gtsummary::style_ratio(as.numeric(.data$ci_lower), digits = 2),
+          gtsummary::style_ratio(as.numeric(.data$ci_upper), digits = 2)
         )
       )
     )
@@ -191,16 +192,16 @@ tbl_coxph <- function(data, model_formula, arm, ref_group = NULL) {
       ~ .x |>
         dplyr::mutate(
           label = dplyr::case_when(
-            variable == "pval_formatted" ~ "p-value (log-rank)",
-            variable == "hr_formatted" ~ "Hazard Ratio",
-            variable == "ci_formatted" ~ "95% CI",
-            TRUE ~ label
+            .data$variable == "pval_formatted" ~ "p-value (log-rank)",
+            .data$variable == "hr_formatted" ~ "Hazard Ratio",
+            .data$variable == "ci_formatted" ~ "95% CI",
+            TRUE ~ .data$label
           )
         )
     ) |>
     gtsummary::modify_indent(
       columns = "label",
-      rows = variable == "ci_formatted",
+      rows = .data$variable == "ci_formatted",
       indent = 4L
     ) |>
     gtsummary::modify_header(
