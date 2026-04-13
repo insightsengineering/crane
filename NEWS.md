@@ -23,6 +23,8 @@
 
 * `g_lineplot()`, `g_lineplot_table()`, and `preprocess_lineplot_data()` were deprecated. (#184)
 
+*  Added `tbl_coxph()` which computes the pairwise cox proportional hazards test and returns a gtsummary object (#159)
+
 ### Other Updates
 
 * Removed bold from headers when using `tbl_strata()` (#133).
