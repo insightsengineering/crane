@@ -1,4 +1,4 @@
-# crane 0.3.1.9020
+# crane 0.3.1.9021
 
 ## New Functions and Functionality
 
@@ -22,6 +22,8 @@
 * Added functions `reverse_ci()`, `reverse_rate_difference()` to reverse confidence intervals and rate differences in tables from `add_row_difference()`. (#204)
 
 * `g_lineplot()`, `g_lineplot_table()`, and `preprocess_lineplot_data()` were deprecated. (#184)
+
+*  Added `tbl_coxph()` which computes the pairwise cox proportional hazards test and returns a gtsummary object (#159)
 
 ### Other Updates
 
