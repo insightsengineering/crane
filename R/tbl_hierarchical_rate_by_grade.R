@@ -228,7 +228,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
     # remove grades not part of any grade groups - these will be duplicated in ard_grouped
     if (!is_empty(grade_groups) && !is_empty(setdiff(lvls, unlist(grade_groups)))) {
       ard_ungrouped <- ard_ungrouped |>
-        dplyr::filter(!unlist(.data[["variable_level"]]) %in% setdiff(lvls, unlist(grade_groups)))
+        dplyr::filter(!.data[["variable_level"]] %in% setdiff(lvls, unlist(grade_groups)))
     }
   }
 
