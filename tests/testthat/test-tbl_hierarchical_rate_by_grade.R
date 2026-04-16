@@ -263,6 +263,22 @@ test_that("tbl_hierarchical_rate_by_grade(grade_groups) works with some grades n
   )
 })
 
+test_that("tbl_hierarchical_rate_by_grade(grade_groups) works with some grades not in groups and missing grades", {
+  withr::local_options(width = 200)
+
+  expect_silent(
+    tbl <-
+      tbl_hierarchical_rate_by_grade(
+        ADAE_subset[!ADAE_subset$AETOXGR %in% c(3, 4), ],
+        variables = c(AEBODSYS, AEDECOD, AETOXGR),
+        denominator = ADSL,
+        by = TRTA,
+        label = label,
+        grade_groups = list("Grade 3-4" = c("3", "4"))
+      )
+  )
+})
+
 test_that("tbl_hierarchical_rate_by_grade(grades_exclude) works", {
   # no grades excluded
   tbl_no_excl <-
