@@ -27,6 +27,8 @@
 
 ### Other Updates
 
+* Changed the default `conf.type` from `"log"` to `"plain"` (linear) in `tbl_survfit_times()` and `tbl_survfit_quantiles()` to align with GDSR guidelines. (#173)
+
 * Removed bold from headers when using `tbl_strata()` (#133).
 
 * Unified border width in `theme_gtsummary_roche()` to 0.5 for header. (#154)

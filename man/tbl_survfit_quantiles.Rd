@@ -11,7 +11,7 @@ tbl_survfit_quantiles(
   by = NULL,
   header = "Time to event",
   estimate_fun = label_roche_number(digits = 1, na = "NE"),
-  method.args = list(conf.int = 0.95)
+  method.args = list(conf.int = 0.95, conf.type = "plain")
 )
 
 \method{add_overall}{tbl_survfit_quantiles}(
