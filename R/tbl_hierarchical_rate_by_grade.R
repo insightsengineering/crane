@@ -228,7 +228,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
     # remove grades not part of any grade groups - these will be duplicated in ard_grouped
     if (!is_empty(grade_groups) && !is_empty(setdiff(lvls, unlist(grade_groups)))) {
       ard_ungrouped <- ard_ungrouped |>
-        dplyr::filter(!.data[["variable_level"]] %in% setdiff(lvls, unlist(grade_groups)))
+        dplyr::filter(!unlist(.data[["variable_level"]]) %in% setdiff(lvls, unlist(grade_groups)))
     }
   }
 
@@ -453,8 +453,9 @@ tbl_hierarchical_rate_by_grade <- function(data,
   grade <- dplyr::last(variables)
 
   if (!is_empty(grade_groups)) {
+    keep_grade <- vapply(grade_groups, function(x){any(x %in% levels(data[[grade]]))}, TRUE)
     # if any grade groups present, replace grades with their grade groups
-    data[[grade]] <- do.call(fct_collapse, args = c(list(f = data[[grade]]), grade_groups))
+    data[[grade]] <- do.call(fct_collapse, args = c(list(f = data[[grade]]), grade_groups[keep_grade]))
   }
 
   # move grade variable to `by` to get rates by highest grade
