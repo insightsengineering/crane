@@ -1,4 +1,4 @@
-# crane 0.3.1.9021
+# crane 0.3.1.9022
 
 ## New Functions and Functionality
 
@@ -26,6 +26,8 @@
 *  Added `tbl_coxph()` which computes the pairwise cox proportional hazards test and returns a gtsummary object (#159)
 
 ### Other Updates
+
+* Changed the default `conf.type` from `"log"` to `"plain"` (linear) in `tbl_survfit_times()` and `tbl_survfit_quantiles()` to align with GDSR guidelines. (#173)
 
 * Removed bold from headers when using `tbl_strata()` (#133).
 

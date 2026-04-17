@@ -52,7 +52,7 @@ tbl_survfit_times <- function(data,
                               label = "Time {time}",
                               statistic = c("{n.risk}", "{estimate}", "({conf.low}, {conf.high})"),
                               estimate_fun = label_roche_number(digits = 1, scale = 100),
-                              method.args = list(conf.int = 0.95)) {
+                              method.args = list(conf.int = 0.95, conf.type = "plain")) {
   # check inputs ---------------------------------------------------------------
   method.args <- enquo(method.args)
   set_cli_abort_call()
