@@ -27,6 +27,8 @@
 
 ### Other Updates
 
+* Remove warning when data has more levels than needed for grade_groups on tbl_hierarchical_rate_by_grade.
+
 * Changed the default `conf.type` from `"log"` to `"plain"` (linear) in `tbl_survfit_times()` and `tbl_survfit_quantiles()` to align with GDSR guidelines. (#173)
 
 * Removed bold from headers when using `tbl_strata()` (#133).
@@ -42,6 +44,7 @@
 * Fixed a bug in `gg_pkc_lineplot()` causing misplaced error bars on a log scale. (#199)
 
 * Adjusted `gg_pkc_lineplot()` to use `tbl_roche_summary()` for automatic decimals formatting.
+
 # crane 0.3.1
 
 ## New Functions and Functionality
