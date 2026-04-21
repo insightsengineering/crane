@@ -51,6 +51,7 @@ adae <- data.frame(
   USUBJID = c("001", "001", "002", "004", "005"),
   TRT01A = c("Drug A", "Drug A", "Drug A", "Drug C", "Drug C"),
   AEBODSYS = c("SOC1", "SOC1", "SOC2", "SOC1", "SOC2"),
+  AEDECOD = c("PT1", "PT2", "PT3", "PT1", "PT4"),
   stringsAsFactors = FALSE
 )
 ```
@@ -74,7 +75,7 @@ Pass your data directly into `tbl_with_pools()`, specifying your target gtsummar
 tbl_demo <- tbl_with_pools(
   data = adsl,
   pools = my_pools,
-  arm_var = "TRT01A",
+  by = "TRT01A",
   denominator = NULL, # tbl_summary does not use a denominator
   keep_original = TRUE, # Keep Drug A, Drug B, and Drug C columns
   .tbl_fun = tbl_summary,
@@ -92,18 +93,18 @@ For safety tables that require a denominator, simply pass adsl to the denominato
 tbl_ae <- tbl_with_pools(
   data = adae,
   pools = my_pools,
-  arm_var = "TRT01A",
+  by = "TRT01A",
   denominator = adsl,
   keep_original = TRUE,
   .tbl_fun = tbl_hierarchical_rate_and_count,
-  variables = c(AEBODSYS)
+  variables = c(AEBODSYS, AEDECOD)
 )
 
 tbl_ae
 ```
 
 ## Method 2: The Pre-processing Fallback (`df_add_poolings`)
-⚠️ _DISCLAIMER: This is a risky function. Please consider using `tbl_with_pools()` instead._
+_**DISCLAIMER**: This is a risky function. Please consider using `tbl_with_pools()` instead._
 
 Sometimes, you need pooled data outside of `gtsummary`—for instance, when generating a custom `ggplot2` graphic, exporting a flattened `.csv` of grouped statistics, or using an alternative reporting engine.
 
@@ -141,12 +142,12 @@ adam_db_safe <- df_add_poolings(
 table(adam_db_safe$adsl$TRT01A)
 ```
 
-## Tip: Using External Configuration (YAML)
-To keep your template scripts clean and generic across studies, both of these functions are designed to accept configurations directly from a YAML file (e.g., `arg_specs.yaml`).
+## Tip: Using External Configuration (`YAML`)
+To keep your template scripts clean and generic across studies, both of these functions are designed to accept configurations directly from a `YAML` file (e.g., `arg_specs.yaml`).
 
 `arg_specs.yaml`:
 
-```{yaml}
+```{yaml, eval = FALSE}
 poolings_config:
   keep_original: TRUE
   arm_var: "TRT01A"
@@ -156,7 +157,7 @@ poolings_config:
 Inside your script:
 ```
 
-```{r}
+```{r, eval = FALSE}
 pool_args <- yaml::read_yaml("arg_specs.yaml")$poolings_config
 
 # Pass cleanly into the wrapper

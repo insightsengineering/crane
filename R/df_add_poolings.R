@@ -1,4 +1,4 @@
-#' Add custom poolings to an ADaM dataset list - see **DISCLAIMER**
+#' Add custom pooling to an ADaM dataset list - see **DISCLAIMER**
 #'
 #' @description
 #' **DISCLAIMER**: _this is a risky function. Please consider using [tbl_with_pools()] instead._
@@ -14,10 +14,10 @@
 #'   List of ADaM datasets containing at least the `adsl` data frame.
 #' @param pools (`list`)\cr
 #'   Named list where names are the new pooled labels, and values are character
-#'   vectors of the original arm values to include. Use the special keyword "all"
+#'   vectors of the original arm values to include. Use the special keyword `"all"`
 #'   to include all patients.
 #' @param arm_var (`character`)\cr
-#'   String of the arm variable to evaluate and overwrite. Default is "TRT01A".
+#'   String of the arm variable to evaluate and overwrite.
 #' @param keep_original (`logical`)\cr
 #'   Whether to keep the original unpooled rows. Default is TRUE.
 #'

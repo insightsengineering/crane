@@ -9,17 +9,17 @@
 #' bypassing the need for complex pre-processing.
 #'
 #' @param data (`data.frame`)\cr
-#'   The main analysis dataset (e.g., adae).
+#'   The main analysis dataset (e.g., `adae`).
 #' @param pools (`list`)\cr
-#'   Named list of custom pools. Use the keyword "all" to include a total column.
+#'   Named list of custom pools. Use the keyword `"all"` to include a total column.
 #' @param by (`character`)\cr
-#'   The treatment arm variable name. Default is "TRT01A".
+#'   The treatment arm variable name.
 #' @param denominator (`data.frame` or `NULL`)\cr
-#'   The denominator dataset (e.g., adsl). Leave as NULL for functions that do not
+#'   The denominator dataset (e.g., `adsl`). Leave as NULL for functions that do not
 #'   use a denominator (like `tbl_summary`). Provide the dataset for functions that
 #'   require it (like `tbl_hierarchical_rate_and_count`).
 #' @param keep_original (`logical`)\cr
-#'   Keep the unpooled treatment arms. Default is TRUE.
+#'   Keep the unpooled treatment arms. Default is `TRUE`.
 #' @param .tbl_fun (`function`)\cr
 #'   The gtsummary function to apply (e.g., `tbl_summary`).
 #'

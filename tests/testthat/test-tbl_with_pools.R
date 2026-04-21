@@ -89,11 +89,11 @@ test_that("tbl_with_pools() works with standard functions like tbl_summary", {
 
   # Check if the header labels contain our custom pool names
   header_labels <- tbl$table_styling$header |>
-    dplyr::filter(stringr::str_detect(column, "^stat_")) |>
+    dplyr::filter(str_detect(column, "^stat_")) |>
     dplyr::pull(label)
 
-  expect_true(any(stringr::str_detect(header_labels, "Any Xanomeline")))
-  expect_true(any(stringr::str_detect(header_labels, "All Patients")))
+  expect_true(any(str_detect(header_labels, "Any Xanomeline")))
+  expect_true(any(str_detect(header_labels, "All Patients")))
 
   # Snapshot the table output
   withr::local_options(list(width = 220))
@@ -188,11 +188,11 @@ test_that("tbl_with_pools() keep_original = FALSE returns only the pools", {
 
   # Because keep_original = FALSE and we have 2 pools, we should only see 2 main columns
   header_cols <- tbl$table_styling$header |>
-    dplyr::filter(stringr::str_detect(column, "^stat_"))
+    dplyr::filter(str_detect(column, "^stat_"))
 
   expect_equal(nrow(header_cols), 2)
-  expect_true(any(stringr::str_detect(header_cols$label, "Any Xanomeline")))
-  expect_true(any(stringr::str_detect(header_cols$label, "All Patients")))
+  expect_true(any(str_detect(header_cols$label, "Any Xanomeline")))
+  expect_true(any(str_detect(header_cols$label, "All Patients")))
 
   # It should still return a tbl_merge object
   expect_s3_class(tbl, "tbl_merge")
@@ -234,7 +234,7 @@ test_that("tbl_with_pools() safely handles factor columns without generating NAs
 
   # Ensure the column was successfully created and not dropped due to NAs
   header_labels <- tbl$table_styling$header$label
-  expect_true(any(stringr::str_detect(header_labels, "Drugs A & B")))
+  expect_true(any(str_detect(header_labels, "Drugs A & B")))
 })
 
 

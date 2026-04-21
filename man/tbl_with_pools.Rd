@@ -16,21 +16,21 @@ tbl_with_pools(
 }
 \arguments{
 \item{data}{(\code{data.frame})\cr
-The main analysis dataset (e.g., adae).}
+The main analysis dataset (e.g., \code{adae}).}
 
 \item{pools}{(\code{list})\cr
-Named list of custom pools. Use the keyword "all" to include a total column.}
+Named list of custom pools. Use the keyword \code{"all"} to include a total column.}
 
 \item{by}{(\code{character})\cr
-The treatment arm variable name. Default is "TRT01A".}
+The treatment arm variable name.}
 
 \item{denominator}{(\code{data.frame} or \code{NULL})\cr
-The denominator dataset (e.g., adsl). Leave as NULL for functions that do not
+The denominator dataset (e.g., \code{adsl}). Leave as NULL for functions that do not
 use a denominator (like \code{tbl_summary}). Provide the dataset for functions that
 require it (like \code{tbl_hierarchical_rate_and_count}).}
 
 \item{keep_original}{(\code{logical})\cr
-Keep the unpooled treatment arms. Default is TRUE.}
+Keep the unpooled treatment arms. Default is \code{TRUE}.}
 
 \item{.tbl_fun}{(\code{function})\cr
 The gtsummary function to apply (e.g., \code{tbl_summary}).}
@@ -133,13 +133,13 @@ pool_args <- arg_specs$tbl_with_pools_config
 # Run the function using tbl_hierarchical_rate_and_count
 if (!is.null(pool_args)) {
   tbl_pooled_yaml <- tbl_with_pools(
-    data          = adae,
-    pools         = pool_args$pools,
-    by       = pool_args$arm_var,
-    denominator   = adsl,
+    data = adae,
+    pools = pool_args$pools,
+    by = pool_args$arm_var,
+    denominator = adsl,
     keep_original = pool_args$keep_original,
-    .tbl_fun      = tbl_hierarchical_rate_and_count,
-    variables     = c(AEBODSYS, AEDECOD)
+    .tbl_fun = tbl_hierarchical_rate_and_count,
+    variables = c(AEBODSYS, AEDECOD)
   )
   tbl_pooled_yaml
 }

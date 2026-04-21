@@ -2,7 +2,7 @@
 % Please edit documentation in R/df_add_poolings.R
 \name{df_add_poolings}
 \alias{df_add_poolings}
-\title{Add custom poolings to an ADaM dataset list - see \strong{DISCLAIMER}}
+\title{Add custom pooling to an ADaM dataset list - see \strong{DISCLAIMER}}
 \usage{
 df_add_poolings(adam_db, pools, arm_var = "TRT01A", keep_original = TRUE)
 }
@@ -12,11 +12,11 @@ List of ADaM datasets containing at least the \code{adsl} data frame.}
 
 \item{pools}{(\code{list})\cr
 Named list where names are the new pooled labels, and values are character
-vectors of the original arm values to include. Use the special keyword "all"
+vectors of the original arm values to include. Use the special keyword \code{"all"}
 to include all patients.}
 
 \item{arm_var}{(\code{character})\cr
-String of the arm variable to evaluate and overwrite. Default is "TRT01A".}
+String of the arm variable to evaluate and overwrite.}
 
 \item{keep_original}{(\code{logical})\cr
 Whether to keep the original unpooled rows. Default is TRUE.}
@@ -75,9 +75,9 @@ config_to_write <- list(
     keep_original = FALSE,
     arm_var = "TRT01A",
     pools = list(
-      "Drug A + B"   = c("Drug A", "Drug B"),
+      "Drug A + B" = c("Drug A", "Drug B"),
       "Drug C + B" = c("Drug C", "Drug B"),
-      "All Patients"             = "all"
+      "All Patients" = "all"
     )
   )
 )
