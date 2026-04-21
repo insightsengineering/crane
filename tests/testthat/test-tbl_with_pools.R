@@ -182,3 +182,99 @@ test_that("tbl_with_pools() keep_original = FALSE returns only the pools", {
   # It should still return a tbl_merge object
   expect_s3_class(tbl, "tbl_merge")
 })
+
+# --- Setup specific data for edge case testing ---
+# We make TRTA explicitly a factor to test the factor regression fix
+ADSL_edge <- data.frame(
+  USUBJID = c("1", "2", "3", "4"),
+  TRTA = factor(c("Drug A", "Drug B", "Drug C", "Drug C")),
+  AGE = c(50, 60, 70, 75),
+  stringsAsFactors = FALSE
+)
+
+# Notice Subject 3 and 4 (Drug C) have NO adverse events in this dataset
+ADAE_edge <- data.frame(
+  USUBJID = c("1", "2"),
+  TRTA = factor(c("Drug A", "Drug B")),
+  AEBODSYS = c("SOC1", "SOC2"),
+  AEDECOD = c("PT1", "PT2"),
+  stringsAsFactors = FALSE
+)
+
+# --- 6. Test Factor Coercion Fix ----------------------------------------------
+test_that("tbl_with_pools() safely handles factor columns without generating NAs", {
+  # If the factor bug existed, creating "Drugs A & B" would throw an NA warning
+  expect_silent(
+    tbl <- tbl_with_pools(
+      data = ADSL_edge,
+      pools = list("Drugs A & B" = c("Drug A", "Drug B")),
+      by = "TRTA",
+      denominator = NULL,
+      keep_original = FALSE,
+      .tbl_fun = tbl_summary,
+      include = AGE
+    )
+  )
+
+  # Ensure the column was successfully created and not dropped due to NAs
+  header_labels <- tbl$table_styling$header$label
+  expect_true(any(stringr::str_detect(header_labels, "Drugs A & B")))
+})
+
+
+# --- 7. Test Independent Empty Checks: Zero Events but Non-Zero Denom ---------
+test_that("tbl_with_pools() keeps pools with 0 events if denominator > 0", {
+  # Drug C exists in ADSL (n=2) but has 0 records in ADAE.
+  # It should NOT warn, and it should generate a column with 0 counts.
+  expect_silent(
+    tbl <- tbl_with_pools(
+      data = ADAE_edge,
+      pools = list("Drug C Only" = "Drug C"),
+      by = "TRTA",
+      denominator = ADSL_edge,
+      keep_original = FALSE,
+      .tbl_fun = tbl_hierarchical_rate_and_count,
+      variables = c(AEBODSYS, AEDECOD)
+    )
+  )
+
+  # Ensure the column exists
+  header_labels <- tbl$table_styling$header$label
+  expect_true(any(stringr::str_detect(header_labels, "Drug C Only")))
+})
+
+
+# --- 8. Test Independent Empty Checks: Zero Events and NULL Denom -------------
+test_that("tbl_with_pools() skips empty data pools when denominator is NULL", {
+  # Drug C has 0 records in ADAE_edge. With no denominator, tbl_summary would crash.
+  # We expect it to trigger the new '0 rows in the data' warning and skip it.
+  expect_warning(
+    tbl_with_pools(
+      data = ADAE_edge,
+      pools = list("Drug C Only" = "Drug C"),
+      by = "TRTA",
+      denominator = NULL,
+      keep_original = TRUE,
+      .tbl_fun = tbl_summary,
+      include = AEBODSYS
+    ),
+    regexp = "has 0 rows in the data. Skipping."
+  )
+})
+
+# --- 9. Test rlang::inject Fix (Tidyselect compatibility) ---------------------
+test_that("tbl_with_pools() suppresses tidyselect warnings via rlang::inject", {
+  # If `by = dplyr::all_of(by)` was still used, this would trigger a deprecation warning
+  # or error depending on the gtsummary version. expect_silent ensures complete quiet.
+  expect_silent(
+    tbl <- tbl_with_pools(
+      data = ADSL_edge,
+      pools = list("All" = "all"),
+      by = "TRTA",
+      denominator = NULL,
+      keep_original = TRUE,
+      .tbl_fun = tbl_summary,
+      include = AGE
+    )
+  )
+})

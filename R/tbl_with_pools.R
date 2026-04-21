@@ -164,9 +164,9 @@ tbl_with_pools <- function(
   # Generate the base table with the original unpooled arms if requested
   if (keep_original) {
     if (is.null(denominator)) {
-      tbl_list[["original"]] <- .tbl_fun(data, by = by, ...)
+      tbl_list[["original"]] <- rlang::inject(.tbl_fun(data, by = !!by, ...))
     } else {
-      tbl_list[["original"]] <- .tbl_fun(data, by = by, denominator = denominator, ...)
+      tbl_list[["original"]] <- rlang::inject(.tbl_fun(data, by = !!by, denominator = denominator, ...))
     }
   }
 
@@ -174,41 +174,43 @@ tbl_with_pools <- function(
   for (pool_name in names(pools)) {
     arm_values <- pools[[pool_name]]
 
-    # Handle the "all" keyword to create a total column
+    # Handle the "all" keyword safely
     if (length(arm_values) == 1 && tolower(arm_values) == "all") {
-      sub_data <- data |> dplyr::mutate(!!dplyr::sym(by) := pool_name)
+      sub_data <- data |> dplyr::mutate(!!dplyr::sym(by) := as.character(pool_name))
       if (!is.null(denominator)) {
-        sub_denom <- denominator |> dplyr::mutate(!!dplyr::sym(by) := pool_name)
+        sub_denom <- denominator |> dplyr::mutate(!!dplyr::sym(by) := as.character(pool_name))
       }
     } else {
-      # Filter for the requested arms and temporarily rename the arm variable
-      # to the pool name so the table column header renders correctly
+      # Filter safely bypassing factor constraints
       sub_data <- data |>
-        dplyr::filter(.data[[by]] %in% arm_values) |>
-        dplyr::mutate(!!dplyr::sym(by) := pool_name)
+        dplyr::filter(as.character(.data[[by]]) %in% as.character(arm_values)) |>
+        dplyr::mutate(!!dplyr::sym(by) := as.character(pool_name))
 
       if (!is.null(denominator)) {
         sub_denom <- denominator |>
-          dplyr::filter(.data[[by]] %in% arm_values) |>
-          dplyr::mutate(!!dplyr::sym(by) := pool_name)
+          dplyr::filter(as.character(.data[[by]]) %in% as.character(arm_values)) |>
+          dplyr::mutate(!!dplyr::sym(by) := as.character(pool_name))
       }
     }
 
-    # Validate the denominator to prevent gtsummary errors during execution
+    # INDEPENDENT CHECKS:
+    # 1. Skip if denominator is 0 (prevents division by zero)
     if (!is.null(denominator) && nrow(sub_denom) == 0) {
       cli::cli_warn("Pool {.val {pool_name}} has 0 patients in the denominator. Skipping.")
       next
-    } else if (is.null(denominator) && nrow(sub_data) == 0) {
-      # ADD THIS: Safe skip for functions like tbl_summary that don't use a denominator
-      cli::cli_warn("Pool {.val {pool_name}} has 0 patients in the data. Skipping.")
+    }
+    # 2. Skip if data is 0 AND we don't have a denominator (e.g. tbl_summary)
+    if (is.null(denominator) && nrow(sub_data) == 0) {
+      cli::cli_warn("Pool {.val {pool_name}} has 0 rows in the data. Skipping.")
       next
     }
+    # Note: If denom > 0 but sub_data == 0, we intentionally proceed so gtsummary prints 0 (0%)
 
-    # Apply the specified gtsummary function dynamically
+    # Apply the specified gtsummary function dynamically using rlang::inject
     if (is.null(denominator)) {
-      tbl_list[[pool_name]] <- .tbl_fun(sub_data, by = dplyr::all_of(by), ...)
+      tbl_list[[pool_name]] <- rlang::inject(.tbl_fun(sub_data, by = !!by, ...))
     } else {
-      tbl_list[[pool_name]] <- .tbl_fun(sub_data, by = dplyr::all_of(by), denominator = sub_denom, ...)
+      tbl_list[[pool_name]] <- rlang::inject(.tbl_fun(sub_data, by = !!by, denominator = sub_denom, ...))
     }
   }
 
