@@ -53,6 +53,19 @@ test_that("tbl_with_pools() validates inputs correctly", {
     tbl_with_pools(data = ADSL_subset, pools = standard_pools, by = "TRTA", .tbl_fun = "not_a_function"),
     error = TRUE
   )
+
+  # Pass a character vector to denominator instead of a data.frame or NULL
+  expect_snapshot(
+    tbl_with_pools(
+      data = ADSL_subset,
+      pools = standard_pools,
+      by = "TRTA",
+      denominator = c("I am", "not a data frame"),
+      keep_original = FALSE,
+      .tbl_fun = tbl_summary
+    ),
+    error = TRUE
+  )
 })
 
 
@@ -260,6 +273,39 @@ test_that("tbl_with_pools() skips empty data pools when denominator is NULL", {
       include = AEBODSYS
     ),
     regexp = "has 0 rows in the data. Skipping."
+  )
+})
+
+test_that("tbl_with_pools() skips when denominator has 0 patients but data has >0", {
+  # Setup an anomalous scenario where ADAE has an arm completely missing from ADSL
+  ADSL_missing_arm <- data.frame(
+    USUBJID = c("1", "2"),
+    TRTA = factor(c("Drug A", "Drug A")),
+    stringsAsFactors = FALSE
+  )
+
+  ADAE_extra_arm <- data.frame(
+    USUBJID = c("3"),
+    TRTA = factor(c("Drug Z")),
+    AEBODSYS = c("SOC1"),
+    AEDECOD = c("PT1"),
+    stringsAsFactors = FALSE
+  )
+
+  # Because ADAE has 1 row for Drug Z, it passes the '0 rows in data' check.
+  # However, ADSL has 0 rows for Drug Z, triggering the denominator warning.
+  # Since keep_original = FALSE and the only pool is skipped, it aborts safely.
+  expect_snapshot(
+    tbl_with_pools(
+      data = ADAE_extra_arm,
+      pools = list("Drug Z Pool" = "Drug Z"),
+      by = "TRTA",
+      denominator = ADSL_missing_arm,
+      keep_original = FALSE,
+      .tbl_fun = tbl_hierarchical_rate_and_count,
+      variables = c(AEBODSYS, AEDECOD)
+    ),
+    error = TRUE
   )
 })
 

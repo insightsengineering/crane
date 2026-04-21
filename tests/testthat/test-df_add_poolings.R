@@ -36,7 +36,6 @@ standard_pools <- list(
 
 # --- 1. Input Validation and Errors -------------------------------------------
 test_that("df_add_poolings() validates inputs and throws correct cli errors", {
-
   # adam_db is not a list
   expect_snapshot(
     df_add_poolings(adam_db = data.frame(), pools = standard_pools),
@@ -71,7 +70,6 @@ test_that("df_add_poolings() validates inputs and throws correct cli errors", {
 
 # --- 2. Warnings --------------------------------------------------------------
 test_that("df_add_poolings() triggers appropriate warnings", {
-
   # Warning 1: keep_original = TRUE creates duplicates
   expect_warning(
     df_add_poolings(adam_db_test, pools = standard_pools, keep_original = TRUE),
@@ -82,10 +80,10 @@ test_that("df_add_poolings() triggers appropriate warnings", {
   # We suppress the keep_original warning here to isolate the 'all' warning
   expect_warning(
     expect_warning(
-        df_add_poolings(
-          adam_db_test,
-          pools = list("All Patients" = "all"),
-          keep_original = FALSE
+      df_add_poolings(
+        adam_db_test,
+        pools = list("All Patients" = "all"),
+        keep_original = FALSE
       ),
       regexp = "You are adding an 'all' patients pool"
     ),
@@ -96,7 +94,6 @@ test_that("df_add_poolings() triggers appropriate warnings", {
 
 # --- 3. Core Logic: keep_original = FALSE -------------------------------------
 test_that("df_add_poolings() accurately subsets when keep_original = FALSE", {
-
   res <- suppressWarnings(
     df_add_poolings(adam_db_test, pools = standard_pools, keep_original = FALSE)
   )
@@ -117,7 +114,6 @@ test_that("df_add_poolings() accurately subsets when keep_original = FALSE", {
 
 # --- 4. Core Logic: keep_original = TRUE --------------------------------------
 test_that("df_add_poolings() correctly stacks original and pooled rows", {
-
   res <- suppressWarnings(
     df_add_poolings(adam_db_test, pools = standard_pools, keep_original = TRUE)
   )
@@ -134,7 +130,6 @@ test_that("df_add_poolings() correctly stacks original and pooled rows", {
 
 # --- 5. Core Logic: The "all" Keyword -----------------------------------------
 test_that("df_add_poolings() creates a total dataset when 'all' is passed", {
-
   res <- suppressWarnings(
     df_add_poolings(
       adam_db_test,
@@ -155,7 +150,6 @@ test_that("df_add_poolings() creates a total dataset when 'all' is passed", {
 
 # --- 6. Dataset Selective Application -----------------------------------------
 test_that("df_add_poolings() only modifies datasets containing the arm variable", {
-
   res <- suppressWarnings(
     df_add_poolings(adam_db_test, pools = standard_pools, keep_original = TRUE)
   )

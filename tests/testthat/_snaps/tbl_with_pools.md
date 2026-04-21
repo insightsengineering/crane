@@ -44,6 +44,15 @@
       Error in `tbl_with_pools()`:
       x `.tbl_fun` must be a function (e.g., `gtsummary::tbl_summary`).
 
+---
+
+    Code
+      tbl_with_pools(data = ADSL_subset, pools = standard_pools, by = "TRTA",
+        denominator = c("I am", "not a data frame"), keep_original = FALSE, .tbl_fun = tbl_summary)
+    Condition
+      Error in `tbl_with_pools()`:
+      x `denominator` must be a data frame or NULL.
+
 # tbl_with_pools() works with standard functions like tbl_summary
 
     Code
@@ -117,6 +126,18 @@
     Condition
       Warning:
       Pool "Drug C Only" has 0 rows in the data. Skipping.
+      Error in `tbl_with_pools()`:
+      ! No tables were generated. Check your pool definitions and data.
+
+# tbl_with_pools() skips when denominator has 0 patients but data has >0
+
+    Code
+      tbl_with_pools(data = ADAE_extra_arm, pools = list(`Drug Z Pool` = "Drug Z"),
+      by = "TRTA", denominator = ADSL_missing_arm, keep_original = FALSE, .tbl_fun = tbl_hierarchical_rate_and_count,
+      variables = c(AEBODSYS, AEDECOD))
+    Condition
+      Warning:
+      Pool "Drug Z Pool" has 0 patients in the denominator. Skipping.
       Error in `tbl_with_pools()`:
       ! No tables were generated. Check your pool definitions and data.
 

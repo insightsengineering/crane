@@ -75,10 +75,10 @@ tbl_demo <- tbl_with_pools(
   data = adsl,
   pools = my_pools,
   arm_var = "TRT01A",
-  denominator = NULL,        # tbl_summary does not use a denominator
-  keep_original = TRUE,      # Keep Drug A, Drug B, and Drug C columns
+  denominator = NULL, # tbl_summary does not use a denominator
+  keep_original = TRUE, # Keep Drug A, Drug B, and Drug C columns
   .tbl_fun = tbl_summary,
-  include = AGE              # Argument passed to tbl_summary
+  include = AGE # Argument passed to tbl_summary
 )
 
 tbl_demo
@@ -120,7 +120,7 @@ adam_db <- list(adsl = adsl, adae = adae)
 
 adam_db_pooled <- df_add_poolings(
   adam_db = adam_db,
-  pools = my_pools, 
+  pools = my_pools,
   arm_var = "TRT01A",
   keep_original = TRUE
 )
@@ -132,7 +132,7 @@ When using `df_add_poolings()`, it is often safest to set `keep_original = FALSE
 ```{r}
 adam_db_safe <- df_add_poolings(
   adam_db = adam_db,
-  pools = list("Drug A + B" = c("Drug A", "Drug B")), 
+  pools = list("Drug A + B" = c("Drug A", "Drug B")),
   arm_var = "TRT01A",
   keep_original = FALSE
 )

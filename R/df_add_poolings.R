@@ -64,9 +64,9 @@
 #'     keep_original = FALSE,
 #'     arm_var = "TRT01A",
 #'     pools = list(
-#'       "Drug A + B"   = c("Drug A", "Drug B"),
+#'       "Drug A + B" = c("Drug A", "Drug B"),
 #'       "Drug C + B" = c("Drug C", "Drug B"),
-#'       "All Patients"             = "all"
+#'       "All Patients" = "all"
 #'     )
 #'   )
 #' )
@@ -128,7 +128,7 @@ df_add_poolings <- function(adam_db, pools, arm_var = "TRT01A", keep_original = 
   # 2. Duplicate Data Warning
   if (keep_original && length(pools) > 0) {
     cli::cli_warn(c("Preserving original rows while adding pools creates duplicates. ",
-                    i = "If you add a total column later, the patient counts will be incorrect."
+      i = "If you add a total column later, the patient counts will be incorrect."
     ))
   }
 

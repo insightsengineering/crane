@@ -112,27 +112,27 @@
 #' # Run the function using tbl_hierarchical_rate_and_count
 #' if (!is.null(pool_args)) {
 #'   tbl_pooled_yaml <- tbl_with_pools(
-#'     data          = adae,
-#'     pools         = pool_args$pools,
-#'     by       = pool_args$arm_var,
-#'     denominator   = adsl,
+#'     data = adae,
+#'     pools = pool_args$pools,
+#'     by = pool_args$arm_var,
+#'     denominator = adsl,
 #'     keep_original = pool_args$keep_original,
-#'     .tbl_fun      = tbl_hierarchical_rate_and_count,
-#'     variables     = c(AEBODSYS, AEDECOD)
+#'     .tbl_fun = tbl_hierarchical_rate_and_count,
+#'     variables = c(AEBODSYS, AEDECOD)
 #'   )
 #'   tbl_pooled_yaml
 #' }
 #'
 #' @export
 tbl_with_pools <- function(
-    data,
-    pools,
-    by = "TRT01A",
-    denominator = NULL,
-    keep_original = TRUE,
-    .tbl_fun,
-    ...) {
-
+  data,
+  pools,
+  by = "TRT01A",
+  denominator = NULL,
+  keep_original = TRUE,
+  .tbl_fun,
+  ...
+) {
   # Validate required structures using cli
   if (!is.data.frame(data)) {
     cli::cli_abort(c(
