@@ -1,9 +1,10 @@
 #' Add custom poolings to an ADaM dataset list - see **DISCLAIMER**
 #'
 #' @description
+#' **DISCLAIMER**: _this is a risky function. Please consider using [tbl_with_pools()] instead._
 #' This function allows you to create new pooled groups in your ADaM datasets based
 #' on specified arm values. You can choose to keep the original unpooled rows or not.
-#' **DISCLAIMER**: If you choose to keep the original rows and also add a pool that
+#' **Important Note**: If you choose to keep the original rows and also add a pool that
 #' includes all patients (using the "all" keyword), you will end up with duplicate
 #' rows in your dataset. This can lead to incorrect patient counts if you later add a
 #' total column. Use this option with caution and ensure that you do not add a
@@ -48,6 +49,7 @@
 #' print(adam_db_warnings$adsl)
 #'
 #' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true") && requireNamespace("yaml", quietly = TRUE)
+#' # Example C: Use yaml to define the pools config and run the function ------------
 #' # Creating Dummy Data
 #' adex <- data.frame(
 #'   USUBJID = c("001", "002", "003", "004"),
@@ -95,7 +97,7 @@
 #' }
 #'
 #' # View the result
-#' print(adam_db_pooled$adsl)
+#' adam_db_pooled$adsl2
 #'
 #' @export
 df_add_poolings <- function(adam_db, pools, arm_var = "TRT01A", keep_original = TRUE) {
@@ -162,14 +164,3 @@ df_add_poolings <- function(adam_db, pools, arm_var = "TRT01A", keep_original = 
 
   return(adam_db)
 }
-
-#
-# # tests
-# testthat::expect_identical(
-#   names(adam_db_pooled),
-#   c("adsl", "adex", "adsl2")
-# )
-# testthat::expect_equal(
-#   adam_db_pooled$adsl,
-#   adam_db_pooled$adsl2
-# )

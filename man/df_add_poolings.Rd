@@ -25,9 +25,10 @@ Whether to keep the original unpooled rows. Default is TRUE.}
 Updated list of ADaM datasets.
 }
 \description{
+\strong{DISCLAIMER}: \emph{this is a risky function. Please consider using \code{\link[=tbl_with_pools]{tbl_with_pools()}} instead.}
 This function allows you to create new pooled groups in your ADaM datasets based
 on specified arm values. You can choose to keep the original unpooled rows or not.
-\strong{DISCLAIMER}: If you choose to keep the original rows and also add a pool that
+\strong{Important Note}: If you choose to keep the original rows and also add a pool that
 includes all patients (using the "all" keyword), you will end up with duplicate
 rows in your dataset. This can lead to incorrect patient counts if you later add a
 total column. Use this option with caution and ensure that you do not add a
@@ -59,6 +60,7 @@ adam_db_warnings <- df_add_poolings(adam_db, pools = my_pools, keep_original = T
 print(adam_db_warnings$adsl)
 
 \dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true") && requireNamespace("yaml", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+# Example C: Use yaml to define the pools config and run the function ------------
 # Creating Dummy Data
 adex <- data.frame(
   USUBJID = c("001", "002", "003", "004"),
@@ -106,6 +108,6 @@ if (!is.null(pool_args)) {
 }
 
 # View the result
-print(adam_db_pooled$adsl)
+adam_db_pooled$adsl2
 \dontshow{\}) # examplesIf}
 }
