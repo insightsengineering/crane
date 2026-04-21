@@ -72,6 +72,7 @@ test_that("tbl_with_pools() works with standard functions like tbl_summary", {
 
   # Check if the object is successfully merged
   expect_s3_class(tbl, "tbl_merge")
+  expect_s3_class(tbl, "tbl_with_pools")
 
   # Check if the header labels contain our custom pool names
   header_labels <- tbl$table_styling$header |>
@@ -102,6 +103,7 @@ test_that("tbl_with_pools() passes the denominator correctly for custom function
   )
 
   expect_s3_class(tbl, "tbl_merge")
+  expect_s3_class(tbl, "tbl_with_pools")
 
   # Snapshot the table output
   withr::local_options(list(width = 220))
@@ -126,7 +128,7 @@ test_that("tbl_with_pools() warns and skips empty pools properly", {
       .tbl_fun = tbl_hierarchical_rate_and_count,
       variables = c(AEBODSYS, AEDECOD)
     ),
-    regexp = "has 0 patients in the denominator"
+    regexp = "has 0 rows in the data. Skipping."
   )
 
   # 2. Denominator is NULL, and data subset is empty
@@ -139,7 +141,7 @@ test_that("tbl_with_pools() warns and skips empty pools properly", {
       .tbl_fun = tbl_summary,
       include = AGE
     ),
-    regexp = "has 0 patients in the data"
+    regexp = "has 0 rows in the data. Skipping."
   )
 
   # 3. Completely empty configuration (all pools skipped, no original kept)
@@ -181,6 +183,7 @@ test_that("tbl_with_pools() keep_original = FALSE returns only the pools", {
 
   # It should still return a tbl_merge object
   expect_s3_class(tbl, "tbl_merge")
+  expect_s3_class(tbl, "tbl_with_pools")
 })
 
 # --- Setup specific data for edge case testing ---
@@ -223,11 +226,13 @@ test_that("tbl_with_pools() safely handles factor columns without generating NAs
 
 
 # --- 7. Test Independent Empty Checks: Zero Events but Non-Zero Denom ---------
-test_that("tbl_with_pools() keeps pools with 0 events if denominator > 0", {
+test_that("tbl_with_pools() skips pools with 0 events to prevent cards engine crash", {
   # Drug C exists in ADSL (n=2) but has 0 records in ADAE.
-  # It should NOT warn, and it should generate a column with 0 counts.
-  expect_silent(
-    tbl <- tbl_with_pools(
+  # It should trigger the '0 rows in the data' warning to prevent the gtsummary crash.
+  # Because keep_original = FALSE and it's the only pool, it will also abort with "No tables were generated".
+
+  expect_snapshot(
+    tbl_with_pools(
       data = ADAE_edge,
       pools = list("Drug C Only" = "Drug C"),
       by = "TRTA",
@@ -235,14 +240,10 @@ test_that("tbl_with_pools() keeps pools with 0 events if denominator > 0", {
       keep_original = FALSE,
       .tbl_fun = tbl_hierarchical_rate_and_count,
       variables = c(AEBODSYS, AEDECOD)
-    )
+    ),
+    error = TRUE
   )
-
-  # Ensure the column exists
-  header_labels <- tbl$table_styling$header$label
-  expect_true(any(stringr::str_detect(header_labels, "Drug C Only")))
 })
-
 
 # --- 8. Test Independent Empty Checks: Zero Events and NULL Denom -------------
 test_that("tbl_with_pools() skips empty data pools when denominator is NULL", {

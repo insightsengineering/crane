@@ -194,14 +194,15 @@ tbl_with_pools <- function(
     }
 
     # INDEPENDENT CHECKS:
-    # 1. Skip if denominator is 0 (prevents division by zero)
-    if (!is.null(denominator) && nrow(sub_denom) == 0) {
-      cli::cli_warn("Pool {.val {pool_name}} has 0 patients in the denominator. Skipping.")
+    # 1. Skip if data is 0 (gtsummary/cards will crash trying to process a 0-row analysis dataset)
+    if (nrow(sub_data) == 0) {
+      cli::cli_warn("Pool {.val {pool_name}} has 0 rows in the data. Skipping.")
       next
     }
-    # 2. Skip if data is 0 AND we don't have a denominator (e.g. tbl_summary)
-    if (is.null(denominator) && nrow(sub_data) == 0) {
-      cli::cli_warn("Pool {.val {pool_name}} has 0 rows in the data. Skipping.")
+
+    # 2. Skip if denominator is 0 (prevents division by zero)
+    if (!is.null(denominator) && nrow(sub_denom) == 0) {
+      cli::cli_warn("Pool {.val {pool_name}} has 0 patients in the denominator. Skipping.")
       next
     }
     # Note: If denom > 0 but sub_data == 0, we intentionally proceed so gtsummary prints 0 (0%)
@@ -232,5 +233,9 @@ tbl_with_pools <- function(
   ) |>
     gtsummary::modify_spanning_header(gtsummary::everything() ~ NA_character_)
 
-  return(merged_tbl)
+  attr(merged_tbl, "by") <- levels(factor(data[[by]]))
+
+  class(merged_tbl) <- c("tbl_with_pools", class(merged_tbl))
+
+  merged_tbl
 }

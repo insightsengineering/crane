@@ -162,5 +162,5 @@ df_add_poolings <- function(adam_db, pools, arm_var = "TRT01A", keep_original = 
     adam_db[[ds_name]] <- dplyr::bind_rows(data_pieces)
   }
 
-  return(adam_db)
+  adam_db
 }

@@ -104,7 +104,19 @@
       denominator = NULL, keep_original = FALSE, .tbl_fun = tbl_summary)
     Condition
       Warning:
-      Pool "Ghost Arm" has 0 patients in the data. Skipping.
+      Pool "Ghost Arm" has 0 rows in the data. Skipping.
+      Error in `tbl_with_pools()`:
+      ! No tables were generated. Check your pool definitions and data.
+
+# tbl_with_pools() skips pools with 0 events to prevent cards engine crash
+
+    Code
+      tbl_with_pools(data = ADAE_edge, pools = list(`Drug C Only` = "Drug C"), by = "TRTA",
+      denominator = ADSL_edge, keep_original = FALSE, .tbl_fun = tbl_hierarchical_rate_and_count,
+      variables = c(AEBODSYS, AEDECOD))
+    Condition
+      Warning:
+      Pool "Drug C Only" has 0 rows in the data. Skipping.
       Error in `tbl_with_pools()`:
       ! No tables were generated. Check your pool definitions and data.
 
