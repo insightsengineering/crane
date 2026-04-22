@@ -141,3 +141,14 @@
       Error in `tbl_with_pools()`:
       ! No tables were generated. Check your pool definitions and data.
 
+# tbl_with_pools() skips if an rlang::expr() evaluates to 0 rows
+
+    Code
+      tbl_with_pools(data = ADSL_expr, pools = impossible_pool, by = "TRTA",
+        denominator = NULL, keep_original = FALSE, .tbl_fun = tbl_summary, include = AGE)
+    Condition
+      Warning:
+      Pool "Impossible Pool" has 0 rows in the data. Skipping.
+      Error in `tbl_with_pools()`:
+      ! No tables were generated. Check your pool definitions and data.
+

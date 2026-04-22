@@ -13,9 +13,9 @@
 #' @param adam_db (`list`)\cr
 #'   List of ADaM datasets containing at least the `adsl` data frame.
 #' @param pools (`list`)\cr
-#'   Named list where names are the new pooled labels, and values are character
-#'   vectors of the original arm values to include. Use the special keyword `"all"`
-#'   to include all patients.
+#'   Named list of custom pools. Values can be character vectors of arm names,
+#'   logical expressions wrapped in `rlang::expr()`, or the keyword `"all"` to
+#'   include all patients.
 #' @param arm_var (`character`)\cr
 #'   String of the arm variable to evaluate and overwrite.
 #' @param keep_original (`logical`)\cr
@@ -24,10 +24,14 @@
 #' @return Updated list of ADaM datasets.
 #'
 #' @examples
+#' library(dplyr)
+#' library(rlang)
+#'
 #' # Create a minimal dummy adam_db
 #' adsl <- data.frame(
 #'   USUBJID = c("001", "002", "003", "004", "005"),
 #'   TRT01A = c("Drug A", "Drug A", "Drug B", "Drug C", "Drug C"),
+#'   FLAG = c("Y", "N", "Y", "N", "Y"),
 #'   stringsAsFactors = FALSE
 #' )
 #' adam_db <- list(adsl = adsl)
@@ -48,8 +52,17 @@
 #' adam_db_warnings <- df_add_poolings(adam_db, pools = my_pools, keep_original = TRUE)
 #' print(adam_db_warnings$adsl)
 #'
+#' # Example C: Complex pooling using logical expressions ---------------------------
+#' complex_pools <- list(
+#'   "Flagged Patients" = rlang::expr(FLAG == "Y"),
+#'   "Drug A Flagged"   = rlang::expr(TRT01A == "Drug A" & FLAG == "Y")
+#' )
+#'
+#' adam_db_complex <- df_add_poolings(adam_db, pools = complex_pools, keep_original = FALSE)
+#' print(adam_db_complex$adsl)
+#'
 #' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true") && requireNamespace("yaml", quietly = TRUE)
-#' # Example C: Use yaml to define the pools config and run the function ------------
+#' # Example D: Use yaml to define the pools config and run the function ------------
 #' # Creating Dummy Data
 #' adex <- data.frame(
 #'   USUBJID = c("001", "002", "003", "004"),
@@ -108,6 +121,7 @@ df_add_poolings <- function(adam_db, pools, arm_var = "TRT01A", keep_original = 
       "i" = "You provided an object of class {.cls {class(adam_db)}}."
     ))
   }
+
   # Check if the arm variable exists in AT LEAST ONE of the data frames
   has_arm_var <- vapply(adam_db, function(x) arm_var %in% names(x), logical(1))
 
@@ -117,6 +131,7 @@ df_add_poolings <- function(adam_db, pools, arm_var = "TRT01A", keep_original = 
       "i" = "Available columns in {.code adsl}: {.var {names(adam_db$adsl)}}."
     ))
   }
+
   # Check if pools is a named list
   if (!is.list(pools) || is.null(names(pools)) || any(names(pools) == "")) {
     cli::cli_abort(c(
@@ -125,7 +140,7 @@ df_add_poolings <- function(adam_db, pools, arm_var = "TRT01A", keep_original = 
     ))
   }
 
-  # 2. Duplicate Data Warning
+  # Duplicate Data Warning
   if (keep_original && length(pools) > 0) {
     cli::cli_warn(c("Preserving original rows while adding pools creates duplicates. ",
       i = "If you add a total column later, the patient counts will be incorrect."
@@ -144,14 +159,21 @@ df_add_poolings <- function(adam_db, pools, arm_var = "TRT01A", keep_original = 
     for (pool_label in names(pools)) {
       arm_values <- pools[[pool_label]]
 
-      if (length(arm_values) == 1 && tolower(arm_values) == "all") {
+      # 1. Handle the "all" keyword safely
+      if (is.character(arm_values) && length(arm_values) == 1 && tolower(arm_values) == "all") {
         cli::cli_warn(c(
           "You are adding an 'all' patients pool to {.val {ds_name}}.",
           i = "Ensure you do not add a standard total column later."
         ))
         subset_data <- dataset
+
+        # 2. Handle complex logical expressions via rlang::expr()
+      } else if (is.language(arm_values)) {
+        subset_data <- dataset |> dplyr::filter(!!arm_values)
+
+        # 3. Handle standard character vectors mapping to the arm variable
       } else {
-        subset_data <- dataset |> dplyr::filter(.data[[arm_var]] %in% arm_values)
+        subset_data <- dataset |> dplyr::filter(as.character(.data[[arm_var]]) %in% as.character(arm_values))
       }
 
       if (nrow(subset_data) > 0) {

@@ -2,9 +2,9 @@
 title: "Working with Pooled Treatment Arms"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Working with Pooled Treatment Arms}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+  %\\VignetteIndexEntry{Working with Pooled Treatment Arms}
+  %\\VignetteEngine{knitr::rmarkdown}
+  %\\VignetteEncoding{UTF-8}
 ---
 
 ```{r, include = FALSE}
@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-In clinical reporting, it is incredibly common to require tables that display both the original treatment arms (e.g., "Dose A", "Dose B") alongside pooled arms (e.g., "Any Dose") or a total column ("All Patients").
+In clinical reporting, it is incredibly common to require tables that display both the original treatment arms (e.g., "Dose A", "Dose B") alongside pooled arms (e.g., "Any Dose") or a total column ("All Patients"). You may also need to define highly specific cohorts based on clinical flags.
 
 Because these groups overlap, a single patient must technically be counted in multiple columns. Modifying the underlying ADaM datasets to achieve this introduces duplicated `USUBJID`s, which breaks standard CDISC data integrity and can cause severe downstream calculation errors if not managed perfectly.
 
@@ -28,15 +28,18 @@ For any table generated using `{gtsummary}` or custom extensions (like `tbl_hier
 
 - **Pristine Data Integrity:** Your ADaM datasets remain untouched in your environment. Patients are never duplicated.
 
-- **Automatic Denominator Management:** It safely subsets both your analysis dataset and your denominator dataset simultaneously.
+- **Automatic Denominator Management:** It safely subsets both your analysis dataset and your denominator dataset simultaneously, and dynamically evaluates complex logical expressions across both.
 
 - **Safe Totals:** Bypasses the need for `gtsummary::add_overall()`, which would mathematically double-count patients if applied to a pre-pooled dataset.
 
 ### Setup Dummy Data
 
+Notice we are including standard analysis flags (`AFL`, `BFL`) which we will use later to define complex pools.
+
 ```{r}
 library(dplyr)
 library(gtsummary)
+library(rlang)
 library(crane)
 
 # Minimal ADSL and ADAE datasets
@@ -44,6 +47,8 @@ adsl <- data.frame(
   USUBJID = c("001", "002", "003", "004", "005"),
   TRT01A = c("Drug A", "Drug A", "Drug B", "Drug C", "Drug C"),
   AGE = c(45, 50, 60, 65, 55),
+  AFL = c("Y", "Y", "N", "Y", "N"),
+  BFL = c("Y", "Y", "Y", "N", "Y"),
   stringsAsFactors = FALSE
 )
 
@@ -52,18 +57,24 @@ adae <- data.frame(
   TRT01A = c("Drug A", "Drug A", "Drug A", "Drug C", "Drug C"),
   AEBODSYS = c("SOC1", "SOC1", "SOC2", "SOC1", "SOC2"),
   AEDECOD = c("PT1", "PT2", "PT3", "PT1", "PT4"),
+  AFL = c("Y", "Y", "Y", "Y", "N"),
+  BFL = c("Y", "Y", "Y", "N", "Y"),
   stringsAsFactors = FALSE
 )
 ```
 
 ### Defining the Pools
 
-Define your pools using a simple named list. Use the `"all"` keyword to generate a total column.
+`{crane}` supports a mixed-definition pooling list. You can seamlessly combine:
+1. **Character vectors:** For standard string matching on the arm variable.
+2. **The `"all"` keyword:** To create an absolute total column.
+3. **Logical Expressions (`rlang::expr()`):** To define complex, dynamic cohorts based on multiple variables.
 
 ```{r}
 my_pools <- list(
-  "Drug A + B"   = c("Drug A", "Drug B"),
-  "All Patients" = "all"
+  "Complex Pool (Flags)" = expr(AFL == "Y" & BFL == "Y"),
+  "Drug A + B"           = c("Drug A", "Drug B"),
+  "All Patients"         = "all"
 )
 ```
 
@@ -126,6 +137,7 @@ adam_db_pooled <- df_add_poolings(
   keep_original = TRUE
 )
 ```
+
 ### Safe Usage
 
 When using `df_add_poolings()`, it is often safest to set `keep_original = FALSE`. This replaces the original arms entirely with your new pools, guaranteeing that no single patient exists in the dataset more than once per pooled definition.
@@ -133,38 +145,52 @@ When using `df_add_poolings()`, it is often safest to set `keep_original = FALSE
 ```{r}
 adam_db_safe <- df_add_poolings(
   adam_db = adam_db,
-  pools = list("Drug A + B" = c("Drug A", "Drug B")),
+  pools = list(
+    "Drug A + B" = c("Drug A", "Drug B"),
+    "ccRCC Patients" = expr(AFL == "Y" & BFL == "Y")
+  ),
   arm_var = "TRT01A",
   keep_original = FALSE
 )
 
-# Observe that TRT01A now only contains "Drug A + B" for the applicable rows
+# Observe that TRT01A now only contains our specific pools for the applicable rows
 table(adam_db_safe$adsl$TRT01A)
 ```
 
 ## Tip: Using External Configuration (`YAML`)
 To keep your template scripts clean and generic across studies, both of these functions are designed to accept configurations directly from a `YAML` file (e.g., `arg_specs.yaml`).
 
+*Note: Because YAML cannot natively store R language objects, complex conditions will be read into R as plain text strings. However, you can easily convert these strings back into evaluable code by passing them through `rlang::parse_expr()` after importing your YAML configuration.*
+
 `arg_specs.yaml`:
 
 ```{yaml, eval = FALSE}
 poolings_config:
-  keep_original: TRUE
+  keep_original: FALSE
   arm_var: "TRT01A"
   pools:
     "Drug A + B": ["Drug A", "Drug B"]
     "Total": ["all"]
-Inside your script:
+    # Write the expression as a plain string
+    "AB Patients": "AFL == 'Y' & BFL == 'Y'"
 ```
 
+Inside your script:
+
 ```{r, eval = FALSE}
+library(rlang)
+
+# 1. Read the YAML
 pool_args <- yaml::read_yaml("arg_specs.yaml")$poolings_config
 
-# Pass cleanly into the wrapper
+# 2. Convert the string into a parsed expression
+pool_args$pools$`AB Patients` <- rlang::parse_expr(pool_args$pools$`AB Patients`)
+
+# 3. Pass it to your function! (is.language() will now correctly evaluate to TRUE)
 tbl <- tbl_with_pools(
   data          = adae,
   pools         = pool_args$pools,
-  arm_var       = pool_args$arm_var,
+  by            = pool_args$arm_var,
   denominator   = adsl,
   keep_original = pool_args$keep_original,
   .tbl_fun      = tbl_summary

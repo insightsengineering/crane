@@ -19,7 +19,9 @@ tbl_with_pools(
 The main analysis dataset (e.g., \code{adae}).}
 
 \item{pools}{(\code{list})\cr
-Named list of custom pools. Use the keyword \code{"all"} to include a total column.}
+Named list of custom pools. Values can be character vectors of arm names,
+logical expressions wrapped in \code{rlang::expr()}, or the keyword \code{"all"} to
+include a total column.}
 
 \item{by}{(\code{character})\cr
 The treatment arm variable name.}
@@ -38,7 +40,7 @@ The gtsummary function to apply (e.g., \code{tbl_summary}).}
 \item{...}{Additional arguments passed directly to \code{.tbl_fun}.}
 }
 \value{
-A merged \code{gtsummary} object of class \code{tbl_merge}.
+A merged \code{gtsummary} object of class \code{tbl_merge} and \code{tbl_with_pools}.
 }
 \description{
 Generates a gtsummary table that includes both the original treatment arms
@@ -54,6 +56,7 @@ adsl <- data.frame(
   USUBJID = c("001", "002", "003", "004", "005"),
   TRT01A = c("Drug A", "Drug A", "Drug B", "Drug C", "Drug C"),
   AGE = c(45, 50, 60, 65, 55),
+  FLAG = c("Y", "N", "Y", "N", "Y"),
   stringsAsFactors = FALSE
 )
 
@@ -62,6 +65,7 @@ adae <- data.frame(
   TRT01A = c("Drug A", "Drug A", "Drug A", "Drug C", "Drug C"),
   AEBODSYS = c("SOC1", "SOC1", "SOC2", "SOC1", "SOC2"),
   AEDECOD = c("PT1", "PT2", "PT3", "PT1", "PT4"),
+  FLAG = c("Y", "Y", "N", "N", "Y"),
   stringsAsFactors = FALSE
 )
 
@@ -99,8 +103,25 @@ tbl_warning <- tbl_with_pools(
 )
 tbl_warning
 
+# Example C: Complex pooling using logical expressions ---------------------------
+complex_pools <- list(
+  "Flagged Patients" = rlang::expr(FLAG == "Y"),
+  "Drug A Flagged"   = rlang::expr(TRT01A == "Drug A" & FLAG == "Y")
+)
+
+tbl_complex <- tbl_with_pools(
+  data = adsl,
+  pools = complex_pools,
+  by = "TRT01A",
+  denominator = NULL,
+  keep_original = FALSE,
+  .tbl_fun = tbl_summary,
+  include = AGE
+)
+tbl_complex
+
 \dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true") && requireNamespace("yaml", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-# Example C: Use yaml to define the pools config and run the function ------------
+# Example D: Use yaml to define the pools config and run the function ------------
 
 # Define the config as a standard R list
 config_to_write <- list(

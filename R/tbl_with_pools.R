@@ -11,7 +11,9 @@
 #' @param data (`data.frame`)\cr
 #'   The main analysis dataset (e.g., `adae`).
 #' @param pools (`list`)\cr
-#'   Named list of custom pools. Use the keyword `"all"` to include a total column.
+#'   Named list of custom pools. Values can be character vectors of arm names,
+#'   logical expressions wrapped in `rlang::expr()`, or the keyword `"all"` to
+#'   include a total column.
 #' @param by (`character`)\cr
 #'   The treatment arm variable name.
 #' @param denominator (`data.frame` or `NULL`)\cr
@@ -25,7 +27,7 @@
 #'
 #' @param ... Additional arguments passed directly to `.tbl_fun`.
 #'
-#' @return A merged `gtsummary` object of class `tbl_merge`.
+#' @return A merged `gtsummary` object of class `tbl_merge` and `tbl_with_pools`.
 #'
 #' @examples
 #' # Create minimal dummy ADaM data
@@ -33,6 +35,7 @@
 #'   USUBJID = c("001", "002", "003", "004", "005"),
 #'   TRT01A = c("Drug A", "Drug A", "Drug B", "Drug C", "Drug C"),
 #'   AGE = c(45, 50, 60, 65, 55),
+#'   FLAG = c("Y", "N", "Y", "N", "Y"),
 #'   stringsAsFactors = FALSE
 #' )
 #'
@@ -41,6 +44,7 @@
 #'   TRT01A = c("Drug A", "Drug A", "Drug A", "Drug C", "Drug C"),
 #'   AEBODSYS = c("SOC1", "SOC1", "SOC2", "SOC1", "SOC2"),
 #'   AEDECOD = c("PT1", "PT2", "PT3", "PT1", "PT4"),
+#'   FLAG = c("Y", "Y", "N", "N", "Y"),
 #'   stringsAsFactors = FALSE
 #' )
 #'
@@ -78,8 +82,25 @@
 #' )
 #' tbl_warning
 #'
+#' # Example C: Complex pooling using logical expressions ---------------------------
+#' complex_pools <- list(
+#'   "Flagged Patients" = rlang::expr(FLAG == "Y"),
+#'   "Drug A Flagged"   = rlang::expr(TRT01A == "Drug A" & FLAG == "Y")
+#' )
+#'
+#' tbl_complex <- tbl_with_pools(
+#'   data = adsl,
+#'   pools = complex_pools,
+#'   by = "TRT01A",
+#'   denominator = NULL,
+#'   keep_original = FALSE,
+#'   .tbl_fun = tbl_summary,
+#'   include = AGE
+#' )
+#' tbl_complex
+#'
 #' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true") && requireNamespace("yaml", quietly = TRUE)
-#' # Example C: Use yaml to define the pools config and run the function ------------
+#' # Example D: Use yaml to define the pools config and run the function ------------
 #'
 #' # Define the config as a standard R list
 #' config_to_write <- list(
@@ -174,12 +195,26 @@ tbl_with_pools <- function(
   for (pool_name in names(pools)) {
     arm_values <- pools[[pool_name]]
 
-    # Handle the "all" keyword safely
-    if (length(arm_values) == 1 && tolower(arm_values) == "all") {
+    # 1. Handle the "all" keyword safely
+    if (is.character(arm_values) && length(arm_values) == 1 && tolower(arm_values) == "all") {
       sub_data <- data |> dplyr::mutate(!!dplyr::sym(by) := as.character(pool_name))
       if (!is.null(denominator)) {
         sub_denom <- denominator |> dplyr::mutate(!!dplyr::sym(by) := as.character(pool_name))
       }
+
+      # 2. Handle complex logical expressions via rlang::expr()
+    } else if (is.language(arm_values)) {
+      sub_data <- data |>
+        dplyr::filter(!!arm_values) |>
+        dplyr::mutate(!!dplyr::sym(by) := as.character(pool_name))
+
+      if (!is.null(denominator)) {
+        sub_denom <- denominator |>
+          dplyr::filter(!!arm_values) |>
+          dplyr::mutate(!!dplyr::sym(by) := as.character(pool_name))
+      }
+
+      # 3. Handle standard character vectors mapping to the arm variable
     } else {
       # Filter safely bypassing factor constraints
       sub_data <- data |>

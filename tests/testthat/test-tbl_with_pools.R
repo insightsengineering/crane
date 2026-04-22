@@ -325,3 +325,94 @@ test_that("tbl_with_pools() suppresses tidyselect warnings via rlang::inject", {
     )
   )
 })
+
+# --- Setup specific data for expression testing -------------------------------
+ADSL_expr <- data.frame(
+  USUBJID = c("1", "2", "3", "4", "5"),
+  TRTA = c("Drug A", "Drug A", "Drug B", "Drug B", "Drug C"),
+  AGE = c(40, 50, 60, 70, 80),
+  BMIFL = c("Y", "N", "Y", "N", "Y"), # Custom flag for logical expressions
+  stringsAsFactors = FALSE
+)
+
+ADAE_expr <- data.frame(
+  USUBJID = c("1", "1", "3", "5"),
+  TRTA = c("Drug A", "Drug A", "Drug B", "Drug C"),
+  BMIFL = c("Y", "Y", "Y", "Y"),
+  AEBODSYS = c("SOC1", "SOC2", "SOC1", "SOC2"),
+  AEDECOD = c("PT1", "PT2", "PT1", "PT3"),
+  stringsAsFactors = FALSE
+)
+
+
+# --- 10. Test Complex Logical Expressions (No Denominator) --------------------
+test_that("tbl_with_pools() processes rlang::expr() correctly without a denominator", {
+  complex_pools <- list(
+    "High BMI Patients" = rlang::expr(BMIFL == "Y"),
+    "Drug A High BMI"   = rlang::expr(TRTA == "Drug A" & BMIFL == "Y")
+  )
+
+  expect_silent(
+    tbl <- tbl_with_pools(
+      data = ADSL_expr,
+      pools = complex_pools,
+      by = "TRTA",
+      denominator = NULL,
+      keep_original = FALSE,
+      .tbl_fun = tbl_summary,
+      include = AGE
+    )
+  )
+
+  # Ensure the resulting gtsummary table headers contain our custom expression pool names
+  header_labels <- tbl$table_styling$header$label
+  expect_true(any(stringr::str_detect(header_labels, "High BMI Patients")))
+  expect_true(any(stringr::str_detect(header_labels, "Drug A High BMI")))
+})
+
+
+# --- 11. Test Complex Logical Expressions (With Denominator) ------------------
+test_that("tbl_with_pools() processes rlang::expr() correctly with a denominator", {
+  complex_pools <- list(
+    "High BMI Patients" = rlang::expr(BMIFL == "Y")
+  )
+
+  expect_silent(
+    tbl <- tbl_with_pools(
+      data = ADAE_expr,
+      pools = complex_pools,
+      by = "TRTA",
+      denominator = ADSL_expr,
+      keep_original = FALSE,
+      .tbl_fun = tbl_hierarchical_rate_and_count,
+      variables = c(AEBODSYS, AEDECOD)
+    )
+  )
+
+  # Ensure the column exists
+  header_labels <- tbl$table_styling$header$label
+  expect_true(any(stringr::str_detect(header_labels, "High BMI Patients")))
+})
+
+
+# --- 12. Test Expression Evaluation Edge Cases (0-row Subsets) ----------------
+test_that("tbl_with_pools() skips if an rlang::expr() evaluates to 0 rows", {
+  # We create a pool condition that matches absolutely no one in the dataset
+  impossible_pool <- list(
+    "Impossible Pool" = rlang::expr(BMIFL == "Z")
+  )
+
+  # It should evaluate the expression, return 0 rows, trigger the warning, and safely abort
+  expect_snapshot(
+    tbl_with_pools(
+      data = ADSL_expr,
+      pools = impossible_pool,
+      by = "TRTA",
+      denominator = NULL,
+      keep_original = FALSE,
+      .tbl_fun = tbl_summary,
+      include = AGE
+    ),
+    error = TRUE
+  )
+})

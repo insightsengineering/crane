@@ -162,3 +162,85 @@ test_that("df_add_poolings() only modifies datasets containing the arm variable"
   expect_equal(res$adxx, adxx_dummy)
   expect_equal(nrow(res$adxx), nrow(adxx_dummy))
 })
+
+# --- Setup specific data for expression testing -------------------------------
+adsl_expr <- data.frame(
+  USUBJID = c("1", "2", "3", "4", "5"),
+  TRT01A = c("Drug A", "Drug A", "Drug B", "Drug B", "Drug C"),
+  AGE = c(40, 50, 60, 70, 80),
+  BMIFL = c("Y", "N", "Y", "N", "Y"),
+  stringsAsFactors = FALSE
+)
+
+adae_expr <- data.frame(
+  USUBJID = c("1", "1", "3", "5"),
+  TRT01A = c("Drug A", "Drug A", "Drug B", "Drug C"),
+  BMIFL = c("Y", "Y", "Y", "Y"),
+  AEBODSYS = c("SOC1", "SOC2", "SOC1", "SOC2"),
+  stringsAsFactors = FALSE
+)
+
+adam_db_expr <- list(adsl = adsl_expr, adae = adae_expr)
+
+
+# --- 7. Test Complex Logical Expressions --------------------------------------
+test_that("df_add_poolings() processes rlang::expr() correctly across datasets", {
+  complex_pools <- list(
+    "High BMI Patients" = rlang::expr(BMIFL == "Y"),
+    "Drug A High BMI"   = rlang::expr(TRT01A == "Drug A" & BMIFL == "Y")
+  )
+
+  res <- suppressWarnings(
+    df_add_poolings(
+      adam_db = adam_db_expr,
+      pools = complex_pools,
+      keep_original = FALSE
+    )
+  )
+
+  # Check ADSL counts:
+  # "High BMI Patients" should have 3 patients (ID 1, 3, 5)
+  # "Drug A High BMI" should have 1 patient (ID 1)
+  expect_equal(sum(res$adsl$TRT01A == "High BMI Patients"), 3)
+  expect_equal(sum(res$adsl$TRT01A == "Drug A High BMI"), 1)
+
+  # Check ADAE counts:
+  # "High BMI Patients" should have 4 events (all rows in ADAE have BMIFL == "Y")
+  # "Drug A High BMI" should have 2 events (ID 1 has 2 rows)
+  expect_equal(sum(res$adae$TRT01A == "High BMI Patients"), 4)
+  expect_equal(sum(res$adae$TRT01A == "Drug A High BMI"), 2)
+})
+
+
+# --- 8. Test Expression Evaluation Edge Cases (0-row Subsets) -----------------
+test_that("df_add_poolings() safely ignores rlang::expr() evaluating to 0 rows", {
+  impossible_pool <- list(
+    "Impossible Pool" = rlang::expr(BMIFL == "Z")
+  )
+
+  # If a pool results in 0 rows, the function should skip appending it.
+  # With keep_original = FALSE and no matching rows, it should return an empty dataframe.
+  res <- suppressWarnings(
+    df_add_poolings(
+      adam_db = adam_db_expr,
+      pools = impossible_pool,
+      keep_original = FALSE
+    )
+  )
+
+  expect_equal(nrow(res$adsl), 0)
+  expect_equal(nrow(res$adae), 0)
+
+  # With keep_original = TRUE, it should just return the original dataframe untouched
+  res_keep <- suppressWarnings(
+    df_add_poolings(
+      adam_db = adam_db_expr,
+      pools = impossible_pool,
+      keep_original = TRUE
+    )
+  )
+
+  expect_equal(nrow(res_keep$adsl), nrow(adsl_expr))
+  expect_equal(nrow(res_keep$adae), nrow(adae_expr))
+  expect_false("Impossible Pool" %in% res_keep$adsl$TRT01A)
+})

@@ -11,9 +11,9 @@ df_add_poolings(adam_db, pools, arm_var = "TRT01A", keep_original = TRUE)
 List of ADaM datasets containing at least the \code{adsl} data frame.}
 
 \item{pools}{(\code{list})\cr
-Named list where names are the new pooled labels, and values are character
-vectors of the original arm values to include. Use the special keyword \code{"all"}
-to include all patients.}
+Named list of custom pools. Values can be character vectors of arm names,
+logical expressions wrapped in \code{rlang::expr()}, or the keyword \code{"all"} to
+include all patients.}
 
 \item{arm_var}{(\code{character})\cr
 String of the arm variable to evaluate and overwrite.}
@@ -35,10 +35,14 @@ total column. Use this option with caution and ensure that you do not add a
 standard total column later to avoid double-counting.
 }
 \examples{
+library(dplyr)
+library(rlang)
+
 # Create a minimal dummy adam_db
 adsl <- data.frame(
   USUBJID = c("001", "002", "003", "004", "005"),
   TRT01A = c("Drug A", "Drug A", "Drug B", "Drug C", "Drug C"),
+  FLAG = c("Y", "N", "Y", "N", "Y"),
   stringsAsFactors = FALSE
 )
 adam_db <- list(adsl = adsl)
@@ -59,8 +63,17 @@ print(adam_db_safe$adsl)
 adam_db_warnings <- df_add_poolings(adam_db, pools = my_pools, keep_original = TRUE)
 print(adam_db_warnings$adsl)
 
+# Example C: Complex pooling using logical expressions ---------------------------
+complex_pools <- list(
+  "Flagged Patients" = rlang::expr(FLAG == "Y"),
+  "Drug A Flagged"   = rlang::expr(TRT01A == "Drug A" & FLAG == "Y")
+)
+
+adam_db_complex <- df_add_poolings(adam_db, pools = complex_pools, keep_original = FALSE)
+print(adam_db_complex$adsl)
+
 \dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true") && requireNamespace("yaml", quietly = TRUE)) withAutoprint(\{ # examplesIf}
-# Example C: Use yaml to define the pools config and run the function ------------
+# Example D: Use yaml to define the pools config and run the function ------------
 # Creating Dummy Data
 adex <- data.frame(
   USUBJID = c("001", "002", "003", "004"),
