@@ -45,7 +45,7 @@ library(crane)
 # Minimal ADSL and ADAE datasets
 adsl <- data.frame(
   USUBJID = c("001", "002", "003", "004", "005"),
-  TRT01A = c("Drug A", "Drug A", "Drug B", "Drug C", "Drug C"),
+  TRT02A = c("Drug A", "Drug A", "Drug B", "Drug C", "Drug C"),
   AGE = c(45, 50, 60, 65, 55),
   AFL = c("Y", "Y", "N", "Y", "N"),
   BFL = c("Y", "Y", "Y", "N", "Y"),
@@ -54,7 +54,7 @@ adsl <- data.frame(
 
 adae <- data.frame(
   USUBJID = c("001", "001", "002", "004", "005"),
-  TRT01A = c("Drug A", "Drug A", "Drug A", "Drug C", "Drug C"),
+  TRT02A = c("Drug A", "Drug A", "Drug A", "Drug C", "Drug C"),
   AEBODSYS = c("SOC1", "SOC1", "SOC2", "SOC1", "SOC2"),
   AEDECOD = c("PT1", "PT2", "PT3", "PT1", "PT4"),
   AFL = c("Y", "Y", "Y", "Y", "N"),
@@ -86,7 +86,7 @@ Pass your data directly into `tbl_with_pools()`, specifying your target gtsummar
 tbl_demo <- tbl_with_pools(
   data = adsl,
   pools = my_pools,
-  by = "TRT01A",
+  by = "TRT02A",
   denominator = NULL, # tbl_summary does not use a denominator
   keep_original = TRUE, # Keep Drug A, Drug B, and Drug C columns
   .tbl_fun = tbl_summary,
@@ -104,7 +104,7 @@ For safety tables that require a denominator, simply pass adsl to the denominato
 tbl_ae <- tbl_with_pools(
   data = adae,
   pools = my_pools,
-  by = "TRT01A",
+  by = "TRT02A",
   denominator = adsl,
   keep_original = TRUE,
   .tbl_fun = tbl_hierarchical_rate_and_count,
@@ -133,7 +133,7 @@ adam_db <- list(adsl = adsl, adae = adae)
 adam_db_pooled <- df_add_poolings(
   adam_db = adam_db,
   pools = my_pools,
-  arm_var = "TRT01A",
+  arm_var = "TRT02A",
   keep_original = TRUE
 )
 ```
@@ -149,25 +149,25 @@ adam_db_safe <- df_add_poolings(
     "Drug A + B" = c("Drug A", "Drug B"),
     "ccRCC Patients" = expr(AFL == "Y" & BFL == "Y")
   ),
-  arm_var = "TRT01A",
+  arm_var = "TRT02A",
   keep_original = FALSE
 )
 
-# Observe that TRT01A now only contains our specific pools for the applicable rows
-table(adam_db_safe$adsl$TRT01A)
+# Observe that TRT02A now only contains our specific pools for the applicable rows
+table(adam_db_safe$adsl$TRT02A)
 ```
 
 ## Tip: Using External Configuration (`YAML`)
-To keep your template scripts clean and generic across studies, both of these functions are designed to accept configurations directly from a `YAML` file (e.g., `arg_specs.yaml`).
+To keep your template scripts clean and generic across studies, both of these functions are designed to accept configurations directly from a `YAML` file (e.g., `meta_rules.yaml`).
 
 *Note: Because YAML cannot natively store R language objects, complex conditions will be read into R as plain text strings. However, you can easily convert these strings back into evaluable code by passing them through `rlang::parse_expr()` after importing your YAML configuration.*
 
-`arg_specs.yaml`:
+`meta_rules.yaml`:
 
 ```{yaml, eval = FALSE}
 poolings_config:
   keep_original: FALSE
-  arm_var: "TRT01A"
+  arm_var: "TRT02A"
   pools:
     "Drug A + B": ["Drug A", "Drug B"]
     "Total": ["all"]
@@ -181,7 +181,7 @@ Inside your script:
 library(rlang)
 
 # 1. Read the YAML
-pool_args <- yaml::read_yaml("arg_specs.yaml")$poolings_config
+pool_args <- yaml::read_yaml("meta_rules.yaml")$poolings_config
 
 # 2. Convert the string into a parsed expression
 pool_args$pools$`AB Patients` <- rlang::parse_expr(pool_args$pools$`AB Patients`)

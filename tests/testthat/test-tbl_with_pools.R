@@ -366,8 +366,8 @@ test_that("tbl_with_pools() processes rlang::expr() correctly without a denomina
 
   # Ensure the resulting gtsummary table headers contain our custom expression pool names
   header_labels <- tbl$table_styling$header$label
-  expect_true(any(stringr::str_detect(header_labels, "High BMI Patients")))
-  expect_true(any(stringr::str_detect(header_labels, "Drug A High BMI")))
+  expect_true(any(str_detect(header_labels, "High BMI Patients")))
+  expect_true(any(str_detect(header_labels, "Drug A High BMI")))
 })
 
 
@@ -391,7 +391,7 @@ test_that("tbl_with_pools() processes rlang::expr() correctly with a denominator
 
   # Ensure the column exists
   header_labels <- tbl$table_styling$header$label
-  expect_true(any(stringr::str_detect(header_labels, "High BMI Patients")))
+  expect_true(any(str_detect(header_labels, "High BMI Patients")))
 })
 
 
