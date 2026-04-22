@@ -4,9 +4,9 @@
 #' A wrapper function for [gtsummary::tbl_hierarchical()] to calculate exposure-adjusted 
 #' incidence rates of adverse events (or other clinical events) across a hierarchy.
 #' 
-#' The function calculates the incidence rate per specified person-years (default 100 PY)
-#' using the total time at risk for each patient. Incidence estimates and confidence 
-#' intervals are generated using [cardx::ard_incidence_rate()].
+#' The function calculates the incidence rate per specified person-time dynamically. 
+#' For subjects experiencing an event, Person-Years is calculated from `start_date` to 
+#' `event_date`. For subjects without an event, it is calculated from `start_date` to `end_date`.
 #'
 #' @inheritParams gtsummary::tbl_hierarchical
 #' @param variables ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
@@ -14,61 +14,28 @@
 #'   (e.g., system organ class and preferred term).
 #' @param by ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   A single column name in `data` to stratify the summary table by (e.g., treatment arm).
-#' @param time ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
-#'   A column name in `denominator` specifying the pre-calculated time-to-event 
-#'   or total follow-up time (in years) for each subject.
-#' @param event_count (`string`)\cr
-#'   A string specifying the column name to use for the number of events internally 
-#'   in the calculated ARD. Defaults to `"count"`.
-#' @param rate_multiplier (`numeric(1)`)\cr
-#'   A numeric scalar multiplier to scale the incidence rate. Defaults to `100` 
-#'   (i.e., calculating events per 100 Person-Years).
+#' @param start_date ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#'   A column name in `denominator` specifying the treatment start date.
+#' @param end_date ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#'   A column name in `denominator` specifying the treatment end date or follow-up cutoff.
+#' @param event_date ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#'   A column name in `data` specifying the onset date of the event.
+#' @param n_person_time (`numeric(1)`)\cr
+#'   A numeric scalar multiplier to scale the incidence rate. Defaults to `100`.
+#' @param unit_label (`string`)\cr
+#'   Label for the unit of estimated person-time output. Defaults to `"years"`.
+#' @param conf.level (`numeric(1)`)\cr
+#'   Confidence level for the calculated interval. Default is `0.95`. Passed directly 
+#'   to [cardx::ard_incidence_rate()].
+#' @param conf.type (`string`)\cr
+#'   Confidence interval type. Default is `"normal"`. Passed directly to 
+#'   [cardx::ard_incidence_rate()].
 #' @param digits (`numeric(1)`)\cr
 #'   An integer specifying the number of decimal places to round the incidence 
 #'   estimates, confidence intervals, and person-years to. Defaults to `2`.
 #'
-#' @details
-#' Prior to passing data to this function, the event-level dataset (`data`) should 
-#' typically be filtered to keep only the absolute first occurrence of any event for 
-#' each subject at each level of the hierarchy. 
-#' 
-#' Furthermore, the time-to-event (`time`) must be pre-calculated and present in the 
-#' `denominator` dataset. For subjects experiencing an event, this is typically the 
-#' time from treatment start to event onset. For subjects without an event, it is 
-#' the time from treatment start to treatment end, death, or study discontinuation.
-#'
 #' @returns a gtsummary table of class `"tbl_hierarchical_incidence_rate"`.
 #' @name tbl_hierarchical_incidence_rate
-#'
-#' @examples
-#' # Dummy datasets to demonstrate incidence rate calculation
-#' adae <- data.frame(
-#'   USUBJID = c("1", "1", "2", "3"),
-#'   ARM = c("A", "A", "B", "B"),
-#'   AESOC = c("SOC1", "SOC1", "SOC2", "SOC1"),
-#'   AEDECOD = c("PT1", "PT2", "PT3", "PT1")
-#' )
-#'
-#' adsl <- data.frame(
-#'   USUBJID = c("1", "2", "3", "4"),
-#'   ARM = c("A", "B", "B", "A"),
-#'   tte = c(1.5, 0.5, 2.0, 1.0)
-#' )
-#'
-#' # Example 1 ----------------------------------
-#' tbl_hierarchical_incidence_rate(
-#'   data = adae,
-#'   denominator = adsl,
-#'   variables = c(AESOC, AEDECOD),
-#'   by = ARM,
-#'   time = tte,
-#'   rate_multiplier = 100,
-#'   label = list(
-#'     AESOC = "System Organ Class",
-#'     AEDECOD = "Preferred Term",
-#'     "..ard_hierarchical_overall.." = "All Adverse Events"
-#'   )
-#' )
 #'
 #' @export
 tbl_hierarchical_incidence_rate <- function(data,
@@ -76,37 +43,51 @@ tbl_hierarchical_incidence_rate <- function(data,
                                             variables,
                                             by = NULL,
                                             id = USUBJID,
-                                            time = tte,
-                                            event_count = "count",
-                                            rate_multiplier = 100,
+                                            start_date = TRTSDT,
+                                            end_date = TRTEDT,
+                                            event_date = AESTDTC,
+                                            n_person_time = 100,
+                                            unit_label = "years",
+                                            conf.level = 0.95,
+                                            conf.type = "normal",
                                             digits = 2,
                                             label = NULL) {
 
   # 1. Base input validation
   check_data_frame(data)
   check_data_frame(denominator)
-  check_string(event_count)
-  check_numeric(rate_multiplier)
-  check_scalar(rate_multiplier)
+  check_numeric(n_person_time)
+  check_scalar(n_person_time)
+  check_string(unit_label)
+  check_numeric(conf.level)
+  check_scalar(conf.level)
+  check_string(conf.type)
   check_numeric(digits)
   check_scalar(digits)
 
-  # 2. Process Tidy-Select Arguments
+  # 2. Extract the overall label safely BEFORE `cards` processes the dataset
+  overall_label <- "All Adverse Events"
+  if (is.list(label) && "..ard_hierarchical_overall.." %in% names(label)) {
+    overall_label <- label[["..ard_hierarchical_overall.."]]
+  }
+
+  # 3. Process Tidy-Select Arguments
   cards::process_selectors(
     data,
     variables = {{ variables }},
     by = {{ by }},
-    id = {{ id }}
+    id = {{ id }},
+    event_date = {{ event_date }}
   )
   cards::process_selectors(
     denominator,
-    time = {{ time }}
+    start_date = {{ start_date }},
+    end_date = {{ end_date }}
   )
   
-  # Ensure the variables vector contains at least two hierarchical levels
   check_length(variables, 2)
 
-  # 3. Auto-extract Labels
+  # 4. Auto-extract Labels for Dataset Columns
   cards::process_formula_selectors(data[variables], label = label)
   cards::fill_formula_selectors(
     data[variables],
@@ -124,68 +105,51 @@ tbl_hierarchical_incidence_rate <- function(data,
     label = label,
     overall_row = TRUE
   ) |>
-    gtsummary::sort_hierarchical()
-
-  # 4. Closure wrapper for ARD generation
-  calc_ard <- function(df_ae, strat_vars = NULL) {
-    grp_vars <- c(id, by, strat_vars)
-
-    df_ae |>
-      dplyr::summarise(
-        .by = dplyr::all_of(grp_vars),
-        count = length(!!rlang::sym(id))
-      ) |>
-      dplyr::right_join(denominator, by = c(id, by)) |>
-      dplyr::mutate(
-        count = dplyr::coalesce(count, 0L),
-        time_var = .data[[time]]
-      ) |>
-      cardx::ard_incidence_rate(
-        time = "time_var",
-        count = "count",
-        by = dplyr::any_of(by),
-        strata = dplyr::all_of(strat_vars),
-        unit_label = "years"
-      ) |>
-      dplyr::filter(
-        stat_name %in% c(
-          "n_events", "tot_person_time", "estimate", "conf.low", "conf.high"
-        )
-      ) |>
-      dplyr::mutate(
-        stat = lapply(seq_along(stat), function(i) {
-          if (stat_name[[i]] %in% c("estimate", "conf.low", "conf.high")) {
-            stat[[i]] * rate_multiplier
-          } else {
-            stat[[i]]
-          }
-        })
-      ) |>
-      cards::update_ard_fmt_fun(
-        stat_names = c("estimate", "tot_person_time", "conf.low", "conf.high"),
-        fmt_fun = crane::label_roche_number(digits = digits)
+    gtsummary::sort_hierarchical() |>
+    gtsummary::modify_header(
+      gtsummary::all_stat_cols() ~ "No. of\nParticipants\nwith AE (%)"
+    ) |>
+    gtsummary::modify_table_body(~ .x |> dplyr::mutate(
+      label = ifelse(
+        dplyr::row_number() == 1,
+        .env$overall_label, 
+        label
       )
-  }
-
-  ard_overall <- calc_ard(data) |>
+    ))
+  
+  # 5. Generate ARDs dynamically using the date inputs
+  ard_overall <- .ard_incidence_rate(
+    data = data, denominator = denominator, id = id, by = by, 
+    start_date = start_date, end_date = end_date, event_date = event_date,
+    n_person_time = n_person_time, unit_label = unit_label,
+    conf.level = conf.level, conf.type = conf.type, digits = digits
+  ) |>
     dplyr::mutate(variable = "..ard_hierarchical_overall..")
 
-  ard_lvl1 <- calc_ard(data, strat_vars = variables[1]) |>
+  ard_lvl1 <- .ard_incidence_rate(
+    data = data, denominator = denominator, id = id, by = by, 
+    strata_vars = variables[1], 
+    start_date = start_date, end_date = end_date, event_date = event_date,
+    n_person_time = n_person_time, unit_label = unit_label, 
+    conf.level = conf.level, conf.type = conf.type, digits = digits
+  ) |>
     dplyr::select(-cards::all_ard_variables()) |>
     dplyr::rename(
       variable = dplyr::if_else(length(by) > 0, "group2", "group1"),
-      variable_level = dplyr::if_else(
-        length(by) > 0, "group2_level", "group1_level"
-      )
+      variable_level = dplyr::if_else(length(by) > 0, "group2_level", "group1_level")
     )
 
-  ard_lvl2 <- calc_ard(data, strat_vars = variables) |>
+  ard_lvl2 <- .ard_incidence_rate(
+    data = data, denominator = denominator, id = id, by = by, 
+    strata_vars = variables, 
+    start_date = start_date, end_date = end_date, event_date = event_date,
+    n_person_time = n_person_time, unit_label = unit_label, 
+    conf.level = conf.level, conf.type = conf.type, digits = digits
+  ) |>
     dplyr::select(-cards::all_ard_variables()) |>
     dplyr::rename(
       variable = dplyr::if_else(length(by) > 0, "group3", "group2"),
-      variable_level = dplyr::if_else(
-        length(by) > 0, "group3_level", "group2_level"
-      )
+      variable_level = dplyr::if_else(length(by) > 0, "group3_level", "group2_level")
     )
 
   ard_n <- cards::bind_ard(
@@ -193,11 +157,22 @@ tbl_hierarchical_incidence_rate <- function(data,
     cardx::ard_total_n(denominator)
   )
 
+  # Format the header labels dynamically based on the unit_label 
+  pt_abbr <- switch(
+    tolower(unit_label),
+    "years" = "PY",
+    "months" = "PM",
+    "days" = "PD",
+    "weeks" = "PW",
+    "time" = "PT",
+    paste0("Person-", tools::toTitleCase(unit_label))
+  )
+
   tbl_stat_labels <- list(
     "{n_events}" = "No. of\nAEs",
-    "{tot_person_time}" = "PY",
-    "{estimate}" = paste0("AE Rate\nper\n", rate_multiplier, " PY"),
-    "({conf.low}, {conf.high})" = "95% CI"
+    "{tot_person_time}" = pt_abbr,
+    "{estimate}" = paste0("AE Rate\nper\n", n_person_time, " ", pt_abbr),
+    "({conf.low}, {conf.high})" = paste0(conf.level * 100, "% CI")
   )
 
   tbls_rates <- lapply(names(tbl_stat_labels), function(stat) {
@@ -208,7 +183,7 @@ tbl_hierarchical_incidence_rate <- function(data,
         gtsummary::modify_table_body(~ .x |> dplyr::mutate(
           row_type = "level",
           var_label = NA,
-          label = label[["..ard_hierarchical_overall.."]],
+          label = .env$overall_label, 
           group1 = "..ard_hierarchical_overall.."
         )),
       cards::bind_ard(ard_n, ard_lvl1, ard_lvl2) |>
@@ -231,7 +206,6 @@ tbl_hierarchical_incidence_rate <- function(data,
       dplyr::relocate(x, dplyr::all_of(col_order), .after = "label")
     }) |>
     gtsummary::remove_footnote_header(tidyselect::everything()) |>
-    # 5. Clean up "Zero" display to match rate_by_grade functionality
     gtsummary::modify_post_fmt_fun(
       fmt_fun = ~ ifelse(
         . %in% c("0.00", "0 (0.00, 0.00)", "0 (NA, NA)", "0.0"), "0", .
@@ -239,10 +213,104 @@ tbl_hierarchical_incidence_rate <- function(data,
       columns = gtsummary::all_stat_cols()
     )
 
-  # 6. Preserve function call and environment for gtsummary compatibility
   tbl_final$call_list <- list(tbl_hierarchical_incidence_rate = match.call())
   tbl_final$inputs <- as.list(environment())
   
-  tbl_final |>
-    structure(class = c("tbl_hierarchical_incidence_rate", "gtsummary"))
+  tbl_final |> structure(class = c("tbl_hierarchical_incidence_rate", "gtsummary"))
+}
+
+#' Internal Helper for Incidence Rate ARDs
+#' @keywords internal
+#' @noRd
+.ard_incidence_rate <- function(data, 
+                                denominator, 
+                                id, 
+                                by, 
+                                start_date,
+                                end_date,
+                                event_date,
+                                strata_vars = NULL, 
+                                n_person_time = 100,
+                                unit_label = "years",
+                                conf.level = 0.95,
+                                conf.type = "normal",
+                                digits = 2) {
+  
+  if (!is.null(strata_vars) && length(strata_vars) > 0) {
+    unique_strata <- data |> 
+      dplyr::select(dplyr::all_of(strata_vars)) |> 
+      dplyr::distinct() |>
+      dplyr::mutate(..dummy.. = 1L)
+      
+    expanded_denom <- denominator |>
+      dplyr::mutate(..dummy.. = 1L) |>
+      dplyr::full_join(unique_strata, by = "..dummy..", relationship = "many-to-many") |>
+      dplyr::select(-"..dummy..")
+  } else {
+    expanded_denom <- denominator
+  }
+
+  grp_vars <- c(id, by, strata_vars)
+
+  # 1. Bulletproof Date Parser & Minifier
+  safe_min_date <- function(x) {
+    x_char <- as.character(x)
+    x_char[x_char == "" | x_char == "NA"] <- NA_character_
+    d <- as.Date(substr(x_char, 1, 10), format = "%Y-%m-%d")
+    
+    # If all dates are missing for this patient/group, return NA quietly
+    if (all(is.na(d))) {
+      return(as.Date(NA))
+    }
+    min(d, na.rm = TRUE)
+  }
+
+  # 2. Summarize actual events safely
+  ae_counts <- data |>
+    dplyr::summarise(
+      .by = dplyr::all_of(grp_vars),
+      count = length(.data[[id]]),
+      # Safely find the earliest valid date, returning NA if none exist
+      ae_onset = safe_min_date(.data[[event_date]])
+    )
+    
+  # 3. Join counts onto the expanded grid and safely calculate Time-to-Event
+  merged_data <- expanded_denom |>
+    dplyr::left_join(ae_counts, by = grp_vars) |>
+    dplyr::mutate(
+      count = dplyr::coalesce(count, 0L),
+      
+      # Parse start and end dates once to keep the if_else clean
+      start_dt = as.Date(substr(as.character(.data[[start_date]]), 1, 10), format = "%Y-%m-%d"),
+      end_dt   = as.Date(substr(as.character(.data[[end_date]]), 1, 10), format = "%Y-%m-%d"),
+      
+      time_var = dplyr::if_else(
+        # Check for valid dates that occur ON or AFTER the start date
+        count > 0 & !is.na(ae_onset) & ae_onset >= start_dt,
+        # Valid AE Date: Onset date - Start date + 1
+        as.numeric(difftime(ae_onset, start_dt, units = "days") + 1) / 365.25,
+        # No AE or Bad/Prior Date: End date - Start date + 1 (This preserves the counts!)
+        as.numeric(difftime(end_dt, start_dt, units = "days") + 1) / 365.25
+      )
+    )
+
+  # 4. Compute incidence rate securely
+  merged_data |>
+    cardx::ard_incidence_rate(
+      time = "time_var",
+      count = "count",
+      by = dplyr::any_of(by),
+      strata = dplyr::all_of(strata_vars),
+      n_person_time = n_person_time,
+      conf.level = conf.level,
+      conf.type = conf.type,
+      unit_label = unit_label 
+    ) |>
+    dplyr::filter(
+      stat_name %in% c("n_events", "tot_person_time", "estimate", "conf.low", "conf.high")
+    ) |>
+    cards::update_ard_fmt_fun(
+      stat_names = c("estimate", "tot_person_time", "conf.low", "conf.high"),
+      fmt_fun = crane::label_roche_number(digits = digits)
+    )
 }
