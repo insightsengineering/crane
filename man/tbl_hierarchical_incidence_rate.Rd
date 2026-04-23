@@ -97,6 +97,7 @@ adsl <- data.frame(
 adae <- data.frame(
   USUBJID = c("PT02", "PT05", "PT05"),
   AESOC = c("Cardiac", "Nervous", "Cardiac"),
+  ARM = c("Treatment", "Placebo", "Placebo"),
   AEDECOD = c("Tachycardia", "Headache", "Palpitations"),
   AESTDTC = c("2023-04-15", "2023-09-10", "2023-10-01")
 )
