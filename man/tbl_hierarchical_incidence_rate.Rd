@@ -84,3 +84,39 @@ The function calculates the incidence rate per specified person-time dynamically
 For subjects experiencing an event, Person-Years is calculated from \code{start_date} to
 \code{event_date}. For subjects without an event, it is calculated from \code{start_date} to \code{end_date}.
 }
+\examples{
+# Dummy denominator dataset with treatment start and end dates
+adsl <- data.frame(
+  USUBJID = paste0("PT", sprintf("\%02d", 1:5)),
+  ARM = c("Treatment", "Treatment", "Placebo", "Placebo", "Placebo"),
+  TRTSDT = as.Date(rep("2023-01-01", 5)),
+  TRTEDT = as.Date(c("2023-12-31", "2023-06-30", "2023-12-31", "2023-08-15", "2023-10-31"))
+)
+
+# Dummy AE dataset with onset dates (subset to first occurrences)
+adae <- data.frame(
+  USUBJID = c("PT02", "PT05", "PT05"),
+  AESOC = c("Cardiac", "Nervous", "Cardiac"),
+  AEDECOD = c("Tachycardia", "Headache", "Palpitations"),
+  AESTDTC = c("2023-04-15", "2023-09-10", "2023-10-01")
+)
+
+# Build the hierarchical incidence rate table
+tbl_hierarchical_incidence_rate(
+  data = adae,
+  denominator = adsl,
+  variables = c(AESOC, AEDECOD),
+  by = ARM,
+  start_date = TRTSDT,
+  end_date = TRTEDT,
+  event_date = AESTDTC,
+  n_person_time = 100,
+  unit_label = "years",
+  label = list(
+    AESOC = "MedDRA System Organ Class",
+    AEDECOD = "MedDRA Preferred Term",
+    "..ard_hierarchical_overall.." = "All Adverse Events"
+  )
+)
+
+}
