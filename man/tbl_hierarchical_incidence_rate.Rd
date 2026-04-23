@@ -9,10 +9,10 @@ tbl_hierarchical_incidence_rate(
   denominator,
   variables,
   by = NULL,
-  id = USUBJID,
-  start_date = TRTSDT,
-  end_date = TRTEDT,
-  event_date = AESTDTC,
+  id = "USUBJID",
+  start_date = "TRTSDT",
+  end_date = "TRTEDT",
+  event_date = "AESTDTC",
   n_person_time = 100,
   unit_label = "years",
   conf.level = 0.95,
@@ -35,7 +35,8 @@ A character vector or tidy-selector of hierarchical columns in \code{data}
 (e.g., system organ class and preferred term).}
 
 \item{by}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-A single column name in \code{data} to stratify the summary table by (e.g., treatment arm).}
+A single column name in \code{data} to stratify the summary table by
+(e.g., treatment arm).}
 
 \item{id}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 argument used to subset \code{data} to identify rows in \code{data} to calculate
@@ -45,7 +46,8 @@ event rates in \code{tbl_hierarchical()}.}
 A column name in \code{denominator} specifying the treatment start date.}
 
 \item{end_date}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-A column name in \code{denominator} specifying the treatment end date or follow-up cutoff.}
+A column name in \code{denominator} specifying the treatment end date or
+follow-up cutoff.}
 
 \item{event_date}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 A column name in \code{data} specifying the onset date of the event.}
@@ -57,8 +59,8 @@ A numeric scalar multiplier to scale the incidence rate. Defaults to \code{100}.
 Label for the unit of estimated person-time output. Defaults to \code{"years"}.}
 
 \item{conf.level}{(\code{numeric(1)})\cr
-Confidence level for the calculated interval. Default is \code{0.95}. Passed directly
-to \code{\link[cardx:ard_incidence_rate]{cardx::ard_incidence_rate()}}.}
+Confidence level for the calculated interval. Default is \code{0.95}. Passed
+directly to \code{\link[cardx:ard_incidence_rate]{cardx::ard_incidence_rate()}}.}
 
 \item{conf.type}{(\code{string})\cr
 Confidence interval type. Default is \code{"normal"}. Passed directly to
@@ -77,12 +79,14 @@ If no label has been set, the column name is used.}
 a gtsummary table of class \code{"tbl_hierarchical_incidence_rate"}.
 }
 \description{
-A wrapper function for \code{\link[gtsummary:tbl_hierarchical]{gtsummary::tbl_hierarchical()}} to calculate exposure-adjusted
-incidence rates of adverse events (or other clinical events) across a hierarchy.
+A wrapper function for \code{\link[gtsummary:tbl_hierarchical]{gtsummary::tbl_hierarchical()}} to calculate
+exposure-adjusted incidence rates of adverse events (or other clinical
+events) across a hierarchy.
 
-The function calculates the incidence rate per specified person-time dynamically.
-For subjects experiencing an event, Person-Years is calculated from \code{start_date} to
-\code{event_date}. For subjects without an event, it is calculated from \code{start_date} to \code{end_date}.
+The function calculates the incidence rate per specified person-time
+dynamically. For subjects experiencing an event, Person-Years is calculated
+from \code{start_date} to \code{event_date}. For subjects without an event, it is
+calculated from \code{start_date} to \code{end_date}.
 }
 \examples{
 # Dummy denominator dataset with treatment start and end dates
@@ -90,7 +94,9 @@ adsl <- data.frame(
   USUBJID = paste0("PT", sprintf("\%02d", 1:5)),
   ARM = c("Treatment", "Treatment", "Placebo", "Placebo", "Placebo"),
   TRTSDT = as.Date(rep("2023-01-01", 5)),
-  TRTEDT = as.Date(c("2023-12-31", "2023-06-30", "2023-12-31", "2023-08-15", "2023-10-31"))
+  TRTEDT = as.Date(c(
+    "2023-12-31", "2023-06-30", "2023-12-31", "2023-08-15", "2023-10-31"
+  ))
 )
 
 # Dummy AE dataset with onset dates (subset to first occurrences)

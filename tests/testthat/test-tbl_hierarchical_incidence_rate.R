@@ -1,13 +1,16 @@
 # tests/testthat/test-tbl_hierarchical_incidence_rate.R
 
+library(testthat)
+library(dplyr)
+
 # 1. Create robust dummy data designed to trigger every edge case
 adsl_test <- data.frame(
   USUBJID = c("P1", "P2", "P3", "P4", "P5"),
   ARM = c("Trt", "Trt", "Pbo", "Pbo", "Pbo"),
   TRTSDT = as.Date(rep("2023-01-01", 5)),
-  TRTEDT = as.Date(
-    c("2023-12-31", "2023-06-30", "2023-12-31", "2023-12-31", "2023-12-31")
-  )
+  TRTEDT = as.Date(c(
+    "2023-12-31", "2023-06-30", "2023-12-31", "2023-12-31", "2023-12-31"
+  ))
 )
 
 adae_test <- data.frame(
@@ -50,7 +53,7 @@ test_that(
     expect_s3_class(tbl, "gtsummary")
     expect_true("table_body" %in% names(tbl))
 
-    # Ensure the overall label defaulted correctly since it wasn't provided
+    # Ensure overall label defaulted correctly since it wasn't provided
     expect_true(any(tbl$table_body$label == "All Adverse Events"))
   }
 )
@@ -69,7 +72,7 @@ test_that(
       end_date = TRTEDT,
       event_date = AESTDTC,
       n_person_time = 1000,
-      unit_label = "months", # Hits the "PM" branch of the switch statement
+      unit_label = "months", # Hits the "PM" branch of the switch
       label = list(
         AESOC = "System Organ Class",
         "..ard_hierarchical_overall.." = "Custom Overall AEs"
