@@ -114,6 +114,42 @@ tbl_ae <- tbl_with_pools(
 tbl_ae
 ```
 
+## Example: Reordering Columns
+
+When using `tbl_with_pools()`, the final column order from left to right is strictly dictated by the sequence in which the individual tables are merged. Attempting to manually reorder `{gtsummary}` columns *after* the table is generated is highly fragile and prone to breaking.
+
+Instead, the safest and easiest way to reorder your columns is to take manual control of the entire layout by setting `keep_original = FALSE`. 
+
+When you do this, you simply define **all** of your desired columns—including your standard unpooled arms—directly inside your `pools` list in the exact order you want them to appear. The function will generate and merge them in that precise top-to-bottom sequence.
+
+### Example: Manual Column Ordering
+
+Let's say we want the "All Patients" total column on the far left, followed by a complex flagged cohort, and finally the individual treatment arms.
+
+```{r, eval = TRUE}
+# 1. Define ALL columns in the exact order you want them to appear
+my_ordered_pools <- list(
+  "All Patients"           = "all",                                 # Column 1
+  "AB Patients (Flags)"    = expr(AFL == "Y" & BFL == "Y"),         # Column 2
+  "Drug A Only"            = c("Drug A"),                           # Column 3
+  "Drug B Only"            = c("Drug B"),                           # Column 4
+  "Drug C Only"            = c("Drug C")                            # Column 5
+)
+
+# 2. Run the wrapper with keep_original = FALSE
+tbl_ordered <- tbl_with_pools(
+  data          = adsl,
+  pools         = my_ordered_pools,
+  by            = "TRT02A",
+  denominator   = NULL,
+  keep_original = FALSE,     # <-- Crucial: turns off the default automatic base arms
+  .tbl_fun      = tbl_summary,
+  include       = AGE
+)
+
+tbl_ordered
+```
+
 ## Method 2: The Pre-processing Fallback (`df_add_poolings`)
 _**DISCLAIMER**: This is a risky function. Please consider using `tbl_with_pools()` instead._
 

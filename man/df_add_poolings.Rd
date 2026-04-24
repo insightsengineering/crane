@@ -35,9 +35,6 @@ total column. Use this option with caution and ensure that you do not add a
 standard total column later to avoid double-counting.
 }
 \examples{
-library(dplyr)
-library(rlang)
-
 # Create a minimal dummy adam_db
 adsl <- data.frame(
   USUBJID = c("001", "002", "003", "004", "005"),
@@ -123,4 +120,8 @@ if (!is.null(pool_args)) {
 # View the result
 adam_db_pooled$adsl2
 \dontshow{\}) # examplesIf}
+}
+\seealso{
+\code{\link[=tbl_with_pools]{tbl_with_pools()}} for a safer alternative that creates pooled summaries
+without modifying the underlying datasets.
 }

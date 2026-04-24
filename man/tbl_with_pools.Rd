@@ -166,3 +166,7 @@ if (!is.null(pool_args)) {
 }
 \dontshow{\}) # examplesIf}
 }
+\seealso{
+\code{\link[=df_add_poolings]{df_add_poolings()}} for a more dangerous pre-processing approach that
+modifies the underlying datasets to create pooled rows (not recommended).
+}

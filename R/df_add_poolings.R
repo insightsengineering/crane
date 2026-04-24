@@ -24,9 +24,6 @@
 #' @return Updated list of ADaM datasets.
 #'
 #' @examples
-#' library(dplyr)
-#' library(rlang)
-#'
 #' # Create a minimal dummy adam_db
 #' adsl <- data.frame(
 #'   USUBJID = c("001", "002", "003", "004", "005"),
@@ -111,6 +108,9 @@
 #'
 #' # View the result
 #' adam_db_pooled$adsl2
+#'
+#' @seealso [tbl_with_pools()] for a safer alternative that creates pooled summaries
+#'   without modifying the underlying datasets.
 #'
 #' @export
 df_add_poolings <- function(adam_db, pools, arm_var = "TRT01A", keep_original = TRUE) {

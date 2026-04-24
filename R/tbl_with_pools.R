@@ -144,6 +144,9 @@
 #'   tbl_pooled_yaml
 #' }
 #'
+#' @seealso [df_add_poolings()] for a more dangerous pre-processing approach that
+#'   modifies the underlying datasets to create pooled rows (not recommended).
+#'
 #' @export
 tbl_with_pools <- function(
   data,
