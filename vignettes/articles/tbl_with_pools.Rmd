@@ -1,0 +1,234 @@
+---
+title: "Working with Pooled Treatment Arms"
+output: rmarkdown::html_vignette
+vignette: >
+  %\\VignetteIndexEntry{Working with Pooled Treatment Arms}
+  %\\VignetteEngine{knitr::rmarkdown}
+  %\\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+In clinical reporting, it is incredibly common to require tables that display both the original treatment arms (e.g., "Dose A", "Dose B") alongside pooled arms (e.g., "Any Dose") or a total column ("All Patients"). You may also need to define highly specific cohorts based on clinical flags.
+
+Because these groups overlap, a single patient must technically be counted in multiple columns. Modifying the underlying ADaM datasets to achieve this introduces duplicated `USUBJID`s, which breaks standard CDISC data integrity and can cause severe downstream calculation errors if not managed perfectly.
+
+`{crane}` provides two ways to handle this. We **highly recommend Method 1** for all standard TLG generation.
+
+## Method 1: The Recommended Approach (tbl_with_pools)
+
+For any table generated using `{gtsummary}` or custom extensions (like `tbl_hierarchical_rate_and_count`), you should use `tbl_with_pools()`.
+
+### Why is this the recommended approach?
+
+- **Pristine Data Integrity:** Your ADaM datasets remain untouched in your environment. Patients are never duplicated.
+
+- **Automatic Denominator Management:** It safely subsets both your analysis dataset and your denominator dataset simultaneously, and dynamically evaluates complex logical expressions across both.
+
+- **Safe Totals:** Bypasses the need for `gtsummary::add_overall()`, which would mathematically double-count patients if applied to a pre-pooled dataset.
+
+### Setup Dummy Data
+
+Notice we are including standard analysis flags (`AFL`, `BFL`) which we will use later to define complex pools.
+
+```{r}
+library(dplyr)
+library(gtsummary)
+library(rlang)
+library(crane)
+
+# Minimal ADSL and ADAE datasets
+adsl <- data.frame(
+  USUBJID = c("001", "002", "003", "004", "005"),
+  TRT02A = c("Drug A", "Drug A", "Drug B", "Drug C", "Drug C"),
+  AGE = c(45, 50, 60, 65, 55),
+  AFL = c("Y", "Y", "N", "Y", "N"),
+  BFL = c("Y", "Y", "Y", "N", "Y"),
+  stringsAsFactors = FALSE
+)
+
+adae <- data.frame(
+  USUBJID = c("001", "001", "002", "004", "005"),
+  TRT02A = c("Drug A", "Drug A", "Drug A", "Drug C", "Drug C"),
+  AEBODSYS = c("SOC1", "SOC1", "SOC2", "SOC1", "SOC2"),
+  AEDECOD = c("PT1", "PT2", "PT3", "PT1", "PT4"),
+  AFL = c("Y", "Y", "Y", "Y", "N"),
+  BFL = c("Y", "Y", "Y", "N", "Y"),
+  stringsAsFactors = FALSE
+)
+```
+
+### Defining the Pools
+
+`{crane}` supports a mixed-definition pooling list. You can seamlessly combine:
+1. **Character vectors:** For standard string matching on the arm variable.
+2. **The `"all"` keyword:** To create an absolute total column.
+3. **Logical Expressions (`rlang::expr()`):** To define complex, dynamic cohorts based on multiple variables.
+
+```{r}
+my_pools <- list(
+  "Complex Pool (Flags)" = expr(AFL == "Y" & BFL == "Y"),
+  "Drug A + B"           = c("Drug A", "Drug B"),
+  "All Patients"         = "all"
+)
+```
+
+### Example: Efficacy/Demographics (No Denominator)
+
+Pass your data directly into `tbl_with_pools()`, specifying your target gtsummary function via `.tbl_fun`. All other arguments are passed straight through to the target function.
+
+```{r}
+tbl_demo <- tbl_with_pools(
+  data = adsl,
+  pools = my_pools,
+  by = "TRT02A",
+  denominator = NULL, # tbl_summary does not use a denominator
+  keep_original = TRUE, # Keep Drug A, Drug B, and Drug C columns
+  .tbl_fun = tbl_summary,
+  include = AGE # Argument passed to tbl_summary
+)
+
+tbl_demo
+```
+
+### Example: Safety (With Denominator)
+
+For safety tables that require a denominator, simply pass adsl to the denominator argument. The function handles the subsetting geometry for you.
+
+```{r}
+tbl_ae <- tbl_with_pools(
+  data = adae,
+  pools = my_pools,
+  by = "TRT02A",
+  denominator = adsl,
+  keep_original = TRUE,
+  .tbl_fun = tbl_hierarchical_rate_and_count,
+  variables = c(AEBODSYS, AEDECOD)
+)
+
+tbl_ae
+```
+
+## Example: Reordering Columns
+
+When using `tbl_with_pools()`, the final column order from left to right is strictly dictated by the sequence in which the individual tables are merged. Attempting to manually reorder `{gtsummary}` columns *after* the table is generated is highly fragile and prone to breaking.
+
+Instead, the safest and easiest way to reorder your columns is to take manual control of the entire layout by setting `keep_original = FALSE`. 
+
+When you do this, you simply define **all** of your desired columns—including your standard unpooled arms—directly inside your `pools` list in the exact order you want them to appear. The function will generate and merge them in that precise top-to-bottom sequence.
+
+### Example: Manual Column Ordering
+
+Let's say we want the "All Patients" total column on the far left, followed by a complex flagged cohort, and finally the individual treatment arms.
+
+```{r, eval = TRUE}
+# 1. Define ALL columns in the exact order you want them to appear
+my_ordered_pools <- list(
+  "All Patients"           = "all",                                 # Column 1
+  "AB Patients (Flags)"    = expr(AFL == "Y" & BFL == "Y"),         # Column 2
+  "Drug A Only"            = c("Drug A"),                           # Column 3
+  "Drug B Only"            = c("Drug B"),                           # Column 4
+  "Drug C Only"            = c("Drug C")                            # Column 5
+)
+
+# 2. Run the wrapper with keep_original = FALSE
+tbl_ordered <- tbl_with_pools(
+  data          = adsl,
+  pools         = my_ordered_pools,
+  by            = "TRT02A",
+  denominator   = NULL,
+  keep_original = FALSE,     # <-- Crucial: turns off the default automatic base arms
+  .tbl_fun      = tbl_summary,
+  include       = AGE
+)
+
+tbl_ordered
+```
+
+## Method 2: The Pre-processing Fallback (`df_add_poolings`)
+_**DISCLAIMER**: This is a risky function. Please consider using `tbl_with_pools()` instead._
+
+Sometimes, you need pooled data outside of `gtsummary`—for instance, when generating a custom `ggplot2` graphic, exporting a flattened `.csv` of grouped statistics, or using an alternative reporting engine.
+
+In these specific scenarios, you can use `df_add_poolings()` to physically append the pooled rows directly onto your data frames.
+
+### The Danger of the "Total" Column
+
+If you set `keep_original = TRUE` (keeping your base arms) and add a pool of `"all"`, **your dataset will double in size**. If a downstream function attempts to calculate a "Total" using this newly expanded data, it will count every patient twice.
+
+The function will explicitly warn you when you do this:
+
+```{r}
+adam_db <- list(adsl = adsl, adae = adae)
+
+adam_db_pooled <- df_add_poolings(
+  adam_db = adam_db,
+  pools = my_pools,
+  arm_var = "TRT02A",
+  keep_original = TRUE
+)
+```
+
+### Safe Usage
+
+When using `df_add_poolings()`, it is often safest to set `keep_original = FALSE`. This replaces the original arms entirely with your new pools, guaranteeing that no single patient exists in the dataset more than once per pooled definition.
+
+```{r}
+adam_db_safe <- df_add_poolings(
+  adam_db = adam_db,
+  pools = list(
+    "Drug A + B" = c("Drug A", "Drug B"),
+    "ccRCC Patients" = expr(AFL == "Y" & BFL == "Y")
+  ),
+  arm_var = "TRT02A",
+  keep_original = FALSE
+)
+
+# Observe that TRT02A now only contains our specific pools for the applicable rows
+table(adam_db_safe$adsl$TRT02A)
+```
+
+## Tip: Using External Configuration (`YAML`)
+To keep your template scripts clean and generic across studies, both of these functions are designed to accept configurations directly from a `YAML` file (e.g., `meta_rules.yaml`).
+
+*Note: Because YAML cannot natively store R language objects, complex conditions will be read into R as plain text strings. However, you can easily convert these strings back into evaluable code by passing them through `rlang::parse_expr()` after importing your YAML configuration.*
+
+`meta_rules.yaml`:
+
+```{yaml, eval = FALSE}
+poolings_config:
+  keep_original: FALSE
+  arm_var: "TRT02A"
+  pools:
+    "Drug A + B": ["Drug A", "Drug B"]
+    "Total": ["all"]
+    # Write the expression as a plain string
+    "AB Patients": "AFL == 'Y' & BFL == 'Y'"
+```
+
+Inside your script:
+
+```{r, eval = FALSE}
+library(rlang)
+
+# 1. Read the YAML
+pool_args <- yaml::read_yaml("meta_rules.yaml")$poolings_config
+
+# 2. Convert the string into a parsed expression
+pool_args$pools$`AB Patients` <- rlang::parse_expr(pool_args$pools$`AB Patients`)
+
+# 3. Pass it to your function! (is.language() will now correctly evaluate to TRUE)
+tbl <- tbl_with_pools(
+  data          = adae,
+  pools         = pool_args$pools,
+  by            = pool_args$arm_var,
+  denominator   = adsl,
+  keep_original = pool_args$keep_original,
+  .tbl_fun      = tbl_summary
+)
+```
