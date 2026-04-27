@@ -56,7 +56,11 @@ A column name in \code{data} specifying the onset date of the event.}
 A numeric scalar multiplier to scale the incidence rate. Defaults to \code{100}.}
 
 \item{unit_label}{(\code{string})\cr
-Label for the unit of estimated person-time output. Defaults to \code{"years"}.}
+Label for the unit of estimated person-time output. Defaults to \code{"years"}.
+Known abbreviations ("years", "months", "weeks", "days") are parsed into
+standard acronyms (e.g., "PY"). Custom strings will be formatted to
+Title Case and prefixed with "Person-" (e.g., \code{"decades"} becomes
+\code{"Person-Decades"}).}
 
 \item{conf.level}{(\code{numeric(1)})\cr
 Confidence level for the calculated interval. Default is \code{0.95}. Passed

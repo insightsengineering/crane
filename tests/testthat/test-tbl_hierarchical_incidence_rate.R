@@ -1,5 +1,3 @@
-# tests/testthat/test-tbl_hierarchical_incidence_rate.R
-
 library(testthat)
 library(dplyr)
 
@@ -33,113 +31,140 @@ adae_test <- data.frame(
   )
 )
 
-test_that(
-  "tbl_hierarchical_incidence_rate executes standard usage with `by`",
-  {
-    tbl <- tbl_hierarchical_incidence_rate(
-      data = adae_test,
-      denominator = adsl_test,
-      variables = c(AESOC, AEDECOD),
-      by = ARM,
-      start_date = TRTSDT,
-      end_date = TRTEDT,
-      event_date = AESTDTC,
-      n_person_time = 100,
-      unit_label = "years"
+test_that("tbl_hierarchical_incidence_rate runs with minimum arguments", {
+  # Relies entirely on the default values for id, dates, and settings
+  tbl_min <- tbl_hierarchical_incidence_rate(
+    data = adae_test,
+    denominator = adsl_test,
+    variables = c(AESOC, AEDECOD)
+  )
+
+  expect_s3_class(tbl_min, "tbl_hierarchical_incidence_rate")
+  expect_s3_class(tbl_min, "gtsummary")
+  expect_true("table_body" %in% names(tbl_min))
+  expect_true(any(tbl_min$table_body$label == "All Adverse Events"))
+})
+
+test_that("tbl_hierarchical_incidence_rate executes standard usage with `by`", {
+  tbl <- tbl_hierarchical_incidence_rate(
+    data = adae_test,
+    denominator = adsl_test,
+    variables = c(AESOC, AEDECOD),
+    by = ARM,
+    start_date = TRTSDT,
+    end_date = TRTEDT,
+    event_date = AESTDTC,
+    n_person_time = 100,
+    unit_label = "years"
+  )
+
+  expect_s3_class(tbl, "tbl_hierarchical_incidence_rate")
+  expect_true("table_body" %in% names(tbl))
+})
+
+test_that("tbl_hierarchical_incidence_rate hits missing `by` branch", {
+  tbl_no_by <- tbl_hierarchical_incidence_rate(
+    data = adae_test,
+    denominator = adsl_test,
+    variables = c(AESOC, AEDECOD),
+    by = NULL,
+    n_person_time = 1000,
+    unit_label = "months",
+    label = list("..ard_hierarchical_overall.." = "Custom Overall AEs")
+  )
+
+  expect_true(any(tbl_no_by$table_body$label == "Custom Overall AEs"))
+  header_df <- tbl_no_by$table_styling$header
+  expect_true(any(grepl("PM", header_df$label)))
+})
+
+test_that("tbl_hierarchical_incidence_rate unit_label switch defaults", {
+  tbl_custom_unit <- tbl_hierarchical_incidence_rate(
+    data = adae_test,
+    denominator = adsl_test,
+    variables = c(AESOC, AEDECOD),
+    unit_label = "decades"
+  )
+  # The functions format the custom unit label by contatenating "Person-"
+  # and unit_label in title case
+  header_df <- tbl_custom_unit$table_styling$header
+  expect_true(any(grepl("Person-Decades", header_df$label)))
+})
+
+test_that("tbl_hierarchical_incidence_rate fails safely on bad inputs", {
+  # 1. Missing Required Arguments
+  expect_error(
+    tbl_hierarchical_incidence_rate(denominator = adsl_test)
+  )
+  expect_error(
+    tbl_hierarchical_incidence_rate(data = adae_test)
+  )
+
+  # 2. Invalid Dataframes
+  expect_error(
+    tbl_hierarchical_incidence_rate(
+      data = "not_a_df", denominator = adsl_test, variables = c(AESOC, AEDECOD)
     )
+  )
 
-    # Validate class and structure
-    expect_s3_class(tbl, "tbl_hierarchical_incidence_rate")
-    expect_s3_class(tbl, "gtsummary")
-    expect_true("table_body" %in% names(tbl))
-
-    # Ensure overall label defaulted correctly since it wasn't provided
-    expect_true(any(tbl$table_body$label == "All Adverse Events"))
-  }
-)
-
-test_that(
-  "tbl_hierarchical_incidence_rate hits missing `by` branch and labels",
-  {
-    # Running without `by` tests the `length(by) == 0` renaming logic
-    # Passing a custom overall label tests the label list extraction
-    tbl_no_by <- tbl_hierarchical_incidence_rate(
-      data = adae_test,
-      denominator = adsl_test,
-      variables = c(AESOC, AEDECOD),
-      by = NULL,
-      start_date = TRTSDT,
-      end_date = TRTEDT,
-      event_date = AESTDTC,
-      n_person_time = 1000,
-      unit_label = "months", # Hits the "PM" branch of the switch
-      label = list(
-        AESOC = "System Organ Class",
-        "..ard_hierarchical_overall.." = "Custom Overall AEs"
-      )
+  # 3. Invalid Numeric/Scalar Inputs
+  expect_error(
+    tbl_hierarchical_incidence_rate(
+      data = adae_test, denominator = adsl_test, variables = c(AESOC, AEDECOD),
+      n_person_time = "100"
     )
-
-    expect_s3_class(tbl_no_by, "gtsummary")
-    expect_true(any(tbl_no_by$table_body$label == "Custom Overall AEs"))
-
-    # Ensure the unit label switch successfully parsed "months" into "PM"
-    header_df <- tbl_no_by$table_styling$header
-    expect_true(any(grepl("PM", header_df$label)))
-  }
-)
-
-test_that(
-  "tbl_hierarchical_incidence_rate unit_label switch defaults correctly",
-  {
-    # Test the default fallback of the unit_label switch statement
-    tbl_custom_unit <- tbl_hierarchical_incidence_rate(
-      data = adae_test,
-      denominator = adsl_test,
-      variables = c(AESOC, AEDECOD),
-      start_date = TRTSDT,
-      end_date = TRTEDT,
-      event_date = AESTDTC,
-      # Forces the switch fallback: paste0("Person-", "Decades")
-      unit_label = "decades"
+  )
+  expect_error(
+    tbl_hierarchical_incidence_rate(
+      data = adae_test, denominator = adsl_test, variables = c(AESOC, AEDECOD),
+      conf.level = "0.95"
     )
-
-    header_df <- tbl_custom_unit$table_styling$header
-    expect_true(any(grepl("Person-Decades", header_df$label)))
-  }
-)
-
-test_that(
-  "tbl_hierarchical_incidence_rate fails safely on bad inputs",
-  {
-    # Validates the checkmate assertions at the top of the wrapper
-    expect_error(
-      tbl_hierarchical_incidence_rate(
-        data = adae_test,
-        denominator = adsl_test,
-        variables = c(AESOC, AEDECOD),
-        # Should fail check_numeric
-        n_person_time = "100"
-      )
+  )
+  expect_error(
+    tbl_hierarchical_incidence_rate(
+      data = adae_test, denominator = adsl_test, variables = c(AESOC, AEDECOD),
+      digits = c(2, 3)
     )
+  )
 
-    expect_error(
-      tbl_hierarchical_incidence_rate(
-        data = adae_test,
-        denominator = adsl_test,
-        variables = c(AESOC, AEDECOD),
-        # Fails check_numeric/bounds based on strictness
-        conf.level = 1.5
-      )
+  # 4. Invalid Strings/Lists
+  expect_error(
+    tbl_hierarchical_incidence_rate(
+      data = adae_test, denominator = adsl_test, variables = c(AESOC, AEDECOD),
+      unit_label = 123
     )
+  )
+  expect_error(
+    tbl_hierarchical_incidence_rate(
+      data = adae_test, denominator = adsl_test, variables = c(AESOC, AEDECOD),
+      conf.type = TRUE
+    )
+  )
+  expect_error(
+    tbl_hierarchical_incidence_rate(
+      data = adae_test, denominator = adsl_test, variables = c(AESOC, AEDECOD),
+      label = "Not a list"
+    )
+  )
 
-    # Expect failure if fewer than 2 hierarchical variables are provided
-    expect_error(
-      tbl_hierarchical_incidence_rate(
-        data = adae_test,
-        denominator = adsl_test,
-        # Only 1 provided
-        variables = AESOC
-      )
+  # 5. Invalid Tidy-Select Dimensions
+  # Less than 2 variables
+  expect_error(
+    tbl_hierarchical_incidence_rate(
+      data = adae_test, denominator = adsl_test, variables = AESOC
     )
-  }
-)
+  )
+  # Passing vectors to scalar tidy-select arguments
+  expect_error(
+    tbl_hierarchical_incidence_rate(
+      data = adae_test, denominator = adsl_test, variables = c(AESOC, AEDECOD),
+      by = c(ARM, USUBJID)
+    )
+  )
+  expect_error(
+    tbl_hierarchical_incidence_rate(
+      data = adae_test, denominator = adsl_test, variables = c(AESOC, AEDECOD),
+      start_date = c(TRTSDT, TRTEDT)
+    )
+  )
+})
