@@ -24,6 +24,9 @@
 #'   follow-up cutoff.
 #' @param event_date ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   A column name in `data` specifying the onset date of the event.
+#' @param event_type (`string`)\cr
+#'   Type of the events to be counted. Can be `"first_event"` or `"all"`.
+#'   Default is `"first_event"`.
 #' @param n_person_time (`numeric(1)`)\cr
 #'   A numeric scalar multiplier to scale the incidence rate. Defaults to `100`.
 #' @param unit_label (`string`)\cr
@@ -92,6 +95,7 @@ tbl_hierarchical_incidence_rate <- function(data,
                                             start_date = "TRTSDT",
                                             end_date = "TRTEDT",
                                             event_date = "AESTDTC",
+                                            event_type = c("first_event", "all"),
                                             n_person_time = 100,
                                             unit_label = "years",
                                             conf.level = 0.95,
@@ -99,11 +103,15 @@ tbl_hierarchical_incidence_rate <- function(data,
                                             digits = 2,
                                             label = NULL) {
   # 1. Base Input Validation (Missingness and standard classes)
+  event_type <- rlang::arg_match(event_type)
+
   check_not_missing(data)
   check_not_missing(denominator)
   check_not_missing(variables)
   check_data_frame(data)
   check_data_frame(denominator)
+  check_string(event_type)
+  check_scalar(event_type)
   check_numeric(n_person_time)
   check_scalar(n_person_time)
   check_string(unit_label)
@@ -177,7 +185,8 @@ tbl_hierarchical_incidence_rate <- function(data,
 
   # 6. Generate ARDs cleanly using explicit piping
   ard_overall <- .prep_incidence_rate_data(
-    data, denominator, id, by, start_date, end_date, event_date, NULL
+    data, denominator, id, by, start_date,
+    end_date, event_date, event_type, NULL
   ) |>
     .compute_incidence_rate_ard(
       by, NULL, digits,
@@ -186,7 +195,8 @@ tbl_hierarchical_incidence_rate <- function(data,
     )
 
   ard_lvl1 <- .prep_incidence_rate_data(
-    data, denominator, id, by, start_date, end_date, event_date, variables[1]
+    data, denominator, id, by, start_date,
+    end_date, event_date, event_type, variables[1]
   ) |>
     .compute_incidence_rate_ard(
       by, variables[1], digits,
@@ -195,7 +205,8 @@ tbl_hierarchical_incidence_rate <- function(data,
     )
 
   ard_lvl2 <- .prep_incidence_rate_data(
-    data, denominator, id, by, start_date, end_date, event_date, variables
+    data, denominator, id, by, start_date,
+    end_date, event_date, event_type, variables
   ) |>
     .compute_incidence_rate_ard(
       by, variables, digits,
@@ -268,7 +279,8 @@ tbl_hierarchical_incidence_rate <- function(data,
 #' @keywords internal
 #' @noRd
 .prep_incidence_rate_data <- function(data, denominator, id, by, start_date,
-                                      end_date, event_date, strata_vars) {
+                                      end_date, event_date, event_type,
+                                      strata_vars) {
   if (!is.null(strata_vars) && length(strata_vars) > 0) {
     unique_strata <- data |>
       dplyr::select(dplyr::all_of(strata_vars)) |>
@@ -295,7 +307,7 @@ tbl_hierarchical_incidence_rate <- function(data,
       start_dt = .format_date(.data[[start_date]]),
       end_dt = .format_date(.data[[end_date]]),
       time_var = dplyr::if_else(
-        .data$count > 0 & !is.na(.data$ae_onset) &
+        event_type == "first_event" & .data$count > 0 & !is.na(.data$ae_onset) &
           .data$ae_onset >= .data$start_dt,
         (as.numeric(.data$ae_onset - .data$start_dt) + 1) / 365.24,
         (as.numeric(.data$end_dt - .data$start_dt) + 1) / 365.24
