@@ -1,4 +1,4 @@
-# crane 0.3.1.9024
+# crane 0.3.1.9025
 
 ## New Functions and Functionality
 
@@ -25,6 +25,8 @@
 
 *  Added `tbl_coxph()` which computes the pairwise cox proportional hazards test and returns a gtsummary object (#159)
 
+* Added `tbl_hierarchical_incidence_rate()` which computes the incidence rate of adverse events (#211)
+ 
 ### Other Updates
 
 * Remove warning when data has more levels than needed for grade_groups on tbl_hierarchical_rate_by_grade.
