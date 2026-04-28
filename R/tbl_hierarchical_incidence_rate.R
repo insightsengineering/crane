@@ -309,8 +309,8 @@ tbl_hierarchical_incidence_rate <- function(data,
       time_var = dplyr::if_else(
         event_type == "first_event" & .data$count > 0 & !is.na(.data$ae_onset) &
           .data$ae_onset >= .data$start_dt,
-        (as.numeric(.data$ae_onset - .data$start_dt) + 1) / 365.25,
-        (as.numeric(.data$end_dt - .data$start_dt) + 1) / 365.25
+        (as.numeric(.data$ae_onset - .data$start_dt) + 1) / 365.24,
+        (as.numeric(.data$end_dt - .data$start_dt) + 1) / 365.24
       )
     )
 }
