@@ -13,10 +13,7 @@ tbl_hierarchical_incidence_rate(
   start_date = "TRTSDT",
   end_date = "TRTEDT",
   event_date = "AESTDTC",
-<<<<<<< HEAD
   event_type = c("first_event", "all"),
-=======
->>>>>>> main
   n_person_time = 100,
   unit_label = "years",
   conf.level = 0.95,
@@ -56,13 +53,10 @@ follow-up cutoff.}
 \item{event_date}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 A column name in \code{data} specifying the onset date of the event.}
 
-<<<<<<< HEAD
 \item{event_type}{(\code{string})\cr
 Type of the events to be counted. Can be \code{"first_event"} or \code{"all"}.
 Default is \code{"first_event"}.}
 
-=======
->>>>>>> main
 \item{n_person_time}{(\code{numeric(1)})\cr
 A numeric scalar multiplier to scale the incidence rate. Defaults to \code{100}.}
 
