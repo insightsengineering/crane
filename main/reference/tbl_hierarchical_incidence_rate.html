@@ -23,7 +23,7 @@ calculated from start_date to end_date."><meta property="og:image" content="http
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1.9025</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1.9026</span>
       </span>
     </div>
 
@@ -87,6 +87,7 @@ calculated from <code>start_date</code> to <code>end_date</code>.</p>
 <span>  start_date <span class="op">=</span> <span class="st">"TRTSDT"</span>,</span>
 <span>  end_date <span class="op">=</span> <span class="st">"TRTEDT"</span>,</span>
 <span>  event_date <span class="op">=</span> <span class="st">"AESTDTC"</span>,</span>
+<span>  event_type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"first_event"</span>, <span class="st">"all"</span><span class="op">)</span>,</span>
 <span>  n_person_time <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  unit_label <span class="op">=</span> <span class="st">"years"</span>,</span>
 <span>  conf.level <span class="op">=</span> <span class="fl">0.95</span>,</span>
@@ -144,6 +145,12 @@ follow-up cutoff.</p></dd>
 <dt id="arg-event-date">event_date<a class="anchor" aria-label="anchor" href="#arg-event-date"></a></dt>
 <dd><p>(<code><a href="https://dplyr.tidyverse.org/reference/dplyr_tidy_select.html" class="external-link">tidy-select</a></code>)<br>
 A column name in <code>data</code> specifying the onset date of the event.</p></dd>
+
+
+<dt id="arg-event-type">event_type<a class="anchor" aria-label="anchor" href="#arg-event-type"></a></dt>
+<dd><p>(<code>string</code>)<br>
+Type of the events to be counted. Can be <code>"first_event"</code> or <code>"all"</code>.
+Default is <code>"first_event"</code>.</p></dd>
 
 
 <dt id="arg-n-person-time">n_person_time<a class="anchor" aria-label="anchor" href="#arg-n-person-time"></a></dt>
