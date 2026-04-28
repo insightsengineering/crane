@@ -47,6 +47,9 @@
 
 * Adjusted `gg_pkc_lineplot()` to use `tbl_roche_summary()` for automatic decimals formatting.
 
+* Adjusted `tbl_hierarchical_incidence_rate()` to handle first event as well as
+all events (#217)
+
 # crane 0.3.1
 
 ## New Functions and Functionality

@@ -1,6 +1,3 @@
-library(testthat)
-library(dplyr)
-
 # 1. Create robust dummy data designed to trigger every edge case
 adsl_test <- data.frame(
   USUBJID = c("P1", "P2", "P3", "P4", "P5"),
@@ -91,6 +88,40 @@ test_that("tbl_hierarchical_incidence_rate unit_label switch defaults", {
   expect_true(any(grepl("Person-Decades", header_df$label)))
 })
 
+test_that("tbl_hierarchical_incidence_rate correctly switches event_type math", {
+  # 1. Run with first_event (stops clock at first AE)
+  tbl_first <- tbl_hierarchical_incidence_rate(
+    data = adae_test,
+    denominator = adsl_test,
+    variables = c(AESOC, AEDECOD),
+    event_type = "first_event"
+  )
+
+  # 2. Run with all occurrences (clock runs to end_date regardless of AE)
+  tbl_all <- tbl_hierarchical_incidence_rate(
+    data = adae_test,
+    denominator = adsl_test,
+    variables = c(AESOC, AEDECOD),
+    event_type = "all"
+  )
+
+  # Helper to extract and sum person-time statistics from the underlying ARD
+  get_pt <- function(tbl) {
+    ard_tbl <- gtsummary::gather_ard(tbl) |>
+      dplyr::bind_rows()
+    stat_tbl <- ard_tbl$tbl_ard_summary |>
+      dplyr::filter(.data$stat_name == "tot_person_time") |>
+      dplyr::pull(.data$stat) |>
+      unlist() |>
+      as.numeric() |>
+      sum(na.rm = TRUE)
+  }
+
+  # Total Person-Time should be strictly greater when event_type = "all",
+  # because the clock does not stop early for patients with AEs (P1, P2).
+  expect_true(get_pt(tbl_all) > get_pt(tbl_first))
+})
+
 test_that("tbl_hierarchical_incidence_rate fails safely on bad inputs", {
   # 1. Missing Required Arguments
   expect_error(
@@ -144,6 +175,13 @@ test_that("tbl_hierarchical_incidence_rate fails safely on bad inputs", {
     tbl_hierarchical_incidence_rate(
       data = adae_test, denominator = adsl_test, variables = c(AESOC, AEDECOD),
       label = "Not a list"
+    )
+  )
+
+  expect_error(
+    tbl_hierarchical_incidence_rate(
+      data = adae_test, denominator = adsl_test, variables = c(AESOC, AEDECOD),
+      event_type = "Not all"
     )
   )
 
