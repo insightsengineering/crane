@@ -107,9 +107,9 @@ test_that("tbl_hierarchical_incidence_rate correctly switches event_type math", 
 
   # Helper to extract and sum person-time statistics from the underlying ARD
   get_pt <- function(tbl) {
-    ard_tbl <- gtsummary::gather_ard(tbl) |>
-      dplyr::bind_rows()
-    stat_tbl <- ard_tbl$tbl_ard_summary |>
+    gtsummary::gather_ard(tbl) |>
+      dplyr::bind_rows() |>
+      dplyr::pull("tbl_ard_summary") |>
       dplyr::filter(.data$stat_name == "tot_person_time") |>
       dplyr::pull(.data$stat) |>
       unlist() |>
