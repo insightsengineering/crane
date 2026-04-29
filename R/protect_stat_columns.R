@@ -41,7 +41,7 @@ protect_stat_columns <- function(tbl) {
         dplyr::mutate(
           dplyr::across(
             dplyr::all_of(stat_cols),
-            ~ str_replace_all(as.character(.x), " ", "\u00A0")
+            ~ gsub(" ", "\u00A0", as.character(.x))
           )
         )
     )
