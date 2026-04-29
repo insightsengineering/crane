@@ -2,7 +2,7 @@
 % Please edit documentation in R/protect_stat_columns.R
 \name{protect_stat_columns}
 \alias{protect_stat_columns}
-\title{Protect Statistics Columns from DOCX Wrapping}
+\title{Protect Statistics Columns from wrapping}
 \usage{
 protect_stat_columns(tbl)
 }
@@ -16,6 +16,6 @@ A modified \code{gtsummary} object.
 \description{
 Replaces standard whitespace with non-breaking spaces (\verb{\\u00A0}) dynamically
 in all visible statistics columns of a \code{gtsummary} table's body.
-This forces the DOCX layout engine to keep statistics (e.g., "12.5 ( 95\%)")
+This forces the layout engine to keep statistics (e.g., "12.5 ( 95\%)")
 on a single line. Column headers remain unaffected.
 }
