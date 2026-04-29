@@ -4,28 +4,18 @@
 \alias{protect_stat_columns}
 \title{Protect Statistics Columns from DOCX Wrapping}
 \usage{
-protect_stat_columns(x)
+protect_stat_columns(tbl)
 }
 \arguments{
-\item{x}{(\code{gtsummary})\cr
+\item{tbl}{(\code{gtsummary})\cr
 A \code{gtsummary} object.}
 }
 \value{
 A modified \code{gtsummary} object.
 }
 \description{
-Replaces standard spaces with non-breaking spaces (\verb{\\u00A0}) dynamically
+Replaces standard whitespace with non-breaking spaces (\verb{\\u00A0}) dynamically
 in all visible statistics columns of a \code{gtsummary} table's body.
 This forces the DOCX layout engine to keep statistics (e.g., "12.5 ( 95\%)")
-on a single line. Column headers (e.g., cohort names) are completely
-protected and remain unaffected.
-}
-\examples{
-library(gtsummary)
-
-tbl <- trial |>
-  tbl_summary(by = trt, include = age) |>
-  add_p() |>
-  protect_stat_columns()
-
+on a single line. Column headers remain unaffected.
 }
