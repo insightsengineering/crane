@@ -121,3 +121,28 @@ test_that("theme pre-conversion modifies header not to be bold and border only 0
   # check border width is 0.5
   expect_true(all(tbl$header$styles$cells$border.width.bottom$data == 0.5))
 })
+
+test_that("theme pre-conversion protects stat columns with non-breaking spaces", {
+  tbl <- with_gtsummary_theme(
+    x = theme_gtsummary_roche(),
+    gtsummary::trial |>
+      gtsummary::tbl_summary(by = trt, include = age)
+  )
+
+  # Extract the pre_conversion function from the theme
+  theme <- theme_gtsummary_roche(set_theme = FALSE)
+  pre_conv_fn <- theme[["pkgwide-fun:pre_conversion"]]
+
+  # Apply the pre-conversion processing manually to the table
+  tbl_processed <- pre_conv_fn(tbl)
+
+  # Get a value from a stat column
+  stat_val <- tbl_processed$table_body$stat_1[1]
+
+  # Check for the non-breaking space (decimal 160)
+  char_codes <- utf8ToInt(stat_val)
+
+  # Verify standard spaces are gone and NBSPs are present
+  expect_true(160 %in% char_codes)
+  expect_false(32 %in% char_codes)
+})

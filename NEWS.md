@@ -27,7 +27,7 @@
 
 * Added `tbl_hierarchical_incidence_rate()` which computes the incidence rate of adverse events (#211)
 
-* Added `protect_stat_columns()` which keep the presentation of statistics in one row (#219)
+* Added `adjust_stat_columns_wrap()` which keep the presentation of statistics in one row (#219)
  
 ### Other Updates
 
