@@ -54,7 +54,7 @@ adjust_stat_columns_wrap <- function(tbl, mode = c("protect", "unprotect")) {
   }
 
   # 2. Inject or remove non-breaking spaces ONLY into the table body.
-tbl <- tbl |>
+  tbl <- tbl |>
     gtsummary::modify_table_body(
       ~ .x |>
         dplyr::mutate(
