@@ -23,4 +23,6 @@ Toggles standard whitespace to non-breaking spaces (\verb{\\u00A0}) dynamically
 in all visible statistics columns of a \code{gtsummary} table's body (or vice versa).
 This forces the layout engine to keep statistics (e.g., "12.5 ( 95\%)")
 on a single line when protected. Column headers and labels remain unaffected.
+For the rare cases when protecting creates ugly squashed label column
+protection can be reversed using the same function.
 }
