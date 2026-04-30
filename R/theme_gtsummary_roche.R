@@ -57,7 +57,7 @@ theme_gtsummary_roche <- function(font_size = NULL,
 
           # Only apply protection if the table is NOT explicitly unprotected
           if (!identical(attr(x, "wrap_mode"), "unprotect")) {
-            x <- adjust_stat_columns_wrap(x, mode = "protect")
+            x <- crane::adjust_stat_columns_wrap(x, mode = "protect")
           }
           x
         },
