@@ -27,7 +27,7 @@
 #'
 #' @return A gtsummary table.
 #' @name tbl_baseline_chg
-#' 
+#'
 #' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true")
 #' theme_gtsummary_roche()
 #'
@@ -159,7 +159,7 @@ tbl_baseline_chg <- function(data,
   tbl_aval <-
     df_change_baseline |>
     dplyr::select(all_of(by), starts_with(analysis_variable)) |>
-    dplyr::rename_with(~ str_remove(., paste0("^", analysis_variable, "_"))) |>
+    dplyr::rename_with(~ str_remove(., paste0("^", analysis_variable, "_"))) %>%
     # after reshape all column labels are the same, so changing them to the variable name
     labelled::remove_var_label() |>
     tbl_roche_summary(
@@ -175,7 +175,7 @@ tbl_baseline_chg <- function(data,
   tbl_chg <-
     df_change_baseline |>
     dplyr::select(all_of(by), starts_with(change_variable)) |>
-    dplyr::rename_with(~ str_remove(., paste0("^", change_variable, "_"))) |>
+    dplyr::rename_with(~ str_remove(., paste0("^", change_variable, "_"))) %>%
     # after reshape all column labels are the same, so changing them to the variable name
     labelled::remove_var_label() |>
     # using `tbl_roche_summary()` as the default continuous variable summary matches our spec
@@ -215,7 +215,7 @@ tbl_baseline_chg <- function(data,
   # styler: off
   baseline_chg_tbl$cards$tbl_baseline_chg <-
     cards::bind_ard(
-      gtsummary::gather_ard(tbl_aval)$tbl_summary |>
+      gtsummary::gather_ard(tbl_aval)$tbl_summary %>%
         {case_switch(
           !"variable_level" %in% names(.) ~ dplyr::mutate(., variable_level = list(NULL), .after = "variable"),
           .default = .
@@ -234,7 +234,7 @@ tbl_baseline_chg <- function(data,
               .data$variable
             )
         ),
-      gtsummary::gather_ard(tbl_chg)$tbl_summary |>
+      gtsummary::gather_ard(tbl_chg)$tbl_summary %>%
         {case_switch(
           !"variable_level" %in% names(.) ~ dplyr::mutate(., variable_level = list(NULL), .after = "variable"),
           .default = .
