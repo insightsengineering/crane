@@ -1,4 +1,4 @@
-# crane 0.3.1.9027
+# crane 0.3.1.9028
 
 ## New Functions and Functionality
 
@@ -51,6 +51,9 @@
 
 * Adjusted `tbl_hierarchical_incidence_rate()` to handle first event as well as
 all events (#217)
+
+* Adjusted `tbl_baseline_chg()` to allow for custiomization of display statistics (#222)
+
 
 # crane 0.3.1
 
