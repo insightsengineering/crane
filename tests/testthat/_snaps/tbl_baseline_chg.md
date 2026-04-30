@@ -3,96 +3,118 @@
     Code
       as.data.frame(tbl)[1:25, 1:5]
     Output
-             Visit Value at Visit Change from Baseline Value at Visit.1 Change from Baseline.1
-      1   Baseline           <NA>                 <NA>             <NA>                   <NA>
-      2          n              7                 <NA>                7                   <NA>
-      3  Mean (SD)    141.1 (1.5)                 <NA>      139.1 (2.2)                   <NA>
-      4     Median          141.0                 <NA>            139.0                   <NA>
-      5  Min - Max      140 - 144                 <NA>        136 - 142                   <NA>
-      6     Week 2           <NA>                 <NA>             <NA>                   <NA>
-      7          n              7                    7                6                      6
-      8  Mean (SD)    140.6 (1.6)           -0.6 (1.9)      138.8 (3.3)              0.2 (3.5)
-      9     Median          141.0                 -1.0            140.5                    0.5
-      10 Min - Max      138 - 142               -3 - 2        133 - 141                 -5 - 5
-      11    Week 4           <NA>                 <NA>             <NA>                   <NA>
-      12         n              7                    7                6                      6
-      13 Mean (SD)    139.3 (2.8)           -1.9 (2.5)      139.8 (3.5)              1.2 (2.0)
-      14    Median          140.0                 -1.0            138.5                    0.0
-      15 Min - Max      134 - 142               -7 - 0        138 - 147                  0 - 5
-      16    Week 6           <NA>                 <NA>             <NA>                   <NA>
-      17         n              5                    5                6                      6
-      18 Mean (SD)    140.0 (1.9)           -0.4 (1.7)      139.7 (2.0)              1.0 (2.3)
-      19    Median          140.0                  0.0            139.0                    0.5
-      20 Min - Max      138 - 143               -2 - 2        138 - 143                 -1 - 5
-      21    Week 8           <NA>                 <NA>             <NA>                   <NA>
-      22         n              5                    5                4                      4
-      23 Mean (SD)    140.6 (1.5)            0.2 (1.6)      139.0 (2.2)             -0.5 (2.4)
-      24    Median          141.0                  1.0            139.5                   -0.5
-      25 Min - Max      139 - 142               -2 - 2        136 - 141                 -3 - 2
+                   Visit       Value at Visit Change from Baseline     Value at Visit.1 Change from Baseline.1
+      1         Baseline                 <NA>                 <NA>                 <NA>                   <NA>
+      2                n                    7                 <NA>                    7                   <NA>
+      3  Median (Q1, Q3) 141.0 (140.0, 142.0)                 <NA> 139.0 (138.0, 142.0)                   <NA>
+      4           Week 2                 <NA>                 <NA>                 <NA>                   <NA>
+      5                n                    7                    7                    6                      6
+      6  Median (Q1, Q3) 141.0 (139.0, 142.0)     -1.0 (-2.0, 1.0) 140.5 (137.0, 141.0)        0.5 (-2.0, 2.0)
+      7           Week 4                 <NA>                 <NA>                 <NA>                   <NA>
+      8                n                    7                    7                    6                      6
+      9  Median (Q1, Q3) 140.0 (137.0, 141.0)     -1.0 (-3.0, 0.0) 138.5 (138.0, 139.0)         0.0 (0.0, 2.0)
+      10          Week 6                 <NA>                 <NA>                 <NA>                   <NA>
+      11               n                    5                    5                    6                      6
+      12 Median (Q1, Q3) 140.0 (139.0, 140.0)      0.0 (-2.0, 0.0) 139.0 (138.0, 141.0)        0.5 (-1.0, 2.0)
+      13          Week 8                 <NA>                 <NA>                 <NA>                   <NA>
+      14               n                    5                    5                    4                      4
+      15 Median (Q1, Q3) 141.0 (139.0, 142.0)      1.0 (-1.0, 1.0) 139.5 (137.5, 140.5)       -0.5 (-2.5, 1.5)
+      16         Week 12                 <NA>                 <NA>                 <NA>                   <NA>
+      17               n                    5                    5                    4                      4
+      18 Median (Q1, Q3) 141.0 (140.0, 142.0)       1.0 (0.0, 1.0) 140.0 (139.0, 142.5)         1.0 (0.5, 2.0)
+      19         Week 16                 <NA>                 <NA>                 <NA>                   <NA>
+      20               n                    5                    5                    4                      4
+      21 Median (Q1, Q3) 141.0 (141.0, 141.0)       1.0 (0.0, 1.0) 141.0 (139.5, 144.5)         2.0 (1.0, 4.0)
+      22         Week 20                 <NA>                 <NA>                 <NA>                   <NA>
+      23               n                    5                    5                    4                      4
+      24 Median (Q1, Q3) 142.0 (141.0, 143.0)       2.0 (1.0, 2.0) 137.5 (136.5, 141.0)       -1.0 (-2.5, 1.0)
+      25         Week 24                 <NA>                 <NA>                 <NA>                   <NA>
 
 # tbl_baseline_chg() works with no `by` variable
 
     Code
       as.data.frame(tbl)[1:25, ]
     Output
-             Visit Value at Visit Change from Baseline
-      1   Baseline           <NA>                 <NA>
-      2          n             20                 <NA>
-      3  Mean (SD)    140.0 (2.8)                 <NA>
-      4     Median          140.0                 <NA>
-      5  Min - Max      134 - 145                 <NA>
-      6     Week 2           <NA>                 <NA>
-      7          n             19                   19
-      8  Mean (SD)    139.7 (2.4)           -0.2 (2.9)
-      9     Median          140.0                 -1.0
-      10 Min - Max      133 - 142               -5 - 5
-      11    Week 4           <NA>                 <NA>
-      12         n             18                   18
-      13 Mean (SD)    139.5 (2.6)           -0.5 (2.9)
-      14    Median          139.5                  0.0
-      15 Min - Max      134 - 147               -7 - 5
-      16    Week 6           <NA>                 <NA>
-      17         n             15                   15
-      18 Mean (SD)    140.0 (2.0)            0.7 (3.1)
-      19    Median          139.0                  0.0
-      20 Min - Max      138 - 144               -5 - 7
-      21    Week 8           <NA>                 <NA>
-      22         n             12                   12
-      23 Mean (SD)    139.7 (2.0)           -0.1 (2.2)
-      24    Median          140.0                  1.0
-      25 Min - Max      136 - 142               -4 - 2
+                   Visit       Value at Visit Change from Baseline
+      1         Baseline                 <NA>                 <NA>
+      2                n                   20                 <NA>
+      3  Median (Q1, Q3) 140.0 (138.0, 142.0)                 <NA>
+      4           Week 2                 <NA>                 <NA>
+      5                n                   19                   19
+      6  Median (Q1, Q3) 140.0 (138.0, 142.0)     -1.0 (-2.0, 2.0)
+      7           Week 4                 <NA>                 <NA>
+      8                n                   18                   18
+      9  Median (Q1, Q3) 139.5 (138.0, 141.0)      0.0 (-2.0, 0.0)
+      10          Week 6                 <NA>                 <NA>
+      11               n                   15                   15
+      12 Median (Q1, Q3) 139.0 (138.0, 141.0)      0.0 (-1.0, 2.0)
+      13          Week 8                 <NA>                 <NA>
+      14               n                   12                   12
+      15 Median (Q1, Q3) 140.0 (139.0, 141.0)      1.0 (-2.0, 2.0)
+      16         Week 12                 <NA>                 <NA>
+      17               n                   11                   11
+      18 Median (Q1, Q3) 140.0 (139.0, 142.0)       1.0 (0.0, 2.0)
+      19         Week 16                 <NA>                 <NA>
+      20               n                   11                   11
+      21 Median (Q1, Q3) 141.0 (139.0, 142.0)       1.0 (0.0, 3.0)
+      22         Week 20                 <NA>                 <NA>
+      23               n                   11                   11
+      24 Median (Q1, Q3) 139.0 (137.0, 143.0)      1.0 (-2.0, 2.0)
+      25         Week 24                 <NA>                 <NA>
+
+# tbl_baseline_chg() works with custom `statistic` argument
+
+    Code
+      as.data.frame(tbl)[1:15, 1:5]
+    Output
+                   Visit       Value at Visit Change from Baseline     Value at Visit.1 Change from Baseline.1
+      1         Baseline                 <NA>                 <NA>                 <NA>                   <NA>
+      2                n                    7                 <NA>                    7                   <NA>
+      3        Mean (SD)          141.1 (1.5)                 <NA>          139.1 (2.2)                   <NA>
+      4  Median (Q1, Q3) 141.0 (140.0, 142.0)                 <NA> 139.0 (138.0, 142.0)                   <NA>
+      5           Week 2                 <NA>                 <NA>                 <NA>                   <NA>
+      6                n                    7                    7                    6                      6
+      7        Mean (SD)          140.6 (1.6)           -0.6 (1.9)          138.8 (3.3)              0.2 (3.5)
+      8  Median (Q1, Q3) 141.0 (139.0, 142.0)     -1.0 (-2.0, 1.0) 140.5 (137.0, 141.0)        0.5 (-2.0, 2.0)
+      9           Week 4                 <NA>                 <NA>                 <NA>                   <NA>
+      10               n                    7                    7                    6                      6
+      11       Mean (SD)          139.3 (2.8)           -1.9 (2.5)          139.8 (3.5)              1.2 (2.0)
+      12 Median (Q1, Q3) 140.0 (137.0, 141.0)     -1.0 (-3.0, 0.0) 138.5 (138.0, 139.0)         0.0 (0.0, 2.0)
+      13          Week 6                 <NA>                 <NA>                 <NA>                   <NA>
+      14               n                    5                    5                    6                      6
+      15       Mean (SD)          140.0 (1.9)           -0.4 (1.7)          139.7 (2.0)              1.0 (2.3)
 
 # add_overall.tbl_baseline_chg() works
 
     Code
       as.data.frame(tbl)[1:25, c(1, 4:9)]
     Output
-             Visit Value at Visit Change from Baseline Value at Visit.1 Change from Baseline.1 Value at Visit.2 Change from Baseline.2
-      1   Baseline           <NA>                 <NA>             <NA>                   <NA>             <NA>                   <NA>
-      2          n              7                 <NA>                6                   <NA>               20                   <NA>
-      3  Mean (SD)    139.1 (2.2)                 <NA>      139.5 (4.2)                   <NA>      140.0 (2.8)                   <NA>
-      4     Median          139.0                 <NA>            138.5                   <NA>            140.0                   <NA>
-      5  Min - Max      136 - 142                 <NA>        134 - 145                   <NA>        134 - 145                   <NA>
-      6     Week 2           <NA>                 <NA>             <NA>                   <NA>             <NA>                   <NA>
-      7          n              6                    6                6                      6               19                     19
-      8  Mean (SD)    138.8 (3.3)            0.2 (3.5)      139.5 (2.3)              0.0 (3.7)      139.7 (2.4)             -0.2 (2.9)
-      9     Median          140.5                  0.5            139.5                   -0.5            140.0                   -1.0
-      10 Min - Max      133 - 141               -5 - 5        136 - 142                 -5 - 5        133 - 142                 -5 - 5
-      11    Week 4           <NA>                 <NA>             <NA>                   <NA>             <NA>                   <NA>
-      12         n              6                    6                5                      5               18                     18
-      13 Mean (SD)    139.8 (3.5)            1.2 (2.0)      139.4 (1.3)             -0.6 (3.5)      139.5 (2.6)             -0.5 (2.9)
-      14    Median          138.5                  0.0            140.0                    0.0            139.5                    0.0
-      15 Min - Max      138 - 147                0 - 5        138 - 141                 -5 - 4        134 - 147                 -7 - 5
-      16    Week 6           <NA>                 <NA>             <NA>                   <NA>             <NA>                   <NA>
-      17         n              6                    6                4                      4               15                     15
-      18 Mean (SD)    139.7 (2.0)            1.0 (2.3)      140.5 (2.6)              1.8 (5.4)      140.0 (2.0)              0.7 (3.1)
-      19    Median          139.0                  0.5            140.0                    2.5            139.0                    0.0
-      20 Min - Max      138 - 143               -1 - 5        138 - 144                 -5 - 7        138 - 144                 -5 - 7
-      21    Week 8           <NA>                 <NA>             <NA>                   <NA>             <NA>                   <NA>
-      22         n              4                    4                3                      3               12                     12
-      23 Mean (SD)    139.0 (2.2)           -0.5 (2.4)      139.0 (2.6)              0.0 (3.5)      139.7 (2.0)             -0.1 (2.2)
-      24    Median          139.5                 -0.5            140.0                    2.0            140.0                    1.0
-      25 Min - Max      136 - 141               -3 - 2        136 - 141                 -4 - 2        136 - 142                 -4 - 2
+                   Visit       Value at Visit Change from Baseline     Value at Visit.1 Change from Baseline.1     Value at Visit.2 Change from Baseline.2
+      1         Baseline                 <NA>                 <NA>                 <NA>                   <NA>                 <NA>                   <NA>
+      2                n                    7                 <NA>                    6                   <NA>                   20                   <NA>
+      3  Median (Q1, Q3) 139.0 (138.0, 142.0)                 <NA> 138.5 (137.0, 144.0)                   <NA> 140.0 (138.0, 142.0)                   <NA>
+      4           Week 2                 <NA>                 <NA>                 <NA>                   <NA>                 <NA>                   <NA>
+      5                n                    6                    6                    6                      6                   19                     19
+      6  Median (Q1, Q3) 140.5 (137.0, 141.0)      0.5 (-2.0, 2.0) 139.5 (138.0, 142.0)       -0.5 (-2.0, 3.0) 140.0 (138.0, 142.0)       -1.0 (-2.0, 2.0)
+      7           Week 4                 <NA>                 <NA>                 <NA>                   <NA>                 <NA>                   <NA>
+      8                n                    6                    6                    5                      5                   18                     18
+      9  Median (Q1, Q3) 138.5 (138.0, 139.0)       0.0 (0.0, 2.0) 140.0 (138.0, 140.0)        0.0 (-3.0, 1.0) 139.5 (138.0, 141.0)        0.0 (-2.0, 0.0)
+      10          Week 6                 <NA>                 <NA>                 <NA>                   <NA>                 <NA>                   <NA>
+      11               n                    6                    6                    4                      4                   15                     15
+      12 Median (Q1, Q3) 139.0 (138.0, 141.0)      0.5 (-1.0, 2.0) 140.0 (138.5, 142.5)        2.5 (-2.5, 6.0) 139.0 (138.0, 141.0)        0.0 (-1.0, 2.0)
+      13          Week 8                 <NA>                 <NA>                 <NA>                   <NA>                 <NA>                   <NA>
+      14               n                    4                    4                    3                      3                   12                     12
+      15 Median (Q1, Q3) 139.5 (137.5, 140.5)     -0.5 (-2.5, 1.5) 140.0 (136.0, 141.0)        2.0 (-4.0, 2.0) 140.0 (139.0, 141.0)        1.0 (-2.0, 2.0)
+      16         Week 12                 <NA>                 <NA>                 <NA>                   <NA>                 <NA>                   <NA>
+      17               n                    4                    4                    2                      2                   11                     11
+      18 Median (Q1, Q3) 140.0 (139.0, 142.5)       1.0 (0.5, 2.0) 139.0 (139.0, 139.0)        0.0 (-5.0, 5.0) 140.0 (139.0, 142.0)         1.0 (0.0, 2.0)
+      19         Week 16                 <NA>                 <NA>                 <NA>                   <NA>                 <NA>                   <NA>
+      20               n                    4                    4                    2                      2                   11                     11
+      21 Median (Q1, Q3) 141.0 (139.5, 144.5)       2.0 (1.0, 4.0) 139.5 (139.0, 140.0)        0.5 (-4.0, 5.0) 141.0 (139.0, 142.0)         1.0 (0.0, 3.0)
+      22         Week 20                 <NA>                 <NA>                 <NA>                   <NA>                 <NA>                   <NA>
+      23               n                    4                    4                    2                      2                   11                     11
+      24 Median (Q1, Q3) 137.5 (136.5, 141.0)     -1.0 (-2.5, 1.0) 137.5 (137.0, 138.0)       -1.5 (-6.0, 3.0) 139.0 (137.0, 143.0)        1.0 (-2.0, 2.0)
+      25         Week 24                 <NA>                 <NA>                 <NA>                   <NA>                 <NA>                   <NA>
 
 # add_overall.tbl_baseline_chg() messaging
 
@@ -133,42 +155,42 @@
     Output
       $tbl_baseline_chg
     Message
-      {cards} data frame: 620 x 12
+      {cards} data frame: 506 x 12
     Output
-         group1 group1_level variable variable_level stat_name stat_label    stat
-      1    TRTA      Placebo     AVAL       Baseline      mean       Mean 141.143
-      2    TRTA      Placebo     AVAL       Baseline        sd         SD   1.464
-      3    TRTA      Placebo     AVAL       Baseline    median     Median     141
-      4    TRTA      Placebo     AVAL       Baseline       min        Min     140
-      5    TRTA      Placebo     AVAL       Baseline       max        Max     144
-      6    TRTA      Placebo     AVAL         Week 2      mean       Mean 140.571
-      7    TRTA      Placebo     AVAL         Week 2        sd         SD   1.618
-      8    TRTA      Placebo     AVAL         Week 2    median     Median     141
-      9    TRTA      Placebo     AVAL         Week 2       min        Min     138
-      10   TRTA      Placebo     AVAL         Week 2       max        Max     142
+         group1 group1_level variable variable_level stat_name stat_label stat
+      1    TRTA      Placebo     AVAL       Baseline    median     Median  141
+      2    TRTA      Placebo     AVAL       Baseline       p25         Q1  140
+      3    TRTA      Placebo     AVAL       Baseline       p75         Q3  142
+      4    TRTA      Placebo     AVAL         Week 2    median     Median  141
+      5    TRTA      Placebo     AVAL         Week 2       p25         Q1  139
+      6    TRTA      Placebo     AVAL         Week 2       p75         Q3  142
+      7    TRTA      Placebo     AVAL         Week 4    median     Median  140
+      8    TRTA      Placebo     AVAL         Week 4       p25         Q1  137
+      9    TRTA      Placebo     AVAL         Week 4       p75         Q3  141
+      10   TRTA      Placebo     AVAL         Week 6    median     Median  140
     Message
-      i 610 more rows
+      i 496 more rows
       i Use `print(n = ...)` to see more rows
       i 5 more variables: context, fmt_fun, warning, error, gts_column
     Output
       
       $add_overall
     Message
-      {cards} data frame: 229 x 10
+      {cards} data frame: 191 x 10
     Output
-         variable variable_level context stat_name stat_label    stat
-      1      AVAL       Baseline summary      mean       Mean  139.95
-      2      AVAL       Baseline summary        sd         SD   2.781
-      3      AVAL       Baseline summary    median     Median     140
-      4      AVAL       Baseline summary       min        Min     134
-      5      AVAL       Baseline summary       max        Max     145
-      6      AVAL         Week 2 summary      mean       Mean 139.684
-      7      AVAL         Week 2 summary        sd         SD   2.428
-      8      AVAL         Week 2 summary    median     Median     140
-      9      AVAL         Week 2 summary       min        Min     133
-      10     AVAL         Week 2 summary       max        Max     142
+         variable variable_level context stat_name stat_label  stat
+      1      AVAL       Baseline summary    median     Median   140
+      2      AVAL       Baseline summary       p25         Q1   138
+      3      AVAL       Baseline summary       p75         Q3   142
+      4      AVAL         Week 2 summary    median     Median   140
+      5      AVAL         Week 2 summary       p25         Q1   138
+      6      AVAL         Week 2 summary       p75         Q3   142
+      7      AVAL         Week 4 summary    median     Median 139.5
+      8      AVAL         Week 4 summary       p25         Q1   138
+      9      AVAL         Week 4 summary       p75         Q3   141
+      10     AVAL         Week 6 summary    median     Median   139
     Message
-      i 219 more rows
+      i 181 more rows
       i Use `print(n = ...)` to see more rows
       i 4 more variables: fmt_fun, warning, error, gts_column
     Output

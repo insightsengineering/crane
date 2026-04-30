@@ -56,6 +56,26 @@ test_that("tbl_baseline_chg() works with no `by` variable", {
   expect_snapshot(as.data.frame(tbl)[1:25, ])
 })
 
+# --- NEW TEST BLOCK FOR STATISTIC ARGUMENT ---
+test_that("tbl_baseline_chg() works with custom `statistic` argument", {
+  withr::local_options(list(width = 120))
+
+  expect_silent(
+    tbl <-
+      tbl_baseline_chg(
+        data = df,
+        baseline_level = "Baseline",
+        by = "TRTA",
+        denominator = cards::ADSL,
+        statistic = everything() ~ c("{mean} ({sd})", "{median} ({p25}, {p75})")
+      )
+  )
+
+  # Snapshot to ensure the custom statistics map correctly to the rows
+  expect_snapshot(as.data.frame(tbl)[1:15, 1:5])
+})
+# ---------------------------------------------
+
 test_that("add_overall.tbl_baseline_chg() works", {
   withr::local_options(list(width = 190))
 
@@ -125,15 +145,13 @@ test_that("tbl_baseline_chg() throws error when required arguments are missing",
 
   # warning about baseline level not in the visit variable
   expect_error(
-    expect_warning(
-      tbl <- tbl_baseline_chg(
-        data = df,
-        baseline_level = "SCREENING 1",
-        by = "TRTA",
-        denominator = cards::ADSL
-      ),
-      "The `baseline_level` \"SCREENING 1\" is not found in the \"AVISIT\" variable."
-    )
+    tbl_baseline_chg(
+      data = df,
+      baseline_level = "SCREENING 1",
+      by = "TRTA",
+      denominator = cards::ADSL
+    ),
+    "The `baseline_level` \"SCREENING 1\" is not found in the \"AVISIT\" variable."
   )
 
   # expect message about duplicate visit entries for each subject

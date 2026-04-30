@@ -21,6 +21,9 @@
 #'  String identifying baseline level in the `visit` variable.
 #' @param denominator (`data.frame`)\cr
 #'  Data set used to compute the header counts (typically `ADSL`).
+#' @param statistic (`formula`)\cr
+#'  Formula or list of formulas specifying the summary statistics to display.
+#'  Default is `NULL` (relies on default values inside tbl_roche_summary).
 #'
 #' @return A gtsummary table.
 #' @name tbl_baseline_chg
@@ -39,7 +42,8 @@
 #'   data = df |> dplyr::filter(PARAMCD == "SODIUM"),
 #'   baseline_level = "Baseline",
 #'   by = "TRTA",
-#'   denominator = cards::ADSL
+#'   denominator = cards::ADSL,
+#'   statistic = everything() ~ c("{mean} ({sd})", "{median} ({p25}, {p75})")
 #' )
 #'
 #' tbl_baseline_chg(
@@ -65,8 +69,6 @@
 #' ) |>
 #'   tbl_split_by_rows(variable_level = ends_with("lbl"))
 #'
-NULL
-
 #' @rdname tbl_baseline_chg
 #' @export
 tbl_baseline_chg <- function(data,
@@ -74,6 +76,7 @@ tbl_baseline_chg <- function(data,
                              denominator,
                              by = NULL,
                              digits = NULL,
+                             statistic = NULL,
                              id = "USUBJID",
                              visit = "AVISIT",
                              visit_number = "AVISITN",
@@ -164,6 +167,7 @@ tbl_baseline_chg <- function(data,
       nonmissing = "always", # include the non-missing count in summary
       # round mean/sd/median/min/max,
       type = everything() ~ "continuous2",
+      statistic = statistic,
       digits = digits
     )
 
@@ -180,6 +184,7 @@ tbl_baseline_chg <- function(data,
       nonmissing = "always", # include the non-missing count in summary
       # round mean/sd/median/min/max
       type = everything() ~ "continuous2",
+      statistic = statistic,
       digits = digits,
       include = everything() & !all_of(baseline_level) # Remove the baseline visit from summary
     )

@@ -11,6 +11,7 @@ tbl_baseline_chg(
   denominator,
   by = NULL,
   digits = NULL,
+  statistic = NULL,
   id = "USUBJID",
   visit = "AVISIT",
   visit_number = "AVISITN",
@@ -42,6 +43,10 @@ Default is \code{NULL}.}
 Specifies how summary statistics are rounded. Values may be either integer(s)
 or function(s). If not specified, default formatting is assigned
 via \code{assign_summary_digits()}. See below for details.}
+
+\item{statistic}{(\code{formula})\cr
+Formula or list of formulas specifying the summary statistics to display.
+Default is \code{NULL} (relies on default values inside tbl_roche_summary).}
 
 \item{id}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 String identifying the unique subjects. Default is \code{'USUBJID'}.}
@@ -95,7 +100,8 @@ tbl_baseline_chg(
   data = df |> dplyr::filter(PARAMCD == "SODIUM"),
   baseline_level = "Baseline",
   by = "TRTA",
-  denominator = cards::ADSL
+  denominator = cards::ADSL,
+  statistic = everything() ~ c("{mean} ({sd})", "{median} ({p25}, {p75})")
 )
 
 tbl_baseline_chg(
