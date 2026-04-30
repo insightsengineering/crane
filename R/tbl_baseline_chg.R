@@ -28,7 +28,8 @@
 #'  Default is `NULL` (relies on default values inside tbl_roche_summary).
 #'
 #' @return A gtsummary table.
-#'
+#' @name tbl_baseline_chg
+#' 
 #' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true")
 #' theme_gtsummary_roche()
 #'
