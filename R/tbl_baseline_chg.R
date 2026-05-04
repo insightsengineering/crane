@@ -23,7 +23,7 @@
 #'  Data set used to compute the header counts (typically `ADSL`).
 #' @param statistic (`formula`)\cr
 #'  Formula or list of formulas specifying the summary statistics to display.
-#'  Default is `NULL` (relies on default values inside tbl_roche_summary).
+#'  Default is `all_continuous() ~ c("{mean} ({sd})","{median}","{min} - {max}")`
 #'
 #' @return A gtsummary table.
 #' @name tbl_baseline_chg
@@ -76,7 +76,11 @@ tbl_baseline_chg <- function(data,
                              denominator,
                              by = NULL,
                              digits = NULL,
-                             statistic = NULL,
+                             statistic = all_continuous() ~ c(
+                               "{mean} ({sd})",
+                               "{median}",
+                               "{min} - {max}"
+                             ),
                              id = "USUBJID",
                              visit = "AVISIT",
                              visit_number = "AVISITN",
