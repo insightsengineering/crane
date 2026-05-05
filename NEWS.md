@@ -1,4 +1,4 @@
-# crane 0.3.1.9028
+# crane 0.3.1.9029
 
 ## New Functions and Functionality
 
@@ -54,6 +54,7 @@ all events (#217)
 
 * Adjusted `tbl_baseline_chg()` to allow for custiomization of display statistics (#222)
 
+* Changed baseline statistic argument in `tbl_baseline_chg()` (#224)
 
 # crane 0.3.1
 
