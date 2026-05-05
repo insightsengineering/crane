@@ -11,7 +11,7 @@ tbl_baseline_chg(
   denominator,
   by = NULL,
   digits = NULL,
-  statistic = NULL,
+  statistic = all_continuous() ~ c("{mean} ({sd})", "{median}", "{min} - {max}"),
   id = "USUBJID",
   visit = "AVISIT",
   visit_number = "AVISITN",
@@ -46,7 +46,7 @@ via \code{assign_summary_digits()}. See below for details.}
 
 \item{statistic}{(\code{formula})\cr
 Formula or list of formulas specifying the summary statistics to display.
-Default is \code{NULL} (relies on default values inside tbl_roche_summary).}
+Default is \code{all_continuous() ~ c("{mean} ({sd})","{median}","{min} - {max}")}}
 
 \item{id}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
 String identifying the unique subjects. Default is \code{'USUBJID'}.}
