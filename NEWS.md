@@ -26,6 +26,8 @@
 *  Added `tbl_coxph()` which computes the pairwise cox proportional hazards test and returns a gtsummary object (#159)
 
 * Added `tbl_hierarchical_incidence_rate()` which computes the incidence rate of adverse events (#211)
+
+* Added `adjust_stat_columns_wrap()` which keep the presentation of statistics in one row (#219)
  
 ### Other Updates
 
