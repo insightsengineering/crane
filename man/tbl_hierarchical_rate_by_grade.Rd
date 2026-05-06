@@ -134,6 +134,11 @@ Grades will appear in rows in the order of the factor levels given, with each gr
 first level in its group.
 }
 \details{
+This function returns a structurally pristine table where the \code{label} column retains unique grade text
+(e.g., "1", "2", "Grade 1-2"). This preserves row uniqueness required by \code{\link[gtsummary:tbl_merge]{gtsummary::tbl_merge()}} and
+\code{\link[=tbl_with_pools]{tbl_with_pools()}}. To apply visual formatting (grade column, label blanking, header styling), pipe the
+result through \code{\link[=add_grade_column]{add_grade_column()}} \strong{after} any merging operations.
+
 When using the \code{filter} argument, the filter will be applied to the second variable from \code{variables}, i.e. the
 adverse event terms variable. If an AE does not meet the filtering criteria, the AE overall row as well as all grade
 and grade group rows within an AE section will be excluded from the table. Filtering out AEs does not exclude the
@@ -172,7 +177,8 @@ tbl_hierarchical_rate_by_grade(
   ),
   grade_groups = grade_groups,
   grades_exclude = "5"
-)
+) |>
+  add_grade_column()
 
 # Example 2 ----------------------------------
 # Filter: Keep AEs with an overall prevalence of greater than 10\%
@@ -184,6 +190,7 @@ tbl_hierarchical_rate_by_grade(
   grade_groups = list("Grades 1-2" = c("1", "2"), "Grades 3-5" = c("3", "4", "5")),
   filter = sum(n) / sum(N) > 0.10
 ) |>
-  add_overall(last = TRUE)
+  add_overall(last = TRUE) |>
+  add_grade_column()
 \dontshow{\}) # examplesIf}
 }
