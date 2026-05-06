@@ -70,10 +70,12 @@ add_grade_column <- function(x) {
     )
   }
 
-  # extract metadata: standalone vs merged table
+  # idempotency guard: skip if already applied
+  if ("label_grade" %in% names(x$table_body)) return(x)
 
+  # extract metadata: standalone vs merged table
   info <- x$custom_info %||%
-    tryCatch(x$tbls[[1]]$custom_info, error = function(e) NULL)
+    Find(Negate(is.null), lapply(x$tbls, \(t) t$custom_info))
 
   if (is.null(info)) {
     cli::cli_abort(

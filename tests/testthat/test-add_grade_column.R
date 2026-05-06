@@ -160,7 +160,31 @@ test_that("add_grade_column() recodes zero statistics", {
   expect_true(nrow(result$table_styling$post_fmt_fun) > 0)
 })
 
-# --- 8. Header labels are set correctly --------------------------------------
+# --- 8. Idempotency: calling add_grade_column() twice -------------------------
+test_that("add_grade_column() is idempotent when called twice", {
+  tbl <- tbl_hierarchical_rate_by_grade(
+    ADAE_subset,
+    variables = c(AEBODSYS, AEDECOD, AETOXGR),
+    denominator = ADSL,
+    by = TRTA,
+    label = label,
+    grade_groups = grade_groups
+  )
+
+  result_once <- tbl |> add_grade_column()
+  result_twice <- result_once |> add_grade_column()
+
+  # second call should return the same table unchanged
+  expect_identical(result_once$table_body, result_twice$table_body)
+
+  # grade labels should not be corrupted
+  grade_labels <- result_twice$table_body |>
+    dplyr::filter(variable == "AETOXGR") |>
+    dplyr::pull(label_grade)
+  expect_true(all(grade_labels != ""))
+})
+
+# --- 9. Header labels are set correctly --------------------------------------
 test_that("add_grade_column() sets correct header labels", {
   tbl <- tbl_hierarchical_rate_by_grade(
     ADAE_subset,
