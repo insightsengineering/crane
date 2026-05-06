@@ -21,7 +21,7 @@
 #'
 #' @details
 #' The function extracts metadata injected by [tbl_hierarchical_rate_by_grade()] via
-#' `x$custom_info` (standalone tables) or `x$tbls[[1]]$custom_info` (merged tables).
+#' `x$custom_info` (standalone tables) or the first sub-table's `custom_info` (merged tables).
 #' If no metadata is found, the function aborts with an informative error.
 #'
 #' ## Intended Workflow
