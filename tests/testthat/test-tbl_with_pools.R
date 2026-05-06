@@ -420,9 +420,8 @@ test_that("tbl_with_pools() skips if an rlang::expr() evaluates to 0 rows", {
 
 # --- 13. Pipeline: tbl_with_pools + tbl_hierarchical_rate_by_grade + add_grade_column ---
 test_that("tbl_with_pools() + tbl_hierarchical_rate_by_grade() + add_grade_column() pipeline works", {
-  # This is the critical regression test for the Cartesian join explosion.
+  # Regression test for the Cartesian join explosion.
   # Previously, tbl_hierarchical_rate_by_grade() blanked the `label` column for
-
   # grade rows before returning, causing tbl_merge() inside tbl_with_pools() to
   # lose row uniqueness and produce a Cartesian cross-join.
 
