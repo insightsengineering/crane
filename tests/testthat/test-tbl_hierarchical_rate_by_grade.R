@@ -292,6 +292,25 @@ test_that("tbl_hierarchical_rate_by_grade(grade_groups) works with some grades n
   )
 })
 
+test_that("tbl_hierarchical_rate_by_grade() appends missing grade group levels to character grade", {
+  # character grade column (not factor), partial grade groups with a level absent from data
+  ADAE_char <- ADAE_subset
+  ADAE_char$AETOXGR <- as.character(ADAE_char$AETOXGR)
+  ADAE_char <- ADAE_char[!ADAE_char$AETOXGR %in% c("1", "2"), ]
+
+  # grade_groups reference grades "1" and "2" which are absent from data
+  expect_silent(
+    tbl <- tbl_hierarchical_rate_by_grade(
+      ADAE_char,
+      variables = c(AEBODSYS, AEDECOD, AETOXGR),
+      denominator = ADSL,
+      by = TRTA,
+      label = label,
+      grade_groups = list("Grade 3-4" = c("3", "4"), "Grade 1-2" = c("1", "2"))
+    )
+  )
+})
+
 test_that("tbl_hierarchical_rate_by_grade(grades_exclude) works", {
   # no grades excluded
   tbl_no_excl <-
