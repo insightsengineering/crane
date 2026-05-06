@@ -299,7 +299,7 @@ test_that("tbl_hierarchical_rate_by_grade() appends missing grade group levels t
   ADAE_char <- ADAE_char[!ADAE_char$AETOXGR %in% c("1", "2"), ]
 
   # grade_groups reference grades "1" and "2" which are absent from data
-  expect_silent(
+  expect_message(
     tbl <- tbl_hierarchical_rate_by_grade(
       ADAE_char,
       variables = c(AEBODSYS, AEDECOD, AETOXGR),
@@ -307,7 +307,8 @@ test_that("tbl_hierarchical_rate_by_grade() appends missing grade group levels t
       by = TRTA,
       label = label,
       grade_groups = list("Grade 3-4" = c("3", "4"), "Grade 1-2" = c("1", "2"))
-    )
+    ),
+    '\\`AETOXGR\\`: '
   )
 })
 
