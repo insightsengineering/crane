@@ -195,7 +195,7 @@ tbl_mmrm <- function(mmrm_df, base_df = NULL, arm, visit, baseline_aval = NULL, 
   if (NROW(base_df) > 0) {
     cards::process_selectors(
       base_df,
-      arm = arm, visit = visit, baseline_aval = {{ baseline_aval }}
+      arm = all_of(arm), visit = all_of(visit), baseline_aval = {{ baseline_aval }}
     )
     check_data_frame(base_df)
     check_string(baseline_aval)
@@ -251,12 +251,12 @@ tbl_mmrm <- function(mmrm_df, base_df = NULL, arm, visit, baseline_aval = NULL, 
   # 4. Build Post-Baseline MMRM Table
   gts_mmrm <- mmrm_df |>
     gtsummary::tbl_strata(
-      strata = visit,
+      strata = all_of(visit),
       .combine_with = "tbl_stack",
       .header = "{strata}",
       .tbl_fun = ~ .x |>
         tbl_custom_summary(
-          by = arm,
+          by = all_of(arm),
           include = c(n, estimate_est, lower_cl_est, estimate_contr, lower_cl_contr, p_value),
           # MANDATORY: This stops the variable labels from repeating across two lines!
           type = list(everything() ~ "continuous"),
