@@ -33,7 +33,18 @@ test_that("tbl_hierarchical_rate_by_grade() works", {
         label = label
       )
   )
-  expect_snapshot(as.data.frame(tbl)[1:25, ])
+
+  # custom_info metadata is injected for add_grade_column()
+
+  expect_true(!is.null(tbl$custom_info))
+  expect_equal(tbl$custom_info$soc, "AEBODSYS")
+  expect_equal(tbl$custom_info$ae, "AEDECOD")
+  expect_equal(tbl$custom_info$grade, "AETOXGR")
+
+  # label column retains grade text (not blanked) for merge safety
+  expect_true(any(tbl$table_body$label %in% as.character(1:5)))
+
+  expect_snapshot(as.data.frame(tbl |> add_grade_column())[1:25, ])
 
   # with grade groups
   expect_silent(
@@ -47,7 +58,7 @@ test_that("tbl_hierarchical_rate_by_grade() works", {
         grade_groups = grade_groups
       )
   )
-  expect_snapshot(as.data.frame(tbl)[1:25, ])
+  expect_snapshot(as.data.frame(tbl |> add_grade_column())[1:25, ])
 
   # no by, no label
   expect_silent(
@@ -72,7 +83,7 @@ test_that("tbl_hierarchical_rate_by_grade() works", {
         digits = everything() ~ list(n = label_roche_number(digits = 1, decimal.mark = ","), p = 3)
       )
   )
-  expect_snapshot(as.data.frame(tbl)[1, ])
+  expect_snapshot(as.data.frame(tbl |> add_grade_column())[1, ])
 })
 
 test_that("tbl_hierarchical_rate_by_grade(include_overall) works", {
@@ -91,7 +102,7 @@ test_that("tbl_hierarchical_rate_by_grade(include_overall) works", {
         include_overall = everything()
       )
   )
-  expect_snapshot(as.data.frame(tbl)[1:25, ])
+  expect_snapshot(as.data.frame(tbl |> add_grade_column())[1:25, ])
 
   # all overall sections removed
   expect_silent(
@@ -106,7 +117,7 @@ test_that("tbl_hierarchical_rate_by_grade(include_overall) works", {
         include_overall = NULL
       )
   )
-  expect_snapshot(as.data.frame(tbl)[1:25, ])
+  expect_snapshot(as.data.frame(tbl |> add_grade_column())[1:25, ])
 })
 
 test_that("tbl_hierarchical_rate_by_grade() works with add_overall()", {
@@ -310,7 +321,7 @@ test_that("tbl_hierarchical_rate_by_grade(grades_exclude) works", {
   expect_identical(
     tbl_excl$table_body,
     tbl_no_excl$table_body |>
-      dplyr::filter(label_grade != "5")
+      dplyr::filter(label != "5")
   )
 
   # all grades excluded
@@ -329,7 +340,7 @@ test_that("tbl_hierarchical_rate_by_grade(grades_exclude) works", {
   expect_identical(
     tbl_excl$table_body,
     tbl_no_excl$table_body |>
-      dplyr::filter(!label_grade %in% as.character(1:5))
+      dplyr::filter(!label %in% as.character(1:5))
   )
 })
 

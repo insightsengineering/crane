@@ -416,3 +416,74 @@ test_that("tbl_with_pools() skips if an rlang::expr() evaluates to 0 rows", {
     error = TRUE
   )
 })
+
+
+# --- 13. Pipeline: tbl_with_pools + tbl_hierarchical_rate_by_grade + add_grade_column ---
+test_that("tbl_with_pools() + tbl_hierarchical_rate_by_grade() + add_grade_column() pipeline works", {
+  # This is the critical regression test for the Cartesian join explosion.
+  # Previously, tbl_hierarchical_rate_by_grade() blanked the `label` column for
+
+  # grade rows before returning, causing tbl_merge() inside tbl_with_pools() to
+  # lose row uniqueness and produce a Cartesian cross-join.
+
+  ADSL_pipe <- cards::ADSL
+  ADAE_pipe <- cards::ADAE |>
+    dplyr::filter(
+      AESOC %in% unique(cards::ADAE$AESOC)[1:3],
+      AETERM %in% unique(cards::ADAE$AETERM)[1:3]
+    )
+
+  pools <- list(
+    "Any Xanomeline" = c("Xanomeline High Dose", "Xanomeline Low Dose"),
+    "All Patients" = "all"
+  )
+
+  grade_groups <- list(
+    "Grade 1-2" = c("1", "2"),
+    "Grade 3-4" = c("3", "4")
+  )
+
+  # the merge should complete without row explosion
+  expect_silent(
+    merged_tbl <- tbl_with_pools(
+      data = ADAE_pipe,
+      pools = pools,
+      by = "TRTA",
+      denominator = ADSL_pipe,
+      keep_original = TRUE,
+      .tbl_fun = tbl_hierarchical_rate_by_grade,
+      variables = c(AEBODSYS, AEDECOD, AETOXGR),
+      grade_groups = grade_groups
+    )
+  )
+
+  # verify no Cartesian explosion: row count should match a single table
+  single_tbl <- tbl_hierarchical_rate_by_grade(
+    ADAE_pipe,
+    variables = c(AEBODSYS, AEDECOD, AETOXGR),
+    denominator = ADSL_pipe,
+    by = TRTA,
+    grade_groups = grade_groups
+  )
+  # merged table should have same number of rows (not exponentially more)
+  expect_equal(nrow(merged_tbl$table_body), nrow(single_tbl$table_body))
+
+  # verify label column retains unique values (not all blank)
+  grade_labels <- merged_tbl$table_body |>
+    dplyr::filter(variable == "AETOXGR") |>
+    dplyr::pull(label)
+  expect_true(all(grade_labels != ""))
+
+  # apply add_grade_column() to the merged result
+  final_tbl <- merged_tbl |> add_grade_column()
+
+  # after styling: label_grade exists, grade labels blanked from label
+  expect_true("label_grade" %in% names(final_tbl$table_body))
+  grade_labels_after <- final_tbl$table_body |>
+    dplyr::filter(variable == "AETOXGR") |>
+    dplyr::pull(label)
+  expect_true(all(grade_labels_after == ""))
+
+  # custom_info is extracted from the first sub-table
+  expect_true(!is.null(merged_tbl$tbls[[1]]$custom_info))
+})
