@@ -213,8 +213,7 @@ df2gg_aligned <- function(df,
   table_height <- 1 - rel_height_plot
 
   combined_plot <- cowplot::plot_grid(
-    gg_plt,
-    p_tbl,
+    plotlist = list(gg_plt, p_tbl),
     ncol = 1,
     axis = "rl",
     align = "v",

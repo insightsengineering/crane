@@ -31,6 +31,8 @@
  
 ### Other Updates
 
+* `df2gg_aligned()` now uses `plotlist` in `cowplot::plot_grid()`, allowing original plot data to be extracted after combining. (#208)
+
 * Remove warning when data has more levels than needed for grade_groups on tbl_hierarchical_rate_by_grade.
 
 * Changed the default `conf.type` from `"log"` to `"plain"` (linear) in `tbl_survfit_times()` and `tbl_survfit_quantiles()` to align with GDSR guidelines. (#173)
