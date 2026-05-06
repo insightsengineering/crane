@@ -474,8 +474,6 @@ tbl_hierarchical_rate_by_grade <- function(data,
 #' @export
 add_overall.tbl_hierarchical_rate_by_grade <- asNamespace("gtsummary")[["add_overall.tbl_hierarchical"]]
 
-#' @rdname tbl_hierarchical_rate_by_grade
-#'
 #' @param x (`gtsummary`)\cr
 #'   A gtsummary table produced by [tbl_hierarchical_rate_by_grade()], or a merged table
 #'   (e.g., from [tbl_with_pools()]) where the underlying tables were produced by
@@ -493,6 +491,7 @@ add_overall.tbl_hierarchical_rate_by_grade <- asNamespace("gtsummary")[["add_ove
 #' `x$custom_info` (standalone tables) or the first sub-table's `custom_info` (merged tables).
 #' If no metadata is found, the function aborts with an informative error.
 #'
+#' @rdname tbl_hierarchical_rate_by_grade
 #' @export
 add_grade_column <- function(x) {
   set_cli_abort_call()
