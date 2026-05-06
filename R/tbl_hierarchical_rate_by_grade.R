@@ -41,6 +41,11 @@
 #'   A gtsummary table of class `'tbl_hierarchical_rate_by_grade'`.
 #'
 #' @details
+#' This function returns a structurally pristine table where the `label` column retains unique grade text
+#' (e.g., "1", "2", "Grade 1-2"). This preserves row uniqueness required by [gtsummary::tbl_merge()] and
+#' [tbl_with_pools()]. To apply visual formatting (grade column, label blanking, header styling), pipe the
+#' result through [add_grade_column()] **after** any merging operations.
+#'
 #' When using the `filter` argument, the filter will be applied to the second variable from `variables`, i.e. the
 #' adverse event terms variable. If an AE does not meet the filtering criteria, the AE overall row as well as all grade
 #' and grade group rows within an AE section will be excluded from the table. Filtering out AEs does not exclude the
@@ -81,7 +86,8 @@
 #'   ),
 #'   grade_groups = grade_groups,
 #'   grades_exclude = "5"
-#' )
+#' ) |>
+#'   add_grade_column()
 #'
 #' # Example 2 ----------------------------------
 #' # Filter: Keep AEs with an overall prevalence of greater than 10%
@@ -93,7 +99,8 @@
 #'   grade_groups = list("Grades 1-2" = c("1", "2"), "Grades 3-5" = c("3", "4", "5")),
 #'   filter = sum(n) / sum(N) > 0.10
 #' ) |>
-#'   add_overall(last = TRUE)
+#'   add_overall(last = TRUE) |>
+#'   add_grade_column()
 NULL
 
 #' @export
@@ -365,6 +372,7 @@ tbl_hierarchical_rate_by_grade <- function(data,
       }
     )
 
+  # structural cleanup: remove duplicate/empty rows but preserve label uniqueness
   tbl_final <- tbl_final |>
     gtsummary::modify_table_body(
       \(table_body) {
@@ -374,62 +382,9 @@ tbl_hierarchical_rate_by_grade <- function(data,
           # remove soc summary rows if all sub-rows filtered out
           dplyr::filter(!(.data$variable == soc & dplyr::lead(.data$variable) %in% c(soc, NA))) |>
           # remove rows for grades in grades_exclude
-          dplyr::filter(!.data$label %in% grades_exclude) |>
-          dplyr::rowwise() |>
-          # add label_grade column to display grade labels
-          dplyr::mutate(
-            label_grade = dplyr::case_when(
-              .data$variable == grade ~ label,
-              .data$variable == ae | label == "- Any adverse events -" ~ "- Any Grade -",
-              .default = ""
-            ),
-            .after = "label"
-          ) |>
-          # remove grade levels from label column
-          dplyr::mutate(label = if (.data$variable == grade) "" else label) |>
-          # remove statistics from summary rows if not an overall row
-          dplyr::mutate(
-            across(
-              gtsummary::all_stat_cols(),
-              ~ if (
-                .data$variable %in% c(ae, "..ard_hierarchical_overall..") |
-                  .data$label_grade %in% c(lvls, names(grade_groups)) |
-                  .data$label == "- Any adverse events -"
-              ) {
-                .
-              } else {
-                NA
-              }
-            )
-          ) |>
-          dplyr::ungroup()
+          dplyr::filter(!.data$label %in% grades_exclude)
       }
-    ) |>
-    # show label_grade column
-    gtsummary::modify_column_unhide("label_grade") |>
-    gtsummary::modify_column_alignment("label_grade", align = "left") |>
-    # remove default footnote
-    gtsummary::remove_footnote_header(columns = everything()) |>
-    # convert "0 (0.0%)" to "0"
-    gtsummary::modify_post_fmt_fun(
-      fmt_fun = ~ ifelse(. %in% c("0 (0.0%)", "0 (NA%)"), "0", .),
-      columns = gtsummary::all_stat_cols()
-    ) |>
-    # update header label
-    gtsummary::modify_header(
-      label ~ paste0(label[[soc]], "  \n", paste0(rep("\U00A0", 4L), collapse = ""), label[[ae]]),
-      label_grade ~ label[[grade]],
-      gtsummary::all_stat_cols() ~ "{level}  \n(N = {n})"
     )
-
-  # indent grade level labels within grade groups
-  if (!is_empty(grade_groups)) {
-    tbl_final <- tbl_final |>
-      gtsummary::modify_indent(
-        columns = "label_grade", rows = .data$variable == grade & .data$label_grade %in% unlist(grade_groups),
-        indent = 4L
-      )
-  }
 
   # return final table ---------------------------------------------------------
   tbl_final$call_list <- list(tbl_hierarchical_rate_by_grade = match.call())
@@ -437,6 +392,16 @@ tbl_hierarchical_rate_by_grade <- function(data,
     tbl_hierarchical_rate_by_grade = list(tbl_hierarchical = tbl_final$cards$tbl_ard_hierarchical)
   )
   tbl_final$inputs <- tbl_hierarchical_rate_by_grade_inputs
+
+  # inject metadata for downstream post-processing by add_grade_column()
+  tbl_final$custom_info <- list(
+    soc = soc,
+    ae = ae,
+    grade = grade,
+    grade_groups = grade_groups,
+    lvls = lvls,
+    label_list = label
+  )
 
   tbl_final |>
     structure(class = c("tbl_hierarchical_rate_by_grade", "gtsummary"))
