@@ -53,9 +53,9 @@ they need to be displayed in the listing. See example 3.
 \subsection{Splitting the listing}{
 \itemize{
 \item Split by rows - you can split the data frame by rows by using \code{split_by_rows} parameter. You can use the same
-parameters used in \code{\link[gtsummary:tbl_split_by]{gtsummary::tbl_split_by_rows()}}. See example 4.
+parameters used in \code{\link[gtsummary:tbl_split_by_rows]{gtsummary::tbl_split_by_rows()}}. See example 4.
 \item Split by columns - you can split the data frame by columns by using \code{split_by_columns} parameter. Use the same
-parameters from \code{\link[gtsummary:tbl_split_by]{gtsummary::tbl_split_by_rows()}}. See example 5.
+parameters from \code{\link[gtsummary:tbl_split_by_rows]{gtsummary::tbl_split_by_rows()}}. See example 5.
 }
 }
 }
