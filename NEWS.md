@@ -31,7 +31,7 @@
  
 ### Other Updates
 
-* `df2gg_aligned()` now uses `plotlist` in `cowplot::plot_grid()`, allowing original plot data to be extracted after combining. (#208)
+* `df2gg_aligned()` and `df2gg_floating()` now preserve original ggplot objects for downstream data extraction after combining with `cowplot`. (#208)
 
 * Remove warning when data has more levels than needed for grade_groups on tbl_hierarchical_rate_by_grade.
 

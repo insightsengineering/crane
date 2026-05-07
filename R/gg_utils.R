@@ -280,7 +280,15 @@ df2gg_aligned <- function(df,
 #' )
 #' }
 #'
+#' @details
+#' Unlike `plot_grid()`, `ggdraw() + draw_plot()` does not support a `plotlist`
+#' argument. To allow downstream data extraction, the original ggplot objects
+#' are stored in a `"plotlist"` attribute on the returned object. Access them
+#' via `attr(result, "plotlist")`, which returns a named list with `main`
+#' (the base plot) and `table` (the floating table).
+#'
 #' @return A `cowplot` object representing the combined plot and table.
+#'   The original plots are preserved in `attr(, "plotlist")`.
 #'
 #' @keywords internal
 df2gg_floating <- function(df,
@@ -377,6 +385,9 @@ df2gg_floating <- function(df,
       vjust = 0.5,
       hjust = 0.5
     )
+
+  # Preserve original plots for downstream data extraction
+  attr(res, "plotlist") <- list(main = gg_plt, table = tbl_p)
 
   res
 }
