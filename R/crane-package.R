@@ -4,7 +4,7 @@
 #' @import glue glue
 #' @importFrom broom tidy
 #' @importFrom cowplot plot_grid ggdraw draw_plot
-#' @importFrom dplyr across starts_with ends_with contains matches num_range 
+#' @importFrom dplyr across starts_with ends_with contains matches num_range
 #' @importFrom dplyr all_of any_of everything last_col where mutate
 #' @importFrom labeling extended
 #' @importFrom survival coxph Surv survdiff
