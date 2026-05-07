@@ -55,7 +55,15 @@
 #'   show_xaxis = TRUE
 #' )
 #' }
+#' @details
+#' `cowplot::plot_grid()` converts ggplot objects into grobs, discarding the
+#' original data. To allow downstream data extraction, the original plots are
+#' stored in a `"plotlist"` attribute on the returned object. Access them via
+#' `attr(result, "plotlist")`, which returns a named list with `main`
+#' (the base plot) and `table` (the aligned table).
+#'
 #' @return A combined `cowplot` object.
+#'   The original plots are preserved in `attr(, "plotlist")`.
 #' @keywords internal
 df2gg_aligned <- function(df,
                           gg_plt,
@@ -219,6 +227,9 @@ df2gg_aligned <- function(df,
     align = "v",
     rel_heights = c(rel_height_plot, table_height)
   )
+
+  # Preserve original plots for downstream data extraction
+  attr(combined_plot, "plotlist") <- list(main = gg_plt, table = p_tbl)
 
   combined_plot
 }
