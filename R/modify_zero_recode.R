@@ -67,6 +67,6 @@ modify_zero_recode <- function(x) {
         .default = as.character(col_vals)
       )
     },
-    columns = c(gtsummary::all_stat_cols(), dplyr::starts_with("stat_"))
+    columns = gtsummary::all_stat_cols()
   )
 }
