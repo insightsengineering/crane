@@ -56,14 +56,10 @@
 #' )
 #' }
 #' @details
-#' `cowplot::plot_grid()` converts ggplot objects into grobs, discarding the
-#' original data. To allow downstream data extraction, the original plots are
-#' stored in a `"plotlist"` attribute on the returned object. Access them via
-#' `attr(result, "plotlist")`, which returns a named list with `main`
-#' (the base plot) and `table` (the aligned table).
+#' The original plots are stored in `attr(result, "plotlist")` as a named
+#' list (`main` and `table`) for downstream data extraction.
 #'
 #' @return A combined `cowplot` object.
-#'   The original plots are preserved in `attr(, "plotlist")`.
 #' @keywords internal
 df2gg_aligned <- function(df,
                           gg_plt,
@@ -292,14 +288,10 @@ df2gg_aligned <- function(df,
 #' }
 #'
 #' @details
-#' Unlike `plot_grid()`, `ggdraw() + draw_plot()` does not support a `plotlist`
-#' argument. To allow downstream data extraction, the original ggplot objects
-#' are stored in a `"plotlist"` attribute on the returned object. Access them
-#' via `attr(result, "plotlist")`, which returns a named list with `main`
-#' (the base plot) and `table` (the floating table).
+#' The original plots are stored in `attr(result, "plotlist")` as a named
+#' list (`main` and `table`) for downstream data extraction.
 #'
 #' @return A `cowplot` object representing the combined plot and table.
-#'   The original plots are preserved in `attr(, "plotlist")`.
 #'
 #' @keywords internal
 df2gg_floating <- function(df,
