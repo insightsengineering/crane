@@ -54,11 +54,12 @@ theme_gtsummary_roche <- function(font_size = NULL,
         "pkgwide-fun:pre_conversion" = function(x) {
           # This runs on every gtsummary table before printing - added for tbl_strata(.header = "{strata}")
           x <- crane::modify_header_rm_md(x, md = "bold", type = "star")
-
+          x <- crane::adjust_stat_columns_wrap(x, mode = "protect")
           # Only apply protection if the table is NOT explicitly unprotected
-          if (!identical(attr(x, "wrap_mode"), "unprotect")) {
-            x <- crane::adjust_stat_columns_wrap(x, mode = "protect")
+          if (identical(attr(x, "wrap_mode"), "unprotect")) {
+            x <- crane::adjust_stat_columns_wrap(x, mode = "unprotect")
           }
+          x <- crane::modify_zero_recode(x)
           x
         },
         "add_overall.tbl_summary-arg:col_label" = "All Participants  \n(N = {style_roche_number(N)})",
@@ -69,13 +70,11 @@ theme_gtsummary_roche <- function(font_size = NULL,
               gtsummary::modify_header(
                 gtsummary::all_stat_cols() ~ "{level}  \n(N = {style_roche_number(n)})"
               ) |>
-              modify_zero_recode() |>
               modify_header_rm_md()
           },
         "tbl_hierarchical_count-fn:addnl-fn-to-run" =
           \(x) {
             gtsummary::remove_footnote_header(x) |>
-              modify_zero_recode() |>
               modify_header_rm_md()
           }
       )

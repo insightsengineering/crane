@@ -1,3 +1,4 @@
+# Load Libraries ---------------------------------------------------------------
 #' Zero Count Recode
 #'
 #' @description
@@ -59,14 +60,16 @@ modify_zero_recode <- function(x) {
       }
       dplyr::case_when(
         # convert "0 (0%)" OR "0 (0.0%)" OR 0 (NA%) to "0"
-        str_detect(col_vals, "^[ \u00A0]*0[ \u00A0]+\\((?:0(?:\\.0+)?|NA)%\\)$") ~
-          str_remove(col_vals, pattern = "[ \u00A0]+\\((?:0(?:\\.0+)?|NA)%\\)$"),
+        # (Allows leading padding, internal padding, AND trailing padding)
+        str_detect(col_vals, "^[ \u00A0]*0[ \u00A0]+\\([ \u00A0]*(?:0(?:\\.0+)?|NA)[ \u00A0]*%\\)[ \u00A0]*$") ~
+          str_remove(col_vals, pattern = "[ \u00A0]+\\([ \u00A0]*(?:0(?:\\.0+)?|NA)[ \u00A0]*%\\)"),
+
         # convert "0 / nn (0%)" OR "0/nn (0.0%)" OR 0/0 (NA%) to "0 / nn" OR "0/nn" OR "0/0"
-        str_detect(col_vals, pattern = "^[ \u00A0]*0[ \u00A0]*/[ \u00A0]*[0-9,.]+[ \u00A0]+\\((?:0(?:\\.0+)?|NA)%\\)$") ~
-          str_remove(col_vals, pattern = "[ \u00A0]+\\((?:0(?:\\.0+)?|NA)%\\)$"),
+        str_detect(col_vals, pattern = "^[ \u00A0]*0[ \u00A0]*/[ \u00A0]*[0-9,.]+[ \u00A0]+\\([ \u00A0]*(?:0(?:\\.0+)?|NA)[ \u00A0]*%\\)[ \u00A0]*$") ~
+          str_remove(col_vals, pattern = "[ \u00A0]+\\([ \u00A0]*(?:0(?:\\.0+)?|NA)[ \u00A0]*%\\)"),
         .default = as.character(col_vals)
       )
     },
-    columns = gtsummary::all_stat_cols()
+    columns = c(gtsummary::all_stat_cols(), dplyr::starts_with("stat_"))
   )
 }
