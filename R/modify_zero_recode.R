@@ -51,7 +51,6 @@ modify_zero_recode <- function(x) {
   check_class(x, "gtsummary")
 
   # recode zero and percent to "0" ---------------------------------------------
-  # recode zero and percent to "0" ---------------------------------------------
   gtsummary::modify_post_fmt_fun(
     x,
     fmt_fun = \(col_vals) {
