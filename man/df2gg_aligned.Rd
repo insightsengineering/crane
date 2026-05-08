@@ -92,8 +92,8 @@ result <- df2gg_aligned(
 
 # 4. Extract the original plots and data
 plist <- attr(result, "plotlist")
-plist$main$data   # original dataframe from the base plot
-plist$table       # the table ggplot object
+plist$main$data # original dataframe from the base plot
+plist$table # the table ggplot object
 }
 }
 \keyword{internal}
