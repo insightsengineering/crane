@@ -3,11 +3,11 @@ skip_on_cran()
 # Setup small, reproducible datasets using {cards}
 ADSL_subset <- cards::ADSL |>
   dplyr::filter(TRTA %in% c("Placebo", "Xanomeline High Dose", "Xanomeline Low Dose")) |>
-  dplyr::slice(1:30)
+  dplyr::slice_head(n = 30)
 
 ADAE_subset <- cards::ADAE |>
   dplyr::filter(USUBJID %in% ADSL_subset$USUBJID) |>
-  dplyr::slice(1:30)
+  dplyr::slice_head(n = 30)
 
 # Define standard pools for testing
 standard_pools <- list(
@@ -96,7 +96,7 @@ test_that("tbl_with_pools() works with standard functions like tbl_summary", {
   expect_true(any(str_detect(header_labels, "All Patients")))
 
   # Snapshot the table output
-  withr::local_options(list(width = 220))
+  local_wide_snapshot()
   expect_snapshot(as.data.frame(tbl))
 })
 
@@ -119,7 +119,7 @@ test_that("tbl_with_pools() passes the denominator correctly for custom function
   expect_s3_class(tbl, "tbl_with_pools")
 
   # Snapshot the table output
-  withr::local_options(list(width = 220))
+  local_wide_snapshot()
   expect_snapshot(as.data.frame(tbl))
 })
 
