@@ -31,6 +31,8 @@
  
 ### Other Updates
 
+* `df2gg_aligned()` and `df2gg_floating()` now preserve original ggplot objects in `attr(result, "plotlist")` for downstream data extraction after combining with `cowplot`. (#208)
+
 * Remove warning when data has more levels than needed for grade_groups on tbl_hierarchical_rate_by_grade.
 
 * Changed the default `conf.type` from `"log"` to `"plain"` (linear) in `tbl_survfit_times()` and `tbl_survfit_quantiles()` to align with GDSR guidelines. (#173)

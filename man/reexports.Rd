@@ -15,8 +15,8 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{dplyr}{\code{\link[dplyr:reexports]{\%>\%}}}
+  \item{dplyr}{\code{\link[dplyr:\%>\%]{\%>\%}}}
 
-  \item{gtsummary}{\code{\link[gtsummary]{add_difference_row}}, \code{\link[gtsummary]{add_overall}}, \code{\link[gtsummary]{filter_hierarchical}}, \code{\link[gtsummary]{sort_hierarchical}}}
+  \item{gtsummary}{\code{\link[gtsummary:add_difference_row]{add_difference_row()}}, \code{\link[gtsummary:add_overall]{add_overall()}}, \code{\link[gtsummary:filter_hierarchical]{filter_hierarchical()}}, \code{\link[gtsummary:sort_hierarchical]{sort_hierarchical()}}}
 }}
 
