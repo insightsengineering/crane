@@ -45,6 +45,47 @@ test_that("gg_km() works and handles annotations correctly", {
   )
 })
 
+test_that("plotlist attribute is preserved through annotate_* stacking", {
+  surv_plot_data <- process_survfit(fit_kmg01)
+  suppressWarnings(
+    coxph_tbl <- get_cox_pairwise_df(model_formula, data = anl, arm = by)
+  )
+
+  base_plt <- gg_km(surv_plot_data)
+
+  # Single annotation: annotate_riskdf -> df2gg_aligned
+  suppressWarnings(
+    plt_risk <- base_plt |> annotate_riskdf(fit_kmg01)
+  )
+  plist_risk <- attr(plt_risk, "plotlist")
+  expect_true(!is.null(plist_risk))
+  expect_named(plist_risk, c("main", "table"))
+  expect_s3_class(plist_risk$main, "ggplot")
+  expect_s3_class(plist_risk$table, "ggplot")
+
+  # Single floating annotation: annotate_surv_med -> df2gg_floating
+  plt_med <- base_plt |> annotate_surv_med(fit_kmg01)
+  plist_med <- attr(plt_med, "plotlist")
+  expect_true(!is.null(plist_med))
+  expect_named(plist_med, c("main", "table"))
+  expect_identical(plist_med$main$data, base_plt$data)
+
+  # Stacked floating annotations: surv_med |> coxph
+  plt_stacked <- base_plt |>
+    annotate_surv_med(fit_kmg01) |>
+    annotate_coxph(coxph_tbl)
+
+  plist_top <- attr(plt_stacked, "plotlist")
+  expect_true(!is.null(plist_top))
+  expect_named(plist_top, c("main", "table"))
+
+  # The nested main carries the previous plotlist
+  plist_nested <- attr(plist_top$main, "plotlist")
+  expect_true(!is.null(plist_nested))
+  expect_named(plist_nested, c("main", "table"))
+  expect_identical(plist_nested$main$data, base_plt$data)
+})
+
 test_that("df2gg engines (aligned and floating) work correctly", {
   # Example dataframe with proper timepoint columns
   df <- as.data.frame(matrix(c(
