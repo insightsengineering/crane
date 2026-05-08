@@ -269,7 +269,10 @@ annotate_surv_med <- function(gg_plt,
 #'   formula,
 #'   data = use_lung, arm = "arm", ref_group = "A"
 #' )
-#' annotate_coxph(plt_kmg01, coxph_tbl)
+#' result <- annotate_coxph(plt_kmg01, coxph_tbl)
+#'
+#' # Extract original plots from any annotated result
+#' attr(result, "plotlist")$main
 #'
 #' @export
 annotate_coxph <- function(gg_plt,
