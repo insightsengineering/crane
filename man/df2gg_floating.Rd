@@ -82,7 +82,7 @@ mock_df <- data.frame(
 )
 
 # 3. Float the table on the plot
-df2gg_floating(
+result <- df2gg_floating(
   df = mock_df,
   gg_plt = p_base,
   x = 0.75,
@@ -91,6 +91,11 @@ df2gg_floating(
   h = 0.25,
   bg_fill = "white"
 )
+
+# 4. Extract the original plots and data
+plist <- attr(result, "plotlist")
+plist$main$data   # original dataframe from the base plot
+plist$table       # the floating table ggplot object
 }
 
 }

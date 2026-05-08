@@ -82,13 +82,18 @@ mock_df <- data.frame(
 rownames(mock_df) <- c("Group A", "Group B")
 
 # 3. Align and stack the table under the plot using the "KM" engine
-df2gg_aligned(
+result <- df2gg_aligned(
   df = mock_df,
   gg_plt = p_base,
   type = "KM",
   title = "Subjects at Risk",
   show_xaxis = TRUE
 )
+
+# 4. Extract the original plots and data
+plist <- attr(result, "plotlist")
+plist$main$data   # original dataframe from the base plot
+plist$table       # the table ggplot object
 }
 }
 \keyword{internal}
