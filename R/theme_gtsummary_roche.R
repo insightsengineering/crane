@@ -54,9 +54,10 @@ theme_gtsummary_roche <- function(font_size = NULL,
         "pkgwide-fun:pre_conversion" = function(x) {
           # This runs on every gtsummary table before printing - added for tbl_strata(.header = "{strata}")
           x <- crane::modify_header_rm_md(x, md = "bold", type = "star")
+          x <- crane::adjust_stat_columns_wrap(x, mode = "protect")
           # Only apply protection if the table is NOT explicitly unprotected
-          if (!identical(attr(x, "wrap_mode"), "unprotect")) {
-            x <- crane::adjust_stat_columns_wrap(x, mode = "protect")
+          if (!is.null(attr(x, "wrap_mode")) & !identical(attr(x, "wrap_mode"), "protect")) {
+            x <- crane::adjust_stat_columns_wrap(x, mode = "unprotect")
           }
           x <- crane::modify_zero_recode(x)
           x
