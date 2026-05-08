@@ -168,12 +168,39 @@ test_that("df2gg_aligned formats x-axis correctly when xlab is NULL", {
   expect_s3_class(res, "ggplot")
 })
 
+test_that("df2gg_aligned preserves original plots in plotlist attribute", {
+  res <- df2gg_aligned(df = df_km_dummy, gg_plt = p_dummy, type = "KM")
+
+  plist <- attr(res, "plotlist")
+  expect_true(!is.null(plist))
+  expect_named(plist, c("main", "table"))
+
+  # The main plot should carry the original data
+  expect_identical(plist$main$data, mtcars)
+  expect_s3_class(plist$main, "ggplot")
+  expect_s3_class(plist$table, "ggplot")
+})
+
 # --- Tests for df2gg_floating() ---
 
 test_that("df2gg_floating works when col_labels = FALSE", {
   df_float <- data.frame(Statistic = c("N", "Median"), Value = c(50, 15.5))
   res <- df2gg_floating(df = df_float, gg_plt = p_dummy, col_labels = FALSE)
   expect_s3_class(res, "ggplot")
+})
+
+test_that("df2gg_floating preserves original plots in plotlist attribute", {
+  df_float <- data.frame(Statistic = c("N", "Median"), Value = c(50, 15.5))
+  res <- df2gg_floating(df = df_float, gg_plt = p_dummy)
+
+  plist <- attr(res, "plotlist")
+  expect_true(!is.null(plist))
+  expect_named(plist, c("main", "table"))
+
+  # The main plot should carry the original data
+  expect_identical(plist$main$data, mtcars)
+  expect_s3_class(plist$main, "ggplot")
+  expect_s3_class(plist$table, "ggplot")
 })
 
 test_that("df2gg_floating works with column labels, NAs, and background fill", {
