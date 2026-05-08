@@ -536,14 +536,14 @@ add_grade_column <- function(x) {
           # create label_grade column
           dplyr::mutate(
             label_grade = dplyr::case_when(
-              .data$variable == grade ~ label,
-              .data$variable == ae | label == "- Any adverse events -" ~ "- Any Grade -",
+              .data$variable == grade ~ .data$label,
+              .data$variable == ae | .data$label == "- Any adverse events -" ~ "- Any Grade -",
               .default = ""
             ),
             .after = "label"
           ) |>
           # blank the label column for grade rows (safe after merge)
-          dplyr::mutate(label = if (.data$variable == grade) "" else label) |>
+          dplyr::mutate(label = if (.data$variable == grade) "" else .data$label) |>
           # remove statistics from non-summary rows
           dplyr::mutate(
             across(
