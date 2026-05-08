@@ -21,7 +21,7 @@ Supports both continuous and discrete X-axes.'><meta property="og:image" content
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1.9030</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1.9031</span>
       </span>
     </div>
 
@@ -149,6 +149,11 @@ Vertical space for the main plot.</p></dd>
     <h2>Value</h2>
     <p>A combined <code>cowplot</code> object.</p>
     </div>
+    <div id="details">
+    <h2>Details</h2>
+    <p>The original plots are stored in <code>attr(result, "plotlist")</code> as a named
+list (<code>main</code> and <code>table</code>) for downstream data extraction.</p>
+    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
@@ -168,13 +173,18 @@ Vertical space for the main plot.</p></dd>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">mock_df</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Group A"</span>, <span class="st">"Group B"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># 3. Align and stack the table under the plot using the "KM" engine</span></span></span>
-<span class="r-in"><span><span class="fu">df2gg_aligned</span><span class="op">(</span></span></span>
+<span class="r-in"><span><span class="va">result</span> <span class="op">&lt;-</span> <span class="fu">df2gg_aligned</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  df <span class="op">=</span> <span class="va">mock_df</span>,</span></span>
 <span class="r-in"><span>  gg_plt <span class="op">=</span> <span class="va">p_base</span>,</span></span>
 <span class="r-in"><span>  type <span class="op">=</span> <span class="st">"KM"</span>,</span></span>
 <span class="r-in"><span>  title <span class="op">=</span> <span class="st">"Subjects at Risk"</span>,</span></span>
 <span class="r-in"><span>  show_xaxis <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># 4. Extract the original plots and data</span></span></span>
+<span class="r-in"><span><span class="va">plist</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/attr.html" class="external-link">attr</a></span><span class="op">(</span><span class="va">result</span>, <span class="st">"plotlist"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">plist</span><span class="op">$</span><span class="va">main</span><span class="op">$</span><span class="va">data</span> <span class="co"># original dataframe from the base plot</span></span></span>
+<span class="r-in"><span><span class="va">plist</span><span class="op">$</span><span class="va">table</span> <span class="co"># the table ggplot object</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
