@@ -58,18 +58,14 @@ Optional color string for the plot background.}
 }
 \value{
 A \code{cowplot} object representing the combined plot and table.
-The original plots are preserved in \code{attr(, "plotlist")}.
 }
 \description{
 Creates a standalone \code{ggplot2} table and overlays it onto a base plot
 using \code{cowplot} at specified coordinates.
 }
 \details{
-Unlike \code{plot_grid()}, \code{ggdraw() + draw_plot()} does not support a \code{plotlist}
-argument. To allow downstream data extraction, the original ggplot objects
-are stored in a \code{"plotlist"} attribute on the returned object. Access them
-via \code{attr(result, "plotlist")}, which returns a named list with \code{main}
-(the base plot) and \code{table} (the floating table).
+The original plots are stored in \code{attr(result, "plotlist")} as a named
+list (\code{main} and \code{table}) for downstream data extraction.
 }
 \examples{
 \dontrun{

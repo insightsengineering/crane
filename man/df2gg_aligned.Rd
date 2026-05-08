@@ -61,6 +61,10 @@ Allow annotation of general "GEN" plots and more specific plots such as
 Pharmacokinetic ("PK") or Kaplan-Meier ("KM").
 Supports both continuous and discrete X-axes.
 }
+\details{
+The original plots are stored in \code{attr(result, "plotlist")} as a named
+list (\code{main} and \code{table}) for downstream data extraction.
+}
 \examples{
 \dontrun{
 # 1. Create a base plot with a continuous X-axis
