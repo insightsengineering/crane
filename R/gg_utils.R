@@ -47,13 +47,18 @@
 #' rownames(mock_df) <- c("Group A", "Group B")
 #'
 #' # 3. Align and stack the table under the plot using the "KM" engine
-#' df2gg_aligned(
+#' result <- df2gg_aligned(
 #'   df = mock_df,
 #'   gg_plt = p_base,
 #'   type = "KM",
 #'   title = "Subjects at Risk",
 #'   show_xaxis = TRUE
 #' )
+#'
+#' # 4. Extract the original plots and data
+#' plist <- attr(result, "plotlist")
+#' plist$main$data   # original dataframe from the base plot
+#' plist$table       # the table ggplot object
 #' }
 #' @details
 #' The original plots are stored in `attr(result, "plotlist")` as a named
@@ -276,7 +281,7 @@ df2gg_aligned <- function(df,
 #' )
 #'
 #' # 3. Float the table on the plot
-#' df2gg_floating(
+#' result <- df2gg_floating(
 #'   df = mock_df,
 #'   gg_plt = p_base,
 #'   x = 0.75,
@@ -285,6 +290,11 @@ df2gg_aligned <- function(df,
 #'   h = 0.25,
 #'   bg_fill = "white"
 #' )
+#'
+#' # 4. Extract the original plots and data
+#' plist <- attr(result, "plotlist")
+#' plist$main$data   # original dataframe from the base plot
+#' plist$table       # the floating table ggplot object
 #' }
 #'
 #' @details
