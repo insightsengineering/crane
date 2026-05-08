@@ -1,4 +1,4 @@
-# crane 0.3.1.9030
+# crane 0.3.1.9031
 
 ## New Functions and Functionality
 
@@ -30,6 +30,8 @@
 * Added `adjust_stat_columns_wrap()` which keep the presentation of statistics in one row (#219)
  
 ### Other Updates
+
+* `df2gg_aligned()` and `df2gg_floating()` now preserve original ggplot objects in `attr(result, "plotlist")` for downstream data extraction after combining with `cowplot`. (#208)
 
 * Remove warning when data has more levels than needed for grade_groups on tbl_hierarchical_rate_by_grade.
 

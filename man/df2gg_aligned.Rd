@@ -61,6 +61,10 @@ Allow annotation of general "GEN" plots and more specific plots such as
 Pharmacokinetic ("PK") or Kaplan-Meier ("KM").
 Supports both continuous and discrete X-axes.
 }
+\details{
+The original plots are stored in \code{attr(result, "plotlist")} as a named
+list (\code{main} and \code{table}) for downstream data extraction.
+}
 \examples{
 \dontrun{
 # 1. Create a base plot with a continuous X-axis
@@ -78,13 +82,18 @@ mock_df <- data.frame(
 rownames(mock_df) <- c("Group A", "Group B")
 
 # 3. Align and stack the table under the plot using the "KM" engine
-df2gg_aligned(
+result <- df2gg_aligned(
   df = mock_df,
   gg_plt = p_base,
   type = "KM",
   title = "Subjects at Risk",
   show_xaxis = TRUE
 )
+
+# 4. Extract the original plots and data
+plist <- attr(result, "plotlist")
+plist$main$data # original dataframe from the base plot
+plist$table # the table ggplot object
 }
 }
 \keyword{internal}

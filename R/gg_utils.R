@@ -47,14 +47,23 @@
 #' rownames(mock_df) <- c("Group A", "Group B")
 #'
 #' # 3. Align and stack the table under the plot using the "KM" engine
-#' df2gg_aligned(
+#' result <- df2gg_aligned(
 #'   df = mock_df,
 #'   gg_plt = p_base,
 #'   type = "KM",
 #'   title = "Subjects at Risk",
 #'   show_xaxis = TRUE
 #' )
+#'
+#' # 4. Extract the original plots and data
+#' plist <- attr(result, "plotlist")
+#' plist$main$data # original dataframe from the base plot
+#' plist$table # the table ggplot object
 #' }
+#' @details
+#' The original plots are stored in `attr(result, "plotlist")` as a named
+#' list (`main` and `table`) for downstream data extraction.
+#'
 #' @return A combined `cowplot` object.
 #' @keywords internal
 df2gg_aligned <- function(df,
@@ -213,13 +222,15 @@ df2gg_aligned <- function(df,
   table_height <- 1 - rel_height_plot
 
   combined_plot <- cowplot::plot_grid(
-    gg_plt,
-    p_tbl,
+    plotlist = list(gg_plt, p_tbl),
     ncol = 1,
     axis = "rl",
     align = "v",
     rel_heights = c(rel_height_plot, table_height)
   )
+
+  # Preserve original plots for downstream data extraction
+  attr(combined_plot, "plotlist") <- list(main = gg_plt, table = p_tbl)
 
   combined_plot
 }
@@ -270,7 +281,7 @@ df2gg_aligned <- function(df,
 #' )
 #'
 #' # 3. Float the table on the plot
-#' df2gg_floating(
+#' result <- df2gg_floating(
 #'   df = mock_df,
 #'   gg_plt = p_base,
 #'   x = 0.75,
@@ -279,7 +290,16 @@ df2gg_aligned <- function(df,
 #'   h = 0.25,
 #'   bg_fill = "white"
 #' )
+#'
+#' # 4. Extract the original plots and data
+#' plist <- attr(result, "plotlist")
+#' plist$main$data # original dataframe from the base plot
+#' plist$table # the floating table ggplot object
 #' }
+#'
+#' @details
+#' The original plots are stored in `attr(result, "plotlist")` as a named
+#' list (`main` and `table`) for downstream data extraction.
 #'
 #' @return A `cowplot` object representing the combined plot and table.
 #'
@@ -378,6 +398,9 @@ df2gg_floating <- function(df,
       vjust = 0.5,
       hjust = 0.5
     )
+
+  # Preserve original plots for downstream data extraction
+  attr(res, "plotlist") <- list(main = gg_plt, table = tbl_p)
 
   res
 }
