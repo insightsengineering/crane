@@ -84,7 +84,7 @@ while \code{"arm"} is the treatment group.
 }
 \section{Functions}{
 \itemize{
-\item \code{process_survfit()}: takes a fitted \link[survival:survfit]{survival::survfit} object and processes it into a data frame
+\item \code{process_survfit()}: takes a fitted \link[survival:survfit]{survfit} object and processes it into a data frame
 suitable for plotting a Kaplan-Meier curve with \code{ggplot2}. Time zero is also added to the data.
 
 \item \code{gg_km()}: creates a Kaplan-Meier survival curve, with
