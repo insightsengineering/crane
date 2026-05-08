@@ -69,11 +69,10 @@ test_that("add_grade_column() works without grade groups", {
   result <- tbl |> add_grade_column()
 
   expect_true("label_grade" %in% names(result$table_body))
-  # no indentation styling for grade groups since none defined
+  # no grade-group-specific indentation when none defined
   indent_rows <- result$table_styling$indent |>
     dplyr::filter(column == "label_grade")
-  # only default indentation, no grade-group-specific indent
-  expect_true(nrow(indent_rows) == 0 || !any(indent_rows$indent == 4L))
+  expect_equal(nrow(indent_rows), 0)
 })
 
 # --- 3. Metadata extraction from merged tables --------------------------------
@@ -156,7 +155,8 @@ test_that("add_grade_column() recodes zero statistics", {
 
   result <- tbl |> add_grade_column()
 
-  # check that post_fmt_fun is set (the actual recoding happens at render time)
+  # recoding "0 (0.0%)" -> "0" happens at render time via post_fmt_fun;
+  # we verify the formatting function is registered, not the rendered output
   expect_true(nrow(result$table_styling$post_fmt_fun) > 0)
 })
 
