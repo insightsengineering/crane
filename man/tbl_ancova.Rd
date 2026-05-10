@@ -19,7 +19,7 @@ tbl_ancova(
 }
 \arguments{
 \item{data}{(\code{data.frame})\cr
-Analysis data set, typically one parameter/visit subset of an ADaM BDS.}
+Analysis data set, typically one parameter/visit subset.}
 
 \item{formula}{(\code{formula})\cr
 Model formula passed to the fitting function. The left-hand side is the
@@ -78,9 +78,6 @@ estimates are obtained with the \code{emmeans} package. Contrasts use
 group is compared to the reference group only.
 }
 \examples{
-\dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
-theme_gtsummary_roche()
-
 # Simple ANCOVA with baseline covariate
 cards::ADLB |>
   dplyr::filter(PARAMCD == "SODIUM", AVISIT == "Week 8") |>
@@ -89,5 +86,25 @@ cards::ADLB |>
     by = TRTA,
     ref_group = "Placebo"
   )
-\dontshow{\}) # examplesIf}
+
+# With denominator for header Ns
+cards::ADLB |>
+  dplyr::filter(PARAMCD == "SODIUM", AVISIT == "Week 8") |>
+  tbl_ancova(
+    formula = CHG ~ TRTA + BASE,
+    by = TRTA,
+    ref_group = "Placebo",
+    denominator = cards::ADSL
+  )
+
+# With Dunnett's multiplicity adjustment
+cards::ADLB |>
+  dplyr::filter(PARAMCD == "SODIUM", AVISIT == "Week 8") |>
+  tbl_ancova(
+    formula = CHG ~ TRTA + BASE,
+    by = TRTA,
+    ref_group = "Placebo",
+    adjust = "dunnett"
+  )
+
 }

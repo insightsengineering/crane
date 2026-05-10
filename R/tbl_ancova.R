@@ -116,7 +116,7 @@ tbl_ancova <- function(data,
     )
   }
 
-  # relevel so ref_group is first — emmeans uses the first level as reference
+  # relevel so ref_group is first <U+2014> emmeans uses the first level as reference
   data[[by]] <- stats::relevel(factor(data[[by]]), ref = ref_group)
 
   # fit model and compute emmeans ----------------------------------------------
@@ -242,7 +242,7 @@ tbl_ancova <- function(data,
 
 # Assembles an ARD (Analysis Results Dataset) from emmeans summaries.
 # For each treatment level, creates rows for: n, adjusted mean (from emm_summary),
-# and contrast stats — mean difference, CI bounds, p-value (from contr_summary).
+# and contrast stats <U+2014> mean difference, CI bounds, p-value (from contr_summary).
 # Reference group gets NA for contrast stats so the table structure is uniform.
 .build_ancova_ard <- function(emm_summary, contr_summary, by,
                               trt_levels, ref_group, endpoint_label,
@@ -285,12 +285,13 @@ tbl_ancova <- function(data,
   dplyr::bind_rows(ard_rows) |>
     dplyr::mutate(
       context = "continuous",
-      fmt_fun = purrr::map(.data$stat_name, function(nm) {
+      fmt_fun = map(.data$stat_name, function(nm) {
         switch(nm,
           "n" = function(x) sprintf("%.0f", x),
           "estimate" = function(x) sprintf("%.2f", x),
           "mean.diff" = function(x) sprintf("%.2f", x),
-          "conf.low" = , "conf.high" = function(x) sprintf("%.2f", x),
+          "conf.low" = ,
+          "conf.high" = function(x) sprintf("%.2f", x),
           "p.value" = function(x) sprintf("%.4f", x),
           function(x) as.character(x)
         )
