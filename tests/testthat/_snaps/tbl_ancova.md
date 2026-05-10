@@ -53,7 +53,7 @@
                                  Characteristic Placebo Xanomeline High Dose Xanomeline Low Dose
       1                                     CHG    <NA>                 <NA>                <NA>
       2                                       n       5                    4                   3
-      3                           Adjusted Mean    0.20                -0.50                0.00
+      3                           Adjusted Mean    0.20                -0.50               -0.00
       4            Difference in Adjusted Means                        -0.70               -0.20
       5 95% CI for Difference in Adjusted Means                  -4.34, 2.94         -4.16, 3.76
       6                                 p-value                       0.6738              0.9116
