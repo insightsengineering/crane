@@ -242,7 +242,7 @@ tbl_ancova <- function(data,
 
 # Assembles an ARD (Analysis Results Dataset) from emmeans summaries.
 # For each treatment level, creates rows for: n, adjusted mean (from emm_summary),
-# and contrast stats <U+2014> mean difference, CI bounds, p-value (from contr_summary).
+# and contrast stats mean difference, CI bounds, p-value (from contr_summary).
 # Reference group gets NA for contrast stats so the table structure is uniform.
 .build_ancova_ard <- function(emm_summary, contr_summary, by,
                               trt_levels, ref_group, endpoint_label,
