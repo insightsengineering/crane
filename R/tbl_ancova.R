@@ -288,10 +288,10 @@ tbl_ancova <- function(data,
       fmt_fun = map(.data$stat_name, function(nm) {
         switch(nm,
           "n" = function(x) sprintf("%.0f", x),
-          "estimate" = function(x) sprintf("%.2f", x),
-          "mean.diff" = function(x) sprintf("%.2f", x),
+          "estimate" = ,
+          "mean.diff" = ,
           "conf.low" = ,
-          "conf.high" = function(x) sprintf("%.2f", x),
+          "conf.high" = function(x) sub("^-0.00$", "0.00", sprintf("%.2f", x)),
           "p.value" = function(x) sprintf("%.4f", x),
           function(x) as.character(x)
         )
