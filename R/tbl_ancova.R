@@ -155,7 +155,8 @@ tbl_ancova <- function(data,
 
   # build ARD for tbl_ard_summary ----------------------------------------------
   trt_levels <- levels(data[[by]])
-  endpoint_label <- all.vars(formula)[1]
+  endpoint_var <- all.vars(formula)[1]
+  endpoint_label <- attr(data[[endpoint_var]], "label") %||% endpoint_var
 
   ard <- .build_ancova_ard(
     emm_summary = emm_summary,
