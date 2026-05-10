@@ -1,9 +1,9 @@
-# Load Libraries ---------------------------------------------------------------
 #' Zero Count Recode
 #'
 #' @description
-#' This function removes the percentage from cells with zero counts.
-#' For example,
+#' Removes the percentage from cells with zero counts. Handles both regular
+#' spaces and non-breaking spaces (`\u00A0`, the HTML `&nbsp;` equivalent)
+#' that some formatting engines insert.
 #'
 #' ```r
 #' 0 (0.0%)      -->  0
@@ -51,6 +51,12 @@ modify_zero_recode <- function(x) {
   check_class(x, "gtsummary")
 
   # recode zero and percent to "0" ---------------------------------------------
+  # Regex character class matching regular space and non-breaking space (\u00A0).
+  # Some formatting engines (gt, flextable) use \u00A0 (HTML &nbsp;) as padding.
+  nbsp <- "[ \u00A0]"
+  # Percentage pattern: 0%, 0.0%, 0.00%, or NA%
+  pct <- "(?:0(?:\\.0+)?|NA)"
+
   gtsummary::modify_post_fmt_fun(
     x,
     fmt_fun = \(col_vals) {
@@ -58,14 +64,13 @@ modify_zero_recode <- function(x) {
         return(col_vals)
       }
       dplyr::case_when(
-        # convert "0 (0%)" OR "0 (0.0%)" OR 0 (NA%) to "0"
-        # (Allows leading padding, internal padding, AND trailing padding)
-        str_detect(col_vals, "^[ \u00A0]*0[ \u00A0]+\\([ \u00A0]*(?:0(?:\\.0+)?|NA)[ \u00A0]*%\\)[ \u00A0]*$") ~
-          str_remove(col_vals, pattern = "[ \u00A0]+\\([ \u00A0]*(?:0(?:\\.0+)?|NA)[ \u00A0]*%\\)"),
+        # "0 (0%)" / "0 (0.0%)" / "0 (NA%)" -> "0"
+        str_detect(col_vals, paste0("^", nbsp, "*0", nbsp, "+\\(", nbsp, "*", pct, nbsp, "*%\\)", nbsp, "*$")) ~
+          str_remove(col_vals, pattern = paste0(nbsp, "+\\(", nbsp, "*", pct, nbsp, "*%\\)")),
 
-        # convert "0 / nn (0%)" OR "0/nn (0.0%)" OR 0/0 (NA%) to "0 / nn" OR "0/nn" OR "0/0"
-        str_detect(col_vals, pattern = "^[ \u00A0]*0[ \u00A0]*/[ \u00A0]*[0-9,.]+[ \u00A0]+\\([ \u00A0]*(?:0(?:\\.0+)?|NA)[ \u00A0]*%\\)[ \u00A0]*$") ~
-          str_remove(col_vals, pattern = "[ \u00A0]+\\([ \u00A0]*(?:0(?:\\.0+)?|NA)[ \u00A0]*%\\)"),
+        # "0 / nn (0%)" / "0/nn (0.0%)" / "0/0 (NA%)" -> "0 / nn" / "0/nn" / "0/0"
+        str_detect(col_vals, pattern = paste0("^", nbsp, "*0", nbsp, "*/", nbsp, "*[0-9,.]+", nbsp, "+\\(", nbsp, "*", pct, nbsp, "*%\\)", nbsp, "*$")) ~
+          str_remove(col_vals, pattern = paste0(nbsp, "+\\(", nbsp, "*", pct, nbsp, "*%\\)")),
         .default = as.character(col_vals)
       )
     },
