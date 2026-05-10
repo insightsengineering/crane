@@ -45,6 +45,9 @@
 #'   When supplied, the column headers show `(N = <count>)` from this data
 #'   frame rather than from `data`.
 #'
+#' @return A `'gtsummary'` table of class `c("tbl_ancova", "gtsummary")`.
+#' @name tbl_ancova
+#'
 #' @examples
 #' # Simple ANCOVA with baseline covariate
 #' cards::ADLB |>
@@ -74,9 +77,6 @@
 #'     ref_group = "Placebo",
 #'     adjust = "dunnett"
 #'   )
-#'
-#' @return A `'gtsummary'` table of class `c("tbl_ancova", "gtsummary")`.
-#' @name tbl_ancova
 #'
 #' @export
 tbl_ancova <- function(data,
@@ -227,15 +227,16 @@ tbl_ancova <- function(data,
     }
   }
 
-  # add class and attributes
-  class(tbl) <- c("tbl_ancova", class(tbl))
-  attr(tbl, "by") <- by
-  attr(tbl, "ref_group") <- ref_group
-  attr(tbl, "conf.level") <- conf.level
-  attr(tbl, "adjust") <- adjust
-  attr(tbl, "method") <- method
-
-  tbl
+  tbl |>
+    structure(
+      class = c("tbl_ancova", class(tbl)),
+      by = by,
+      ref_group = ref_group,
+      conf.level = conf.level,
+      adjust = adjust,
+      method = method,
+      package = package
+    )
 }
 
 

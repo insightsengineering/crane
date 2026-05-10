@@ -116,6 +116,7 @@ test_that("tbl_ancova() works with Dunnett adjustment", {
   expect_s3_class(tbl, "tbl_ancova")
   expect_equal(attr(tbl, "adjust"), "dunnett")
   expect_equal(attr(tbl, "method"), "lm")
+  expect_equal(attr(tbl, "package"), "stats")
   expect_equal(attr(tbl, "by"), "TRTA")
   expect_equal(attr(tbl, "ref_group"), "Placebo")
 
