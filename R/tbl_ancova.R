@@ -35,6 +35,11 @@
 #'   Additional arguments passed to the modelling function.
 #' @param package (`string`)\cr
 #'   Package exporting `method`. Default is `"stats"`.
+#' @param adjust (`string`)\cr
+#'   Multiplicity adjustment method for contrasts, passed to
+#'   [`emmeans::contrast()`]. Common choices: `"none"` (no adjustment,
+#'   default), `"dunnett"` (Dunnett's method), `"bonferroni"`, `"tukey"`.
+#'   See [`emmeans::summary.emmGrid()`] for all options.
 #' @param denominator (`data.frame`)\cr
 #'   Optional data frame used to compute the header Ns (typically `ADSL`).
 #'   When supplied, the column headers show `(N = <count>)` from this data
@@ -64,6 +69,7 @@ tbl_ancova <- function(data,
                        method = "lm",
                        method.args = list(),
                        package = "stats",
+                       adjust = "none",
                        denominator = NULL) {
   set_cli_abort_call()
 
@@ -79,6 +85,7 @@ tbl_ancova <- function(data,
   check_string(package)
   check_scalar(conf.level)
   check_range(conf.level, range = c(0, 1))
+  check_string(adjust)
   check_pkg_installed("emmeans")
 
   by <- dplyr::select(data, {{ by }}) |> names()
@@ -112,7 +119,7 @@ tbl_ancova <- function(data,
     )
 
   # contrasts (treatment vs control) -------------------------------------------
-  contr_summary <- emmeans::contrast(emm, method = "trt.vs.ctrl", ref = ref_group) |>
+  contr_summary <- emmeans::contrast(emm, method = "trt.vs.ctrl", ref = ref_group, adjust = adjust) |>
     summary(infer = TRUE, level = conf.level) |>
     dplyr::as_tibble() |>
     dplyr::rename(

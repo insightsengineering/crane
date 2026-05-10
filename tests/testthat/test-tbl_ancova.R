@@ -85,6 +85,21 @@ test_that("tbl_ancova() errors on invalid ref_group", {
 })
 
 
+test_that("tbl_ancova() works with Dunnett adjustment", {
+  expect_silent(
+    tbl <- tbl_ancova(
+      data = df_ancova,
+      formula = CHG ~ TRTA + BASE,
+      by = TRTA,
+      ref_group = "Placebo",
+      adjust = "dunnett"
+    )
+  )
+
+  expect_s3_class(tbl, "tbl_ancova")
+})
+
+
 test_that("tbl_ancova() works without covariates", {
   expect_silent(
     tbl <- tbl_ancova(

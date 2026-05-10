@@ -13,6 +13,7 @@ tbl_ancova(
   method = "lm",
   method.args = list(),
   package = "stats",
+  adjust = "none",
   denominator = NULL
 )
 }
@@ -45,6 +46,12 @@ Additional arguments passed to the modelling function.}
 
 \item{package}{(\code{string})\cr
 Package exporting \code{method}. Default is \code{"stats"}.}
+
+\item{adjust}{(\code{string})\cr
+Multiplicity adjustment method for contrasts, passed to
+\code{\link[emmeans:contrast]{emmeans::contrast()}}. Common choices: \code{"none"} (no adjustment,
+default), \code{"dunnett"} (Dunnett's method), \code{"bonferroni"}, \code{"tukey"}.
+See \code{\link[emmeans:summary.emmGrid]{emmeans::summary.emmGrid()}} for all options.}
 
 \item{denominator}{(\code{data.frame})\cr
 Optional data frame used to compute the header Ns (typically \code{ADSL}).
