@@ -15,7 +15,7 @@
 #' group is compared to the reference group only.
 #'
 #' @param data (`data.frame`)\cr
-#'   Analysis data set, typically one parameter/visit subset of an ADaM BDS.
+#'   Analysis data set, typically one parameter/visit subset.
 #' @param formula (`formula`)\cr
 #'   Model formula passed to the fitting function. The left-hand side is the
 #'   response (e.g. `CHG`), the right-hand side includes the treatment variable
@@ -45,12 +45,7 @@
 #'   When supplied, the column headers show `(N = <count>)` from this data
 #'   frame rather than from `data`.
 #'
-#' @return A `'gtsummary'` table of class `c("tbl_ancova", "gtsummary")`.
-#' @name tbl_ancova
-#'
-#' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true")
-#' theme_gtsummary_roche()
-#'
+#' @examples
 #' # Simple ANCOVA with baseline covariate
 #' cards::ADLB |>
 #'   dplyr::filter(PARAMCD == "SODIUM", AVISIT == "Week 8") |>
@@ -59,6 +54,29 @@
 #'     by = TRTA,
 #'     ref_group = "Placebo"
 #'   )
+#'
+#' # With denominator for header Ns
+#' cards::ADLB |>
+#'   dplyr::filter(PARAMCD == "SODIUM", AVISIT == "Week 8") |>
+#'   tbl_ancova(
+#'     formula = CHG ~ TRTA + BASE,
+#'     by = TRTA,
+#'     ref_group = "Placebo",
+#'     denominator = cards::ADSL
+#'   )
+#'
+#' # With Dunnett's multiplicity adjustment
+#' cards::ADLB |>
+#'   dplyr::filter(PARAMCD == "SODIUM", AVISIT == "Week 8") |>
+#'   tbl_ancova(
+#'     formula = CHG ~ TRTA + BASE,
+#'     by = TRTA,
+#'     ref_group = "Placebo",
+#'     adjust = "dunnett"
+#'   )
+#'
+#' @return A `'gtsummary'` table of class `c("tbl_ancova", "gtsummary")`.
+#' @name tbl_ancova
 #'
 #' @export
 tbl_ancova <- function(data,
@@ -127,7 +145,9 @@ tbl_ancova <- function(data,
       conf.high = dplyr::any_of(c("upper.CL", "asymp.UCL"))
     )
 
+
   # parse contrast labels to extract the non-reference group name
+  # e.g. "Xanomeline High Dose - Placebo" -> "Xanomeline High Dose"
   contr_summary$trt_group <- sub(
     paste0("\\s*-\\s*", .escape_regex(ref_group), "$"), "",
     contr_summary$contrast
@@ -209,14 +229,20 @@ tbl_ancova <- function(data,
 
   # add class and attributes
   class(tbl) <- c("tbl_ancova", class(tbl))
+  attr(tbl, "by") <- by
   attr(tbl, "ref_group") <- ref_group
   attr(tbl, "conf.level") <- conf.level
+  attr(tbl, "adjust") <- adjust
+  attr(tbl, "method") <- method
 
   tbl
 }
 
 
-# Internal: build the ARD data frame for tbl_ard_summary -----------------------
+# Assembles an ARD (Analysis Results Dataset) from emmeans summaries.
+# For each treatment level, creates rows for: n, adjusted mean (from emm_summary),
+# and contrast stats — mean difference, CI bounds, p-value (from contr_summary).
+# Reference group gets NA for contrast stats so the table structure is uniform.
 .build_ancova_ard <- function(emm_summary, contr_summary, by,
                               trt_levels, ref_group, endpoint_label,
                               conf.level) {
@@ -258,7 +284,7 @@ tbl_ancova <- function(data,
   dplyr::bind_rows(ard_rows) |>
     dplyr::mutate(
       context = "continuous",
-      fmt_fun = purrr::map2(.data$stat_name, .data$stat, function(nm, val) {
+      fmt_fun = purrr::map(.data$stat_name, function(nm) {
         switch(nm,
           "n" = function(x) sprintf("%.0f", x),
           "estimate" = function(x) sprintf("%.2f", x),
@@ -291,7 +317,8 @@ tbl_ancova <- function(data,
 }
 
 
-# Internal: escape regex special characters ------------------------------------
+# Escapes regex special characters so group names can be used in sub() patterns.
+# e.g. "Arm (High)" -> "Arm \\(High\\)", "Dose 1.5mg" -> "Dose 1\\.5mg"
 .escape_regex <- function(x) {
   chars <- c(".", "|", "^", "$", "(", ")", "[", "]", "{", "}", "*", "+", "?", "\\")
   for (ch in chars) {
