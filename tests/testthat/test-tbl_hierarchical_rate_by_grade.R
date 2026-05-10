@@ -308,7 +308,7 @@ test_that("tbl_hierarchical_rate_by_grade() appends missing grade group levels t
       label = label,
       grade_groups = list("Grade 3-4" = c("3", "4"), "Grade 1-2" = c("1", "2"))
     ),
-    '\\`AETOXGR\\`: '
+    "\\`AETOXGR\\`: "
   )
 })
 
