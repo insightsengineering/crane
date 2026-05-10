@@ -72,7 +72,7 @@ from a linear model (ANCOVA). The table displays, for each treatment group:
 \item p-value for the difference
 }
 
-The model is fit via \code{\link[cardx:construction_helpers]{cardx::construct_model()}} and least-squares
+The model is fit via \code{\link[cardx:construct_model]{cardx::construct_model()}} and least-squares
 estimates are obtained with the \code{emmeans} package. Contrasts use
 \code{emmeans::contrast(method = "trt.vs.ctrl")} so that each non-reference
 group is compared to the reference group only.

@@ -8,7 +8,7 @@
       2                                       n       5                    4                   3
       3                           Adjusted Mean    0.60                -0.66               -0.47
       4            Difference in Adjusted Means                        -1.26               -1.07
-      5 95% CI for Difference in Adjusted Means           -4.23,<U+00A0>1.71  -4.35,<U+00A0>2.21
+      5 95% CI for Difference in Adjusted Means           -4.23, 1.71  -4.35, 2.21
       6                                 p-value                       0.3563              0.4733
 
 # tbl_ancova() works with denominator
@@ -21,7 +21,7 @@
       2                                       n                 5                              4                             3
       3                           Adjusted Mean              0.60                          -0.66                         -0.47
       4            Difference in Adjusted Means                                            -1.26                         -1.07
-      5 95% CI for Difference in Adjusted Means                               -4.23,<U+00A0>1.71            -4.35,<U+00A0>2.21
+      5 95% CI for Difference in Adjusted Means                               -4.23, 1.71            -4.35, 2.21
       6                                 p-value                                           0.3563                        0.4733
 
 # tbl_ancova() errors on invalid ref_group
@@ -42,7 +42,7 @@
       2                                       n       5                    4                   3
       3                           Adjusted Mean    0.60                -0.66               -0.47
       4            Difference in Adjusted Means                        -1.26               -1.07
-      5 95% CI for Difference in Adjusted Means           -4.73,<U+00A0>2.22  -4.91,<U+00A0>2.77
+      5 95% CI for Difference in Adjusted Means           -4.73, 2.22  -4.91, 2.77
       6                                 p-value                       0.5491              0.6839
 
 # tbl_ancova() works without covariates
@@ -55,6 +55,6 @@
       2                                       n       5                    4                   3
       3                           Adjusted Mean    0.20                -0.50                0.00
       4            Difference in Adjusted Means                        -0.70               -0.20
-      5 95% CI for Difference in Adjusted Means           -4.34,<U+00A0>2.94  -4.16,<U+00A0>3.76
+      5 95% CI for Difference in Adjusted Means           -4.34, 2.94  -4.16, 3.76
       6                                 p-value                       0.6738              0.9116
 
