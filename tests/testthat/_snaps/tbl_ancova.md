@@ -32,6 +32,19 @@
       Error in `tbl_ancova()`:
       ! `ref_group` value "NonexistentArm" not found in column "TRTA".
 
+# tbl_ancova() works with custom label
+
+    Code
+      as.data.frame(tbl)
+    Output
+                                 Characteristic Placebo Xanomeline High Dose Xanomeline Low Dose
+      1                         Sodium (mmol/L)    <NA>                 <NA>                <NA>
+      2                                       n       5                    4                   3
+      3                           Adjusted Mean    0.60                -0.66               -0.47
+      4            Difference in Adjusted Means                        -1.26               -1.07
+      5 95% CI for Difference in Adjusted Means           -4.23, 1.71  -4.35, 2.21
+      6                                 p-value                       0.3563              0.4733
+
 # tbl_ancova() works with Dunnett adjustment
 
     Code

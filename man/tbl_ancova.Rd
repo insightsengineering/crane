@@ -104,6 +104,16 @@ cards::ADLB |>
     denominator = cards::ADSL
   )
 
+# With custom label (e.g. parameter name inside tbl_strata)
+cards::ADLB |>
+  dplyr::filter(PARAMCD == "SODIUM", AVISIT == "Week 8") |>
+  tbl_ancova(
+    formula = CHG ~ TRTA + BASE,
+    by = TRTA,
+    ref_group = "Placebo",
+    label = "Sodium (mmol/L)"
+  )
+
 # With Dunnett's multiplicity adjustment
 cards::ADLB |>
   dplyr::filter(PARAMCD == "SODIUM", AVISIT == "Week 8") |>

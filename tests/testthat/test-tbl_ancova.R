@@ -100,6 +100,43 @@ test_that("tbl_ancova() errors on invalid ref_group", {
 })
 
 
+test_that("tbl_ancova() works with custom label", {
+  withr::local_options(list(width = 200))
+
+  expect_silent(
+    tbl <- tbl_ancova(
+      data = df_ancova,
+      formula = CHG ~ TRTA + BASE,
+      by = TRTA,
+      ref_group = "Placebo",
+      label = "Sodium (mmol/L)"
+    )
+  )
+
+  expect_s3_class(tbl, "tbl_ancova")
+
+  # the custom label appears in the table body instead of the variable name
+  top_label <- tbl$table_body$label[tbl$table_body$row_type == "label"]
+  expect_true("Sodium (mmol/L)" %in% top_label)
+  expect_false("CHG" %in% top_label)
+  expect_false("Change from Baseline" %in% top_label)
+
+  expect_snapshot(as.data.frame(tbl))
+})
+
+test_that("tbl_ancova() errors on non-string label", {
+  expect_error(
+    tbl_ancova(
+      data = df_ancova,
+      formula = CHG ~ TRTA + BASE,
+      by = TRTA,
+      ref_group = "Placebo",
+      label = 123
+    )
+  )
+})
+
+
 test_that("tbl_ancova() works with Dunnett adjustment", {
   withr::local_options(list(width = 200))
 

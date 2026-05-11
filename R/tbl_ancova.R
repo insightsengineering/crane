@@ -73,6 +73,16 @@
 #'     denominator = cards::ADSL
 #'   )
 #'
+#' # With custom label (e.g. parameter name inside tbl_strata)
+#' cards::ADLB |>
+#'   dplyr::filter(PARAMCD == "SODIUM", AVISIT == "Week 8") |>
+#'   tbl_ancova(
+#'     formula = CHG ~ TRTA + BASE,
+#'     by = TRTA,
+#'     ref_group = "Placebo",
+#'     label = "Sodium (mmol/L)"
+#'   )
+#'
 #' # With Dunnett's multiplicity adjustment
 #' cards::ADLB |>
 #'   dplyr::filter(PARAMCD == "SODIUM", AVISIT == "Week 8") |>
@@ -110,6 +120,7 @@ tbl_ancova <- function(data,
   check_scalar(conf.level)
   check_range(conf.level, range = c(0, 1))
   check_string(adjust)
+  if (!is.null(label)) check_string(label)
   check_pkg_installed("emmeans")
 
   by <- dplyr::select(data, {{ by }}) |> names()
