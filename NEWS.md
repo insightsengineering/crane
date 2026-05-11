@@ -60,6 +60,8 @@ all events (#217)
 
 * Adjusted `modify_zero_recode()` to account for strings comprising regular and non-breaking spaces (#230)
 
+* `tbl_roche_subgroups()` now shows `n`, `Events`, and `Median` per arm when `time_to_event` is specified. The total column shows `Total Events` instead of `Total n`. (#235)
+
 # crane 0.3.1
 
 ## New Functions and Functionality

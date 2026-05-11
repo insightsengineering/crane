@@ -11,8 +11,9 @@
 #' @param subgroups ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   Variables to perform stratified analyses for.
 #' @param time_to_event ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
-#'   Variable to use in time-to-event analyses. If specified, the mid table will
-#'   show the median time-to-event instead of responder rates.
+#'   Variable to use in time-to-event analyses. If specified, the mid table
+#'   shows n (subjects), Events (from `rsp`), and Median per arm instead of
+#'   responder rates. The total column shows Total Events instead of Total n.
 #'
 #' @returns a 'gtsummary' table
 #'
