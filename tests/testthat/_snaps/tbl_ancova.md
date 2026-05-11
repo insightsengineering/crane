@@ -45,6 +45,15 @@
       5 95% CI for Difference in Adjusted Means           -4.23, 1.71  -4.35, 2.21
       6                                 p-value                       0.3563              0.4733
 
+# tbl_ancova() errors on non-string label
+
+    Code
+      tbl_ancova(data = df_ancova, formula = CHG ~ TRTA + BASE, by = TRTA, ref_group = "Placebo",
+      label = 123)
+    Condition
+      Error in `tbl_ancova()`:
+      ! The `label` argument must be a string, not a number.
+
 # tbl_ancova() works with Dunnett adjustment
 
     Code

@@ -125,14 +125,15 @@ test_that("tbl_ancova() works with custom label", {
 })
 
 test_that("tbl_ancova() errors on non-string label", {
-  expect_error(
+  expect_snapshot(
     tbl_ancova(
       data = df_ancova,
       formula = CHG ~ TRTA + BASE,
       by = TRTA,
       ref_group = "Placebo",
       label = 123
-    )
+    ),
+    error = TRUE
   )
 })
 
