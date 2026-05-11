@@ -12,6 +12,21 @@
 #' `gtsummary::tbl_hierarchical_count()` directly, followed by a call to
 #' `gtsummary::filter_hierarchical()`.
 #'
+#' @details
+#' ## Factor levels and zero-rows
+#'
+#' When the first variable in `variables` is a factor, the function respects
+#' its levels and emits zero-rows for any levels not observed in the data.
+#' Each unobserved level gets a header row (with `NA` stats), a rate summary
+#' row (`"0"`), and a count summary row (`"0"`).
+#'
+#' This is useful when the set of expected categories is predefined but some
+#' may not be present in the data. To exclude categories with no observations,
+#' drop unused levels before calling the function (e.g., `droplevels()`).
+#'
+#' Ensures consistent output structure for empty datasets, removing the
+#' need for manual workarounds in reporting templates.
+#'
 #' @inheritParams gtsummary::tbl_hierarchical
 #' @inheritParams gtsummary::add_overall.tbl_hierarchical
 #' @param variables ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
@@ -51,6 +66,18 @@
 #'     by = TRTA
 #'   ) |>
 #'   add_overall(last = TRUE)
+#'
+#' # Example 2: factor with unobserved levels ----------------------------------
+#' # Adding an unobserved SOC level produces zero-rows automatically
+#' cards::ADAE[c(1, 2, 3, 8, 16), ] |>
+#'   dplyr::mutate(
+#'     AEBODSYS = factor(AEBODSYS, levels = c(unique(AEBODSYS), "UNOBSERVED SOC"))
+#'   ) |>
+#'   tbl_hierarchical_rate_and_count(
+#'     variables = c(AEBODSYS, AEDECOD),
+#'     denominator = cards::ADSL,
+#'     by = TRTA
+#'   )
 NULL
 
 #' @rdname tbl_hierarchical_rate_and_count
@@ -99,6 +126,26 @@ tbl_hierarchical_rate_and_count <- function(data,
 
   # saving function inputs
   tbl_hierarchical_rate_and_count_inputs <- as.list(environment())
+
+  # handle 0-row data with factor levels ---------------------------------------
+  # gtsummary::tbl_hierarchical() cannot process empty data. When the first
+  # variable is a factor we build a scaffold table with zero-rows for all levels.
+  if (nrow(data) == 0L && is.factor(data[[variables[1]]])) {
+    return(
+      .build_empty_scaffold(
+        data = data,
+        variables = variables,
+        by = by,
+        denominator = denominator,
+        label_overall_rate = label_overall_rate,
+        label_overall_count = label_overall_count,
+        label_rate = label_rate,
+        label_count = label_count,
+        label = label,
+        inputs = tbl_hierarchical_rate_and_count_inputs
+      )
+    )
+  }
 
   # process labels -------------------------------------------------------------
   df_variables <- data[variables] |> dplyr::mutate(..ard_hierarchical_overall.. = data[[variables[1]]])
@@ -239,6 +286,18 @@ tbl_hierarchical_rate_and_count <- function(data,
     # convert "0 (0.0%)" to "0"
     modify_zero_recode()
 
+  # append zero-rows for unobserved factor levels ------------------------------
+  # When variables[1] is a factor, emit zero-rows for levels with no events.
+  # gtsummary::tbl_hierarchical() drops unobserved strata levels, so we
+  # re-inject them here to keep the output complete.
+  tbl_final <- .inject_unobserved_levels(
+    tbl_final,
+    data = data,
+    variables = variables,
+    label_rate = label_rate,
+    label_count = label_count
+  )
+
   # return final table ---------------------------------------------------------
   tbl_final$call_list <- list(tbl_hierarchical_rate_and_count = match.call())
   tbl_final$cards <-
@@ -265,4 +324,220 @@ add_overall.tbl_hierarchical_rate_and_count <- function(x,
     what = asNamespace("gtsummary")[["add_overall.tbl_hierarchical"]],
     args = list(x = x, last = last, col_label = col_label)
   )
+}
+
+# Inject zero-rows for unobserved factor levels in the first hierarchical
+# variable. Returns the table unchanged if variables[1] is not a factor or
+# all levels are already present.
+#' @keywords internal
+.inject_unobserved_levels <- function(tbl,
+                                      data,
+                                      variables,
+                                      label_rate,
+                                      label_count) {
+  top_var <- variables[1L]
+  col_vals <- data[[top_var]]
+
+  # only act when the column is a factor with defined levels
+
+  if (!is.factor(col_vals)) return(tbl)
+
+  observed <- unique(as.character(col_vals))
+  all_levels <- levels(col_vals)
+  missing_levels <- setdiff(all_levels, observed)
+
+  if (length(missing_levels) == 0L) return(tbl)
+
+  cli::cli_inform(
+    c("i" = "Adding zero-rows for {length(missing_levels)} unobserved level{?s} in {.val {top_var}}.")
+  )
+
+  stat_cols <- grep("^stat_", names(tbl$table_body), value = TRUE)
+
+  # build zero-rows: header + rate + count per missing level
+  zero_rows <- map(missing_levels, \(lvl) {
+    header <- stats::setNames(
+      rep(NA_character_, length(stat_cols)), stat_cols
+    )
+    summary_row <- stats::setNames(
+      rep("0", length(stat_cols)), stat_cols
+    )
+
+    dplyr::bind_rows(
+      # SOC/basket header row
+      tibble::tibble(
+        row_type = "level",
+        group1 = top_var,
+        group1_level = lvl,
+        var_label = NA_character_,
+        variable = top_var,
+        label = lvl,
+        !!!header
+      ),
+      # rate summary row
+      tibble::tibble(
+        row_type = "level",
+        group1 = top_var,
+        group1_level = lvl,
+        var_label = NA_character_,
+        variable = top_var,
+        label = label_rate,
+        !!!summary_row
+      ),
+      # count summary row
+      tibble::tibble(
+        row_type = "level",
+        group1 = top_var,
+        group1_level = lvl,
+        var_label = NA_character_,
+        variable = top_var,
+        label = label_count,
+        !!!summary_row
+      )
+    )
+  }) |>
+    dplyr::bind_rows()
+
+  # assign ord values that place zero-rows after existing rows
+  max_ord <- max(tbl$table_body$ord, na.rm = TRUE)
+  zero_rows$ord <- seq(max_ord + 1L, length.out = nrow(zero_rows))
+
+  tbl |>
+    gtsummary::modify_table_body(~ dplyr::bind_rows(.x, zero_rows))
+}
+
+# Build a scaffold table when data has 0 rows but variables[1] is a factor.
+# Produces a gtsummary object with correct column headers and zero-rows for
+# every factor level.
+#' @keywords internal
+.build_empty_scaffold <- function(data,
+                                  variables,
+                                  by,
+                                  denominator,
+                                  label_overall_rate,
+                                  label_overall_count,
+                                  label_rate,
+                                  label_count,
+                                  label,
+                                  inputs) {
+  top_var <- variables[1L]
+  all_levels <- levels(data[[top_var]])
+
+  # determine stat columns from denominator
+  if (length(by) > 0L) {
+    stat_cols <- paste0("stat_", seq_along(unique(denominator[[by]])))
+  } else {
+    stat_cols <- "stat_0"
+  }
+
+  zero_val <- stats::setNames(rep("0", length(stat_cols)), stat_cols)
+  na_val <- stats::setNames(rep(NA_character_, length(stat_cols)), stat_cols)
+
+  # overall rate row
+  rows <- list(
+    tibble::tibble(
+      row_type = "level",
+      group1 = "..ard_hierarchical_overall..",
+      group1_level = NA_character_,
+      var_label = NA_character_,
+      variable = "..ard_hierarchical_overall..",
+      label = label_overall_rate,
+      !!!zero_val
+    )
+  )
+
+  # overall count row (unless "remove")
+  if (!identical(label_overall_count, "remove")) {
+    rows <- c(rows, list(
+      tibble::tibble(
+        row_type = "level",
+        group1 = "..ard_hierarchical_overall..",
+        group1_level = NA_character_,
+        var_label = NA_character_,
+        variable = "..ard_hierarchical_overall..",
+        label = label_overall_count,
+        !!!zero_val
+      )
+    ))
+  }
+
+  # per-level rows: header + rate + count
+  for (lvl in all_levels) {
+    rows <- c(rows, list(
+      tibble::tibble(
+        row_type = "level",
+        group1 = top_var,
+        group1_level = lvl,
+        var_label = NA_character_,
+        variable = top_var,
+        label = lvl,
+        !!!na_val
+      ),
+      tibble::tibble(
+        row_type = "level",
+        group1 = top_var,
+        group1_level = lvl,
+        var_label = NA_character_,
+        variable = top_var,
+        label = label_rate,
+        !!!zero_val
+      ),
+      tibble::tibble(
+        row_type = "level",
+        group1 = top_var,
+        group1_level = lvl,
+        var_label = NA_character_,
+        variable = top_var,
+        label = label_count,
+        !!!zero_val
+      )
+    ))
+  }
+
+  body <- dplyr::bind_rows(rows)
+  body$ord <- seq_len(nrow(body))
+
+
+  # build scaffold from tbl_summary to get correct column headers with N counts.
+  # The body is replaced entirely, so the summarized variable is irrelevant.
+  # Use the first column of the denominator as a throwaway include variable.
+  include_var <- names(denominator)[1L]
+  tbl_scaffold <- rlang::inject(
+    gtsummary::tbl_summary(
+      data = denominator,
+      include = dplyr::all_of(include_var),
+      by = !!if (length(by) > 0L) by else NULL
+    )
+  ) |>
+    gtsummary::modify_table_body(\(x) body)
+
+  # process user-supplied labels for the header
+  df_labels <- data[variables]
+  cards::process_formula_selectors(df_labels, label = label)
+  cards::fill_formula_selectors(
+    df_labels,
+    label = lapply(
+      names(df_labels),
+      \(x) attr(df_labels[[x]], "label") %||% x
+    ) |>
+      stats::setNames(names(df_labels))
+  )
+
+  header_label <- paste0(
+    label[[variables[1L]]],
+    "  \n",
+    paste0(rep("\U00A0", 4L), collapse = ""),
+    label[[variables[length(variables)]]]
+  )
+
+  tbl_scaffold <- tbl_scaffold |>
+    gtsummary::modify_header(label ~ header_label)
+
+  tbl_scaffold$call_list <- list(tbl_hierarchical_rate_and_count = match.call())
+  tbl_scaffold$cards <- list(tbl_hierarchical_rate_and_count = list())
+  tbl_scaffold$inputs <- inputs
+
+  tbl_scaffold |>
+    structure(class = c("tbl_hierarchical_rate_and_count", "gtsummary")) |>
+    modify_header_rm_md()
 }
