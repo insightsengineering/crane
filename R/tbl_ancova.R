@@ -40,6 +40,11 @@
 #'   [`emmeans::contrast()`]. Common choices: `"none"` (no adjustment,
 #'   default), `"dunnett"` (Dunnett's method), `"bonferroni"`, `"tukey"`.
 #'   See [`emmeans::summary.emmGrid()`] for all options.
+#' @param label (`string`)\cr
+#'   Label for the top-level row in the table. Defaults to the label attribute
+#'   of the response variable, or the variable name if no label exists.
+#'   When used inside `tbl_strata(strata = PARAM)`, pass the parameter value
+#'   (e.g. `unique(data$PARAM)`) so each sub-table is labelled correctly.
 #' @param denominator (`data.frame`)\cr
 #'   Optional data frame used to compute the header Ns (typically `ADSL`).
 #'   When supplied, the column headers show `(N = <count>)` from this data
@@ -88,6 +93,7 @@ tbl_ancova <- function(data,
                        method.args = list(),
                        package = "stats",
                        adjust = "none",
+                       label = NULL,
                        denominator = NULL) {
   set_cli_abort_call()
 
@@ -156,7 +162,7 @@ tbl_ancova <- function(data,
   # build ARD for tbl_ard_summary ----------------------------------------------
   trt_levels <- levels(data[[by]])
   endpoint_var <- all.vars(formula)[1]
-  endpoint_label <- attr(data[[endpoint_var]], "label") %||% endpoint_var
+  endpoint_label <- label %||% attr(data[[endpoint_var]], "label") %||% endpoint_var
 
   ard <- .build_ancova_ard(
     emm_summary = emm_summary,

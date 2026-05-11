@@ -14,6 +14,7 @@ tbl_ancova(
   method.args = list(),
   package = "stats",
   adjust = "none",
+  label = NULL,
   denominator = NULL
 )
 }
@@ -52,6 +53,12 @@ Multiplicity adjustment method for contrasts, passed to
 \code{\link[emmeans:contrast]{emmeans::contrast()}}. Common choices: \code{"none"} (no adjustment,
 default), \code{"dunnett"} (Dunnett's method), \code{"bonferroni"}, \code{"tukey"}.
 See \code{\link[emmeans:summary.emmGrid]{emmeans::summary.emmGrid()}} for all options.}
+
+\item{label}{(\code{string})\cr
+Label for the top-level row in the table. Defaults to the label attribute
+of the response variable, or the variable name if no label exists.
+When used inside \code{tbl_strata(strata = PARAM)}, pass the parameter value
+(e.g. \code{unique(data$PARAM)}) so each sub-table is labelled correctly.}
 
 \item{denominator}{(\code{data.frame})\cr
 Optional data frame used to compute the header Ns (typically \code{ADSL}).
