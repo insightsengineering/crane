@@ -340,13 +340,17 @@ add_overall.tbl_hierarchical_rate_and_count <- function(x,
 
   # only act when the column is a factor with defined levels
 
-  if (!is.factor(col_vals)) return(tbl)
+  if (!is.factor(col_vals)) {
+    return(tbl)
+  }
 
   observed <- unique(as.character(col_vals))
   all_levels <- levels(col_vals)
   missing_levels <- setdiff(all_levels, observed)
 
-  if (length(missing_levels) == 0L) return(tbl)
+  if (length(missing_levels) == 0L) {
+    return(tbl)
+  }
 
   cli::cli_inform(
     c("i" = "Adding zero-rows for {length(missing_levels)} unobserved level{?s} in {.val {top_var}}.")
