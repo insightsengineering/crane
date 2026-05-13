@@ -144,17 +144,17 @@ ard_tabulate_abnormal_by_baseline <- function(data,
 
   cards::ard_mvsummary(
     data = df,
-    variables = all_of(postbaseline),
-    by = any_of(by),
+    variables = dplyr::all_of(postbaseline),
+    by = by,
     statistic = ~ list(
       abnormal = \(x, data, ...) {
         n_abn <- data |>
           dplyr::filter(.data[[postbaseline]] %in% abn_val) |>
-          dplyr::pull(all_of(id)) |>
+          dplyr::pull(.data[[id]]) |>
           dplyr::n_distinct()
 
         N_total <- data |>
-          dplyr::pull(all_of(id)) |>
+          dplyr::pull(.data[[id]]) |>
           dplyr::n_distinct()
 
         dplyr::tibble(n = n_abn, N = N_total, p = n / N)

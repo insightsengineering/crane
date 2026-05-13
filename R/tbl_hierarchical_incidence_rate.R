@@ -166,9 +166,9 @@ tbl_hierarchical_incidence_rate <- function(data,
   # Build the base hierarchical framework
   tbl_base <- gtsummary::tbl_hierarchical(
     data = data,
-    by = dplyr::all_of(by),
-    variables = dplyr::all_of(variables),
-    id = dplyr::all_of(id),
+    by = dplyr::any_of(by),
+    variables = dplyr::any_of(variables),
+    id = dplyr::any_of(id),
     denominator = denominator,
     label = label,
     overall_row = TRUE
@@ -214,10 +214,11 @@ tbl_hierarchical_incidence_rate <- function(data,
       unit_label = unit_label, conf.level = conf.level, conf.type = conf.type
     )
 
-  ard_n <- cards::bind_ard(
-    cards::ard_tabulate(denominator, variables = dplyr::any_of(by)),
-    cardx::ard_total_n(denominator)
-  )
+  ard_n <- cardx::ard_total_n(denominator)
+  if (!is.null(by)) {
+    ard_n_by <- rlang::exec(cards::ard_tabulate, data = denominator, variables = by)
+    ard_n <- cards::bind_ard(ard_n_by, ard_n)
+  }
 
   # Format the header labels based on the unit_label
   pt_abbr <- switch(tolower(unit_label),
@@ -240,7 +241,7 @@ tbl_hierarchical_incidence_rate <- function(data,
     list(
       gtsummary::tbl_ard_summary(
         ard_overall,
-        by = dplyr::all_of(by), statistic = ~stat
+        by = dplyr::any_of(by), statistic = ~stat
       ) |>
         gtsummary::modify_table_body(~ .x |> dplyr::mutate(
           row_type = "level", var_label = NA, label = .env$overall_label,
@@ -248,7 +249,7 @@ tbl_hierarchical_incidence_rate <- function(data,
         )),
       cards::bind_ard(ard_n, ard_lvl1, ard_lvl2) |>
         gtsummary::tbl_ard_hierarchical(
-          by = dplyr::all_of(by), variables = dplyr::all_of(variables),
+          by = dplyr::any_of(by), variables = dplyr::any_of(variables),
           statistic = ~stat
         )
     ) |>
@@ -320,10 +321,16 @@ tbl_hierarchical_incidence_rate <- function(data,
 #' @noRd
 .compute_incidence_rate_ard <- function(merged_data, by, strata_vars,
                                         digits, ...) {
+  
+  # FIX 2: Instead of passing 'by' and 'strata' as arguments (which triggers 
+  # the internal any_of() crash), we group the data manually. 
+  # cardx::ard_incidence_rate will automatically detect these groups.
   res <- merged_data |>
+    dplyr::group_by(dplyr::across(dplyr::any_of(c(by, strata_vars)))) |>
     cardx::ard_incidence_rate(
-      time = "time_var", count = "count", by = dplyr::any_of(by),
-      strata = dplyr::all_of(strata_vars), ...
+      time = "time_var", 
+      count = "count",
+      ...
     ) |>
     dplyr::filter(
       .data$stat_name %in% c(
@@ -336,7 +343,7 @@ tbl_hierarchical_incidence_rate <- function(data,
     )
 
   # Dynamically rename columns internally based on group levels
-  if (is.null(strata_vars)) {
+  if (is_empty(strata_vars)) {
     res <- res |> dplyr::mutate(variable = "..ard_hierarchical_overall..")
   } else {
     grp_idx <- length(by) + length(strata_vars)
