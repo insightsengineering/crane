@@ -535,7 +535,26 @@ add_overall.tbl_hierarchical_rate_and_count <- function(x,
   )
 
   tbl_scaffold <- tbl_scaffold |>
-    gtsummary::modify_header(label ~ header_label)
+    gtsummary::modify_header(label ~ header_label) |>
+    # match the indent rules from the normal path:
+    # overall rows at 0, basket labels at 0, rate/count summaries at 4
+    gtsummary::modify_indent(
+      columns = "label",
+      rows = .data$variable == "..ard_hierarchical_overall..",
+      indent = 0L
+    ) |>
+    gtsummary::modify_indent(
+      columns = "label",
+      rows = .data$variable == .env$top_var &
+        !(.data$label %in% c(.env$label_rate, .env$label_count)),
+      indent = 0L
+    ) |>
+    gtsummary::modify_indent(
+      columns = "label",
+      rows = .data$variable == .env$top_var &
+        .data$label %in% c(.env$label_rate, .env$label_count),
+      indent = 4L
+    )
 
   tbl_scaffold$call_list <- list(tbl_hierarchical_rate_and_count = match.call())
   tbl_scaffold$cards <- list(tbl_hierarchical_rate_and_count = list())
