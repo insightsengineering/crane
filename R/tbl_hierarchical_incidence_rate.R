@@ -322,14 +322,14 @@ tbl_hierarchical_incidence_rate <- function(data,
 .compute_incidence_rate_ard <- function(merged_data, by, strata_vars,
                                         digits, ...) {
   res <- rlang::exec(
-      cardx::ard_incidence_rate,
-      data = merged_data,
-      time = "time_var",
-      count = "count",
-      by = by,
-      strata = strata_vars,
-      ...
-    ) |>
+    cardx::ard_incidence_rate,
+    data = merged_data,
+    time = "time_var",
+    count = "count",
+    by = by,
+    strata = strata_vars,
+    ...
+  ) |>
     dplyr::filter(
       .data$stat_name %in% c(
         "n_events", "tot_person_time", "estimate", "conf.low", "conf.high"

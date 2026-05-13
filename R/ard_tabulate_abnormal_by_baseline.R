@@ -145,7 +145,7 @@ ard_tabulate_abnormal_by_baseline <- function(data,
   cards::ard_mvsummary(
     data = df,
     variables = dplyr::all_of(postbaseline),
-    by = by,
+    by = dplyr::all_of(by),
     statistic = ~ list(
       abnormal = \(x, data, ...) {
         n_abn <- data |>
