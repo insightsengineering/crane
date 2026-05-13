@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1.9033</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1.9034</span>
       </span>
     </div>
 
@@ -61,9 +61,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.3.1.9033" id="crane-0319033">crane 0.3.1.9033<a class="anchor" aria-label="anchor" href="#crane-0319033"></a></h2>
+<h2 class="page-header" data-toc-text="0.3.1.9034" id="crane-0319034">crane 0.3.1.9034<a class="anchor" aria-label="anchor" href="#crane-0319034"></a></h2>
 <div class="section level3">
-<h3 id="new-functions-and-functionality-0-3-1-9033">New Functions and Functionality<a class="anchor" aria-label="anchor" href="#new-functions-and-functionality-0-3-1-9033"></a></h3>
+<h3 id="new-functions-and-functionality-0-3-1-9034">New Functions and Functionality<a class="anchor" aria-label="anchor" href="#new-functions-and-functionality-0-3-1-9034"></a></h3>
 <ul><li><p>Added <code><a href="../reference/deprecated.html">g_lineplot()</a></code> for creating line plots with optional summary statistics table. Includes helper functions <code>calc_stats()</code>, <code><a href="../reference/deprecated.html">g_lineplot_table()</a></code>, and <code><a href="../reference/deprecated.html">preprocess_lineplot_data()</a></code>.</p></li>
 <li><p>Added <code><a href="../reference/ard_tabulate_abnormal_by_baseline.html">ard_tabulate_abnormal_by_baseline()</a></code> for creating an Analysis Results Data (ARD) object counting participants with abnormal assessments, stratified by their baseline status.</p></li>
 <li><p>Added <code><a href="../reference/tbl_mmrm.html">tbl_mmrm()</a></code> and <code><a href="../reference/tbl_mmrm.html">get_mmrm_results()</a></code> functions to create regression tables for Mixed Models for Repeated Measures (MMRM). (<a href="https://github.com/insightsengineering/crane/issues/163" class="external-link">#163</a>)</p></li>
@@ -78,8 +78,9 @@
 <li><p>Added <code><a href="../reference/tbl_hierarchical_incidence_rate.html">tbl_hierarchical_incidence_rate()</a></code> which computes the incidence rate of adverse events (<a href="https://github.com/insightsengineering/crane/issues/211" class="external-link">#211</a>)</p></li>
 <li><p>Added <code><a href="../reference/adjust_stat_columns_wrap.html">adjust_stat_columns_wrap()</a></code> which keep the presentation of statistics in one row (<a href="https://github.com/insightsengineering/crane/issues/219" class="external-link">#219</a>)</p></li>
 </ul><div class="section level4">
-<h4 id="other-updates-0-3-1-9033">Other Updates<a class="anchor" aria-label="anchor" href="#other-updates-0-3-1-9033"></a></h4>
-<ul><li><p><code><a href="../reference/df2gg_aligned.html">df2gg_aligned()</a></code> and <code><a href="../reference/df2gg_floating.html">df2gg_floating()</a></code> now preserve original ggplot objects in <code>attr(result, "plotlist")</code> for downstream data extraction after combining with <code>cowplot</code>. (<a href="https://github.com/insightsengineering/crane/issues/208" class="external-link">#208</a>)</p></li>
+<h4 id="other-updates-0-3-1-9034">Other Updates<a class="anchor" aria-label="anchor" href="#other-updates-0-3-1-9034"></a></h4>
+<ul><li><p><code><a href="../reference/tbl_hierarchical_rate_and_count.html">tbl_hierarchical_rate_and_count()</a></code> now emits zero-rows for unobserved factor levels in the first hierarchical variable. (<a href="https://github.com/insightsengineering/crane/issues/233" class="external-link">#233</a>)</p></li>
+<li><p><code><a href="../reference/df2gg_aligned.html">df2gg_aligned()</a></code> and <code><a href="../reference/df2gg_floating.html">df2gg_floating()</a></code> now preserve original ggplot objects in <code>attr(result, "plotlist")</code> for downstream data extraction after combining with <code>cowplot</code>. (<a href="https://github.com/insightsengineering/crane/issues/208" class="external-link">#208</a>)</p></li>
 <li><p>Remove warning when data has more levels than needed for grade_groups on tbl_hierarchical_rate_by_grade.</p></li>
 <li><p>Changed the default <code>conf.type</code> from <code>"log"</code> to <code>"plain"</code> (linear) in <code><a href="../reference/tbl_survfit_times.html">tbl_survfit_times()</a></code> and <code><a href="../reference/tbl_survfit_quantiles.html">tbl_survfit_quantiles()</a></code> to align with GDSR guidelines. (<a href="https://github.com/insightsengineering/crane/issues/173" class="external-link">#173</a>)</p></li>
 <li><p>Removed bold from headers when using <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_strata.html" class="external-link">tbl_strata()</a></code> (<a href="https://github.com/insightsengineering/crane/issues/133" class="external-link">#133</a>).</p></li>
