@@ -100,6 +100,121 @@ test_that("tbl_hierarchical_rate_and_count() digits styling defaults to gtsummar
   )
 })
 
+test_that("tbl_hierarchical_rate_and_count() emits zero-rows for unobserved factor levels", {
+  withr::local_options(list(width = 220))
+
+  adae_factor <- ADAE_subset |>
+    dplyr::mutate(
+      AEBODSYS = factor(
+        AEBODSYS,
+        levels = c(unique(AEBODSYS), "UNOBSERVED SOC")
+      )
+    )
+
+  tbl <- adae_factor |>
+    tbl_hierarchical_rate_and_count(
+      denominator = cards::ADSL,
+      by = TRTA,
+      variables = c(AEBODSYS, AEDECOD)
+    )
+
+  # the unobserved level appears in the table body
+  expect_true("UNOBSERVED SOC" %in% tbl$table_body$label)
+
+  # zero-rows have the correct structure: header (NA) + rate ("0") + count ("0")
+  unobs_rows <- tbl$table_body |>
+    dplyr::filter(.data$group1_level == "UNOBSERVED SOC")
+
+  expect_equal(nrow(unobs_rows), 3L)
+  expect_equal(unobs_rows$label[1], "UNOBSERVED SOC")
+  expect_true(is.na(unobs_rows$stat_1[1]))
+  expect_equal(unobs_rows$stat_1[2], "0")
+  expect_equal(unobs_rows$stat_1[3], "0")
+
+  # add_overall populates the overall column with "0" for zero-rows
+  tbl_overall <- tbl |> add_overall(last = TRUE)
+  unobs_overall <- tbl_overall$table_body |>
+    dplyr::filter(.data$group1_level == "UNOBSERVED SOC")
+  expect_equal(unobs_overall$stat_0[2], "0")
+
+  expect_snapshot(as.data.frame(tbl))
+})
+
+test_that("tbl_hierarchical_rate_and_count() ignores non-factor variables", {
+  # character AEBODSYS should not trigger zero-row injection
+  tbl_char <- ADAE_subset |>
+    dplyr::mutate(AEBODSYS = as.character(AEBODSYS)) |>
+    tbl_hierarchical_rate_and_count(
+      denominator = cards::ADSL,
+      by = TRTA,
+      variables = c(AEBODSYS, AEDECOD)
+    )
+
+  tbl_no_factor <- ADAE_subset |>
+    tbl_hierarchical_rate_and_count(
+      denominator = cards::ADSL,
+      by = TRTA,
+      variables = c(AEBODSYS, AEDECOD)
+    )
+
+  # both should produce identical output (no extra rows)
+  expect_equal(nrow(tbl_char$table_body), nrow(tbl_no_factor$table_body))
+})
+
+test_that("tbl_hierarchical_rate_and_count() handles 0-row data with factor levels", {
+  withr::local_options(list(width = 220))
+
+  empty_adae <- ADAE_subset |>
+    dplyr::filter(FALSE) |>
+    dplyr::mutate(
+      AEBODSYS = factor(character(0), levels = c("SOC_A", "SOC_B"))
+    )
+
+  tbl <- empty_adae |>
+    tbl_hierarchical_rate_and_count(
+      denominator = cards::ADSL,
+      by = TRTA,
+      variables = c(AEBODSYS, AEDECOD),
+      label_overall_count = "remove"
+    )
+
+  # overall rate + 2 baskets * (header + rate + count) = 7 rows
+  expect_equal(nrow(tbl$table_body), 7L)
+
+  # all stat values are either "0" or NA (headers)
+  stat_vals <- unlist(tbl$table_body[grep("^stat_", names(tbl$table_body))])
+  expect_true(all(stat_vals %in% c("0", NA_character_)))
+
+  # class is preserved
+
+  expect_s3_class(tbl, "tbl_hierarchical_rate_and_count")
+
+  expect_snapshot(as.data.frame(tbl))
+})
+
+test_that("tbl_hierarchical_rate_and_count() zero-rows work with by = NULL", {
+  adae_factor <- ADAE_subset |>
+    dplyr::mutate(
+      AEBODSYS = factor(
+        AEBODSYS,
+        levels = c(unique(AEBODSYS), "EMPTY SOC")
+      )
+    )
+
+  tbl <- adae_factor |>
+    tbl_hierarchical_rate_and_count(
+      denominator = cards::ADSL,
+      variables = c(AEBODSYS, AEDECOD)
+    )
+
+  unobs_rows <- tbl$table_body |>
+    dplyr::filter(.data$group1_level == "EMPTY SOC")
+
+  expect_equal(nrow(unobs_rows), 3L)
+  expect_equal(unobs_rows$stat_0[2], "0")
+  expect_equal(unobs_rows$stat_0[3], "0")
+})
+
 test_that("tbl_hierarchical_rate_and_count() works only with 2 or 3 variables", {
   expect_snapshot(
     tbl <-

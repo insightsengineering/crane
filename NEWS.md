@@ -31,6 +31,8 @@
  
 ### Other Updates
 
+* `tbl_hierarchical_rate_and_count()` now emits zero-rows for unobserved factor levels in the first hierarchical variable. (#233)
+
 * `df2gg_aligned()` and `df2gg_floating()` now preserve original ggplot objects in `attr(result, "plotlist")` for downstream data extraction after combining with `cowplot`. (#208)
 
 * Remove warning when data has more levels than needed for grade_groups on tbl_hierarchical_rate_by_grade.

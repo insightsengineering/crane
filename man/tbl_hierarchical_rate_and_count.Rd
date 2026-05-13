@@ -104,6 +104,22 @@ When creating a filtered summary, use \code{gtsummary::tbl_hierarchical()} or
 \code{gtsummary::tbl_hierarchical_count()} directly, followed by a call to
 \code{gtsummary::filter_hierarchical()}.
 }
+\details{
+\subsection{Factor levels and zero-rows}{
+
+When the first variable in \code{variables} is a factor, the function respects
+its levels and emits zero-rows for any levels not observed in the data.
+Each unobserved level gets a header row (with \code{NA} stats), a rate summary
+row (\code{"0"}), and a count summary row (\code{"0"}).
+
+This is useful when the set of expected categories is predefined but some
+may not be present in the data. To exclude categories with no observations,
+drop unused levels before calling the function (e.g., \code{droplevels()}).
+
+Ensures consistent output structure for empty datasets, removing the
+need for manual workarounds in reporting templates.
+}
+}
 \examples{
 \dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true") || identical(Sys.getenv("IN_PKGDOWN"), "true")) withAutoprint(\{ # examplesIf}
 # Example 1 ----------------------------------
@@ -114,5 +130,17 @@ cards::ADAE[c(1, 2, 3, 8, 16), ] |>
     by = TRTA
   ) |>
   add_overall(last = TRUE)
+
+# Example 2: factor with unobserved levels ----------------------------------
+# Adding an unobserved SOC level produces zero-rows automatically
+cards::ADAE[c(1, 2, 3, 8, 16), ] |>
+  dplyr::mutate(
+    AEBODSYS = factor(AEBODSYS, levels = c(unique(AEBODSYS), "UNOBSERVED SOC"))
+  ) |>
+  tbl_hierarchical_rate_and_count(
+    variables = c(AEBODSYS, AEDECOD),
+    denominator = cards::ADSL,
+    by = TRTA
+  )
 \dontshow{\}) # examplesIf}
 }

@@ -48,6 +48,42 @@
       23                                                               Total number of events                   1                                1                               1                             3
       24                                                            APPLICATION SITE ERYTHEMA            1 (1.2%)                         1 (1.2%)                        1 (1.2%)                      3 (1.2%)
 
+# tbl_hierarchical_rate_and_count() emits zero-rows for unobserved factor levels
+
+    Code
+      as.data.frame(tbl)
+    Output
+                              AEBODSYS  \n    Dictionary-Derived Term Placebo  \n(N = 86) Xanomeline High Dose  \n(N = 84) Xanomeline Low Dose  \n(N = 84)
+      1  Total number of participants with at least one adverse event            3 (3.5%)                         2 (2.4%)                        1 (1.2%)
+      2                                Overall total number of events                   5                                4                               1
+      3                                    GASTROINTESTINAL DISORDERS                <NA>                             <NA>                            <NA>
+      4  Total number of participants with at least one adverse event            3 (3.5%)                                0                               0
+      5                                        Total number of events                   3                                0                               0
+      6                                                     DIARRHOEA            3 (3.5%)                                0                               0
+      7          GENERAL DISORDERS AND ADMINISTRATION SITE CONDITIONS                <NA>                             <NA>                            <NA>
+      8  Total number of participants with at least one adverse event            1 (1.2%)                         2 (2.4%)                        1 (1.2%)
+      9                                        Total number of events                   2                                4                               1
+      10                                    APPLICATION SITE ERYTHEMA            1 (1.2%)                         1 (1.2%)                        1 (1.2%)
+      11                                    APPLICATION SITE PRURITUS            1 (1.2%)                         2 (2.4%)                               0
+      12                                                      FATIGUE                   0                         1 (1.2%)                               0
+      13                                               UNOBSERVED SOC                <NA>                             <NA>                            <NA>
+      14 Total number of participants with at least one adverse event                   0                                0                               0
+      15                                       Total number of events                   0                                0                               0
+
+# tbl_hierarchical_rate_and_count() handles 0-row data with factor levels
+
+    Code
+      as.data.frame(tbl)
+    Output
+                             AEBODSYS  \n    Dictionary-Derived Term Placebo  \nN = 86 Xanomeline High Dose  \nN = 84 Xanomeline Low Dose  \nN = 84
+      1 Total number of participants with at least one adverse event                 0                              0                             0
+      2                                                        SOC_A              <NA>                           <NA>                          <NA>
+      3 Total number of participants with at least one adverse event                 0                              0                             0
+      4                                       Total number of events                 0                              0                             0
+      5                                                        SOC_B              <NA>                           <NA>                          <NA>
+      6 Total number of participants with at least one adverse event                 0                              0                             0
+      7                                       Total number of events                 0                              0                             0
+
 # tbl_hierarchical_rate_and_count() works only with 2 or 3 variables
 
     Code
