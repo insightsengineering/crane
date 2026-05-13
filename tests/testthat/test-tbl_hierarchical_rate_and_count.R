@@ -53,8 +53,7 @@ test_that("tbl_hierarchical_rate_and_count() works", {
 })
 
 test_that("tbl_hierarchical_rate_and_count(sort)", {
-  skip("Skipping temporarily due to cards 0.7.0 sort_hierarchical warning")
-  expect_silent(
+  expect_no_error(
     tbl <-
       ADAE_subset |>
       tbl_hierarchical_rate_and_count(
