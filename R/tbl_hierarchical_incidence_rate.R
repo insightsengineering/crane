@@ -321,15 +321,13 @@ tbl_hierarchical_incidence_rate <- function(data,
 #' @noRd
 .compute_incidence_rate_ard <- function(merged_data, by, strata_vars,
                                         digits, ...) {
-  
-  # FIX 2: Instead of passing 'by' and 'strata' as arguments (which triggers 
-  # the internal any_of() crash), we group the data manually. 
-  # cardx::ard_incidence_rate will automatically detect these groups.
-  res <- merged_data |>
-    dplyr::group_by(dplyr::across(dplyr::any_of(c(by, strata_vars)))) |>
-    cardx::ard_incidence_rate(
-      time = "time_var", 
+  res <- rlang::exec(
+      cardx::ard_incidence_rate,
+      data = merged_data,
+      time = "time_var",
       count = "count",
+      by = by,
+      strata = strata_vars,
       ...
     ) |>
     dplyr::filter(
@@ -343,7 +341,7 @@ tbl_hierarchical_incidence_rate <- function(data,
     )
 
   # Dynamically rename columns internally based on group levels
-  if (is_empty(strata_vars)) {
+  if (is.null(strata_vars)) {
     res <- res |> dplyr::mutate(variable = "..ard_hierarchical_overall..")
   } else {
     grp_idx <- length(by) + length(strata_vars)
