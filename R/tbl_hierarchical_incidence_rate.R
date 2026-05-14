@@ -256,14 +256,13 @@ tbl_hierarchical_incidence_rate <- function(data,
           group1 = "..ard_hierarchical_overall.."
         )),
 
-      # --- UPDATED CODE: Pass the dressed-up ARD ---
+      # use combined ard in the function call
       gtsummary::tbl_ard_hierarchical(
         cards = ard_hierarchical_combined,
         by = dplyr::all_of(by),
         variables = dplyr::all_of(variables),
         statistic = ~stat
       )
-      # ---------------------------------------------
     ) |>
       gtsummary::tbl_stack(attr_order = 2:1, quiet = TRUE) |>
       gtsummary::modify_header(
