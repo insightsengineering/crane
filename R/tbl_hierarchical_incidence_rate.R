@@ -166,7 +166,7 @@ tbl_hierarchical_incidence_rate <- function(data,
   # Build the base hierarchical framework
   tbl_base <- gtsummary::tbl_hierarchical(
     data = data,
-    by = dplyr::any_of(by),
+    by = dplyr::all_of(by),
     variables = dplyr::all_of(variables),
     id = dplyr::all_of(id),
     denominator = denominator,
@@ -241,7 +241,7 @@ tbl_hierarchical_incidence_rate <- function(data,
     list(
       gtsummary::tbl_ard_summary(
         ard_overall,
-        by = dplyr::any_of(by), statistic = ~stat
+        by = dplyr::all_of(by), statistic = ~stat
       ) |>
         gtsummary::modify_table_body(~ .x |> dplyr::mutate(
           row_type = "level", var_label = NA, label = .env$overall_label,
@@ -249,7 +249,7 @@ tbl_hierarchical_incidence_rate <- function(data,
         )),
       cards::bind_ard(ard_n, ard_lvl1, ard_lvl2) |>
         gtsummary::tbl_ard_hierarchical(
-          by = dplyr::any_of(by), variables = dplyr::all_of(variables),
+          by = dplyr::all_of(by), variables = dplyr::all_of(variables),
           statistic = ~stat
         )
     ) |>
