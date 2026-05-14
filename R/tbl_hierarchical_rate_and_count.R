@@ -272,17 +272,8 @@ tbl_hierarchical_rate_and_count <- function(data,
           dplyr::arrange(.data$ord)
       }
     ) |>
-    # indent the SOC overall stats
-    gtsummary::modify_indent(
-      columns = "label",
-      rows = .data$variable %in% .env$variables[1] & .data$label %in% c(label_rate, label_count)
-    ) |>
-    # indent the HLT overall stats (if not present, nothing will happen)
-    gtsummary::modify_indent(
-      columns = "label",
-      rows = .data$variable %in% .env$variables[-c(1L, length(.env$variables))] & .data$label %in% c(label_rate, label_count),
-      indent = 8L
-    ) |>
+    # indent rate/count summary rows under each hierarchical variable
+    .apply_hierarchical_indent(variables, label_rate, label_count) |>
     # convert "0 (0.0%)" to "0"
     modify_zero_recode()
 
@@ -535,7 +526,10 @@ add_overall.tbl_hierarchical_rate_and_count <- function(x,
   )
 
   tbl_scaffold <- tbl_scaffold |>
-    gtsummary::modify_header(label ~ header_label)
+    gtsummary::modify_header(label ~ header_label) |>
+    .apply_hierarchical_indent(variables, label_rate, label_count,
+      include_variable_indent = TRUE
+    )
 
   tbl_scaffold$call_list <- list(tbl_hierarchical_rate_and_count = match.call())
   tbl_scaffold$cards <- list(tbl_hierarchical_rate_and_count = list())
@@ -544,4 +538,82 @@ add_overall.tbl_hierarchical_rate_and_count <- function(x,
   tbl_scaffold |>
     structure(class = c("tbl_hierarchical_rate_and_count", "gtsummary")) |>
     modify_header_rm_md()
+}
+
+# Apply hierarchical indentation to rate/count summary rows.
+#
+# This helper centralises the indent logic for `tbl_hierarchical_rate_and_count()`
+# so that every code path (normal build, 0-row scaffold, injected zero-rows)
+# produces identical indentation.
+#
+# The indentation scheme has two layers:
+#
+# 1. **Per-variable indent** (set by `gtsummary:::brdg_hierarchical()`):
+#    Each variable's rows are indented at `(depth - 1) * 4` spaces, where
+#    `depth` is the 1-based position in `variables`. For a 3-variable
+#    hierarchy `c(SOC, HLT, PT)`:
+#      - SOC labels:  0 spaces  (depth 1)
+#      - HLT labels:  4 spaces  (depth 2)
+#      - PT  labels:  8 spaces  (depth 3)
+#    The overall row (`..ard_hierarchical_overall..`) is always at 0.
+#    In the normal path, `brdg_hierarchical()` already sets these rules.
+#    The scaffold path skips `brdg_hierarchical()`, so it needs them
+#    explicitly <U+2014> controlled by `include_variable_indent = TRUE`.
+#
+# 2. **Rate/count summary indent** (set by this function, always):
+#    The rate and count summary rows inserted by
+#    `tbl_hierarchical_rate_and_count()` sit one level deeper than their
+#    parent variable's label. The indent is `depth * 4`:
+#      - SOC rate/count:  4 spaces  (depth 1)
+#      - HLT rate/count:  8 spaces  (depth 2)
+#    The last variable (e.g., PT) has no rate/count rows <U+2014> it is the leaf.
+#    This generalises to any number of hierarchical levels.
+#
+# @param tbl A gtsummary table object.
+# @param variables Character vector of hierarchical variable names.
+# @param label_rate,label_count Label strings identifying rate/count rows.
+# @param include_variable_indent If `TRUE`, also apply the per-variable
+#   indent rules (layer 1). Set to `TRUE` when the table was not built via
+#   `gtsummary::tbl_hierarchical()` (e.g., the 0-row scaffold path).
+#   The normal path leaves this `FALSE` because `brdg_hierarchical()` has
+#   already set those rules.
+# @returns The table with indent styling applied.
+# @keywords internal
+.apply_hierarchical_indent <- function(tbl,
+                                       variables,
+                                       label_rate,
+                                       label_count,
+                                       include_variable_indent = FALSE) {
+  # Layer 1: per-variable indent (mirrors brdg_hierarchical loop)
+  if (include_variable_indent) {
+    for (i in seq_along(variables)) {
+      tbl <- gtsummary::modify_indent(
+        tbl,
+        columns = "label",
+        rows = .data$variable == !!variables[i],
+        indent = (i - 1L) * 4L
+      )
+    }
+    tbl <- gtsummary::modify_indent(
+      tbl,
+      columns = "label",
+      rows = .data$variable == "..ard_hierarchical_overall..",
+      indent = 0L
+    )
+  }
+
+  # Layer 2: rate/count summary rows one level deeper than their variable.
+  # Only non-leaf variables (all except the last) have rate/count rows.
+  non_leaf <- variables[-length(variables)]
+  for (i in seq_along(non_leaf)) {
+    tbl <- gtsummary::modify_indent(
+      tbl,
+      columns = "label",
+      rows = .data$variable == !!non_leaf[i] &
+        .data$label %in% c(.env$label_rate, .env$label_count),
+      indent = i * 4L
+    )
+  }
+
+  tbl
 }
