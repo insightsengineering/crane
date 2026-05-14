@@ -172,33 +172,31 @@ tbl_coxph <- function(data, model_formula, arm, ref_group = NULL) {
 #'
 #' @keywords internal
 .get_single_comp_table <- function(data_subset) {
-  # 1. Construct the ARD natively using the modern ard_mvsummary()
-  #    We pull the pre-computed strings out of the 1-row data_subset
-  #    and format them into a strict ARD object.
-  ard <- cards::ard_mvsummary(
-    data = data_subset,
-    variables = c("pval_formatted", "hr_formatted", "ci_formatted"),
-    by = NULL,
-    statistic = ~ list(
-      my_stat = \(x, ...) x[1] # Simply extracts the pre-formatted string
-    )
-  )
-
-  # 2. Build the table directly from the ARD object using tbl_ard_summary()
-  #    This completely bypasses tbl_custom_summary() and its deprecation bugs.
-  gtsummary::tbl_ard_summary(
-    cards = ard,
-    include = c("pval_formatted", "hr_formatted", "ci_formatted"),
-    type = list(gtsummary::everything() ~ "continuous"),
-    statistic = list(gtsummary::everything() ~ "{my_stat}"),
-    label = list(
-      pval_formatted ~ "p-value (log-rank)",
-      hr_formatted ~ "Hazard Ratio",
-      ci_formatted ~ "95% CI"
-    ),
-    missing = "no"
-  ) |>
-    # 3. Apply the final gtsummary visual styling
+  # Construct the ARD natively using the modern ard_mvsummary()
+  #  Pull the pre-computed strings out of the 1-row data_subset
+  #  and format them into a strict ARD object.
+  data_subset |>
+    cards::ard_mvsummary(
+      variables = c("pval_formatted", "hr_formatted", "ci_formatted"),
+      by = NULL,
+      statistic = ~ list(
+        # Extracts the pre-formatted string
+        my_stat = \(x, ...) x[1]
+      )
+    ) |>
+    # Build the table directly from the ARD object using tbl_ard_summary()
+    gtsummary::tbl_ard_summary(
+      include = c("pval_formatted", "hr_formatted", "ci_formatted"),
+      type = list(gtsummary::everything() ~ "continuous"),
+      statistic = list(gtsummary::everything() ~ "{my_stat}"),
+      label = list(
+        pval_formatted ~ "p-value (log-rank)",
+        hr_formatted ~ "Hazard Ratio",
+        ci_formatted ~ "95% CI"
+      ),
+      missing = "no"
+    ) |>
+    # Apply the final gtsummary visual styling
     gtsummary::modify_indent(
       columns = "label",
       rows = .data$variable == "ci_formatted",
