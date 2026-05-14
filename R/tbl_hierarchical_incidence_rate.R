@@ -219,15 +219,15 @@ tbl_hierarchical_incidence_rate <- function(data,
     ard_n_by <- rlang::exec(cards::ard_tabulate, data = denominator, variables = by)
     ard_n <- cards::bind_ard(ard_n_by, ard_n)
   }
-  ard_hierarchical_combined <- cards::bind_ard(ard_n, ard_lvl1, ard_lvl2) |> 
-      cards::as_card(check = FALSE)
-  
+  ard_hierarchical_combined <- cards::bind_ard(ard_n, ard_lvl1, ard_lvl2) |>
+    cards::as_card(check = FALSE)
+
   class(ard_hierarchical_combined) <- c(
     "ard_stack_hierarchical",
     class(ard_hierarchical_combined)
   )
   attr(ard_hierarchical_combined, "args") <- list(variables = variables, by = by)
-  
+
   # Format the header labels based on the unit_label
   pt_abbr <- switch(tolower(unit_label),
     "years" = "PY",
@@ -255,11 +255,11 @@ tbl_hierarchical_incidence_rate <- function(data,
           row_type = "level", var_label = NA, label = .env$overall_label,
           group1 = "..ard_hierarchical_overall.."
         )),
-      
+
       # --- UPDATED CODE: Pass the dressed-up ARD ---
       gtsummary::tbl_ard_hierarchical(
-        cards = ard_hierarchical_combined, 
-        by = dplyr::all_of(by), 
+        cards = ard_hierarchical_combined,
+        by = dplyr::all_of(by),
         variables = dplyr::all_of(variables),
         statistic = ~stat
       )
