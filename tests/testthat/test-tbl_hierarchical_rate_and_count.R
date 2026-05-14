@@ -53,7 +53,7 @@ test_that("tbl_hierarchical_rate_and_count() works", {
 })
 
 test_that("tbl_hierarchical_rate_and_count(sort)", {
-  expect_silent(
+  expect_no_error(
     tbl <-
       ADAE_subset |>
       tbl_hierarchical_rate_and_count(

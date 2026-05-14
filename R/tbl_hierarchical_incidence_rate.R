@@ -214,10 +214,11 @@ tbl_hierarchical_incidence_rate <- function(data,
       unit_label = unit_label, conf.level = conf.level, conf.type = conf.type
     )
 
-  ard_n <- cards::bind_ard(
-    cards::ard_tabulate(denominator, variables = dplyr::any_of(by)),
-    cardx::ard_total_n(denominator)
-  )
+  ard_n <- cardx::ard_total_n(denominator)
+  if (!is.null(by)) {
+    ard_n_by <- rlang::exec(cards::ard_tabulate, data = denominator, variables = by)
+    ard_n <- cards::bind_ard(ard_n_by, ard_n)
+  }
 
   # Format the header labels based on the unit_label
   pt_abbr <- switch(tolower(unit_label),
@@ -320,11 +321,15 @@ tbl_hierarchical_incidence_rate <- function(data,
 #' @noRd
 .compute_incidence_rate_ard <- function(merged_data, by, strata_vars,
                                         digits, ...) {
-  res <- merged_data |>
-    cardx::ard_incidence_rate(
-      time = "time_var", count = "count", by = dplyr::any_of(by),
-      strata = dplyr::all_of(strata_vars), ...
-    ) |>
+  res <- rlang::exec(
+    cardx::ard_incidence_rate,
+    data = merged_data,
+    time = "time_var",
+    count = "count",
+    by = by,
+    strata = strata_vars,
+    ...
+  ) |>
     dplyr::filter(
       .data$stat_name %in% c(
         "n_events", "tot_person_time", "estimate", "conf.low", "conf.high"
