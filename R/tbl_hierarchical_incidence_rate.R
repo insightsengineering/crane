@@ -219,6 +219,13 @@ tbl_hierarchical_incidence_rate <- function(data,
     ard_n_by <- rlang::exec(cards::ard_tabulate, data = denominator, variables = by)
     ard_n <- cards::bind_ard(ard_n_by, ard_n)
   }
+  ard_hierarchical_combined <- cards::bind_ard(ard_n, ard_lvl1, ard_lvl2)
+
+  class(ard_hierarchical_combined) <- c(
+    "ard_stack_hierarchical",
+    class(ard_hierarchical_combined)
+  )
+  attr(ard_hierarchical_combined, "args") <- list(variables = variables, by = by)
 
   # Format the header labels based on the unit_label
   pt_abbr <- switch(tolower(unit_label),
@@ -247,11 +254,14 @@ tbl_hierarchical_incidence_rate <- function(data,
           row_type = "level", var_label = NA, label = .env$overall_label,
           group1 = "..ard_hierarchical_overall.."
         )),
-      cards::bind_ard(ard_n, ard_lvl1, ard_lvl2) |>
-        gtsummary::tbl_ard_hierarchical(
-          by = dplyr::all_of(by), variables = dplyr::all_of(variables),
-          statistic = ~stat
-        )
+
+      # use combined ard in the function call
+      gtsummary::tbl_ard_hierarchical(
+        cards = ard_hierarchical_combined,
+        by = dplyr::all_of(by),
+        variables = dplyr::all_of(variables),
+        statistic = ~stat
+      )
     ) |>
       gtsummary::tbl_stack(attr_order = 2:1, quiet = TRUE) |>
       gtsummary::modify_header(
@@ -345,13 +355,15 @@ tbl_hierarchical_incidence_rate <- function(data,
     res <- res |> dplyr::mutate(variable = "..ard_hierarchical_overall..")
   } else {
     grp_idx <- length(by) + length(strata_vars)
-    rename_lookup <- c(
-      "variable" = paste0("group", grp_idx),
-      "variable_level" = paste0("group", grp_idx, "_level")
-    )
+    grp_name <- paste0("group", grp_idx)
+    grp_lvl <- paste0("group", grp_idx, "_level")
+
     res <- res |>
-      dplyr::select(-cards::all_ard_variables()) |>
-      dplyr::rename(dplyr::all_of(rename_lookup))
+      dplyr::mutate(
+        variable = .data[[grp_name]],
+        variable_level = .data[[grp_lvl]]
+      ) |>
+      dplyr::select(-dplyr::all_of(c(grp_name, grp_lvl)))
   }
 
   res
