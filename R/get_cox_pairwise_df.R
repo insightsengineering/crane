@@ -73,7 +73,21 @@
 #' print(results_tbl)
 #'
 #' @export
-get_cox_pairwise_df <- function(model_formula, data, arm, ref_group = NULL) {
+get_cox_pairwise_df <- function(
+  model_formula,
+  data,
+  arm,
+  ref_group = NULL,
+  ties = c("exact", "efron", "breslow"),
+  test = c(
+    "log-rank",
+    "wilcoxon",
+    "tarone",
+    "peto",
+    "modpeto",
+    "fleming","likelihood-ratio"
+  )
+) {
   set_cli_abort_call()
   # Input checks
   if (!rlang::is_formula(model_formula)) {
@@ -89,6 +103,9 @@ get_cox_pairwise_df <- function(model_formula, data, arm, ref_group = NULL) {
     )
   }
 
+  ties <- match.arg(ties)
+  test <- match.arg(test)
+
   # Determine reference and comparison groups
   ref_group <- if (!is.null(ref_group)) {
     ref_group
@@ -97,7 +114,7 @@ get_cox_pairwise_df <- function(model_formula, data, arm, ref_group = NULL) {
   }
   comp_group <- setdiff(levels(data[[arm]]), ref_group)
 
-  ret <- c()
+  res <- c()
   for (current_arm in comp_group) {
     subset_arm <- c(ref_group, current_arm)
     if (length(subset_arm) != 2) {
@@ -111,13 +128,15 @@ get_cox_pairwise_df <- function(model_formula, data, arm, ref_group = NULL) {
     }
     comp_df <- data[as.character(data[[arm]]) %in% subset_arm, ]
     suppressWarnings(
-      coxph_ans <- coxph(formula = model_formula, data = comp_df) |> summary()
+      coxph_ans <- coxph(
+        formula = model_formula,
+        data = comp_df,
+        ties = ties
+      ) |> summary()
     )
-    orginal_survdiff <- survdiff(formula = model_formula, data = comp_df)
-    log_rank_pvalue <- 1 - stats::pchisq(
-      orginal_survdiff$chisq,
-      length(orginal_survdiff$n) - 1
-    )
+
+    log_rank_pvalue <- .estimate_p_value(model_formula, comp_df, test)
+
     conf_int_row <- paste0(arm, current_arm)
     current_row <- data.frame(
       hr = sprintf("%.2f", coxph_ans$conf.int[conf_int_row, 1]),
@@ -131,12 +150,52 @@ get_cox_pairwise_df <- function(model_formula, data, arm, ref_group = NULL) {
       pval = log_rank_pvalue
     )
     rownames(current_row) <- current_arm
-    ret <- rbind(ret, current_row)
+    res <- rbind(res, current_row)
   }
-  names(ret) <- c(
+  names(res) <- c(
     "HR",
     "95% CI",
-    "p-value (log-rank)"
+    paste0("p-value (", names(log_rank_pvalue), ")")
   )
-  ret
+  res
+}
+
+.estimate_p_value <- function(formula, data, test) {
+
+  test_type <- switch(test,
+                        "log-rank" = "logrank",
+                        "wilcoxon" = "Wilcoxon",
+                        "tarone"  = "Tarone-Ware",
+                        "peto"    = "Peto-Peto",
+                        "modpeto" = "Modified Peto-Peto",
+                        "fleming" = "Fleming-Harrington",
+                        "likelihood-ratio" = "lr"
+    )
+  
+  if (test_type != "lr") {
+    test_result <- coin::logrank_test(
+      formula = formula,
+      data = data,
+      test = test_type
+    )
+    p_value <- coin::pvalue(test_result)
+    
+  } else if (test_type == "lr") {
+    # SAS LR test assumes an exponential distribution
+    # fit the model
+    fit_cov <- survival::survreg(formula, data = data, dist = "exponential")
+    
+    # fit the null model
+    null_formula <- update(formula, . ~ 1)
+    fit_null <- survival::survreg(null_formula, data = data, dist = "exponential")
+
+    # calculate the difference and estimate the statistics
+    lrt_stat <- 2 * (fit_cov$loglik[2] - fit_null$loglik[1])
+    df <- fit_cov$df - fit_null$df
+    p_value <- pchisq(lrt_stat, df, lower.tail = FALSE)
+  }
+
+  names(p_value) <- tools::toTitleCase(test)
+  
+  p_value
 }

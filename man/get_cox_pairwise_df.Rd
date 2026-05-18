@@ -4,7 +4,15 @@
 \alias{get_cox_pairwise_df}
 \title{Generate Table of Pairwise Cox-PH and Log-Rank Results}
 \usage{
-get_cox_pairwise_df(model_formula, data, arm, ref_group = NULL)
+get_cox_pairwise_df(
+  model_formula,
+  data,
+  arm,
+  ref_group = NULL,
+  ties = c("exact", "efron", "breslow"),
+  test = c("log-rank", "wilcoxon", "tarone", "peto", "modpeto", "fleming",
+    "likelihood-ratio")
+)
 }
 \arguments{
 \item{model_formula}{(\code{formula})\cr
