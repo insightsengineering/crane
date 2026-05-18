@@ -26,15 +26,15 @@
       dplyr::select(tbl$table_body, dplyr::starts_with("label"), dplyr::starts_with(
         "stat"))
     Output
-      # A tibble: 7 x 9
-        label_1   label_2 label_3 stat_0_1 stat_1_1_2 stat_2_1_2 stat_1_2_2 stat_2_2_2
+      # A tibble: 7 x 11
+        label_1   label_2 label_3 stat_0_1 stat_1_1_2 stat_2_1_2 stat_3_1_2 stat_1_2_2
         <glue>    <chr>   <chr>   <chr>    <chr>      <chr>      <chr>      <chr>     
-      1 All Part~ time    X1      10       5          9.0        5          9.2       
+      1 All Part~ time    X1      5        5          3          9.0        5         
       2 grade     <NA>    <NA>    <NA>     <NA>       <NA>       <NA>       <NA>      
-      3 I         time    X1      5        2          5.0        3          9.2       
-      4 II        time    X1      5        3          13.4       2          33.8      
+      3 I         time    X1      2        2          1          5.0        3         
+      4 II        time    X1      3        3          2          13.4       2         
       5 strata    <NA>    <NA>    <NA>     <NA>       <NA>       <NA>       <NA>      
-      6 1         time    X1      5        3          13.4       2          33.8      
-      7 2         time    X1      5        2          5.0        3          9.2       
-      # i 1 more variable: stat_0_3 <chr>
+      6 1         time    X1      3        3          2          13.4       2         
+      7 2         time    X1      2        2          1          5.0        3         
+      # i 3 more variables: stat_2_2_2 <chr>, stat_3_2_2 <chr>, stat_0_3 <chr>
 

@@ -172,33 +172,31 @@ tbl_coxph <- function(data, model_formula, arm, ref_group = NULL) {
 #'
 #' @keywords internal
 .get_single_comp_table <- function(data_subset) {
+  # Construct the ARD natively using the modern ard_mvsummary()
+  #  Pull the pre-computed strings out of the 1-row data_subset
+  #  and format them into a strict ARD object.
   data_subset |>
-    gtsummary::tbl_custom_summary(
+    cards::ard_mvsummary(
+      variables = c("pval_formatted", "hr_formatted", "ci_formatted"),
       by = NULL,
+      statistic = ~ list(
+        # Extracts the pre-formatted string
+        my_stat = \(x, ...) x[1]
+      )
+    ) |>
+    # Build the table directly from the ARD object using tbl_ard_summary()
+    gtsummary::tbl_ard_summary(
       include = c("pval_formatted", "hr_formatted", "ci_formatted"),
       type = list(gtsummary::everything() ~ "continuous"),
-      stat_fns = list(
-        pval_formatted ~
-          function(data, ...) list(my_stat = data$pval_formatted[1]),
-        hr_formatted ~
-          function(data, ...) list(my_stat = data$hr_formatted[1]),
-        ci_formatted ~
-          function(data, ...) list(my_stat = data$ci_formatted[1])
+      statistic = list(gtsummary::everything() ~ "{my_stat}"),
+      label = list(
+        pval_formatted ~ "p-value (log-rank)",
+        hr_formatted ~ "Hazard Ratio",
+        ci_formatted ~ "95% CI"
       ),
-      statistic = ~"{my_stat}",
       missing = "no"
     ) |>
-    gtsummary::modify_table_body(
-      ~ .x |>
-        dplyr::mutate(
-          label = dplyr::case_when(
-            .data$variable == "pval_formatted" ~ "p-value (log-rank)",
-            .data$variable == "hr_formatted" ~ "Hazard Ratio",
-            .data$variable == "ci_formatted" ~ "95% CI",
-            TRUE ~ .data$label
-          )
-        )
-    ) |>
+    # Apply the final gtsummary visual styling
     gtsummary::modify_indent(
       columns = "label",
       rows = .data$variable == "ci_formatted",
