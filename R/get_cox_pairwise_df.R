@@ -160,7 +160,7 @@ get_cox_pairwise_df <- function(
     }
     comp_df <- data[as.character(data[[arm]]) %in% subset_arm, ]
     suppressWarnings(
-      coxph_ans <- coxph(
+      coxph_ans <- survival::coxph(
         formula = model_formula,
         data = comp_df,
         ties = ties
@@ -225,7 +225,7 @@ get_cox_pairwise_df <- function(
     # calculate the difference and estimate the statistics
     lrt_stat <- 2 * (fit_cov$loglik[2] - fit_null$loglik[1])
     df <- fit_cov$df - fit_null$df
-    p_value <- pchisq(lrt_stat, df, lower.tail = FALSE)
+    p_value <- stats::pchisq(lrt_stat, df, lower.tail = FALSE)
   }
 
   if (test == "log-rank") {
