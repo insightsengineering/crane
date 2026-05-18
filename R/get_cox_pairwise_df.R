@@ -192,6 +192,9 @@ get_cox_pairwise_df <- function(
   res
 }
 
+#' Estimate p value based on chosen test type
+#' Using {coin} and {survival} packages
+#' @keywords internal
 .estimate_p_value <- function(formula, data, test) {
 
   test_type <- switch(test,
