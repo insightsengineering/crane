@@ -28,7 +28,7 @@
 #'   Must be one of "exact", "efron", or "breslow".
 #' @param test (`character`)\cr
 #'   A string specifying the type of test to compute the p-value.
-#'   Must be one of "log-rank", "gehan-breslow" (wilcoxon), "tarone", "peto", 
+#'   Must be one of "log-rank", "gehan-breslow" (wilcoxon), "tarone", "peto",
 #'   "modpeto" (prentice), "fleming-harrington", or "likelihood-ratio".
 #'
 #' @return A `data.frame` with the results of the pairwise comparisons.
@@ -117,7 +117,7 @@ get_cox_pairwise_df <- function(
     "tarone",
     "peto",
     "prentice",
-    "fleming-harrington", 
+    "fleming-harrington",
     "likelihood-ratio"
   )
 ) {
@@ -220,7 +220,7 @@ get_cox_pairwise_df <- function(
     fit_cov <- survival::survreg(formula, data = data, dist = "exponential")
 
     # fit the null model
-    null_formula <- stats::update(formula, ~ 1)
+    null_formula <- stats::update(formula, ~1)
     fit_null <- survival::survreg(null_formula, data = data, dist = "exponential")
 
     # calculate the difference and estimate the statistics

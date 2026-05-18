@@ -136,7 +136,7 @@ test_that("get_cox_pairwise_df() works with all valid 'test' methods", {
     "tarone",
     "peto",
     "prentice",
-    "fleming-harrington", 
+    "fleming-harrington",
     "likelihood-ratio"
   )
 
