@@ -25,8 +25,9 @@ If a formula, e.g. \code{~ .x \%>\% tbl_summary() \%>\% add_p()}, it is converte
 The stratified data frame is passed to this function.}
 
 \item{time_to_event}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-Variable to use in time-to-event analyses. If specified, the mid table will
-show the median time-to-event instead of responder rates.}
+Variable to use in time-to-event analyses. If specified, the mid table
+shows n (subjects), Events (from \code{rsp}), and Median per arm instead of
+responder rates. The total column shows Total Events instead of Total n.}
 }
 \value{
 a 'gtsummary' table

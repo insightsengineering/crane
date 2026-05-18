@@ -14,8 +14,9 @@ a gtsummary table}
 a gtsummary table
 }
 \description{
-This function removes the percentage from cells with zero counts.
-For example,
+Removes the percentage from cells with zero counts. Handles both regular
+spaces and non-breaking spaces (\verb{\\u00A0}, the HTML \verb{&nbsp;} equivalent)
+that some formatting engines insert.
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{0 (0.0\%)      -->  0
 0 (0\%)        -->  0

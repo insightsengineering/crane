@@ -1,5 +1,4 @@
 skip_on_cran()
-
 ADSL <- cards::ADSL
 ADAE_subset <- cards::ADAE |>
   dplyr::filter(
@@ -23,7 +22,7 @@ test_that("tbl_hierarchical_rate_by_grade() works", {
   withr::local_options(width = 400)
 
   # no grade groups
-  expect_silent(
+  expect_no_error(
     tbl <-
       tbl_hierarchical_rate_by_grade(
         ADAE_subset,
@@ -47,7 +46,7 @@ test_that("tbl_hierarchical_rate_by_grade() works", {
   expect_snapshot(as.data.frame(tbl |> add_grade_column())[1:25, ])
 
   # with grade groups
-  expect_silent(
+  expect_no_error(
     tbl <-
       tbl_hierarchical_rate_by_grade(
         ADAE_subset,
@@ -61,7 +60,7 @@ test_that("tbl_hierarchical_rate_by_grade() works", {
   expect_snapshot(as.data.frame(tbl |> add_grade_column())[1:25, ])
 
   # no by, no label
-  expect_silent(
+  expect_no_error(
     tbl <-
       tbl_hierarchical_rate_by_grade(
         ADAE_subset,
@@ -71,7 +70,7 @@ test_that("tbl_hierarchical_rate_by_grade() works", {
   )
 
   # custom statistic/digits
-  expect_silent(
+  expect_no_error(
     tbl <-
       tbl_hierarchical_rate_by_grade(
         ADAE_subset,
@@ -90,7 +89,7 @@ test_that("tbl_hierarchical_rate_by_grade(include_overall) works", {
   withr::local_options(width = 350)
 
   # all overall sections added
-  expect_silent(
+  expect_no_error(
     tbl <-
       tbl_hierarchical_rate_by_grade(
         ADAE_subset,
@@ -105,7 +104,7 @@ test_that("tbl_hierarchical_rate_by_grade(include_overall) works", {
   expect_snapshot(as.data.frame(tbl |> add_grade_column())[1:25, ])
 
   # all overall sections removed
-  expect_silent(
+  expect_no_error(
     tbl <-
       tbl_hierarchical_rate_by_grade(
         ADAE_subset,
@@ -132,7 +131,7 @@ test_that("tbl_hierarchical_rate_by_grade() works with add_overall()", {
     )
 
 
-  expect_silent(
+  expect_no_error(
     tbl <- tbl |> add_overall(last = TRUE)
   )
 
@@ -147,7 +146,7 @@ test_that("tbl_hierarchical_rate_by_grade() works with add_overall()", {
 
 test_that("tbl_hierarchical_rate_by_grade(sort) works", {
   # default "alphanumeric" sort
-  expect_silent(
+  expect_no_error(
     tbl <-
       tbl_hierarchical_rate_by_grade(
         ADAE_subset,
@@ -171,7 +170,7 @@ test_that("tbl_hierarchical_rate_by_grade(sort) works", {
   )
 
   # "descending" sort works
-  expect_silent(
+  expect_no_error(
     tbl_desc <-
       tbl_hierarchical_rate_by_grade(
         ADAE_subset,
@@ -198,7 +197,7 @@ test_that("tbl_hierarchical_rate_by_grade(sort) works", {
 })
 
 test_that("tbl_hierarchical_rate_by_grade(filter) works", {
-  expect_silent(
+  expect_no_error(
     tbl <-
       tbl_hierarchical_rate_by_grade(
         ADAE_subset,
@@ -226,7 +225,7 @@ test_that("tbl_hierarchical_rate_by_grade(filter) works", {
   )
 
   # if only the SOC overall section is kept by the filter the SOC is removed
-  expect_silent(
+  expect_no_error(
     tbl <-
       tbl_hierarchical_rate_by_grade(
         ADAE_subset,
@@ -261,7 +260,7 @@ test_that("tbl_hierarchical_rate_by_grade() works with non-factor grade variable
 test_that("tbl_hierarchical_rate_by_grade(grade_groups) works with some grades not in groups", {
   withr::local_options(width = 200)
 
-  expect_silent(
+  expect_no_error(
     tbl <-
       tbl_hierarchical_rate_by_grade(
         ADAE_subset,
@@ -280,7 +279,7 @@ test_that("tbl_hierarchical_rate_by_grade(grade_groups) works with some grades n
   # Drop some grades
   ADAE_subset2 <- ADAE_subset[!ADAE_subset$AETOXGR %in% c(1, 2), ]
 
-  expect_silent(
+  expect_no_error(
     tbl <- tbl_hierarchical_rate_by_grade(
       droplevels(ADAE_subset2),
       variables = c(AEBODSYS, AEDECOD, AETOXGR),
@@ -326,7 +325,7 @@ test_that("tbl_hierarchical_rate_by_grade(grades_exclude) works", {
 
 
   # one grade excluded
-  expect_silent(
+  expect_no_error(
     tbl_excl <-
       tbl_hierarchical_rate_by_grade(
         ADAE_subset,
@@ -345,7 +344,7 @@ test_that("tbl_hierarchical_rate_by_grade(grades_exclude) works", {
   )
 
   # all grades excluded
-  expect_silent(
+  expect_no_error(
     tbl_excl <-
       tbl_hierarchical_rate_by_grade(
         ADAE_subset,
@@ -377,7 +376,7 @@ test_that("tbl_hierarchical_rate_by_grade(keep_zero_rows) works", {
     )
 
   # keep zero rows
-  expect_silent(
+  expect_no_error(
     tbl_keep <-
       tbl_hierarchical_rate_by_grade(
         ADAE_subset,

@@ -11,8 +11,9 @@
 #' @param subgroups ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   Variables to perform stratified analyses for.
 #' @param time_to_event ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
-#'   Variable to use in time-to-event analyses. If specified, the mid table will
-#'   show the median time-to-event instead of responder rates.
+#'   Variable to use in time-to-event analyses. If specified, the mid table
+#'   shows n (subjects), Events (from `rsp`), and Median per arm instead of
+#'   responder rates. The total column shows Total Events instead of Total n.
 #'
 #' @returns a 'gtsummary' table
 #'
@@ -98,17 +99,27 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun, time_to_even
     all_vars |>
     map(
       \(x) {
+        is_tte <- length(time_to_event) > 0
         list(
-          # total n
+          # total n (binary) or total events (time-to-event)
           gtsummary::tbl_strata(
             data = data_aug,
             strata = dplyr::all_of(x),
-            .tbl_fun = ~ .x |>
-              gtsummary::tbl_summary(
-                include = dplyr::all_of(rsp),
-                statistic = gtsummary::everything() ~ "{N}",
-                missing = "no"
-              ),
+            .tbl_fun = if (is_tte) {
+              ~ .x |>
+                gtsummary::tbl_summary(
+                  include = dplyr::all_of(rsp),
+                  statistic = gtsummary::everything() ~ "{n}",
+                  missing = "no"
+                )
+            } else {
+              ~ .x |>
+                gtsummary::tbl_summary(
+                  include = dplyr::all_of(rsp),
+                  statistic = gtsummary::everything() ~ "{N}",
+                  missing = "no"
+                )
+            },
             .combine_with = "tbl_stack",
             .combine_args = if (x == "..overall..") {
               list(group_header = NULL, quiet = TRUE)
@@ -116,7 +127,9 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun, time_to_even
               list(quiet = TRUE)
             }
           ) |>
-            gtsummary::modify_header(stat_0 ~ "**Total n**"),
+            gtsummary::modify_header(
+              stat_0 ~ ifelse(is_tte, "**Total Events**", "**Total n**")
+            ),
           # responder or time-to-event median statistics
           gtsummary::tbl_strata(
             data = data_aug,
@@ -192,22 +205,43 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun, time_to_even
 }
 
 
-# Define a function to apply the .tbl_fun to each subgroup
+# Build the per-arm summary table for the middle section of tbl_roche_subgroups.
+# For binary outcomes: n Response (%)
+# For time-to-event: n, Events, Median
 .make_mid_tbl <- function(dt, vars) {
   if ("time_to_event" %in% names(vars) && length(vars[["time_to_event"]]) > 0) {
-    out <- dt |>
-      # Use ard_continuous instead of ard_tabulate_value
-      cards::ard_continuous(
-        variables = dplyr::all_of(vars[["time_to_event"]]),
-        stat_label = cards::everything() ~ list(N = "n", median = "Median")
-        # ard_continuous calculates N, mean, median, min, max, etc. by default
-      ) |>
+    rsp_var <- vars[["rsp"]]
+    tte_var <- vars[["time_to_event"]]
+
+    # N and median from the time-to-event variable
+    ard_tte <- cards::ard_continuous(
+      dt,
+      variables = dplyr::all_of(tte_var),
+      stat_label = cards::everything() ~ list(N = "n")
+    )
+
+    # Event count from the response indicator
+    ard_events <- cards::ard_tabulate_value(
+      dt,
+      variables = dplyr::all_of(rsp_var),
+      stat_label = cards::everything() ~ list(n = "Events")
+    )
+    # Align variable name so tbl_ard_wide_summary treats them as one row
+    ard_events$variable <- tte_var
+
+    ard_combined <- dplyr::bind_rows(ard_tte, ard_events) |>
+      dplyr::filter(.data$stat_name %in% c("N", "n", "median"))
+
+    out <- ard_combined |>
       gtsummary::tbl_ard_wide_summary(
-        include = dplyr::all_of(vars[["time_to_event"]]),
-        # Call the specific continuous statistics here
-        statistic = c("{N}", "{median}")
+        include = dplyr::all_of(tte_var),
+        statistic = c("{N}", "{n}", "{median}")
       ) |>
-      gtsummary::modify_header(stat_2 ~ "**Median (Months)**")
+      gtsummary::modify_header(
+        stat_1 ~ "**n**",
+        stat_2 ~ "**Events**",
+        stat_3 ~ "**Median (Months)**"
+      )
   } else {
     out <- dt |>
       cards::ard_tabulate_value(
@@ -218,7 +252,6 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun, time_to_even
         include = dplyr::all_of(vars[["rsp"]]),
         statistic = "{N} ({p} %)"
       ) |>
-      # Explicitly renames the column header itself
       gtsummary::modify_header(gtsummary::all_stat_cols() ~ "**n Response (%)**")
   }
 

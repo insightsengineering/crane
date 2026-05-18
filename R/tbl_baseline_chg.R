@@ -76,7 +76,7 @@ tbl_baseline_chg <- function(data,
                              denominator,
                              by = NULL,
                              digits = NULL,
-                             statistic = all_continuous() ~ c(
+                             statistic = gtsummary::all_continuous() ~ c(
                                "{mean} ({sd})",
                                "{median}",
                                "{min} - {max}"

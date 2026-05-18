@@ -1,4 +1,4 @@
-# crane 0.3.1.9031
+# crane 0.3.1.9037
 
 ## New Functions and Functionality
 
@@ -31,6 +31,8 @@
  
 ### Other Updates
 
+* `tbl_hierarchical_rate_and_count()` now emits zero-rows for unobserved factor levels in the first hierarchical variable. (#233)
+
 * `df2gg_aligned()` and `df2gg_floating()` now preserve original ggplot objects in `attr(result, "plotlist")` for downstream data extraction after combining with `cowplot`. (#208)
 
 * Remove warning when data has more levels than needed for grade_groups on tbl_hierarchical_rate_by_grade.
@@ -57,6 +59,10 @@ all events (#217)
 * Adjusted `tbl_baseline_chg()` to allow for custiomization of display statistics (#222)
 
 * Changed baseline statistic argument in `tbl_baseline_chg()` (#224)
+
+* Adjusted `modify_zero_recode()` to account for strings comprising regular and non-breaking spaces (#230)
+
+* `tbl_roche_subgroups()` now shows `n`, `Events`, and `Median` per arm when `time_to_event` is specified. The total column shows `Total Events` instead of `Total n`. (#235)
 
 # crane 0.3.1
 
