@@ -131,8 +131,13 @@ test_that("get_cox_pairwise_df() works with all valid 'ties' methods", {
 
 test_that("get_cox_pairwise_df() works with all valid 'test' methods", {
   test_methods <- c(
-    "log-rank", "wilcoxon", "tarone", "peto",
-    "modpeto", "fleming", "likelihood-ratio"
+    "log-rank",
+    "gehan-breslow",
+    "tarone",
+    "peto",
+    "prentice",
+    "fleming-harrington", 
+    "likelihood-ratio"
   )
 
   for (t_method in test_methods) {

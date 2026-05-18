@@ -28,8 +28,8 @@
 #'   Must be one of "exact", "efron", or "breslow".
 #' @param test (`character`)\cr
 #'   A string specifying the type of test to compute the p-value.
-#'   Must be one of "log-rank", "wilcoxon", "tarone", "peto", "modpeto",
-#'   "fleming", or "likelihood-ratio".
+#'   Must be one of "log-rank", "gehan-breslow" (wilcoxon), "tarone", "peto", 
+#'   "modpeto" (prentice), "fleming-harrington", or "likelihood-ratio".
 #'
 #' @return A `data.frame` with the results of the pairwise comparisons.
 #' The columns include:
@@ -113,11 +113,12 @@ get_cox_pairwise_df <- function(
   ties = c("exact", "efron", "breslow"),
   test = c(
     "log-rank",
-    "wilcoxon",
+    "gehan-breslow",
     "tarone",
     "peto",
-    "modpeto",
-    "fleming", "likelihood-ratio"
+    "prentice",
+    "fleming-harrington", 
+    "likelihood-ratio"
   )
 ) {
   set_cli_abort_call()
@@ -193,16 +194,16 @@ get_cox_pairwise_df <- function(
 }
 
 #' Estimate p value based on chosen test type
-#' Using {coin} and {survival} packages
+#' Using coin and survival packages
 #' @keywords internal
 .estimate_p_value <- function(formula, data, test) {
   test_type <- switch(test,
     "log-rank" = "logrank",
-    "wilcoxon" = "Wilcoxon",
+    "gehan-breslow" = "Gehan-Breslow",
     "tarone" = "Tarone-Ware",
     "peto" = "Peto-Peto",
-    "modpeto" = "Modified Peto-Peto",
-    "fleming" = "Fleming-Harrington",
+    "prentice" = "Prentice",
+    "fleming-harrington" = "Fleming-Harrington",
     "likelihood-ratio" = "lr"
   )
 
@@ -210,7 +211,7 @@ get_cox_pairwise_df <- function(
     test_result <- coin::logrank_test(
       formula = formula,
       data = data,
-      test = test_type
+      type = test_type
     )
     p_value <- coin::pvalue(test_result)
   } else if (test_type == "lr") {
@@ -219,7 +220,7 @@ get_cox_pairwise_df <- function(
     fit_cov <- survival::survreg(formula, data = data, dist = "exponential")
 
     # fit the null model
-    null_formula <- update(formula, . ~ 1)
+    null_formula <- stats::update(formula, ~ 1)
     fit_null <- survival::survreg(null_formula, data = data, dist = "exponential")
 
     # calculate the difference and estimate the statistics

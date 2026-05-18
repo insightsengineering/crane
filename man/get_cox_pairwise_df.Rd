@@ -10,8 +10,8 @@ get_cox_pairwise_df(
   arm,
   ref_group = NULL,
   ties = c("exact", "efron", "breslow"),
-  test = c("log-rank", "wilcoxon", "tarone", "peto", "modpeto", "fleming",
-    "likelihood-ratio")
+  test = c("log-rank", "gehan-breslow", "tarone", "peto", "prentice",
+    "fleming-harrington", "likelihood-ratio")
 )
 }
 \arguments{
@@ -42,8 +42,8 @@ Must be one of "exact", "efron", or "breslow".}
 
 \item{test}{(\code{character})\cr
 A string specifying the type of test to compute the p-value.
-Must be one of "log-rank", "wilcoxon", "tarone", "peto", "modpeto",
-"fleming", or "likelihood-ratio".}
+Must be one of "log-rank", "gehan-breslow" (wilcoxon), "tarone", "peto",
+"modpeto" (prentice), "fleming-harrington", or "likelihood-ratio".}
 }
 \value{
 A \code{data.frame} with the results of the pairwise comparisons.

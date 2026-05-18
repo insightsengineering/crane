@@ -3,12 +3,12 @@
 \name{.estimate_p_value}
 \alias{.estimate_p_value}
 \title{Estimate p value based on chosen test type
-Using {coin} and {survival} packages}
+Using coin and survival packages}
 \usage{
 .estimate_p_value(formula, data, test)
 }
 \description{
 Estimate p value based on chosen test type
-Using {coin} and {survival} packages
+Using coin and survival packages
 }
 \keyword{internal}
