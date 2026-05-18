@@ -153,7 +153,7 @@ test_that("get_cox_pairwise_df() works with all valid 'test' methods", {
     } else {
       expected_colname <- paste0("p-value (", tools::toTitleCase(t_method), ")")
     }
-    
+
     expect_true(expected_colname %in% names(res))
     expect_false(anyNA(res[[expected_colname]]))
   }

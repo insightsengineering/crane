@@ -231,7 +231,7 @@ get_cox_pairwise_df <- function(
   if (test == "log-rank") {
     names(p_value) <- test
   } else {
-    names(p_value) <- tools::toTitleCase(test) 
+    names(p_value) <- tools::toTitleCase(test)
   }
 
   p_value
