@@ -227,8 +227,9 @@ get_cox_pairwise_df <- function(
     df <- fit_cov$df - fit_null$df
     p_value <- pchisq(lrt_stat, df, lower.tail = FALSE)
   }
+
   if (test == "log-rank") {
-    names(p_value) <- "log-rank"
+    names(p_value) <- test
   } else {
     names(p_value) <- tools::toTitleCase(test) 
   }

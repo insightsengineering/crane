@@ -148,7 +148,12 @@ test_that("get_cox_pairwise_df() works with all valid 'test' methods", {
     )
 
     # Confirm the column name updates dynamically based on the chosen test
-    expected_colname <- paste0("p-value (", tools::toTitleCase(t_method), ")")
+    if (t_method == "log-rank") {
+      expected_colname <- "p-value (log-rank)"
+    } else {
+      expected_colname <- paste0("p-value (", tools::toTitleCase(t_method), ")")
+    }
+    
     expect_true(expected_colname %in% names(res))
     expect_false(anyNA(res[[expected_colname]]))
   }
