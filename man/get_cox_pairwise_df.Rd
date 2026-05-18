@@ -100,14 +100,14 @@ results_default <- get_cox_pairwise_df(
 )
 print(results_default)
 
-# Example 2: Using Breslow ties and the Wilcoxon test
+# Example 2: Using Breslow ties and the Gehan-Breslow test
 results_wilcoxon <- get_cox_pairwise_df(
   model_formula = formula,
   data = surv_data,
   arm = "arm",
   ref_group = "A",
   ties = "breslow",
-  test = "wilcoxon"
+  test = "gehan-breslow"
 )
 print(results_wilcoxon)
 
