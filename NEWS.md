@@ -28,6 +28,9 @@
 * Added `tbl_hierarchical_incidence_rate()` which computes the incidence rate of adverse events (#211)
 
 * Added `adjust_stat_columns_wrap()` which keep the presentation of statistics in one row (#219)
+
+* `get_cox_pairwise_df` now allows for different methods to compute p value (#191) and to 
+of choose method used to handle ties (#193)
  
 ### Other Updates
 
