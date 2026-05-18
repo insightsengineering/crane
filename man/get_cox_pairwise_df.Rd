@@ -43,7 +43,7 @@ Must be one of "exact", "efron", or "breslow".}
 \item{test}{(\code{character})\cr
 A string specifying the type of test to compute the p-value.
 Must be one of "log-rank", "gehan-breslow" (wilcoxon), "tarone", "peto",
-"modpeto" (prentice), "fleming-harrington", or "likelihood-ratio".}
+"prentice" (modified peto), "fleming-harrington", or "likelihood-ratio".}
 }
 \value{
 A \code{data.frame} with the results of the pairwise comparisons.
