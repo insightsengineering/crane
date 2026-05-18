@@ -55,7 +55,7 @@
 #'   Cox model summary, and the p-value is extracted from the log-rank test.
 #'
 #' @seealso `annotate_gg_km()`, `gg_km()`, `survival` and `coin`
-#'   package functions `survival::coxph`, `survival::survdiff`, 
+#'   package functions `survival::coxph`, `survival::survdiff`,
 #'   and `coin::logrank_test`.
 #'
 #' @examples
@@ -72,7 +72,7 @@
 #'   filter(if_all(everything(), ~ !is.na(.)))
 #'
 #' formula <- survival::Surv(time, status) ~ arm
-#' 
+#'
 #' # Example 1: Default usage (ties = "exact", test = "log-rank")
 #' results_default <- get_cox_pairwise_df(
 #'   model_formula = formula,
@@ -117,7 +117,7 @@ get_cox_pairwise_df <- function(
     "tarone",
     "peto",
     "modpeto",
-    "fleming","likelihood-ratio"
+    "fleming", "likelihood-ratio"
   )
 ) {
   set_cli_abort_call()
@@ -196,17 +196,16 @@ get_cox_pairwise_df <- function(
 #' Using {coin} and {survival} packages
 #' @keywords internal
 .estimate_p_value <- function(formula, data, test) {
-
   test_type <- switch(test,
-                        "log-rank" = "logrank",
-                        "wilcoxon" = "Wilcoxon",
-                        "tarone"  = "Tarone-Ware",
-                        "peto"    = "Peto-Peto",
-                        "modpeto" = "Modified Peto-Peto",
-                        "fleming" = "Fleming-Harrington",
-                        "likelihood-ratio" = "lr"
-    )
-  
+    "log-rank" = "logrank",
+    "wilcoxon" = "Wilcoxon",
+    "tarone" = "Tarone-Ware",
+    "peto" = "Peto-Peto",
+    "modpeto" = "Modified Peto-Peto",
+    "fleming" = "Fleming-Harrington",
+    "likelihood-ratio" = "lr"
+  )
+
   if (test_type != "lr") {
     test_result <- coin::logrank_test(
       formula = formula,
@@ -214,12 +213,11 @@ get_cox_pairwise_df <- function(
       test = test_type
     )
     p_value <- coin::pvalue(test_result)
-
   } else if (test_type == "lr") {
     # SAS LR test assumes an exponential distribution
     # fit the model
     fit_cov <- survival::survreg(formula, data = data, dist = "exponential")
-    
+
     # fit the null model
     null_formula <- update(formula, . ~ 1)
     fit_null <- survival::survreg(null_formula, data = data, dist = "exponential")
@@ -231,6 +229,6 @@ get_cox_pairwise_df <- function(
   }
 
   names(p_value) <- tools::toTitleCase(test)
-  
+
   p_value
 }

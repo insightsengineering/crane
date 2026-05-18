@@ -113,7 +113,7 @@ test_that(paste0(
 
 test_that("get_cox_pairwise_df() works with all valid 'ties' methods", {
   ties_methods <- c("exact", "efron", "breslow")
-  
+
   for (t_method in ties_methods) {
     expect_no_error(
       suppressWarnings(
@@ -131,10 +131,10 @@ test_that("get_cox_pairwise_df() works with all valid 'ties' methods", {
 
 test_that("get_cox_pairwise_df() works with all valid 'test' methods", {
   test_methods <- c(
-    "log-rank", "wilcoxon", "tarone", "peto", 
+    "log-rank", "wilcoxon", "tarone", "peto",
     "modpeto", "fleming", "likelihood-ratio"
   )
-  
+
   for (t_method in test_methods) {
     expect_no_error(
       suppressWarnings(
@@ -146,7 +146,7 @@ test_that("get_cox_pairwise_df() works with all valid 'test' methods", {
         )
       )
     )
-    
+
     # Confirm the column name updates dynamically based on the chosen test
     expected_colname <- paste0("p-value (", tools::toTitleCase(t_method), ")")
     expect_true(expected_colname %in% names(res))
@@ -164,7 +164,7 @@ test_that("get_cox_pairwise_df() catches invalid 'ties' and 'test' arguments", {
     ),
     "should be one of"
   )
-  
+
   expect_error(
     get_cox_pairwise_df(
       model_formula = survival::Surv(time, status) ~ arm,
