@@ -23,6 +23,13 @@
 #'   all pairwise comparisons. If `NULL` (the default),
 #'   the **first unique level** of the `arm` column is automatically
 #'   selected as the reference group.
+#' @param ties (`character`)\cr
+#'   A string specifying the method for tie handling in the Cox model.
+#'   Must be one of "exact", "efron", or "breslow".
+#' @param test (`character`)\cr
+#'   A string specifying the type of test to compute the p-value.
+#'   Must be one of "log-rank", "wilcoxon", "tarone", "peto", "modpeto",
+#'   "fleming", or "likelihood-ratio".
 #'
 #' @return A `data.frame` with the results of the pairwise comparisons.
 #' The columns include:
@@ -47,8 +54,9 @@
 #'   The Hazard Ratio and its 95% confidence interval are extracted from the
 #'   Cox model summary, and the p-value is extracted from the log-rank test.
 #'
-#' @seealso `annotate_gg_km()`, `gg_km()`, and the `survival`
-#'   package functions `survival::coxph` and `survival::survdiff`.
+#' @seealso `annotate_gg_km()`, `gg_km()`, `survival` and `coin`
+#'   package functions `survival::coxph`, `survival::survdiff`, 
+#'   and `coin::logrank_test`.
 #'
 #' @examples
 #' # Example data setup (assuming 'time' is event time, 'status'
@@ -64,13 +72,37 @@
 #'   filter(if_all(everything(), ~ !is.na(.)))
 #'
 #' formula <- survival::Surv(time, status) ~ arm
-#' results_tbl <- get_cox_pairwise_df(
+#' 
+#' # Example 1: Default usage (ties = "exact", test = "log-rank")
+#' results_default <- get_cox_pairwise_df(
 #'   model_formula = formula,
 #'   data = surv_data,
 #'   arm = "arm",
 #'   ref_group = "A"
 #' )
-#' print(results_tbl)
+#' print(results_default)
+#'
+#' # Example 2: Using Breslow ties and the Wilcoxon test
+#' results_wilcoxon <- get_cox_pairwise_df(
+#'   model_formula = formula,
+#'   data = surv_data,
+#'   arm = "arm",
+#'   ref_group = "A",
+#'   ties = "breslow",
+#'   test = "wilcoxon"
+#' )
+#' print(results_wilcoxon)
+#'
+#' # Example 3: Using Efron ties and the Likelihood-Ratio test
+#' results_lr <- get_cox_pairwise_df(
+#'   model_formula = formula,
+#'   data = surv_data,
+#'   arm = "arm",
+#'   ref_group = "A",
+#'   ties = "efron",
+#'   test = "likelihood-ratio"
+#' )
+#' print(results_lr)
 #'
 #' @export
 get_cox_pairwise_df <- function(
@@ -179,7 +211,7 @@ get_cox_pairwise_df <- function(
       test = test_type
     )
     p_value <- coin::pvalue(test_result)
-    
+
   } else if (test_type == "lr") {
     # SAS LR test assumes an exponential distribution
     # fit the model
