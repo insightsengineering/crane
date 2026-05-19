@@ -29,7 +29,7 @@
 
 * Added `adjust_stat_columns_wrap()` which keep the presentation of statistics in one row (#219)
 
-* `get_cox_pairwise_df` now allows for different methods to compute p value (#191) and to handle ties (#193)
+* `get_cox_pairwise_df` now allows for different methods to compute p-value (#191) and to handle ties (#193)
  
 ### Other Updates
 
