@@ -116,13 +116,11 @@ test_that("get_cox_pairwise_df() works with all valid 'ties' methods", {
 
   for (t_method in ties_methods) {
     expect_no_error(
-      suppressWarnings(
-        res <- get_cox_pairwise_df(
-          model_formula = survival::Surv(time, status) ~ arm,
-          data = surv_data_2arm,
-          arm = "arm",
-          ties = t_method
-        )
+      res <- get_cox_pairwise_df(
+        model_formula = survival::Surv(time, status) ~ arm,
+        data = surv_data_2arm,
+        arm = "arm",
+        ties = t_method
       )
     )
     expect_s3_class(res, "data.frame")
@@ -165,6 +163,7 @@ test_that("get_cox_pairwise_df() works with all valid 'test' methods", {
 })
 
 test_that("get_cox_pairwise_df() catches invalid 'ties' and 'test' arguments", {
+  
   expect_error(
     get_cox_pairwise_df(
       model_formula = survival::Surv(time, status) ~ arm,
@@ -172,7 +171,7 @@ test_that("get_cox_pairwise_df() catches invalid 'ties' and 'test' arguments", {
       arm = "arm",
       ties = "invalid_tie_method"
     ),
-    "should be one of"
+    "ties.*should be one of"
   )
 
   expect_error(
@@ -182,6 +181,6 @@ test_that("get_cox_pairwise_df() catches invalid 'ties' and 'test' arguments", {
       arm = "arm",
       test = "invalid_test_method"
     ),
-    "should be one of"
+    "test.*should be one of"
   )
 })
