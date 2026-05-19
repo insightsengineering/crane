@@ -30,7 +30,9 @@
 * Added `adjust_stat_columns_wrap()` which keep the presentation of statistics in one row (#219)
 
 * `get_cox_pairwise_df` now allows for different methods to compute p-value (#191) and to handle ties (#193)
- 
+
+* `tbl_coxph()` now accepts a data.frame, created with `get_cox_pairwise_df()` as input
+
 ### Other Updates
 
 * `tbl_hierarchical_rate_and_count()` now emits zero-rows for unobserved factor levels in the first hierarchical variable. (#233)
