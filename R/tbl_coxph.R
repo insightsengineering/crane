@@ -14,7 +14,7 @@
 #' @return A `gtsummary` object summarizing the pairwise Cox PH results.
 #'
 #' @seealso `get_cox_pairwise_df()`.
-#' 
+#'
 #' @examplesIf requireNamespace("survival", quietly = TRUE)
 #' # Setup sample survival data
 #' library(survival)
@@ -37,11 +37,11 @@
 #'
 #' # Example 1: Full table
 #' tbl_coxph(pairwise_df = pairwise_results)
-#' 
+#'
 #' # Example 2: Table with only HR and CI (p-value removed)
 #' pairwise_no_pval <- pairwise_results[, c("HR", "95% CI"), drop = FALSE]
 #' tbl_coxph(pairwise_df = pairwise_no_pval)
-#' 
+#'
 #' # Example 3: Table with only p-values
 #' pairwise_only_pval <- pairwise_results[, 3, drop = FALSE]
 #' tbl_coxph(pairwise_df = pairwise_only_pval)
@@ -61,7 +61,7 @@ tbl_coxph <- function(pairwise_df) {
   # Dynamically identify which columns are present
   has_hr <- "HR" %in% names(pairwise_df)
   has_ci <- "95% CI" %in% names(pairwise_df)
-  
+
   pval_col <- grep("p-value", names(pairwise_df), value = TRUE)
   has_pval <- length(pval_col) > 0
   pval_label <- if (has_pval) pval_col[1] else NULL
@@ -70,7 +70,7 @@ tbl_coxph <- function(pairwise_df) {
   if (!has_hr && !has_ci && !has_pval) {
     cli::cli_abort(
       paste0(
-        "At least one statistic column ({.val HR}, {.val 95% CI}, or ", 
+        "At least one statistic column ({.val HR}, {.val 95% CI}, or ",
         "{.val p-value}) must be present in {.arg pairwise_df}."
       ),
       call = get_cli_abort_call()
@@ -81,7 +81,7 @@ tbl_coxph <- function(pairwise_df) {
   df_tidy <- tibble::tibble(
     comparison_label = rownames(pairwise_df)
   )
-  
+
   # Conditionally attach the formatted columns
   if (has_hr) {
     df_tidy$hr_formatted <- pairwise_df[["HR"]]
@@ -129,11 +129,11 @@ tbl_coxph <- function(pairwise_df) {
 #'
 #' @description
 #' Internal helper function to build a formatted `gtsummary` table for a single
-#' comparison arm. It conditionally extracts available statistics from the 
+#' comparison arm. It conditionally extracts available statistics from the
 #' subsetted data and stacks them into rows for the final display.
 #'
 #' @param data_subset (`data.frame`)\cr
-#'   A pre-processed data frame containing the formatted statistics for exactly 
+#'   A pre-processed data frame containing the formatted statistics for exactly
 #'   one treatment comparison.
 #' @param pval_label (`character` or `NULL`)\cr
 #'   The dynamic string to use for the p-value label (e.g., "p-value (Log-rank)")
@@ -142,16 +142,15 @@ tbl_coxph <- function(pairwise_df) {
 #'
 #' @keywords internal
 .get_single_comp_table <- function(data_subset, pval_label = NULL) {
-  
   # Check which pre-formatted columns made it into the subset
   has_pval <- "pval_formatted" %in% names(data_subset)
-  has_hr   <- "hr_formatted" %in% names(data_subset)
-  has_ci   <- "ci_formatted" %in% names(data_subset)
-  
+  has_hr <- "hr_formatted" %in% names(data_subset)
+  has_ci <- "ci_formatted" %in% names(data_subset)
+
   # Dynamically build the inclusion list and the label mapping
   vars_include <- c()
   label_list <- list()
-  
+
   if (has_pval) {
     vars_include <- c(vars_include, "pval_formatted")
     label_list <- c(label_list, list(pval_formatted ~ pval_label))
@@ -186,7 +185,7 @@ tbl_coxph <- function(pairwise_df) {
       gtsummary::all_stat_cols() ~ " "
     ) |>
     gtsummary::modify_footnote(gtsummary::everything() ~ NA)
-    
+
   # Only attempt to indent the Confidence Interval if it exists
   if (has_ci) {
     res <- res |>
@@ -196,6 +195,6 @@ tbl_coxph <- function(pairwise_df) {
         indent = 4L
       )
   }
-  
+
   res
 }
