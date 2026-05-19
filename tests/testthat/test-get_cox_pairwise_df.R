@@ -163,7 +163,6 @@ test_that("get_cox_pairwise_df() works with all valid 'test' methods", {
 })
 
 test_that("get_cox_pairwise_df() catches invalid 'ties' and 'test' arguments", {
-  
   expect_error(
     get_cox_pairwise_df(
       model_formula = survival::Surv(time, status) ~ arm,

@@ -208,11 +208,17 @@ get_cox_pairwise_df <- function(
   )
 
   if (test_type != "lr") {
+    rlang::check_installed(
+      "coin",
+      reason = paste("to run log-rank tests using", test_type, "method")
+    )
+
     test_result <- coin::logrank_test(
       formula = formula,
       data = data,
       type = test_type
     )
+
     p_value <- coin::pvalue(test_result)
   } else if (test_type == "lr") {
     # SAS LR test assumes an exponential distribution
