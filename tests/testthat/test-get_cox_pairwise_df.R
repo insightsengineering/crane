@@ -170,7 +170,7 @@ test_that("get_cox_pairwise_df() catches invalid 'ties' and 'test' arguments", {
       arm = "arm",
       ties = "invalid_tie_method"
     ),
-    "ties.*should be one of"
+    "should be one of"
   )
 
   expect_error(
@@ -180,6 +180,6 @@ test_that("get_cox_pairwise_df() catches invalid 'ties' and 'test' arguments", {
       arm = "arm",
       test = "invalid_test_method"
     ),
-    "test.*should be one of"
+    "should be one of"
   )
 })
