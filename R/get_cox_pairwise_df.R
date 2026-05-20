@@ -189,8 +189,8 @@ get_cox_pairwise_df <- function(
     res <- do.call(rbind, list(res, current_row))
   }
 
-  test_name <- if(test != "log-rank") tools::toTitleCase(test) else test 
-  
+  test_name <- if (test != "log-rank") tools::toTitleCase(test) else test
+
   names(res) <- c(
     "HR",
     "95% CI",
@@ -219,11 +219,11 @@ get_cox_pairwise_df <- function(
       reason = paste("to run log-rank tests using", test_type, "method")
     )
 
-    if(length(levels(data[[arm]])) != 2) {
+    if (length(levels(data[[arm]])) != 2) {
       cli::cli_warn(
         paste(
           "{.arg arm} does not contain exactly 2 levels!",
-        "This will result in unexpected behavior of pairwise test."
+          "This will result in unexpected behavior of pairwise test."
         )
       )
     }
@@ -235,7 +235,6 @@ get_cox_pairwise_df <- function(
     )
 
     p_value <- as.numeric(coin::pvalue(test_result))
-
   } else {
     # SAS LR test assumes an exponential distribution
     # fit the model
