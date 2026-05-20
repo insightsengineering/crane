@@ -43,13 +43,13 @@
 #' @details The function iterates through each non-reference arm, subsets the
 #'   data to the current arm and the reference arm, and then:
 #'   \itemize{
-#'     \item Fits a Cox model using [survival::coxph()].
+#'     \item Fits a Cox model using `survival::coxph()`.
 #'     \item Computes a p-value via [.estimate_p_value()], which dispatches
 #'       to `coin::logrank_test()` for weighted log-rank variants or to
-#'       [survival::survreg()] for the likelihood-ratio test.
+#'       `survival::survreg()` for the likelihood-ratio test.
 #'   }
 #'
-#' @seealso `annotate_gg_km()`, `gg_km()`, [survival::coxph()],
+#' @seealso `annotate_gg_km()`, `gg_km()`, `survival::coxph()`,
 #'   `coin::logrank_test()`.
 #'
 #' @examples
@@ -195,8 +195,8 @@ get_cox_pairwise_df <- function(
 
 #' Estimate p-value for a pairwise survival comparison
 #'
-#' Dispatches to [coin::logrank_test()] for weighted log-rank variants
-#' or to a likelihood-ratio test via [survival::survreg()].
+#' Dispatches to `coin::logrank_test()` for weighted log-rank variants
+#' or to a likelihood-ratio test via `survival::survreg()`.
 #'
 #' @param formula (`formula`)\cr survival formula, e.g. `Surv(time, status) ~ arm`.
 #' @param data (`data.frame`)\cr subset containing exactly two arm levels.

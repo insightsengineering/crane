@@ -65,10 +65,10 @@ against a specified reference group.
 The function iterates through each non-reference arm, subsets the
 data to the current arm and the reference arm, and then:
 \itemize{
-\item Fits a Cox model using \code{\link[survival:coxph]{survival::coxph()}}.
+\item Fits a Cox model using \code{survival::coxph()}.
 \item Computes a p-value via \code{\link[=.estimate_p_value]{.estimate_p_value()}}, which dispatches
 to \code{coin::logrank_test()} for weighted log-rank variants or to
-\code{\link[survival:survreg]{survival::survreg()}} for the likelihood-ratio test.
+\code{survival::survreg()} for the likelihood-ratio test.
 }
 }
 \examples{
@@ -119,6 +119,6 @@ print(results_lr)
 
 }
 \seealso{
-\code{annotate_gg_km()}, \code{gg_km()}, \code{\link[survival:coxph]{survival::coxph()}},
+\code{annotate_gg_km()}, \code{gg_km()}, \code{survival::coxph()},
 \code{coin::logrank_test()}.
 }

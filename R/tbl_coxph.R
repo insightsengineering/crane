@@ -215,7 +215,9 @@ tbl_coxph <- function(pairwise_df) {
 #' @returns A character vector of formatted p-values.
 #' @keywords internal
 .format_pvalue <- function(x) {
-  if (is.character(x)) return(x)
+  if (is.character(x)) {
+    return(x)
+  }
   dplyr::case_when(
     is.na(x) ~ NA_character_,
     x < 0.0001 ~ "<0.0001",

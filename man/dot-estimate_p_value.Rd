@@ -19,7 +19,7 @@
 A single numeric p-value.
 }
 \description{
-Dispatches to \code{\link[coin:logrank_test]{coin::logrank_test()}} for weighted log-rank variants
-or to a likelihood-ratio test via \code{\link[survival:survreg]{survival::survreg()}}.
+Dispatches to \code{coin::logrank_test()} for weighted log-rank variants
+or to a likelihood-ratio test via \code{survival::survreg()}.
 }
 \keyword{internal}
