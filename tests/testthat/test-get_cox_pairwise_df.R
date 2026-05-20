@@ -1,4 +1,4 @@
-skip_if_pkg_not_installed(c("survival", "dplyr"))
+skip_if_pkg_not_installed(c("survival", "dplyr", "coin"))
 
 # Setup shared test data
 set.seed(42)
@@ -108,5 +108,78 @@ test_that(paste0(
       ref_group = c("A", "B")
     ),
     "must contain exactly 2 arms/groups"
+  )
+})
+
+test_that("get_cox_pairwise_df() works with all valid 'ties' methods", {
+  ties_methods <- c("exact", "efron", "breslow")
+
+  for (t_method in ties_methods) {
+    expect_no_error(
+      res <- get_cox_pairwise_df(
+        model_formula = survival::Surv(time, status) ~ arm,
+        data = surv_data_2arm,
+        arm = "arm",
+        ties = t_method
+      )
+    )
+    expect_s3_class(res, "data.frame")
+  }
+})
+
+test_that("get_cox_pairwise_df() works with all valid 'test' methods", {
+  test_methods <- c(
+    "log-rank",
+    "gehan-breslow",
+    "tarone",
+    "peto",
+    "prentice",
+    "fleming-harrington",
+    "likelihood-ratio"
+  )
+
+  for (t_method in test_methods) {
+    expect_no_error(
+      suppressWarnings(
+        res <- get_cox_pairwise_df(
+          model_formula = survival::Surv(time, status) ~ arm,
+          data = surv_data_2arm,
+          arm = "arm",
+          test = t_method
+        )
+      )
+    )
+
+    # Confirm the column name updates dynamically based on the chosen test
+    if (t_method == "log-rank") {
+      expected_colname <- "p-value (log-rank)"
+    } else {
+      expected_colname <- paste0("p-value (", tools::toTitleCase(t_method), ")")
+    }
+
+    expect_true(expected_colname %in% names(res))
+    expect_false(anyNA(res[[expected_colname]]))
+  }
+})
+
+test_that("get_cox_pairwise_df() catches invalid 'ties' and 'test' arguments", {
+  expect_error(
+    get_cox_pairwise_df(
+      model_formula = survival::Surv(time, status) ~ arm,
+      data = surv_data_2arm,
+      arm = "arm",
+      ties = "invalid_tie_method"
+    ),
+    "should be one of"
+  )
+
+  expect_error(
+    get_cox_pairwise_df(
+      model_formula = survival::Surv(time, status) ~ arm,
+      data = surv_data_2arm,
+      arm = "arm",
+      test = "invalid_test_method"
+    ),
+    "should be one of"
   )
 })
