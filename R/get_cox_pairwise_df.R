@@ -23,6 +23,13 @@
 #'   all pairwise comparisons. If `NULL` (the default),
 #'   the **first unique level** of the `arm` column is automatically
 #'   selected as the reference group.
+#' @param ties (`character`)\cr
+#'   A string specifying the method for tie handling in the Cox model.
+#'   Must be one of "exact", "efron", or "breslow".
+#' @param test (`character`)\cr
+#'   A string specifying the type of test to compute the p-value.
+#'   Must be one of "log-rank", "gehan-breslow" (wilcoxon), "tarone", "peto",
+#'   "prentice" (modified peto), "fleming-harrington", or "likelihood-ratio".
 #'
 #' @return A `data.frame` with the results of the pairwise comparisons.
 #' The columns include:
@@ -47,8 +54,9 @@
 #'   The Hazard Ratio and its 95% confidence interval are extracted from the
 #'   Cox model summary, and the p-value is extracted from the log-rank test.
 #'
-#' @seealso `annotate_gg_km()`, `gg_km()`, and the `survival`
-#'   package functions `survival::coxph` and `survival::survdiff`.
+#' @seealso `annotate_gg_km()`, `gg_km()`, `survival` and `coin`
+#'   package functions `survival::coxph`, `survival::survdiff`,
+#'   and `coin::logrank_test`.
 #'
 #' @examples
 #' # Example data setup (assuming 'time' is event time, 'status'
@@ -64,16 +72,55 @@
 #'   filter(if_all(everything(), ~ !is.na(.)))
 #'
 #' formula <- survival::Surv(time, status) ~ arm
-#' results_tbl <- get_cox_pairwise_df(
+#'
+#' # Example 1: Default usage (ties = "exact", test = "log-rank")
+#' results_default <- get_cox_pairwise_df(
 #'   model_formula = formula,
 #'   data = surv_data,
 #'   arm = "arm",
 #'   ref_group = "A"
 #' )
-#' print(results_tbl)
+#' print(results_default)
+#'
+#' # Example 2: Using Breslow ties and the Gehan-Breslow test
+#' results_wilcoxon <- get_cox_pairwise_df(
+#'   model_formula = formula,
+#'   data = surv_data,
+#'   arm = "arm",
+#'   ref_group = "A",
+#'   ties = "breslow",
+#'   test = "gehan-breslow"
+#' )
+#' print(results_wilcoxon)
+#'
+#' # Example 3: Using Efron ties and the Likelihood-Ratio test
+#' results_lr <- get_cox_pairwise_df(
+#'   model_formula = formula,
+#'   data = surv_data,
+#'   arm = "arm",
+#'   ref_group = "A",
+#'   ties = "efron",
+#'   test = "likelihood-ratio"
+#' )
+#' print(results_lr)
 #'
 #' @export
-get_cox_pairwise_df <- function(model_formula, data, arm, ref_group = NULL) {
+get_cox_pairwise_df <- function(
+  model_formula,
+  data,
+  arm,
+  ref_group = NULL,
+  ties = c("exact", "efron", "breslow"),
+  test = c(
+    "log-rank",
+    "gehan-breslow",
+    "tarone",
+    "peto",
+    "prentice",
+    "fleming-harrington",
+    "likelihood-ratio"
+  )
+) {
   set_cli_abort_call()
   # Input checks
   if (!rlang::is_formula(model_formula)) {
@@ -89,6 +136,9 @@ get_cox_pairwise_df <- function(model_formula, data, arm, ref_group = NULL) {
     )
   }
 
+  ties <- match.arg(ties)
+  test <- match.arg(test)
+
   # Determine reference and comparison groups
   ref_group <- if (!is.null(ref_group)) {
     ref_group
@@ -97,7 +147,7 @@ get_cox_pairwise_df <- function(model_formula, data, arm, ref_group = NULL) {
   }
   comp_group <- setdiff(levels(data[[arm]]), ref_group)
 
-  ret <- c()
+  res <- list()
   for (current_arm in comp_group) {
     subset_arm <- c(ref_group, current_arm)
     if (length(subset_arm) != 2) {
@@ -110,14 +160,19 @@ get_cox_pairwise_df <- function(model_formula, data, arm, ref_group = NULL) {
       )
     }
     comp_df <- data[as.character(data[[arm]]) %in% subset_arm, ]
+
+    comp_df[[arm]] <- droplevels(comp_df[[arm]])
+
     suppressWarnings(
-      coxph_ans <- coxph(formula = model_formula, data = comp_df) |> summary()
+      coxph_ans <- survival::coxph(
+        formula = model_formula,
+        data = comp_df,
+        ties = ties
+      ) |> summary()
     )
-    orginal_survdiff <- survdiff(formula = model_formula, data = comp_df)
-    log_rank_pvalue <- 1 - stats::pchisq(
-      orginal_survdiff$chisq,
-      length(orginal_survdiff$n) - 1
-    )
+
+    log_rank_pvalue <- .estimate_p_value(model_formula, comp_df, test, arm)
+
     conf_int_row <- paste0(arm, current_arm)
     current_row <- data.frame(
       hr = sprintf("%.2f", coxph_ans$conf.int[conf_int_row, 1]),
@@ -131,12 +186,71 @@ get_cox_pairwise_df <- function(model_formula, data, arm, ref_group = NULL) {
       pval = log_rank_pvalue
     )
     rownames(current_row) <- current_arm
-    ret <- rbind(ret, current_row)
+    res <- do.call(rbind, list(res, current_row))
   }
-  names(ret) <- c(
+
+  test_name <- if (test != "log-rank") tools::toTitleCase(test) else test
+
+  names(res) <- c(
     "HR",
     "95% CI",
-    "p-value (log-rank)"
+    paste0("p-value (", test_name, ")")
   )
-  ret
+  res
+}
+
+#' Estimate p value based on chosen test type
+#' Using coin and survival packages
+#' @keywords internal
+.estimate_p_value <- function(formula, data, test, arm) {
+  test_type <- switch(test,
+    "log-rank" = "logrank",
+    "gehan-breslow" = "Gehan-Breslow",
+    "tarone" = "Tarone-Ware",
+    "peto" = "Peto-Peto",
+    "prentice" = "Prentice",
+    "fleming-harrington" = "Fleming-Harrington",
+    "likelihood-ratio" = "lr"
+  )
+
+  if (test_type != "lr") {
+    rlang::check_installed(
+      "coin",
+      reason = paste("to run log-rank tests using", test_type, "method")
+    )
+
+    if (length(levels(data[[arm]])) != 2) {
+      cli::cli_warn(
+        paste(
+          "{.arg arm} does not contain exactly 2 levels!",
+          "This will result in unexpected behavior of pairwise test."
+        )
+      )
+    }
+
+    test_result <- coin::logrank_test(
+      formula = formula,
+      data = data,
+      type = test_type
+    )
+
+    p_value <- as.numeric(coin::pvalue(test_result))
+  } else {
+    # SAS LR test assumes an exponential distribution
+    # fit the model
+    fit_cov <- survival::survreg(formula, data = data, dist = "exponential")
+
+    # fit the null model
+    drop_arm_formula <- stats::as.formula(paste(". ~ . -", arm))
+    # to account for possible covariates
+    null_formula <- stats::update(formula, drop_arm_formula)
+    fit_null <- survival::survreg(null_formula, data = data, dist = "exponential")
+
+    # calculate the difference and estimate the statistics
+    lrt_stat <- 2 * (fit_cov$loglik[2] - fit_null$loglik[1])
+    df <- fit_cov$df - fit_null$df
+    p_value <- stats::pchisq(lrt_stat, df, lower.tail = FALSE)
+  }
+
+  p_value
 }
