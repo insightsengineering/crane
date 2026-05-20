@@ -46,17 +46,13 @@ Must be one of "log-rank", "gehan-breslow" (wilcoxon), "tarone", "peto",
 "prentice" (modified peto), "fleming-harrington", or "likelihood-ratio".}
 }
 \value{
-A \code{data.frame} with the results of the pairwise comparisons.
-The columns include:
+A \code{data.frame} with one row per comparison arm (stored as rownames).
+The columns are:
 \itemize{
-\item \code{arm}: (rownames of the \code{data.frame}) The comparison arm (group)
-being tested against the reference group.
-\item \code{hr}: The Hazard Ratio (HR) for the comparison arm vs.
-the reference arm, formatted to two decimal places.
-\item \code{ci}: The 95\% confidence interval for the HR, presented as
-a string in the format "(lower, upper)", with values formatted
-to two decimal places.
-\item \code{pval}: The log-rank p-value for the comparison.
+\item \code{HR}: The Hazard Ratio formatted to two decimal places.
+\item \verb{95\% CI}: The 95\\% confidence interval as \code{"(lower, upper)"}.
+\item \verb{p-value (<test>)}: The p-value from the selected \code{test}, where
+\verb{<test>} is the title-cased test name (e.g., \code{"p-value (log-rank)"}).
 }
 }
 \description{
@@ -66,15 +62,14 @@ This function performs pairwise comparisons of treatment arms using the
 against a specified reference group.
 }
 \details{
-The function iterates through each unique arm
-(excluding the reference group). For each iteration, it filters the data
-to include only the current comparison arm and the reference arm, and then:
+The function iterates through each non-reference arm, subsets the
+data to the current arm and the reference arm, and then:
 \itemize{
-\item Fits a Cox model using \code{survival::coxph}.
-\item Performs a log-rank test using \code{survival::survdiff}.
+\item Fits a Cox model using \code{\link[survival:coxph]{survival::coxph()}}.
+\item Computes a p-value via \code{\link[=.estimate_p_value]{.estimate_p_value()}}, which dispatches
+to \code{\link[coin:logrank_test]{coin::logrank_test()}} for weighted log-rank variants or to
+\code{\link[survival:survreg]{survival::survreg()}} for the likelihood-ratio test.
 }
-The Hazard Ratio and its 95\% confidence interval are extracted from the
-Cox model summary, and the p-value is extracted from the log-rank test.
 }
 \examples{
 # Example data setup (assuming 'time' is event time, 'status'
@@ -124,7 +119,6 @@ print(results_lr)
 
 }
 \seealso{
-\code{annotate_gg_km()}, \code{gg_km()}, \code{survival} and \code{coin}
-package functions \code{survival::coxph}, \code{survival::survdiff},
-and \code{coin::logrank_test}.
+\code{annotate_gg_km()}, \code{gg_km()}, \code{\link[survival:coxph]{survival::coxph()}},
+\code{\link[coin:logrank_test]{coin::logrank_test()}}.
 }

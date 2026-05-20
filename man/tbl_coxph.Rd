@@ -13,7 +13,7 @@ Must contain rownames (comparison arms) and at least one statistic column:
 \code{"HR"}, \code{"95\% CI"}, or \code{"p-value (...)"}.}
 }
 \value{
-A \code{gtsummary} object summarizing the pairwise Cox PH results.
+A \code{gtsummary} object with additional class \code{tbl_coxph}.
 }
 \description{
 Generates a \code{gtsummary} table from the pairwise comparison results created by
@@ -22,7 +22,7 @@ presenting the p-value, Hazard Ratio, and 95\% Confidence Interval in a
 stacked layout where statistics form the rows of the table.
 }
 \examples{
-\dontshow{if (requireNamespace("survival", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (requireNamespace("survival", quietly = TRUE) && requireNamespace("coin", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 # Setup sample survival data
 library(survival)
 surv_data <- survival::lung |>

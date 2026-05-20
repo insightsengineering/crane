@@ -11,11 +11,11 @@
 #'   Must contain rownames (comparison arms) and at least one statistic column:
 #'   `"HR"`, `"95% CI"`, or `"p-value (...)"`.
 #'
-#' @return A `gtsummary` object summarizing the pairwise Cox PH results.
+#' @return A `gtsummary` object with additional class `tbl_coxph`.
 #'
 #' @seealso `get_cox_pairwise_df()`.
 #'
-#' @examplesIf requireNamespace("survival", quietly = TRUE)
+#' @examplesIf requireNamespace("survival", quietly = TRUE) && requireNamespace("coin", quietly = TRUE)
 #' # Setup sample survival data
 #' library(survival)
 #' surv_data <- survival::lung |>
@@ -90,16 +90,7 @@ tbl_coxph <- function(pairwise_df) {
     df_tidy$ci_formatted <- pairwise_df[["95% CI"]]
   }
   if (has_pval) {
-    df_tidy$p_num <- pairwise_df[[pval_label]]
-    df_tidy <- df_tidy |>
-      dplyr::mutate(
-        pval_formatted = dplyr::case_when(
-          is.na(.data$p_num) ~ NA_character_,
-          .data$p_num < 0.0001 ~ "<0.0001",
-          TRUE ~ sprintf("%.4f", .data$p_num)
-        )
-      ) |>
-      dplyr::select(-"p_num") # Remove the raw number column after formatting
+    df_tidy$pval_formatted <- .format_pvalue(pairwise_df[[pval_label]])
   }
 
   # Route to single or stratified table builder based on group count
@@ -164,13 +155,15 @@ tbl_coxph <- function(pairwise_df) {
     label_list <- c(label_list, list(ci_formatted ~ "95% CI"))
   }
 
-  # Construct the base table
+  # Build a proper ARD-backed gtsummary object. We use ard_mvsummary() with a
+  # trivial statistic (extract the first value) because the strings are already
+  # formatted by get_cox_pairwise_df(). This lets tbl_ard_summary() render them
+  # while keeping the ARD lineage for gather_ard() and downstream tooling.
   res <- data_subset |>
     cards::ard_mvsummary(
       variables = dplyr::all_of(vars_include),
       by = NULL,
       statistic = ~ list(
-        # Extracts the pre-formatted string directly
         my_stat = \(x, ...) x[1]
       )
     ) |>
@@ -197,4 +190,22 @@ tbl_coxph <- function(pairwise_df) {
   }
 
   res
+}
+
+#' Format p-values for display
+#'
+#' Values below 0.0001 are shown as `"<0.0001"`, others are formatted to
+#' four decimal places. Override this function or post-process the
+#' `pval_formatted` column in `df_tidy` if different precision is needed.
+#'
+#' @param x (`numeric`)\cr vector of p-values.
+#'
+#' @returns A character vector of formatted p-values.
+#' @keywords internal
+.format_pvalue <- function(x) {
+  dplyr::case_when(
+    is.na(x) ~ NA_character_,
+    x < 0.0001 ~ "<0.0001",
+    TRUE ~ sprintf("%.4f", x)
+  )
 }

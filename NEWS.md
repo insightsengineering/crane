@@ -23,15 +23,15 @@
 
 * `g_lineplot()`, `g_lineplot_table()`, and `preprocess_lineplot_data()` were deprecated. (#184)
 
-*  Added `tbl_coxph()` which computes the pairwise cox proportional hazards test and returns a gtsummary object (#159)
+* Added `tbl_coxph()` to render pairwise Cox proportional hazards results as a gtsummary table. (#159)
 
 * Added `tbl_hierarchical_incidence_rate()` which computes the incidence rate of adverse events (#211)
 
 * Added `adjust_stat_columns_wrap()` which keep the presentation of statistics in one row (#219)
 
-* `get_cox_pairwise_df` now allows for different methods to compute p-value (#191) and to handle ties (#193)
+* `get_cox_pairwise_df()` now allows for different methods to compute p-value (#191) and to handle ties (#193).
 
-* `tbl_coxph()` now accepts a data.frame, created with `get_cox_pairwise_df()` as input (#207)
+* `tbl_coxph()` now accepts a data.frame created by `get_cox_pairwise_df()` as input. (#207)
 
 ### Other Updates
 
