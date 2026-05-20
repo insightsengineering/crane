@@ -5,7 +5,7 @@
 \title{Estimate p value based on chosen test type
 Using coin and survival packages}
 \usage{
-.estimate_p_value(formula, data, test)
+.estimate_p_value(formula, data, test, arm)
 }
 \description{
 Estimate p value based on chosen test type
