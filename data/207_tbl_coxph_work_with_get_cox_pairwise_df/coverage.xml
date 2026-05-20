@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0.969234496124031" branch-rate="0" lines-covered="4001" lines-valid="4128" branches-covered="0" branches-valid="0" complexity="0" version="3.6.5" timestamp="2026-05-20 17:26:56.108284">
+<coverage line-rate="0.969241947202713" branch-rate="0" lines-covered="4002" lines-valid="4129" branches-covered="0" branches-valid="0" complexity="0" version="3.6.5" timestamp="2026-05-20 17:50:51.415789">
   <sources>
     <source>/__w/crane/crane/crane</source>
   </sources>
   <packages>
-    <package name="crane" line-rate="0.969234496124031" branch-rate="0" complexity="0">
+    <package name="crane" line-rate="0.969241947202713" branch-rate="0" complexity="0">
       <classes>
         <class name="add_blank_rows.R" filename="R/add_blank_rows.R" line-rate="1" branch-rate="0" complexity="0">
           <methods>
@@ -4399,7 +4399,7 @@
             <line number="328" hits="3" branch="false"/>
           </lines>
         </class>
-        <class name="tbl_coxph.R" filename="R/tbl_coxph.R" line-rate="0.98876404494382" branch-rate="0" complexity="0">
+        <class name="tbl_coxph.R" filename="R/tbl_coxph.R" line-rate="0.988888888888889" branch-rate="0" complexity="0">
           <methods>
             <method name="tbl_coxph" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
@@ -4492,14 +4492,15 @@
                 <line number="203" hits="9" branch="false"/>
               </lines>
             </method>
-            <method name=".format_pvalue" signature="" line-rate="0.833333333333333" branch-rate="0" complexity="0">
+            <method name=".format_pvalue" signature="" line-rate="0.857142857142857" branch-rate="0" complexity="0">
               <lines>
-                <line number="218" hits="0" branch="false"/>
-                <line number="219" hits="5" branch="false"/>
-                <line number="220" hits="5" branch="false"/>
+                <line number="218" hits="5" branch="false"/>
+                <line number="219" hits="0" branch="false"/>
                 <line number="221" hits="5" branch="false"/>
                 <line number="222" hits="5" branch="false"/>
                 <line number="223" hits="5" branch="false"/>
+                <line number="224" hits="5" branch="false"/>
+                <line number="225" hits="5" branch="false"/>
               </lines>
             </method>
           </methods>
@@ -4587,12 +4588,13 @@
             <line number="199" hits="7" branch="false"/>
             <line number="200" hits="7" branch="false"/>
             <line number="203" hits="9" branch="false"/>
-            <line number="218" hits="0" branch="false"/>
-            <line number="219" hits="5" branch="false"/>
-            <line number="220" hits="5" branch="false"/>
+            <line number="218" hits="5" branch="false"/>
+            <line number="219" hits="0" branch="false"/>
             <line number="221" hits="5" branch="false"/>
             <line number="222" hits="5" branch="false"/>
             <line number="223" hits="5" branch="false"/>
+            <line number="224" hits="5" branch="false"/>
+            <line number="225" hits="5" branch="false"/>
           </lines>
         </class>
         <class name="tbl_hierarchical_incidence_rate.R" filename="R/tbl_hierarchical_incidence_rate.R" line-rate="1" branch-rate="0" complexity="0">
