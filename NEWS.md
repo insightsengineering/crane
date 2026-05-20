@@ -31,7 +31,7 @@
 
 * `get_cox_pairwise_df` now allows for different methods to compute p-value (#191) and to handle ties (#193)
 
-* `tbl_coxph()` now accepts a data.frame, created with `get_cox_pairwise_df()` as input
+* `tbl_coxph()` now accepts a data.frame, created with `get_cox_pairwise_df()` as input (#207)
 
 ### Other Updates
 
