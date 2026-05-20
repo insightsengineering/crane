@@ -1,4 +1,6 @@
 # Setup shared test data -------------------------------------------------------
+skip_if_pkg_not_installed(c("survival", "dplyr", "coin"))
+
 suppressPackageStartupMessages(library(survival))
 
 set.seed(42)
