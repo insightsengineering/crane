@@ -31,32 +31,26 @@
 #'   Must be one of "log-rank", "gehan-breslow" (wilcoxon), "tarone", "peto",
 #'   "prentice" (modified peto), "fleming-harrington", or "likelihood-ratio".
 #'
-#' @return A `data.frame` with the results of the pairwise comparisons.
-#' The columns include:
+#' @return A `data.frame` with one row per comparison arm (stored as rownames).
+#' The columns are:
 #' \itemize{
-#'   \item `arm`: (rownames of the `data.frame`) The comparison arm (group)
-#'   being tested against the reference group.
-#'   \item `hr`: The Hazard Ratio (HR) for the comparison arm vs.
-#'   the reference arm, formatted to two decimal places.
-#'   \item `ci`: The 95% confidence interval for the HR, presented as
-#'   a string in the format "(lower, upper)", with values formatted
-#'   to two decimal places.
-#'   \item `pval`: The log-rank p-value for the comparison.
+#'   \item `HR`: The Hazard Ratio formatted to two decimal places.
+#'   \item `95% CI`: The 95\% confidence interval as `"(lower, upper)"`.
+#'   \item `p-value (<test>)`: The p-value from the selected `test`, where
+#'     `<test>` is the title-cased test name (e.g., `"p-value (log-rank)"`).
 #' }
 #'
-#' @details The function iterates through each unique arm
-#'   (excluding the reference group). For each iteration, it filters the data
-#'   to include only the current comparison arm and the reference arm, and then:
+#' @details The function iterates through each non-reference arm, subsets the
+#'   data to the current arm and the reference arm, and then:
 #'   \itemize{
-#'     \item Fits a Cox model using `survival::coxph`.
-#'     \item Performs a log-rank test using `survival::survdiff`.
+#'     \item Fits a Cox model using `survival::coxph()`.
+#'     \item Computes a p-value via [.estimate_p_value()], which dispatches
+#'       to `coin::logrank_test()` for weighted log-rank variants or to
+#'       `survival::survreg()` for the likelihood-ratio test.
 #'   }
-#'   The Hazard Ratio and its 95% confidence interval are extracted from the
-#'   Cox model summary, and the p-value is extracted from the log-rank test.
 #'
-#' @seealso `annotate_gg_km()`, `gg_km()`, `survival` and `coin`
-#'   package functions `survival::coxph`, `survival::survdiff`,
-#'   and `coin::logrank_test`.
+#' @seealso `annotate_gg_km()`, `gg_km()`, `survival::coxph()`,
+#'   `coin::logrank_test()`.
 #'
 #' @examples
 #' # Example data setup (assuming 'time' is event time, 'status'
@@ -199,8 +193,17 @@ get_cox_pairwise_df <- function(
   res
 }
 
-#' Estimate p value based on chosen test type
-#' Using coin and survival packages
+#' Estimate p-value for a pairwise survival comparison
+#'
+#' Dispatches to `coin::logrank_test()` for weighted log-rank variants
+#' or to a likelihood-ratio test via `survival::survreg()`.
+#'
+#' @param formula (`formula`)\cr survival formula, e.g. `Surv(time, status) ~ arm`.
+#' @param data (`data.frame`)\cr subset containing exactly two arm levels.
+#' @param test (`string`)\cr test name as accepted by [get_cox_pairwise_df()].
+#' @param arm (`string`)\cr column name of the arm variable in `data`.
+#'
+#' @returns A single numeric p-value.
 #' @keywords internal
 .estimate_p_value <- function(formula, data, test, arm) {
   test_type <- switch(test,

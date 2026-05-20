@@ -1,4 +1,6 @@
 # Setup shared test data -------------------------------------------------------
+skip_if_pkg_not_installed(c("survival", "dplyr", "coin"))
+
 suppressPackageStartupMessages(library(survival))
 
 set.seed(42)
@@ -16,105 +18,122 @@ surv_data_3arm <- survival::lung |>
   ) |>
   dplyr::filter(dplyr::if_all(dplyr::everything(), ~ !is.na(.)))
 
+# Generate baseline pairwise dataframes to use in the tests
+pairwise_df_2arm <- get_cox_pairwise_df(
+  model_formula = survival::Surv(time, status) ~ arm,
+  data = surv_data_2arm,
+  arm = "arm",
+  ref_group = "A"
+)
 
-# Tests: Input Validation & Coercion -------------------------------------------
+pairwise_df_3arm <- get_cox_pairwise_df(
+  model_formula = survival::Surv(time, status) ~ arm,
+  data = surv_data_3arm,
+  arm = "arm",
+  ref_group = "A"
+)
+
+# Tests: Input Validation ------------------------------------------------------
 test_that("tbl_coxph() errors on invalid inputs", {
-  form <- survival::Surv(time, status) ~ arm
-
-  # data must be a data.frame
+  # Input must be a data.frame
   expect_error(
-    tbl_coxph(data = "not_a_df", model_formula = form, arm = "arm")
+    tbl_coxph(pairwise_df = "not_a_df"),
+    "must be a.*data\\.frame"
   )
 
-  # model_formula must be a formula
+  # Input must have at least one valid statistic column
+  empty_df <- data.frame(row.names = c("B", "C"))
   expect_error(
-    tbl_coxph(data = surv_data_2arm, model_formula = "time ~ arm", arm = "arm")
+    tbl_coxph(pairwise_df = empty_df),
+    "At least one statistic column .* must be present"
   )
 })
-
-test_that("tbl_coxph() converts character arm to factor natively", {
-  form <- survival::Surv(time, status) ~ arm
-
-  char_data <- surv_data_2arm
-  char_data$arm <- as.character(char_data$arm)
-
-  # The function should auto-coerce to factor and succeed without error
-  expect_no_error(
-    res <- tbl_coxph(
-      data = char_data,
-      model_formula = form,
-      arm = "arm"
-    )
-  )
-  expect_s3_class(res, "tbl_coxph")
-})
-
 
 # Tests: 2-Arm Configuration (Single Comparison) -------------------------------
-test_that("tbl_coxph() works with 2 arms and uses default ref_group", {
-  form <- survival::Surv(time, status) ~ arm
-
-  res <- tbl_coxph(
-    data = surv_data_2arm,
-    model_formula = form,
-    arm = "arm"
-    # Omitting ref_group to test the default `levels(data[[arm]])[1]` branch
-  )
+test_that("tbl_coxph() works with single comparison (2 arms)", {
+  res <- tbl_coxph(pairwise_df = pairwise_df_2arm)
 
   expect_s3_class(res, "tbl_coxph")
   expect_s3_class(res, "gtsummary")
 
-  # Extract table body to force evaluation of the custom formatters and labels
-  # applied in the internal `.get_single_comp_table()` helper
+  # Extract table body to check structure
   tb <- res$table_body
   expect_true(all(c("p-value (log-rank)", "Hazard Ratio", "95% CI") %in% tb$label))
-  # check if groupname_col is not present
+
+  # Ensure it didn't generate a strata group column for a single comparison
   expect_false("groupname_col" %in% colnames(tb))
 })
 
-
 # Tests: 3-Arm Configuration (Stacked Strata) ----------------------------------
-test_that("tbl_coxph() works with >2 arms (uses tbl_strata)", {
-  form <- survival::Surv(time, status) ~ arm
-
-  res <- tbl_coxph(
-    data = surv_data_3arm,
-    model_formula = form,
-    arm = "arm",
-    ref_group = "A"
-  )
+test_that("tbl_coxph() works with >1 comparison (3 arms, uses tbl_strata)", {
+  res <- tbl_coxph(pairwise_df = pairwise_df_3arm)
 
   expect_s3_class(res, "tbl_coxph")
   # When >1 comparison, gtsummary natively wraps it in tbl_strata
   expect_s3_class(res, "tbl_strata")
 
   tb <- res$table_body
-  expect_true("B vs A" %in% tb$groupname_col)
-  expect_true("C vs A" %in% tb$groupname_col)
+  expect_true("B" %in% tb$groupname_col)
+  expect_true("C" %in% tb$groupname_col)
 })
 
+# Tests: Dynamic Column Handling -----------------------------------------------
+test_that("tbl_coxph() works with only HR and 95% CI (p-value removed)", {
+  pairwise_no_pval <- pairwise_df_3arm[, c("HR", "95% CI"), drop = FALSE]
 
-# Tests: Formatting Edge Cases (Extreme P-values) ------------------------------
-test_that("tbl_coxph() correctly formats extreme p-values (<0.0001)", {
-  # To safely test the `<0.0001` formatter we artificially inflate
-  # the sample size of an overlapping dataset.
-  lung_huge <- survival::lung[rep(1:nrow(survival::lung), 10), ]
-  lung_huge$arm <- factor(ifelse(lung_huge$sex == 1, "A", "B"))
-
-  res <- suppressWarnings(
-    tbl_coxph(
-      data = lung_huge,
-      model_formula = survival::Surv(time, status) ~ arm,
-      arm = "arm",
-      ref_group = "A"
-    )
+  expect_no_error(
+    res <- tbl_coxph(pairwise_df = pairwise_no_pval)
   )
 
   tb <- res$table_body
+  expect_true("Hazard Ratio" %in% tb$label)
+  expect_true("95% CI" %in% tb$label)
+  expect_false(any(grepl("p-value", tb$label)))
+})
 
-  # Isolate the exact comparison block and label to ensure strict matching
+test_that("tbl_coxph() works with only p-value (HR and CI removed)", {
+  # Isolate just the p-value column using column index
+  pairwise_only_pval <- pairwise_df_3arm[, 3, drop = FALSE]
+
+  expect_no_error(
+    res <- tbl_coxph(pairwise_df = pairwise_only_pval)
+  )
+
+  tb <- res$table_body
+  expect_true("p-value (log-rank)" %in% tb$label)
+  expect_false("Hazard Ratio" %in% tb$label)
+  expect_false("95% CI" %in% tb$label)
+})
+
+test_that("tbl_coxph() dynamically adopts different p-value test labels", {
+  # Generate a pairwise dataframe using a different test (e.g., Wilcoxon)
+  pairwise_wilcoxon <- get_cox_pairwise_df(
+    model_formula = survival::Surv(time, status) ~ arm,
+    data = surv_data_2arm,
+    arm = "arm",
+    test = "gehan-breslow"
+  )
+
+  res <- tbl_coxph(pairwise_df = pairwise_wilcoxon)
+  tb <- res$table_body
+
+  # The table should automatically reflect the new label generated by get_cox_pairwise_df
+  expect_true("p-value (Gehan-Breslow)" %in% tb$label)
+})
+
+# Tests: Formatting Edge Cases (Extreme P-values) ------------------------------
+test_that("tbl_coxph() correctly formats extreme p-values (<0.0001)", {
+  # Force a tiny p-value manually into the dataframe
+  extreme_df <- pairwise_df_2arm
+  pval_col <- grep("p-value", names(extreme_df), value = TRUE)[1]
+  extreme_df[[pval_col]] <- 0.00001
+
+  res <- tbl_coxph(pairwise_df = extreme_df)
+  tb <- res$table_body
+
+  # Extract the exact formatted string
   pval_block <- tb |> dplyr::filter(variable == "pval_formatted")
-  extreme_pval <- pval_block$stat_0[pval_block$label == "p-value (log-rank)"]
+  extreme_pval_str <- pval_block$stat_0[pval_block$label == pval_col]
 
-  expect_equal(extreme_pval, "<0.0001")
+  expect_equal(extreme_pval_str, "<0.0001")
 })
