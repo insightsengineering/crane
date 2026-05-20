@@ -6,7 +6,10 @@
 # * https://r-pkgs.org/testing-design.html#sec-tests-files-overview
 # * https://testthat.r-lib.org/articles/special-files.html
 
-library(testthat)
 library(crane)
 
-test_check("crane")
+if (requireNamespace("testthat", quietly = TRUE)) {
+  library(testthat)
+  options(warn = 2)
+  test_check("crane")
+}
