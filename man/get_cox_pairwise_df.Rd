@@ -4,7 +4,15 @@
 \alias{get_cox_pairwise_df}
 \title{Generate Table of Pairwise Cox-PH and Log-Rank Results}
 \usage{
-get_cox_pairwise_df(model_formula, data, arm, ref_group = NULL)
+get_cox_pairwise_df(
+  model_formula,
+  data,
+  arm,
+  ref_group = NULL,
+  ties = c("exact", "efron", "breslow"),
+  test = c("log-rank", "gehan-breslow", "tarone", "peto", "prentice",
+    "fleming-harrington", "likelihood-ratio")
+)
 }
 \arguments{
 \item{model_formula}{(\code{formula})\cr
@@ -27,6 +35,15 @@ to be used as the \strong{reference group} for
 all pairwise comparisons. If \code{NULL} (the default),
 the \strong{first unique level} of the \code{arm} column is automatically
 selected as the reference group.}
+
+\item{ties}{(\code{character})\cr
+A string specifying the method for tie handling in the Cox model.
+Must be one of "exact", "efron", or "breslow".}
+
+\item{test}{(\code{character})\cr
+A string specifying the type of test to compute the p-value.
+Must be one of "log-rank", "gehan-breslow" (wilcoxon), "tarone", "peto",
+"prentice" (modified peto), "fleming-harrington", or "likelihood-ratio".}
 }
 \value{
 A \code{data.frame} with the results of the pairwise comparisons.
@@ -73,16 +90,41 @@ surv_data <- survival::lung |>
   filter(if_all(everything(), ~ !is.na(.)))
 
 formula <- survival::Surv(time, status) ~ arm
-results_tbl <- get_cox_pairwise_df(
+
+# Example 1: Default usage (ties = "exact", test = "log-rank")
+results_default <- get_cox_pairwise_df(
   model_formula = formula,
   data = surv_data,
   arm = "arm",
   ref_group = "A"
 )
-print(results_tbl)
+print(results_default)
+
+# Example 2: Using Breslow ties and the Gehan-Breslow test
+results_wilcoxon <- get_cox_pairwise_df(
+  model_formula = formula,
+  data = surv_data,
+  arm = "arm",
+  ref_group = "A",
+  ties = "breslow",
+  test = "gehan-breslow"
+)
+print(results_wilcoxon)
+
+# Example 3: Using Efron ties and the Likelihood-Ratio test
+results_lr <- get_cox_pairwise_df(
+  model_formula = formula,
+  data = surv_data,
+  arm = "arm",
+  ref_group = "A",
+  ties = "efron",
+  test = "likelihood-ratio"
+)
+print(results_lr)
 
 }
 \seealso{
-\code{annotate_gg_km()}, \code{gg_km()}, and the \code{survival}
-package functions \code{survival::coxph} and \code{survival::survdiff}.
+\code{annotate_gg_km()}, \code{gg_km()}, \code{survival} and \code{coin}
+package functions \code{survival::coxph}, \code{survival::survdiff},
+and \code{coin::logrank_test}.
 }

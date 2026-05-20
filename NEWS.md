@@ -1,4 +1,4 @@
-# crane 0.3.1.9037
+# crane 0.3.1.9039
 
 ## New Functions and Functionality
 
@@ -28,6 +28,8 @@
 * Added `tbl_hierarchical_incidence_rate()` which computes the incidence rate of adverse events (#211)
 
 * Added `adjust_stat_columns_wrap()` which keep the presentation of statistics in one row (#219)
+
+* `get_cox_pairwise_df` now allows for different methods to compute p-value (#191) and to handle ties (#193)
 
 * Added `add_grade_column()` to inject a grade-label column into `tbl_hierarchical_rate_by_grade()` output. Decoupled from the table builder to prevent Cartesian join explosion in `tbl_merge()`. (#226)
 
