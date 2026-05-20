@@ -2,13 +2,24 @@
 % Please edit documentation in R/get_cox_pairwise_df.R
 \name{.estimate_p_value}
 \alias{.estimate_p_value}
-\title{Estimate p value based on chosen test type
-Using coin and survival packages}
+\title{Estimate p-value for a pairwise survival comparison}
 \usage{
 .estimate_p_value(formula, data, test, arm)
 }
+\arguments{
+\item{formula}{(\code{formula})\cr survival formula, e.g. \code{Surv(time, status) ~ arm}.}
+
+\item{data}{(\code{data.frame})\cr subset containing exactly two arm levels.}
+
+\item{test}{(\code{string})\cr test name as accepted by \code{\link[=get_cox_pairwise_df]{get_cox_pairwise_df()}}.}
+
+\item{arm}{(\code{string})\cr column name of the arm variable in \code{data}.}
+}
+\value{
+A single numeric p-value.
+}
 \description{
-Estimate p value based on chosen test type
-Using coin and survival packages
+Dispatches to \code{coin::logrank_test()} for weighted log-rank variants
+or to a likelihood-ratio test via \code{survival::survreg()}.
 }
 \keyword{internal}
