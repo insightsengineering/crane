@@ -147,7 +147,7 @@ get_cox_pairwise_df <- function(
   }
   comp_group <- setdiff(levels(data[[arm]]), ref_group)
 
-  res <- c()
+  res <- list()
   for (current_arm in comp_group) {
     subset_arm <- c(ref_group, current_arm)
     if (length(subset_arm) != 2) {
@@ -160,6 +160,9 @@ get_cox_pairwise_df <- function(
       )
     }
     comp_df <- data[as.character(data[[arm]]) %in% subset_arm, ]
+
+    comp_df[[arm]] <- droplevels(comp_df[[arm]])
+
     suppressWarnings(
       coxph_ans <- survival::coxph(
         formula = model_formula,
@@ -168,7 +171,7 @@ get_cox_pairwise_df <- function(
       ) |> summary()
     )
 
-    log_rank_pvalue <- .estimate_p_value(model_formula, comp_df, test)
+    log_rank_pvalue <- .estimate_p_value(model_formula, comp_df, test, arm)
 
     conf_int_row <- paste0(arm, current_arm)
     current_row <- data.frame(
@@ -183,12 +186,15 @@ get_cox_pairwise_df <- function(
       pval = log_rank_pvalue
     )
     rownames(current_row) <- current_arm
-    res <- rbind(res, current_row)
+    res <- do.call(rbind, list(res, current_row))
   }
+
+  test_name <- if(test != "log-rank") tools::toTitleCase(test) else test 
+  
   names(res) <- c(
     "HR",
     "95% CI",
-    paste0("p-value (", names(log_rank_pvalue), ")")
+    paste0("p-value (", test_name, ")")
   )
   res
 }
@@ -196,7 +202,7 @@ get_cox_pairwise_df <- function(
 #' Estimate p value based on chosen test type
 #' Using coin and survival packages
 #' @keywords internal
-.estimate_p_value <- function(formula, data, test) {
+.estimate_p_value <- function(formula, data, test, arm) {
   test_type <- switch(test,
     "log-rank" = "logrank",
     "gehan-breslow" = "Gehan-Breslow",
@@ -213,32 +219,38 @@ get_cox_pairwise_df <- function(
       reason = paste("to run log-rank tests using", test_type, "method")
     )
 
+    if(length(levels(data[[arm]])) != 2) {
+      cli::cli_warn(
+        paste(
+          "{.arg arm} does not contain exactly 2 levels!",
+        "This will result in unexpected behavior of pairwise test."
+        )
+      )
+    }
+
     test_result <- coin::logrank_test(
       formula = formula,
       data = data,
       type = test_type
     )
 
-    p_value <- coin::pvalue(test_result)
-  } else if (test_type == "lr") {
+    p_value <- as.numeric(coin::pvalue(test_result))
+
+  } else {
     # SAS LR test assumes an exponential distribution
     # fit the model
     fit_cov <- survival::survreg(formula, data = data, dist = "exponential")
 
     # fit the null model
-    null_formula <- stats::update(formula, ~1)
+    drop_arm_formula <- stats::as.formula(paste(". ~ . -", arm))
+    # to account for possible covariates
+    null_formula <- stats::update(formula, drop_arm_formula)
     fit_null <- survival::survreg(null_formula, data = data, dist = "exponential")
 
     # calculate the difference and estimate the statistics
     lrt_stat <- 2 * (fit_cov$loglik[2] - fit_null$loglik[1])
     df <- fit_cov$df - fit_null$df
     p_value <- stats::pchisq(lrt_stat, df, lower.tail = FALSE)
-  }
-
-  if (test == "log-rank") {
-    names(p_value) <- test
-  } else {
-    names(p_value) <- tools::toTitleCase(test)
   }
 
   p_value
