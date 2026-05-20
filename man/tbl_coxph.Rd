@@ -52,6 +52,17 @@ tbl_coxph(pairwise_df = pairwise_no_pval)
 # Example 3: Table with only p-values
 pairwise_only_pval <- pairwise_results[, 3, drop = FALSE]
 tbl_coxph(pairwise_df = pairwise_only_pval)
+
+# Example 4: Customize p-value precision
+# Pre-format the p-value column as character before passing to tbl_coxph().
+# Character values are displayed as-is (no further formatting applied).
+pval_col <- grep("p-value", names(pairwise_results), value = TRUE)
+custom <- pairwise_results
+custom[[pval_col]] <- ifelse(
+  custom[[pval_col]] < 0.001, "<0.001",
+  sprintf("\%.3f", custom[[pval_col]])
+)
+tbl_coxph(pairwise_df = custom)
 \dontshow{\}) # examplesIf}
 }
 \seealso{

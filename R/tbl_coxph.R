@@ -46,6 +46,17 @@
 #' pairwise_only_pval <- pairwise_results[, 3, drop = FALSE]
 #' tbl_coxph(pairwise_df = pairwise_only_pval)
 #'
+#' # Example 4: Customize p-value precision
+#' # Pre-format the p-value column as character before passing to tbl_coxph().
+#' # Character values are displayed as-is (no further formatting applied).
+#' pval_col <- grep("p-value", names(pairwise_results), value = TRUE)
+#' custom <- pairwise_results
+#' custom[[pval_col]] <- ifelse(
+#'   custom[[pval_col]] < 0.001, "<0.001",
+#'   sprintf("%.3f", custom[[pval_col]])
+#' )
+#' tbl_coxph(pairwise_df = custom)
+#'
 #' @export
 tbl_coxph <- function(pairwise_df) {
   set_cli_abort_call()
@@ -194,15 +205,17 @@ tbl_coxph <- function(pairwise_df) {
 
 #' Format p-values for display
 #'
-#' Values below 0.0001 are shown as `"<0.0001"`, others are formatted to
-#' four decimal places. Override this function or post-process the
-#' `pval_formatted` column in `df_tidy` if different precision is needed.
+#' Numeric values below 0.0001 are shown as `"<0.0001"`, others are formatted
+#' to four decimal places. Character input is returned as-is, allowing users
+#' to pre-format the p-value column in `pairwise_df` before calling
+#' [tbl_coxph()].
 #'
-#' @param x (`numeric`)\cr vector of p-values.
+#' @param x (`numeric` or `character`)\cr vector of p-values.
 #'
 #' @returns A character vector of formatted p-values.
 #' @keywords internal
 .format_pvalue <- function(x) {
+  if (is.character(x)) return(x)
   dplyr::case_when(
     is.na(x) ~ NA_character_,
     x < 0.0001 ~ "<0.0001",

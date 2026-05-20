@@ -7,14 +7,15 @@
 .format_pvalue(x)
 }
 \arguments{
-\item{x}{(\code{numeric})\cr vector of p-values.}
+\item{x}{(\code{numeric} or \code{character})\cr vector of p-values.}
 }
 \value{
 A character vector of formatted p-values.
 }
 \description{
-Values below 0.0001 are shown as \code{"<0.0001"}, others are formatted to
-four decimal places. Override this function or post-process the
-\code{pval_formatted} column in \code{df_tidy} if different precision is needed.
+Numeric values below 0.0001 are shown as \code{"<0.0001"}, others are formatted
+to four decimal places. Character input is returned as-is, allowing users
+to pre-format the p-value column in \code{pairwise_df} before calling
+\code{\link[=tbl_coxph]{tbl_coxph()}}.
 }
 \keyword{internal}

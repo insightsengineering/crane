@@ -45,12 +45,12 @@
 #'   \itemize{
 #'     \item Fits a Cox model using [survival::coxph()].
 #'     \item Computes a p-value via [.estimate_p_value()], which dispatches
-#'       to [coin::logrank_test()] for weighted log-rank variants or to
+#'       to `coin::logrank_test()` for weighted log-rank variants or to
 #'       [survival::survreg()] for the likelihood-ratio test.
 #'   }
 #'
 #' @seealso `annotate_gg_km()`, `gg_km()`, [survival::coxph()],
-#'   [coin::logrank_test()].
+#'   `coin::logrank_test()`.
 #'
 #' @examples
 #' # Example data setup (assuming 'time' is event time, 'status'
