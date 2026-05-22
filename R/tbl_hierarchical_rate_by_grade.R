@@ -491,6 +491,13 @@ add_overall.tbl_hierarchical_rate_by_grade <- asNamespace("gtsummary")[["add_ove
 #' `x$custom_info` (standalone tables) or the first sub-table's `custom_info` (merged tables).
 #' If no metadata is found, the function aborts with an informative error.
 #'
+#' `add_grade_column()` only works on tables produced by
+#' [tbl_hierarchical_rate_by_grade()] — it reads the `custom_info` metadata
+#' that function stores. They share a help page because they are designed
+#' to be used together: build the table first, optionally merge with
+#' [gtsummary::tbl_merge()] or [tbl_with_pools()], then call
+#' `add_grade_column()` as the final step.
+#'
 #' @rdname tbl_hierarchical_rate_by_grade
 #' @export
 add_grade_column <- function(x) {
@@ -529,7 +536,9 @@ add_grade_column <- function(x) {
   lvls <- info$lvls
   label_list <- info$label_list
 
+
   # apply visual formatting to the table body
+  # TODO: extract anonymous functions into named helpers (#251)
   x <- x |>
     gtsummary::modify_table_body(
       \(table_body) {

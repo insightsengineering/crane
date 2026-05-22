@@ -96,7 +96,7 @@ test_that("tbl_with_pools() works with standard functions like tbl_summary", {
   expect_true(any(str_detect(header_labels, "All Patients")))
 
   # Snapshot the table output
-  local_wide_snapshot()
+  withr::local_options(list(width = 220))
   expect_snapshot(as.data.frame(tbl))
 })
 
@@ -119,7 +119,7 @@ test_that("tbl_with_pools() passes the denominator correctly for custom function
   expect_s3_class(tbl, "tbl_with_pools")
 
   # Snapshot the table output
-  local_wide_snapshot()
+  withr::local_options(list(width = 220))
   expect_snapshot(as.data.frame(tbl))
 })
 
@@ -419,12 +419,12 @@ test_that("tbl_with_pools() skips if an rlang::expr() evaluates to 0 rows", {
 
 
 # --- 13. Pipeline: tbl_with_pools + tbl_hierarchical_rate_by_grade + add_grade_column ---
-test_that("tbl_with_pools() + tbl_hierarchical_rate_by_grade() + add_grade_column() pipeline works", {
-  # Regression test for the Cartesian join explosion.
-  # Previously, tbl_hierarchical_rate_by_grade() blanked the `label` column for
-  # grade rows before returning, causing tbl_merge() inside tbl_with_pools() to
-  # lose row uniqueness and produce a Cartesian cross-join.
+test_that("tbl_with_pools() + add_grade_column() pipeline does not duplicate rows (#226)", {
+  # Regression test: deferred grade-column injection avoids row duplication
+  # during tbl_merge() inside tbl_with_pools().
 
+  # Full ADSL + filtered ADAE (3 SOCs/AETERMs) — needs enough hierarchical
+  # depth for tbl_hierarchical_rate_by_grade; file-level subsets are too small.
   ADSL_pipe <- cards::ADSL
   ADAE_pipe <- cards::ADAE |>
     dplyr::filter(

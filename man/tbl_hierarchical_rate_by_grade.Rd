@@ -163,6 +163,13 @@ the \code{label} column prior to merge.
 The function extracts metadata injected by \code{\link[=tbl_hierarchical_rate_by_grade]{tbl_hierarchical_rate_by_grade()}} via
 \code{x$custom_info} (standalone tables) or the first sub-table's \code{custom_info} (merged tables).
 If no metadata is found, the function aborts with an informative error.
+
+\code{add_grade_column()} only works on tables produced by
+\code{\link[=tbl_hierarchical_rate_by_grade]{tbl_hierarchical_rate_by_grade()}} — it reads the \code{custom_info} metadata
+that function stores. They share a help page because they are designed
+to be used together: build the table first, optionally merge with
+\code{\link[gtsummary:tbl_merge]{gtsummary::tbl_merge()}} or \code{\link[=tbl_with_pools]{tbl_with_pools()}}, then call
+\code{add_grade_column()} as the final step.
 }
 }
 \examples{
