@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1.9040</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1.9041</span>
       </span>
     </div>
 
@@ -61,9 +61,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.3.1.9040" id="crane-0319040">crane 0.3.1.9040<a class="anchor" aria-label="anchor" href="#crane-0319040"></a></h2>
+<h2 class="page-header" data-toc-text="0.3.1.9041" id="crane-0319041">crane 0.3.1.9041<a class="anchor" aria-label="anchor" href="#crane-0319041"></a></h2>
 <div class="section level3">
-<h3 id="new-functions-and-functionality-0-3-1-9040">New Functions and Functionality<a class="anchor" aria-label="anchor" href="#new-functions-and-functionality-0-3-1-9040"></a></h3>
+<h3 id="new-functions-and-functionality-0-3-1-9041">New Functions and Functionality<a class="anchor" aria-label="anchor" href="#new-functions-and-functionality-0-3-1-9041"></a></h3>
 <ul><li><p>Added <code><a href="../reference/deprecated.html">g_lineplot()</a></code> for creating line plots with optional summary statistics table. Includes helper functions <code>calc_stats()</code>, <code><a href="../reference/deprecated.html">g_lineplot_table()</a></code>, and <code><a href="../reference/deprecated.html">preprocess_lineplot_data()</a></code>.</p></li>
 <li><p>Added <code><a href="../reference/ard_tabulate_abnormal_by_baseline.html">ard_tabulate_abnormal_by_baseline()</a></code> for creating an Analysis Results Data (ARD) object counting participants with abnormal assessments, stratified by their baseline status.</p></li>
 <li><p>Added <code><a href="../reference/tbl_mmrm.html">tbl_mmrm()</a></code> and <code><a href="../reference/tbl_mmrm.html">get_mmrm_results()</a></code> functions to create regression tables for Mixed Models for Repeated Measures (MMRM). (<a href="https://github.com/insightsengineering/crane/issues/163" class="external-link">#163</a>)</p></li>
@@ -80,7 +80,7 @@
 <li><p><code><a href="../reference/get_cox_pairwise_df.html">get_cox_pairwise_df()</a></code> now allows for different methods to compute p-value (<a href="https://github.com/insightsengineering/crane/issues/191" class="external-link">#191</a>) and to handle ties (<a href="https://github.com/insightsengineering/crane/issues/193" class="external-link">#193</a>).</p></li>
 <li><p><code><a href="../reference/tbl_coxph.html">tbl_coxph()</a></code> now accepts a data.frame created by <code><a href="../reference/get_cox_pairwise_df.html">get_cox_pairwise_df()</a></code> as input. (<a href="https://github.com/insightsengineering/crane/issues/207" class="external-link">#207</a>)</p></li>
 </ul><div class="section level4">
-<h4 id="other-updates-0-3-1-9040">Other Updates<a class="anchor" aria-label="anchor" href="#other-updates-0-3-1-9040"></a></h4>
+<h4 id="other-updates-0-3-1-9041">Other Updates<a class="anchor" aria-label="anchor" href="#other-updates-0-3-1-9041"></a></h4>
 <ul><li><p><code><a href="../reference/tbl_hierarchical_rate_and_count.html">tbl_hierarchical_rate_and_count()</a></code> now emits zero-rows for unobserved factor levels in the first hierarchical variable. (<a href="https://github.com/insightsengineering/crane/issues/233" class="external-link">#233</a>)</p></li>
 <li><p><code><a href="../reference/df2gg_aligned.html">df2gg_aligned()</a></code> and <code><a href="../reference/df2gg_floating.html">df2gg_floating()</a></code> now preserve original ggplot objects in <code>attr(result, "plotlist")</code> for downstream data extraction after combining with <code>cowplot</code>. (<a href="https://github.com/insightsengineering/crane/issues/208" class="external-link">#208</a>)</p></li>
 <li><p>Remove warning when data has more levels than needed for grade_groups on tbl_hierarchical_rate_by_grade.</p></li>
@@ -97,6 +97,7 @@
 <li><p>Changed baseline statistic argument in <code><a href="../reference/tbl_baseline_chg.html">tbl_baseline_chg()</a></code> (<a href="https://github.com/insightsengineering/crane/issues/224" class="external-link">#224</a>)</p></li>
 <li><p>Adjusted <code><a href="../reference/modify_zero_recode.html">modify_zero_recode()</a></code> to account for strings comprising regular and non-breaking spaces (<a href="https://github.com/insightsengineering/crane/issues/230" class="external-link">#230</a>)</p></li>
 <li><p><code><a href="../reference/tbl_roche_subgroups.html">tbl_roche_subgroups()</a></code> now shows <code>n</code>, <code>Events</code>, and <code>Median</code> per arm when <code>time_to_event</code> is specified. The total column shows <code>Total Events</code> instead of <code>Total n</code>. (<a href="https://github.com/insightsengineering/crane/issues/235" class="external-link">#235</a>)</p></li>
+<li><p>Skip tests if suggested packages are missing (Failing test due to missing suggested package <a href="https://github.com/insightsengineering/crane/issues/252" class="external-link">#252</a>, <a href="https://github.com/llrs-roche" class="external-link">@llrs-roche</a>)</p></li>
 </ul></div>
 </div>
 </div>
