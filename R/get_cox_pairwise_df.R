@@ -258,12 +258,12 @@ get_cox_pairwise_df <- function(
 #'
 #' @description
 #' Helper function to simulate SAS's `TIES=DISCRETE` option. It expands the data
-#' into person-time format, fits a logistic regression model, and calculates 
+#' into person-time format, fits a logistic regression model, and calculates
 #' Wald confidence intervals.
 #'
-#' @param formula (`formula`)\cr 
+#' @param formula (`formula`)\cr
 #'   The original survival formula.
-#' @param data (`data.frame`)\cr 
+#' @param data (`data.frame`)\cr
 #'   The subsetted data containing exactly two arms.
 #'
 #' @returns A list mimicking `summary(coxph)` containing a `conf.int` data.frame
@@ -272,54 +272,54 @@ get_cox_pairwise_df <- function(
   # Sanitize to allow smooth parsing of the Surv formulation
   lhs_str <- paste(deparse(formula[[2]]), collapse = " ")
   rhs_str <- paste(deparse(formula[[3]]), collapse = " ")
-  
+
   clean_lhs_str <- sub(".*Surv\\(", "Surv(", lhs_str)
   clean_formula <- stats::as.formula(paste(clean_lhs_str, "~", rhs_str))
-  
+
   mf <- stats::model.frame(clean_formula, data = data)
   surv_resp <- stats::model.response(mf)
-  
+
   # Extract the actual status variable name directly from the formula.
-  # Surv() forces its internal matrix column names to "time" and "status", 
+  # Surv() forces its internal matrix column names to "time" and "status",
   # so we must bypass it and read the original variable name (e.g., 'is_event').
   lhs_vars <- all.vars(formula[[2]])
   status_var <- lhs_vars[length(lhs_vars)]
-  
+
   event_times <- sort(unique(surv_resp[, 1][surv_resp[, 2] == 1]))
-  
+
   # Transforming to person-time guarantees proper risk sets for tied intervals
   data_long <- survival::survSplit(
     formula = clean_formula,
     data = data,
     cut = event_times,
-    episode = ".time_int" 
+    episode = ".time_int"
   )
-  
+
   glm_formula <- stats::as.formula(
     paste(status_var, "~", rhs_str, "+ as.factor(.time_int)")
   )
-  
+
   glm_fit <- stats::glm(
-    glm_formula, 
-    data = data_long, 
+    glm_formula,
+    data = data_long,
     family = stats::binomial(link = "logit")
   )
-  
+
   coefs <- stats::coef(glm_fit)
   wald_ci_log <- stats::confint.default(glm_fit)
-  
+
   lower_log_ci <- wald_ci_log[, "2.5 %"]
   upper_log_ci <- wald_ci_log[, "97.5 %"]
   hr <- exp(coefs)
-  
+
   conf_int_df <- data.frame(
     "exp(coef)"  = hr,
     "exp(-coef)" = 1 / hr,
     "lower .95"  = exp(lower_log_ci),
     "upper .95"  = exp(upper_log_ci),
     row.names    = names(coefs),
-    check.names  = FALSE 
+    check.names  = FALSE
   )
-  
+
   list(conf.int = conf_int_df)
 }
