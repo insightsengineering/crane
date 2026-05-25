@@ -47,6 +47,7 @@ test_that("gg_km() works and handles annotations correctly", {
 
 test_that("plotlist attribute is preserved through annotate_* stacking", {
   surv_plot_data <- process_survfit(fit_kmg01)
+  skip_if_not_installed("coin")
   suppressWarnings(
     coxph_tbl <- get_cox_pairwise_df(model_formula, data = anl, arm = by)
   )
