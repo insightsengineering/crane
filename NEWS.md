@@ -68,6 +68,8 @@ all events (#217)
 
 * `tbl_roche_subgroups()` now shows `n`, `Events`, and `Median` per arm when `time_to_event` is specified. The total column shows `Total Events` instead of `Total n`. (#235)
 
+* Skip tests if suggested packages are missing (Failing test due to missing suggested package #252, @llrs-roche)
+
 # crane 0.3.1
 
 ## New Functions and Functionality
