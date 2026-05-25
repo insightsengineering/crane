@@ -25,7 +25,8 @@
 #'   selected as the reference group.
 #' @param ties (`character`)\cr
 #'   A string specifying the method for tie handling in the Cox model.
-#'   Must be one of "exact", "efron", or "breslow".
+#'   Must be one of "discrete", "exact", "efron", or "breslow".
+#'   Default is "discrete".
 #' @param test (`character`)\cr
 #'   A string specifying the type of test to compute the p-value.
 #'   Must be one of "log-rank", "gehan-breslow" (wilcoxon), "tarone", "peto",
@@ -104,7 +105,7 @@ get_cox_pairwise_df <- function(
   data,
   arm,
   ref_group = NULL,
-  ties = c("exact", "efron", "breslow"),
+  ties = c("discrete", "exact", "efron", "breslow"),
   test = c(
     "log-rank",
     "gehan-breslow",
@@ -157,13 +158,17 @@ get_cox_pairwise_df <- function(
 
     comp_df[[arm]] <- droplevels(comp_df[[arm]])
 
-    suppressWarnings(
-      coxph_ans <- survival::coxph(
-        formula = model_formula,
-        data = comp_df,
-        ties = ties
-      ) |> summary()
-    )
+    if (ties == "discrete") {
+      coxph_ans <- .get_discrete_cox(formula = model_formula, data = comp_df)
+    } else {
+      suppressWarnings(
+        coxph_ans <- survival::coxph(
+          formula = model_formula,
+          data = comp_df,
+          ties = ties
+        ) |> summary()
+      )
+    }
 
     log_rank_pvalue <- .estimate_p_value(model_formula, comp_df, test, arm)
 
@@ -222,15 +227,6 @@ get_cox_pairwise_df <- function(
       reason = paste("to run log-rank tests using", test_type, "method")
     )
 
-    if (length(levels(data[[arm]])) != 2) {
-      cli::cli_warn(
-        paste(
-          "{.arg arm} does not contain exactly 2 levels!",
-          "This will result in unexpected behavior of pairwise test."
-        )
-      )
-    }
-
     test_result <- coin::logrank_test(
       formula = formula,
       data = data,
@@ -250,10 +246,79 @@ get_cox_pairwise_df <- function(
     fit_null <- survival::survreg(null_formula, data = data, dist = "exponential")
 
     # calculate the difference and estimate the statistics
-    lrt_stat <- 2 * (fit_cov$loglik[2] - fit_null$loglik[1])
+    lrt_stat <- 2 * (fit_cov$loglik[2] - fit_null$loglik[2])
     df <- fit_cov$df - fit_null$df
     p_value <- stats::pchisq(lrt_stat, df, lower.tail = FALSE)
   }
 
   p_value
+}
+
+#' Fit a discrete-time Cox model (pooled logistic regression)
+#'
+#' @description
+#' Helper function to simulate SAS's `TIES=DISCRETE` option. It expands the data
+#' into person-time format, fits a logistic regression model, and calculates
+#' Wald confidence intervals.
+#'
+#' @param formula (`formula`)\cr
+#'   The original survival formula.
+#' @param data (`data.frame`)\cr
+#'   The subsetted data containing exactly two arms.
+#'
+#' @returns A list mimicking `summary(coxph)` containing a `conf.int` data.frame
+#' @keywords internal
+.get_discrete_cox <- function(formula, data) {
+  # lhs - Surv function
+  # rhs - arm + covariates
+  # to allow smooth parsing of the Surv formulation
+  lhs_str <- paste(deparse(formula[[2]]), collapse = " ")
+  rhs_str <- paste(deparse(formula[[3]]), collapse = " ")
+
+  # clean `suvrival::`` from the formula
+  clean_lhs_str <- sub(".*Surv\\(", "Surv(", lhs_str)
+  clean_formula <- stats::as.formula(paste(clean_lhs_str, "~", rhs_str))
+
+  # Fetch cut points dynamically avoiding hardcoded indices for robust retrieval
+  mf <- stats::model.frame(clean_formula, data = data)
+  surv_resp <- stats::model.response(mf)
+
+  status_var <- dimnames(surv_resp)[[2]][2]
+  event_times <- sort(unique(surv_resp[, 1][surv_resp[, 2] == 1]))
+
+  # Transforming to person-time guarantees proper risk sets for tied intervals
+  data_long <- survival::survSplit(
+    formula = clean_formula,
+    data = data,
+    cut = event_times,
+    episode = ".time_int"
+  )
+
+  glm_formula <- stats::as.formula(
+    paste(status_var, "~", rhs_str, "+ as.factor(.time_int)")
+  )
+
+  glm_fit <- stats::glm(
+    glm_formula,
+    data = data_long,
+    family = stats::binomial(link = "logit")
+  )
+
+  coefs <- stats::coef(glm_fit)
+  wald_ci_log <- stats::confint.default(glm_fit)
+
+  lower_log_ci <- wald_ci_log[, "2.5 %"]
+  upper_log_ci <- wald_ci_log[, "97.5 %"]
+  hr <- exp(coefs)
+
+  conf_int_df <- data.frame(
+    "exp(coef)"  = hr,
+    "exp(-coef)" = 1 / hr,
+    "lower .95"  = exp(lower_log_ci),
+    "upper .95"  = exp(upper_log_ci),
+    row.names    = names(coefs),
+    check.names  = FALSE
+  )
+
+  list(conf.int = conf_int_df)
 }

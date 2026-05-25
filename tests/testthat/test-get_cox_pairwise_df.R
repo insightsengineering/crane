@@ -51,7 +51,8 @@ test_that(
     expect_equal(nrow(result), 2L)
     expect_equal(rownames(result), c("B", "C"))
     expect_named(result, c("HR", "95% CI", "p-value (log-rank)"))
-    # All hazard ratios and CIs must be non-NA (this was the bug)
+
+    # All hazard ratios and CIs must be non-NA
     expect_false(anyNA(result[["HR"]]))
     expect_false(anyNA(result[["95% CI"]]))
     expect_false(anyNA(result[["p-value (log-rank)"]]))
@@ -112,15 +113,17 @@ test_that(paste0(
 })
 
 test_that("get_cox_pairwise_df() works with all valid 'ties' methods", {
-  ties_methods <- c("exact", "efron", "breslow")
+  ties_methods <- c("discrete", "exact", "efron", "breslow")
 
   for (t_method in ties_methods) {
     expect_no_error(
-      res <- get_cox_pairwise_df(
-        model_formula = survival::Surv(time, status) ~ arm,
-        data = surv_data_2arm,
-        arm = "arm",
-        ties = t_method
+      suppressWarnings(
+        res <- get_cox_pairwise_df(
+          model_formula = survival::Surv(time, status) ~ arm,
+          data = surv_data_2arm,
+          arm = "arm",
+          ties = t_method
+        )
       )
     )
     expect_s3_class(res, "data.frame")
