@@ -94,6 +94,7 @@ test_that("add_overall.tbl_baseline_chg() works", {
 })
 
 test_that("add_overall.tbl_baseline_chg() messaging", {
+  skip_if_not_installed("labelled")
   withr::local_options(list(width = 190))
 
   # expect message about no by variable
@@ -175,6 +176,7 @@ test_that("tbl_baseline_chg() throws error when required arguments are missing",
 
 test_that("tbl_baseline_chg() messaging", {
   withr::local_options(list(width = 190))
+  skip_if_not_installed("labelled")
 
   # expecting message about converting by variable to a factor
   expect_snapshot(
