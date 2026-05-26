@@ -1,30 +1,28 @@
 skip_if_pkg_not_installed(c("survival", "dplyr", "coin"))
 
-# Setup shared test data
+# Setup shared test data using completely different data and formulas
 set.seed(42)
-surv_data_2arm <- survival::lung |>
+test_df_2grp <- survival::veteran |>
   dplyr::mutate(
-    arm = factor(sample(c("A", "B"), dplyr::n(), replace = TRUE)),
-    status = status - 1
+    treatment = factor(sample(c("DrugX", "Placebo"), dplyr::n(), replace = TRUE)),
+    event = status
   ) |>
   dplyr::filter(dplyr::if_all(dplyr::everything(), ~ !is.na(.)))
 
-surv_data_3arm <- survival::lung |>
+test_df_3grp <- survival::veteran |>
   dplyr::mutate(
-    arm = factor(sample(c("A", "B", "C"), dplyr::n(), replace = TRUE)),
-    status = status - 1
+    treatment = factor(sample(c("DrugX", "DrugY", "Placebo"), dplyr::n(), replace = TRUE)),
+    event = status
   ) |>
   dplyr::filter(dplyr::if_all(dplyr::everything(), ~ !is.na(.)))
 
 test_that("get_cox_pairwise_df() works with two arms", {
   expect_no_error(
-    suppressWarnings(
-      result <- get_cox_pairwise_df(
-        model_formula = survival::Surv(time, status) ~ arm,
-        data = surv_data_2arm,
-        arm = "arm",
-        ref_group = "A"
-      )
+    result <- get_cox_pairwise_df(
+      model_formula = Surv(time, event) ~ treatment,
+      data = test_df_2grp,
+      arm = "treatment",
+      ref_group = "Placebo"
     )
   )
   expect_s3_class(result, "data.frame")
@@ -40,16 +38,17 @@ test_that(
     expect_no_error(
       suppressWarnings(
         result <- get_cox_pairwise_df(
-          model_formula = survival::Surv(time, status) ~ arm,
-          data = surv_data_3arm,
-          arm = "arm",
-          ref_group = "A"
+          model_formula = Surv(time, event) ~ treatment,
+          data = test_df_3grp,
+          arm = "treatment",
+          ref_group = "Placebo"
         )
       )
     )
     expect_s3_class(result, "data.frame")
     expect_equal(nrow(result), 2L)
-    expect_equal(rownames(result), c("B", "C"))
+    # The output rownames should be the non-reference groups
+    expect_true(all(c("DrugX", "DrugY") %in% rownames(result)))
     expect_named(result, c("HR", "95% CI", "p-value (log-rank)"))
 
     # All hazard ratios and CIs must be non-NA
@@ -63,35 +62,37 @@ test_that("get_cox_pairwise_df() uses first factor level as default ref_group", 
   expect_no_error(
     suppressWarnings(
       result <- get_cox_pairwise_df(
-        model_formula = survival::Surv(time, status) ~ arm,
-        data = surv_data_3arm,
-        arm = "arm"
+        model_formula = Surv(time, event) ~ treatment,
+        data = test_df_3grp,
+        arm = "treatment"
       )
     )
   )
   expect_equal(nrow(result), 2L)
-  # Default ref is "A", so comparisons are "B" and "C"
-  expect_equal(rownames(result), c("B", "C"))
+
+  # Default ref is the first level, so it should not be in the output rownames
+  first_lvl <- levels(test_df_3grp$treatment)[1]
+  expect_false(first_lvl %in% rownames(result))
 })
 
 test_that("get_cox_pairwise_df() errors with non-formula model_formula", {
   expect_error(
     get_cox_pairwise_df(
-      model_formula = "Surv(time, status) ~ arm",
-      data = surv_data_2arm,
-      arm = "arm"
+      model_formula = "Surv(time, event) ~ treatment",
+      data = test_df_2grp,
+      arm = "treatment"
     )
   )
 })
 
 test_that("get_cox_pairwise_df() errors when arm column is not a factor", {
-  bad_data <- surv_data_2arm
-  bad_data[["arm"]] <- as.character(bad_data[["arm"]])
+  bad_data <- test_df_2grp
+  bad_data[["treatment"]] <- as.character(bad_data[["treatment"]])
   expect_error(
     get_cox_pairwise_df(
-      model_formula = survival::Surv(time, status) ~ arm,
+      model_formula = Surv(time, event) ~ treatment,
       data = bad_data,
-      arm = "arm"
+      arm = "treatment"
     )
   )
 })
@@ -102,11 +103,11 @@ test_that(paste0(
 ), {
   expect_error(
     get_cox_pairwise_df(
-      model_formula = survival::Surv(time, status) ~ arm,
-      data = surv_data_3arm,
-      arm = "arm",
+      model_formula = Surv(time, event) ~ treatment,
+      data = test_df_3grp,
+      arm = "treatment",
       # Passing multiple reference groups to force length > 2
-      ref_group = c("A", "B")
+      ref_group = c("Placebo", "DrugX")
     ),
     "must contain exactly 2 arms/groups"
   )
@@ -119,9 +120,9 @@ test_that("get_cox_pairwise_df() works with all valid 'ties' methods", {
     expect_no_error(
       suppressWarnings(
         res <- get_cox_pairwise_df(
-          model_formula = survival::Surv(time, status) ~ arm,
-          data = surv_data_2arm,
-          arm = "arm",
+          model_formula = Surv(time, event) ~ treatment,
+          data = test_df_2grp,
+          arm = "treatment",
           ties = t_method
         )
       )
@@ -145,9 +146,9 @@ test_that("get_cox_pairwise_df() works with all valid 'test' methods", {
     expect_no_error(
       suppressWarnings(
         res <- get_cox_pairwise_df(
-          model_formula = survival::Surv(time, status) ~ arm,
-          data = surv_data_2arm,
-          arm = "arm",
+          model_formula = Surv(time, event) ~ treatment,
+          data = test_df_2grp,
+          arm = "treatment",
           test = t_method
         )
       )
@@ -168,9 +169,9 @@ test_that("get_cox_pairwise_df() works with all valid 'test' methods", {
 test_that("get_cox_pairwise_df() catches invalid 'ties' and 'test' arguments", {
   expect_error(
     get_cox_pairwise_df(
-      model_formula = survival::Surv(time, status) ~ arm,
-      data = surv_data_2arm,
-      arm = "arm",
+      model_formula = Surv(time, event) ~ treatment,
+      data = test_df_2grp,
+      arm = "treatment",
       ties = "invalid_tie_method"
     ),
     "should be one of"
@@ -178,11 +179,31 @@ test_that("get_cox_pairwise_df() catches invalid 'ties' and 'test' arguments", {
 
   expect_error(
     get_cox_pairwise_df(
-      model_formula = survival::Surv(time, status) ~ arm,
-      data = surv_data_2arm,
-      arm = "arm",
+      model_formula = Surv(time, event) ~ treatment,
+      data = test_df_2grp,
+      arm = "treatment",
       test = "invalid_test_method"
     ),
     "should be one of"
   )
+})
+
+test_that("get_cox_pairwise_df() works for formula with covariates", {
+  # Added 'karno' as a covariate.
+  # Likelihood-ratio is utilized because standard coin::logrank_test
+  # syntax does not support continuous right-hand side covariates.
+  expect_no_error(
+    suppressWarnings(
+      res_covariate <- get_cox_pairwise_df(
+        model_formula = Surv(time, event) ~ treatment + karno,
+        data = test_df_2grp,
+        arm = "treatment",
+        test = "likelihood-ratio"
+      )
+    )
+  )
+
+  expect_s3_class(res_covariate, "data.frame")
+  expect_false(anyNA(res_covariate[["HR"]]))
+  expect_false(anyNA(res_covariate[["p-value (Likelihood-Ratio)"]]))
 })

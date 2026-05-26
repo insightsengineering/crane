@@ -36,7 +36,7 @@
 #' The columns are:
 #' \itemize{
 #'   \item `HR`: The Hazard Ratio formatted to two decimal places.
-#'   \item `95% CI`: The 95\% confidence interval as `"(lower, upper)"`.
+#'   \item `95% CI`: The 95% confidence interval as `"(lower, upper)"`.
 #'   \item `p-value (<test>)`: The p-value from the selected `test`, where
 #'     `<test>` is the title-cased test name (e.g., `"p-value (log-rank)"`).
 #' }
@@ -56,17 +56,21 @@
 #' @examples
 #' # Example data setup (assuming 'time' is event time, 'status'
 #' # is event indicator (1=event), and 'arm' is the treatment group)
-#' library(dplyr) # For better data handling
+#' # for data handling
+#' library(dplyr)
+#' # to not specify formula using `survival::Surv` - it is a bad practice and
+#' # can lead to unexpected results
+#' library(survival)
 #'
 #' # Prepare data in a modern dplyr-friendly way
-#' surv_data <- survival::lung |>
+#' surv_data <- lung |>
 #'   mutate(
 #'     arm = factor(sample(c("A", "B", "C"), n(), replace = TRUE)),
 #'     status = status - 1 # Convert status to 0/1
 #'   ) |>
 #'   filter(if_all(everything(), ~ !is.na(.)))
 #'
-#' formula <- survival::Surv(time, status) ~ arm
+#' formula <- Surv(time, status) ~ arm
 #'
 #' # Example 1: Default usage (ties = "exact", test = "log-rank")
 #' results_default <- get_cox_pairwise_df(
@@ -124,6 +128,15 @@ get_cox_pairwise_df <- function(
       call = get_cli_abort_call()
     )
   }
+
+  formula_str <- paste(deparse(model_formula), collapse = " ")
+  if (grepl("\\b[a-zA-Z][a-zA-Z0-9.]*::", formula_str)) {
+    cli::cli_abort(
+      "{.arg model_formula} must be specified without namespace.",
+      call = get_cli_abort_call()
+    )
+  }
+
   if (!is.factor(data[[arm]])) {
     cli::cli_abort(
       "Column {.arg {data}[[\"{.var {arm}}\"]]} must be a {.cls factor}.",
@@ -161,13 +174,11 @@ get_cox_pairwise_df <- function(
     if (ties == "discrete") {
       coxph_ans <- .get_discrete_cox(formula = model_formula, data = comp_df)
     } else {
-      suppressWarnings(
-        coxph_ans <- survival::coxph(
-          formula = model_formula,
-          data = comp_df,
-          ties = ties
-        ) |> summary()
-      )
+      coxph_ans <- survival::coxph(
+        formula = model_formula,
+        data = comp_df,
+        ties = ties
+      ) |> summary()
     }
 
     log_rank_pvalue <- .estimate_p_value(model_formula, comp_df, test, arm)
@@ -209,7 +220,7 @@ get_cox_pairwise_df <- function(
 #' @param arm (`string`)\cr column name of the arm variable in `data`.
 #'
 #' @returns A single numeric p-value.
-#' @keywords internal
+#' @noRd
 .estimate_p_value <- function(formula, data, test, arm) {
   test_type <- switch(test,
     "log-rank" = "logrank",
@@ -222,10 +233,14 @@ get_cox_pairwise_df <- function(
   )
 
   if (test_type != "lr") {
-    rlang::check_installed(
-      "coin",
-      reason = paste("to run log-rank tests using", test_type, "method")
-    )
+    if (!requireNamespace("coin", quietly = TRUE)) {
+      cli::cli_abort(
+        paste(
+          "The {.pkg coin} package is required to run",
+          "log-rank tests using the {test_type} method."
+        )
+      )
+    }
 
     test_result <- coin::logrank_test(
       formula = formula,
@@ -267,16 +282,9 @@ get_cox_pairwise_df <- function(
 #'   The subsetted data containing exactly two arms.
 #'
 #' @returns A list mimicking `summary(coxph)` containing a `conf.int` data.frame
-#' @keywords internal
+#' @noRd
 .get_discrete_cox <- function(formula, data) {
-  # Sanitize to allow smooth parsing of the Surv formulation
-  lhs_str <- paste(deparse(formula[[2]]), collapse = " ")
-  rhs_str <- paste(deparse(formula[[3]]), collapse = " ")
-
-  clean_lhs_str <- sub(".*Surv\\(", "Surv(", lhs_str)
-  clean_formula <- stats::as.formula(paste(clean_lhs_str, "~", rhs_str))
-
-  mf <- stats::model.frame(clean_formula, data = data)
+  mf <- stats::model.frame(formula, data = data)
   surv_resp <- stats::model.response(mf)
 
   # Extract the actual status variable name directly from the formula.
@@ -289,15 +297,23 @@ get_cox_pairwise_df <- function(
 
   # Transforming to person-time guarantees proper risk sets for tied intervals
   data_long <- survival::survSplit(
-    formula = clean_formula,
+    formula = formula,
     data = data,
     cut = event_times,
     episode = ".time_int"
   )
 
-  glm_formula <- stats::as.formula(
-    paste(status_var, "~", rhs_str, "+ as.factor(.time_int)")
+  # Construct the update template dynamically using the extracted status variable name
+  # This creates: status_var ~ . + as.factor(.time_int)
+  update_pattern <- stats::reformulate(
+    termlabels = c(".", "as.factor(.time_int)"),
+    response = status_var
   )
+
+  # Apply the update to the original formula
+  # This safely replaces the Surv(...) LHS with the raw status variable,
+  # retains all RHS covariates, and adds the discrete time intervals.
+  glm_formula <- stats::update(formula, update_pattern)
 
   glm_fit <- stats::glm(
     glm_formula,

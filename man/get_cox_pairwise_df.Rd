@@ -51,7 +51,7 @@ A \code{data.frame} with one row per comparison arm (stored as rownames).
 The columns are:
 \itemize{
 \item \code{HR}: The Hazard Ratio formatted to two decimal places.
-\item \verb{95\% CI}: The 95\\% confidence interval as \code{"(lower, upper)"}.
+\item \verb{95\% CI}: The 95\% confidence interval as \code{"(lower, upper)"}.
 \item \verb{p-value (<test>)}: The p-value from the selected \code{test}, where
 \verb{<test>} is the title-cased test name (e.g., \code{"p-value (log-rank)"}).
 }
@@ -75,17 +75,21 @@ to \code{coin::logrank_test()} for weighted log-rank variants or to
 \examples{
 # Example data setup (assuming 'time' is event time, 'status'
 # is event indicator (1=event), and 'arm' is the treatment group)
-library(dplyr) # For better data handling
+# for data handling
+library(dplyr) 
+# to not specify formula using `survival::Surv` - it is a bad practice and 
+# can lead to unexpected results
+library(survival)
 
 # Prepare data in a modern dplyr-friendly way
-surv_data <- survival::lung |>
+surv_data <- lung |>
   mutate(
     arm = factor(sample(c("A", "B", "C"), n(), replace = TRUE)),
     status = status - 1 # Convert status to 0/1
   ) |>
   filter(if_all(everything(), ~ !is.na(.)))
 
-formula <- survival::Surv(time, status) ~ arm
+formula <- Surv(time, status) ~ arm
 
 # Example 1: Default usage (ties = "exact", test = "log-rank")
 results_default <- get_cox_pairwise_df(
