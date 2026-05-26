@@ -36,7 +36,7 @@
 #' The columns are:
 #' \itemize{
 #'   \item `HR`: The Hazard Ratio formatted to two decimal places.
-#'   \item `95% CI`: The 95% confidence interval as `"(lower, upper)"`.
+#'   \item `95% CI`: The 95% Wald confidence interval as `"(lower, upper)"`.
 #'   \item `p-value (<test>)`: The p-value from the selected `test`, where
 #'     `<test>` is the title-cased test name (e.g., `"p-value (log-rank)"`).
 #' }
@@ -168,6 +168,7 @@ get_cox_pairwise_df <- function(
 
     comp_df[[arm]] <- droplevels(comp_df[[arm]])
 
+    # Wald CIs are calculated with all ties methods
     if (ties == "discrete") {
       coxph_ans <- .get_discrete_cox(formula = model_formula, data = comp_df)
     } else {
