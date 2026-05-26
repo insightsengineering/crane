@@ -1,7 +1,7 @@
 # tbl_hierarchical_rate_by_grade() works
 
     Code
-      as.data.frame(tbl)[1:25, ]
+      as.data.frame(add_grade_column(tbl))[1:25, ]
     Output
          MedDRA System Organ Class  \n    MedDRA Preferred Term         Grade Placebo  \n(N = 86) Xanomeline High Dose  \n(N = 84) Xanomeline Low Dose  \n(N = 84)
       1                                  - Any adverse events - - Any Grade -          26 (30.2%)                       42 (50.0%)                      40 (47.6%)
@@ -33,7 +33,7 @@
 ---
 
     Code
-      as.data.frame(tbl)[1:25, ]
+      as.data.frame(add_grade_column(tbl))[1:25, ]
     Output
          MedDRA System Organ Class  \n    MedDRA Preferred Term         Grade Placebo  \n(N = 86) Xanomeline High Dose  \n(N = 84) Xanomeline Low Dose  \n(N = 84)
       1                                  - Any adverse events - - Any Grade -          26 (30.2%)                       42 (50.0%)                      40 (47.6%)
@@ -65,7 +65,7 @@
 ---
 
     Code
-      as.data.frame(tbl)[1, ]
+      as.data.frame(add_grade_column(tbl))[1, ]
     Output
         MedDRA System Organ Class  \n    MedDRA Preferred Term         Grade Placebo  \n(N = 86) Xanomeline High Dose  \n(N = 84) Xanomeline Low Dose  \n(N = 84)
       1                                 - Any adverse events - - Any Grade -    26,0/86, 30.233%                 42,0/84, 50.000%                40,0/84, 47.619%
@@ -73,7 +73,7 @@
 # tbl_hierarchical_rate_by_grade(include_overall) works
 
     Code
-      as.data.frame(tbl)[1:25, ]
+      as.data.frame(add_grade_column(tbl))[1:25, ]
     Output
          MedDRA System Organ Class  \n    MedDRA Preferred Term         Grade Placebo  \n(N = 86) Xanomeline High Dose  \n(N = 84) Xanomeline Low Dose  \n(N = 84)
       1                                  - Any adverse events - - Any Grade -          26 (30.2%)                       42 (50.0%)                      40 (47.6%)
@@ -105,7 +105,7 @@
 ---
 
     Code
-      as.data.frame(tbl)[1:25, ]
+      as.data.frame(add_grade_column(tbl))[1:25, ]
     Output
          MedDRA System Organ Class  \n    MedDRA Preferred Term         Grade Placebo  \n(N = 86) Xanomeline High Dose  \n(N = 84) Xanomeline Low Dose  \n(N = 84)
       1                                       CARDIAC DISORDERS                              <NA>                             <NA>                            <NA>

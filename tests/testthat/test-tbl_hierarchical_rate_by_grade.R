@@ -32,7 +32,18 @@ test_that("tbl_hierarchical_rate_by_grade() works", {
         label = label
       )
   )
-  expect_snapshot(as.data.frame(tbl)[1:25, ])
+
+  # custom_info metadata is injected for add_grade_column()
+
+  expect_true(!is.null(tbl$custom_info))
+  expect_equal(tbl$custom_info$soc, "AEBODSYS")
+  expect_equal(tbl$custom_info$ae, "AEDECOD")
+  expect_equal(tbl$custom_info$grade, "AETOXGR")
+
+  # label column retains grade text (not blanked) for merge safety
+  expect_true(any(tbl$table_body$label %in% as.character(1:5)))
+
+  expect_snapshot(as.data.frame(tbl |> add_grade_column())[1:25, ])
 
   # with grade groups
   expect_no_error(
@@ -46,7 +57,7 @@ test_that("tbl_hierarchical_rate_by_grade() works", {
         grade_groups = grade_groups
       )
   )
-  expect_snapshot(as.data.frame(tbl)[1:25, ])
+  expect_snapshot(as.data.frame(tbl |> add_grade_column())[1:25, ])
 
   # no by, no label
   expect_no_error(
@@ -71,7 +82,7 @@ test_that("tbl_hierarchical_rate_by_grade() works", {
         digits = everything() ~ list(n = label_roche_number(digits = 1, decimal.mark = ","), p = 3)
       )
   )
-  expect_snapshot(as.data.frame(tbl)[1, ])
+  expect_snapshot(as.data.frame(tbl |> add_grade_column())[1, ])
 })
 
 test_that("tbl_hierarchical_rate_by_grade(include_overall) works", {
@@ -90,7 +101,7 @@ test_that("tbl_hierarchical_rate_by_grade(include_overall) works", {
         include_overall = everything()
       )
   )
-  expect_snapshot(as.data.frame(tbl)[1:25, ])
+  expect_snapshot(as.data.frame(tbl |> add_grade_column())[1:25, ])
 
   # all overall sections removed
   expect_no_error(
@@ -105,7 +116,7 @@ test_that("tbl_hierarchical_rate_by_grade(include_overall) works", {
         include_overall = NULL
       )
   )
-  expect_snapshot(as.data.frame(tbl)[1:25, ])
+  expect_snapshot(as.data.frame(tbl |> add_grade_column())[1:25, ])
 })
 
 test_that("tbl_hierarchical_rate_by_grade() works with add_overall()", {
@@ -280,6 +291,26 @@ test_that("tbl_hierarchical_rate_by_grade(grade_groups) works with some grades n
   )
 })
 
+test_that("tbl_hierarchical_rate_by_grade() appends missing grade group levels to character grade", {
+  # character grade column (not factor), partial grade groups with a level absent from data
+  ADAE_char <- ADAE_subset
+  ADAE_char$AETOXGR <- as.character(ADAE_char$AETOXGR)
+  ADAE_char <- ADAE_char[!ADAE_char$AETOXGR %in% c("1", "2"), ]
+
+  # grade_groups reference grades "1" and "2" which are absent from data
+  expect_message(
+    tbl <- tbl_hierarchical_rate_by_grade(
+      ADAE_char,
+      variables = c(AEBODSYS, AEDECOD, AETOXGR),
+      denominator = ADSL,
+      by = TRTA,
+      label = label,
+      grade_groups = list("Grade 3-4" = c("3", "4"), "Grade 1-2" = c("1", "2"))
+    ),
+    "\\`AETOXGR\\`: "
+  )
+})
+
 test_that("tbl_hierarchical_rate_by_grade(grades_exclude) works", {
   # no grades excluded
   tbl_no_excl <-
@@ -309,7 +340,7 @@ test_that("tbl_hierarchical_rate_by_grade(grades_exclude) works", {
   expect_identical(
     tbl_excl$table_body,
     tbl_no_excl$table_body |>
-      dplyr::filter(label_grade != "5")
+      dplyr::filter(label != "5")
   )
 
   # all grades excluded
@@ -328,7 +359,7 @@ test_that("tbl_hierarchical_rate_by_grade(grades_exclude) works", {
   expect_identical(
     tbl_excl$table_body,
     tbl_no_excl$table_body |>
-      dplyr::filter(!label_grade %in% as.character(1:5))
+      dplyr::filter(!label %in% as.character(1:5))
   )
 })
 

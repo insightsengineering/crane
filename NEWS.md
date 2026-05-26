@@ -33,6 +33,8 @@
 
 * `tbl_coxph()` now accepts a data.frame created by `get_cox_pairwise_df()` as input. (#207)
 
+* Added `add_grade_column()` to inject a grade-label column into `tbl_hierarchical_rate_by_grade()` output. Decoupled from the table builder to prevent Cartesian join explosion in `tbl_merge()`. (#226)
+
 ### Other Updates
 
 * `tbl_hierarchical_rate_and_count()` now emits zero-rows for unobserved factor levels in the first hierarchical variable. (#233)
