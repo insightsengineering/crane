@@ -207,3 +207,35 @@ test_that("get_cox_pairwise_df() works for formula with covariates", {
   expect_false(anyNA(res_covariate[["HR"]]))
   expect_false(anyNA(res_covariate[["p-value (Likelihood-Ratio)"]]))
 })
+
+test_that("get_cox_pairwise_df() works for formula with strata()", {
+  # 1. Test log-rank with strata (uses coin engine)
+  expect_no_error(
+    suppressWarnings(
+      res_strata_lr <- get_cox_pairwise_df(
+        model_formula = Surv(time, event) ~ treatment + strata(celltype),
+        data = test_df_2grp,
+        arm = "treatment",
+        ties = "efron",
+        test = "log-rank" 
+      )
+    )
+  )
+  expect_s3_class(res_strata_lr, "data.frame")
+  expect_false(anyNA(res_strata_lr[["p-value (log-rank)"]]))
+
+  # 2. Test likelihood-ratio with strata (uses updated parametric survreg engine)
+  expect_no_error(
+    suppressWarnings(
+      res_strata_lrt <- get_cox_pairwise_df(
+        model_formula = Surv(time, event) ~ treatment + strata(celltype),
+        data = test_df_2grp,
+        arm = "treatment",
+        ties = "efron",
+        test = "likelihood-ratio" 
+      )
+    )
+  )
+  expect_s3_class(res_strata_lrt, "data.frame")
+  expect_false(anyNA(res_strata_lrt[["p-value (Likelihood-Ratio)"]]))
+})

@@ -48,7 +48,7 @@
 #'     \item Computes a p-value via, which dispatches
 #'       to `coin::logrank_test()` for weighted log-rank variants or to
 #'       `survival::survreg()` for the likelihood-ratio test.
-#'   }
+#' }
 #'
 #' @seealso `annotate_gg_km()`, `gg_km()`, `survival::coxph()`,
 #'   `coin::logrank_test()`.
@@ -241,23 +241,25 @@ get_cox_pairwise_df <- function(
         )
       )
     }
+    coin_formula <- .rewrite_strata_term(formula, model = "coin")
 
     test_result <- coin::logrank_test(
-      formula = formula,
+      formula = coin_formula,
       data = data,
       type = test_type
     )
 
     p_value <- as.numeric(coin::pvalue(test_result))
   } else {
+    clean_formula <- .rewrite_strata_term(formula, model = "linear")
     # SAS LR test assumes an exponential distribution
     # fit the model
-    fit_cov <- survival::survreg(formula, data = data, dist = "exponential")
+    fit_cov <- survival::survreg(clean_formula, data = data, dist = "exponential")
 
     # fit the null model
     drop_arm_formula <- stats::as.formula(paste(". ~ . -", arm))
     # to account for possible covariates
-    null_formula <- stats::update(formula, drop_arm_formula)
+    null_formula <- stats::update(clean_formula, drop_arm_formula)
     fit_null <- survival::survreg(null_formula, data = data, dist = "exponential")
 
     # calculate the difference and estimate the statistics
@@ -284,20 +286,23 @@ get_cox_pairwise_df <- function(
 #' @returns A list mimicking `summary(coxph)` containing a `conf.int` data.frame
 #' @noRd
 .get_discrete_cox <- function(formula, data) {
-  mf <- stats::model.frame(formula, data = data)
+  # Flatten strata terms into standard GLM covariates
+  clean_formula <- .rewrite_strata_term(formula, model = "linear")
+
+  mf <- stats::model.frame(clean_formula, data = data)
   surv_resp <- stats::model.response(mf)
 
   # Extract the actual status variable name directly from the formula.
   # Surv() forces its internal matrix column names to "time" and "status",
   # so we must bypass it and read the original variable name (e.g., 'is_event').
-  lhs_vars <- all.vars(formula[[2]])
+  lhs_vars <- all.vars(clean_formula[[2]])
   status_var <- lhs_vars[length(lhs_vars)]
 
   event_times <- sort(unique(surv_resp[, 1][surv_resp[, 2] == 1]))
 
   # Transforming to person-time guarantees proper risk sets for tied intervals
   data_long <- survival::survSplit(
-    formula = formula,
+    formula = clean_formula,
     data = data,
     cut = event_times,
     episode = ".time_int"
@@ -313,7 +318,7 @@ get_cox_pairwise_df <- function(
   # Apply the update to the original formula
   # This safely replaces the Surv(...) LHS with the raw status variable,
   # retains all RHS covariates, and adds the discrete time intervals.
-  glm_formula <- stats::update(formula, update_pattern)
+  glm_formula <- stats::update(clean_formula, update_pattern)
 
   glm_fit <- stats::glm(
     glm_formula,
@@ -338,4 +343,64 @@ get_cox_pairwise_df <- function(
   )
 
   list(conf.int = conf_int_df)
+}
+
+#' Rewrite survival formula with strata() for specific models
+#'
+#' @description
+#' Parses a survival formula and safely translates `strata()` wrappers into 
+#' syntaxes supported by target modeling engines.
+#'
+#' @param formula (`formula`)\cr The original survival formula.
+#' @param model (`string`)\cr The target model: `"coin"` or `"linear"`.
+#' 
+#' @returns A modified `formula` with `strata()` terms properly translated.
+#' @noRd
+.rewrite_strata_term <- function(formula, model = c("coin", "linear")) {
+  model <- match.arg(model)
+  
+  f_terms <- stats::terms(formula)
+  term_labels <- attr(f_terms, "term.labels")
+  
+  # Safely identify strata calls directly from the right-hand side labels
+  strata_idx <- grep("^strata\\(", term_labels)
+  
+  # If there are no strata terms, return the formula completely untouched
+  if (length(strata_idx) == 0) {
+    return(formula)
+  }
+  
+  strata_calls <- term_labels[strata_idx]
+  non_strata_labels <- term_labels[-strata_idx]
+  
+  # Use R's Abstract Syntax Tree (AST) to safely extract strata arguments
+  strata_vars <- unlist(lapply(strata_calls, function(x) {
+    sapply(as.list(str2lang(x))[-1], deparse)
+  }))
+  
+  if (model == "coin") {
+    # coin requires block syntax: response ~ predictors | strata
+    lhs_terms <- if (length(non_strata_labels) > 0) {
+      paste(non_strata_labels, collapse = " + ")
+    } else {
+      "1"
+    }
+    rhs_str <- paste(lhs_terms, "|", paste(strata_vars, collapse = " + "))
+    
+  } else {
+    # glm treats strata purely as normal fixed-effect covariates
+    all_labels <- c(non_strata_labels, strata_vars)
+    rhs_str <- if (length(all_labels) > 0) {
+      paste(all_labels, collapse = " + ")
+    } else {
+      "1"
+    }
+  }
+  
+  # Rebuild the formula preserving the exact LHS response and original environment
+  stats::reformulate(
+    termlabels = rhs_str, 
+    response = formula[[2]], 
+    env = environment(formula)
+  )
 }
