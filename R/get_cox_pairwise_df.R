@@ -348,36 +348,36 @@ get_cox_pairwise_df <- function(
 #' Rewrite survival formula with strata() for specific models
 #'
 #' @description
-#' Parses a survival formula and safely translates `strata()` wrappers into 
+#' Parses a survival formula and safely translates `strata()` wrappers into
 #' syntaxes supported by target modeling engines.
 #'
 #' @param formula (`formula`)\cr The original survival formula.
 #' @param model (`string`)\cr The target model: `"coin"` or `"linear"`.
-#' 
+#'
 #' @returns A modified `formula` with `strata()` terms properly translated.
 #' @noRd
 .rewrite_strata_term <- function(formula, model = c("coin", "linear")) {
   model <- match.arg(model)
-  
+
   f_terms <- stats::terms(formula)
   term_labels <- attr(f_terms, "term.labels")
-  
+
   # Safely identify strata calls directly from the right-hand side labels
   strata_idx <- grep("^strata\\(", term_labels)
-  
+
   # If there are no strata terms, return the formula completely untouched
   if (length(strata_idx) == 0) {
     return(formula)
   }
-  
+
   strata_calls <- term_labels[strata_idx]
   non_strata_labels <- term_labels[-strata_idx]
-  
+
   # Use R's Abstract Syntax Tree (AST) to safely extract strata arguments
   strata_vars <- unlist(lapply(strata_calls, function(x) {
     sapply(as.list(str2lang(x))[-1], deparse)
   }))
-  
+
   if (model == "coin") {
     # coin requires block syntax: response ~ predictors | strata
     lhs_terms <- if (length(non_strata_labels) > 0) {
@@ -386,7 +386,6 @@ get_cox_pairwise_df <- function(
       "1"
     }
     rhs_str <- paste(lhs_terms, "|", paste(strata_vars, collapse = " + "))
-    
   } else {
     # glm treats strata purely as normal fixed-effect covariates
     all_labels <- c(non_strata_labels, strata_vars)
@@ -396,11 +395,11 @@ get_cox_pairwise_df <- function(
       "1"
     }
   }
-  
+
   # Rebuild the formula preserving the exact LHS response and original environment
   stats::reformulate(
-    termlabels = rhs_str, 
-    response = formula[[2]], 
+    termlabels = rhs_str,
+    response = formula[[2]],
     env = environment(formula)
   )
 }

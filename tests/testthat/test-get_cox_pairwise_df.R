@@ -217,7 +217,7 @@ test_that("get_cox_pairwise_df() works for formula with strata()", {
         data = test_df_2grp,
         arm = "treatment",
         ties = "efron",
-        test = "log-rank" 
+        test = "log-rank"
       )
     )
   )
@@ -232,7 +232,7 @@ test_that("get_cox_pairwise_df() works for formula with strata()", {
         data = test_df_2grp,
         arm = "treatment",
         ties = "efron",
-        test = "likelihood-ratio" 
+        test = "likelihood-ratio"
       )
     )
   )
