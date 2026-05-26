@@ -232,13 +232,25 @@ tbl_ancova <- function(data,
   if (!is.null(denominator)) {
     check_class(denominator, "data.frame")
     if (by %in% names(denominator)) {
-      header_n <- denominator |>
-        dplyr::count(!!rlang::sym(by), name = "n") |>
-        dplyr::arrange(factor(!!rlang::sym(by), levels = trt_levels))
+      # read the column-to-group mapping that tbl_ard_summary assigned
+      col_map <- tbl$table_body |>
+        dplyr::select(dplyr::starts_with("stat_")) |>
+        names()
+      # extract group labels from existing headers (format: "**Group**")
+      existing_headers <- tbl$table_styling$header |>
+        dplyr::filter(.data$column %in% col_map) |>
+        dplyr::mutate(group = gsub("^\\*\\*|\\*\\*$", "", .data$label)) |>
+        dplyr::select("column", "group")
+
+      denom_n <- denominator |>
+        dplyr::count(!!rlang::sym(by), name = "n")
+
+      header_df <- existing_headers |>
+        dplyr::left_join(denom_n, by = stats::setNames(by, "group"))
 
       header_labels <- stats::setNames(
-        paste0("**", header_n[[by]], "**\n(N = ", header_n$n, ")"),
-        paste0("stat_", seq_len(nrow(header_n)))
+        paste0("**", header_df$group, "**\n(N = ", header_df$n, ")"),
+        header_df$column
       )
       tbl <- tbl |>
         gtsummary::modify_header(!!!header_labels)

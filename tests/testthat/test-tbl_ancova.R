@@ -55,18 +55,65 @@ test_that("tbl_ancova() works with denominator", {
 
   # header Ns come from ADSL, not from the analysis data
   adsl_n <- cards::ADSL |>
-    dplyr::count(TRTA) |>
-    dplyr::arrange(factor(TRTA, levels = levels(df_ancova$TRTA)))
+    dplyr::count(TRTA)
+  headers <- tbl$table_styling$header |>
+    dplyr::filter(grepl("^stat_", .data$column))
   for (i in seq_len(nrow(adsl_n))) {
-    header <- tbl$table_styling$header |>
-      dplyr::filter(.data$column == paste0("stat_", i)) |>
-      dplyr::pull("label")
-    expect_true(grepl(paste0("N = ", adsl_n$n[i]), header))
+    matching_header <- headers$label[grepl(adsl_n$TRTA[i], headers$label, fixed = TRUE)]
+    expect_true(
+      length(matching_header) == 1 && grepl(paste0("N = ", adsl_n$n[i]), matching_header),
+      label = paste("Header for", adsl_n$TRTA[i], "should show N =", adsl_n$n[i])
+    )
   }
 
   expect_snapshot(as.data.frame(tbl))
 })
 
+
+test_that("tbl_ancova() denominator headers align when ref_group is not alphabetically first", {
+  withr::local_options(list(width = 200))
+
+  # Arms where the reference group ("B: Placebo") sorts after "A: Drug X"
+  df_alpha <- df_ancova |>
+    dplyr::mutate(ARM = dplyr::case_when(
+      TRTA == "Placebo" ~ "B: Placebo",
+      TRTA == "Xanomeline High Dose" ~ "A: Drug X",
+      TRTA == "Xanomeline Low Dose" ~ "C: Combination"
+    ))
+  adsl_alpha <- cards::ADSL |>
+    dplyr::mutate(ARM = dplyr::case_when(
+      TRTA == "Placebo" ~ "B: Placebo",
+      TRTA == "Xanomeline High Dose" ~ "A: Drug X",
+      TRTA == "Xanomeline Low Dose" ~ "C: Combination"
+    ))
+
+  expect_silent(
+    tbl <- tbl_ancova(
+      data = df_alpha,
+      formula = CHG ~ ARM + BASE,
+      by = ARM,
+      ref_group = "B: Placebo",
+      denominator = adsl_alpha
+    )
+  )
+
+  # verify each column header matches its data:
+  # the reference group column must show blank contrast rows
+  headers <- tbl$table_styling$header |>
+    dplyr::filter(grepl("^stat_", .data$column))
+  ref_col <- headers$column[grepl("B: Placebo", headers$label)]
+
+  diff_row <- tbl$table_body |>
+    dplyr::filter(.data$label == "Difference in Adjusted Means")
+  # reference column must be blank
+
+  expect_equal(diff_row[[ref_col]], "")
+  # non-reference columns must have numeric values
+  non_ref_cols <- setdiff(headers$column, ref_col)
+  for (col in non_ref_cols) {
+    expect_false(diff_row[[col]] == "", label = paste("column", col, "should not be blank"))
+  }
+})
 
 test_that("tbl_ancova() works with conf.level = 0.90", {
   withr::local_options(list(width = 200))
