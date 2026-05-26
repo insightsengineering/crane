@@ -124,4 +124,16 @@ cards::ADLB |>
     adjust = "dunnett"
   )
 
+# Custom column order — set factor levels on the input data
+cards::ADLB |>
+  dplyr::filter(PARAMCD == "SODIUM", AVISIT == "Week 8") |>
+  dplyr::mutate(TRTA = factor(TRTA, levels = c(
+    "Placebo", "Xanomeline Low Dose", "Xanomeline High Dose"
+  ))) |>
+  tbl_ancova(
+    formula = CHG ~ TRTA + BASE,
+    by = TRTA,
+    ref_group = "Placebo"
+  )
+
 }
