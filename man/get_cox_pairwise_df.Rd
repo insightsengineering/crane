@@ -67,7 +67,7 @@ The function iterates through each non-reference arm, subsets the
 data to the current arm and the reference arm, and then:
 \itemize{
 \item Fits a Cox model using \code{survival::coxph()}.
-\item Computes a p-value via \code{\link[=.estimate_p_value]{.estimate_p_value()}}, which dispatches
+\item Computes a p-value via, which dispatches
 to \code{coin::logrank_test()} for weighted log-rank variants or to
 \code{survival::survreg()} for the likelihood-ratio test.
 }
@@ -76,8 +76,8 @@ to \code{coin::logrank_test()} for weighted log-rank variants or to
 # Example data setup (assuming 'time' is event time, 'status'
 # is event indicator (1=event), and 'arm' is the treatment group)
 # for data handling
-library(dplyr) 
-# to not specify formula using `survival::Surv` - it is a bad practice and 
+library(dplyr)
+# to not specify formula using `survival::Surv` - it is a bad practice and
 # can lead to unexpected results
 library(survival)
 
