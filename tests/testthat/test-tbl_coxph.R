@@ -20,14 +20,14 @@ surv_data_3arm <- survival::lung |>
 
 # Generate baseline pairwise dataframes to use in the tests
 pairwise_df_2arm <- get_cox_pairwise_df(
-  model_formula = survival::Surv(time, status) ~ arm,
+  model_formula = Surv(time, status) ~ arm,
   data = surv_data_2arm,
   arm = "arm",
   ref_group = "A"
 )
 
 pairwise_df_3arm <- get_cox_pairwise_df(
-  model_formula = survival::Surv(time, status) ~ arm,
+  model_formula = Surv(time, status) ~ arm,
   data = surv_data_3arm,
   arm = "arm",
   ref_group = "A"
@@ -108,7 +108,7 @@ test_that("tbl_coxph() works with only p-value (HR and CI removed)", {
 test_that("tbl_coxph() dynamically adopts different p-value test labels", {
   # Generate a pairwise dataframe using a different test (e.g., Wilcoxon)
   pairwise_wilcoxon <- get_cox_pairwise_df(
-    model_formula = survival::Surv(time, status) ~ arm,
+    model_formula = Surv(time, status) ~ arm,
     data = surv_data_2arm,
     arm = "arm",
     test = "gehan-breslow"

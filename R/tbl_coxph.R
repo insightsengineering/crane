@@ -18,14 +18,14 @@
 #' @examplesIf requireNamespace("survival", quietly = TRUE) && requireNamespace("coin", quietly = TRUE)
 #' # Setup sample survival data
 #' library(survival)
-#' surv_data <- survival::lung |>
+#' surv_data <- lung |>
 #'   dplyr::mutate(
 #'     arm = factor(sample(c("A", "B", "C"), dplyr::n(), replace = TRUE)),
 #'     status = status - 1
 #'   ) |>
 #'   dplyr::filter(dplyr::if_all(dplyr::everything(), ~ !is.na(.)))
 #'
-#' formula <- survival::Surv(time, status) ~ arm
+#' formula <- Surv(time, status) ~ arm
 #'
 #' # Generate the pairwise statistics data.frame
 #' pairwise_results <- get_cox_pairwise_df(

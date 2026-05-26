@@ -1,3 +1,4 @@
+skip_if_pkg_not_installed("survival")
 # pre-processing the km fit
 anl <- cards::ADTTE |>
   dplyr::mutate(is_event = CNSR == 0)
@@ -9,7 +10,7 @@ anl[[by]] <- factor(anl[[by]], levels = c(
 ))
 group_sym <- rlang::sym(by)
 model_formula <- rlang::new_formula(
-  lhs = rlang::expr(survival::Surv(AVAL, is_event)),
+  lhs = rlang::expr(Surv(AVAL, is_event)),
   rhs = rlang::expr(!!group_sym)
 )
 fit_kmg01 <- survival::survfit(model_formula, anl)

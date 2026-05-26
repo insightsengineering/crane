@@ -73,13 +73,11 @@ to \code{coin::logrank_test()} for weighted log-rank variants or to
 }
 }
 \examples{
+\dontshow{if (requireNamespace("survival", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 # Example data setup (assuming 'time' is event time, 'status'
 # is event indicator (1=event), and 'arm' is the treatment group)
 # for data handling
 library(dplyr)
-# to not specify formula using `survival::Surv` - it is a bad practice and
-# can lead to unexpected results
-library(survival)
 
 # Prepare data in a modern dplyr-friendly way
 surv_data <- lung |>
@@ -121,7 +119,7 @@ results_lr <- get_cox_pairwise_df(
   test = "likelihood-ratio"
 )
 print(results_lr)
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{annotate_gg_km()}, \code{gg_km()}, \code{survival::coxph()},
