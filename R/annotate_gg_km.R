@@ -46,15 +46,16 @@
 #' @seealso [gg_km()], [process_survfit()], and [get_cox_pairwise_df()] for
 #'   related functionalities.
 #'
-#' @examples
+#' @examplesIf requireNamespace("survival", quietly = TRUE) && requireNamespace("coin", quietly = TRUE)
 #' # Preparing the Kaplan-Meier Plot
-#' use_lung <- survival::lung
+#' library(survival)
+#' use_lung <- lung
 #' use_lung$arm <- factor(sample(c("A", "B", "C"), nrow(use_lung), replace = TRUE))
 #' use_lung$status <- use_lung$status - 1 # Convert status to 0/1
 #' use_lung <- na.omit(use_lung)
 #'
-#' formula <- survival::Surv(time, status) ~ arm
-#' fit_kmg01 <- survival::survfit(formula, use_lung)
+#' formula <- Surv(time, status) ~ arm
+#' fit_kmg01 <- survfit(formula, use_lung)
 #' surv_plot_data <- process_survfit(fit_kmg01)
 #'
 #' plt_kmg01 <- gg_km(surv_plot_data)

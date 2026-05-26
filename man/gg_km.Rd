@@ -92,20 +92,22 @@ support for various customizations like censoring marks, Confidence  Intervals (
 
 }}
 \examples{
+\dontshow{if (requireNamespace("survival", quietly = TRUE) && requireNamespace("coin", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 # Data preparation for KM plot
-use_lung <- survival::lung
+library(survival)
+use_lung <- lung
 use_lung$arm <- factor(sample(c("A", "B", "C"), nrow(use_lung), replace = TRUE))
 use_lung$status <- use_lung$status - 1 # Convert status to 0/1
 use_lung <- na.omit(use_lung)
 
 # Fit Kaplan-Meier model
-formula <- survival::Surv(time, status) ~ arm
-fit_kmg01 <- survival::survfit(formula, use_lung)
+formula <- Surv(time, status) ~ arm
+fit_kmg01 <- survfit(formula, use_lung)
 
 # Process survfit data for plotting
 surv_plot_data <- process_survfit(fit_kmg01)
 head(surv_plot_data)
-
+\dontshow{\}) # examplesIf}
 # Example of making the KM plot
 plt_kmg01 <- gg_km(surv_plot_data)
 
