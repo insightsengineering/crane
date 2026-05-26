@@ -51,7 +51,7 @@ A \code{data.frame} with one row per comparison arm (stored as rownames).
 The columns are:
 \itemize{
 \item \code{HR}: The Hazard Ratio formatted to two decimal places.
-\item \verb{95\% CI}: The 95\% confidence interval as \code{"(lower, upper)"}.
+\item \verb{95\% CI}: The 95\% Wald confidence interval as \code{"(lower, upper)"}.
 \item \verb{p-value (<test>)}: The p-value from the selected \code{test}, where
 \verb{<test>} is the title-cased test name (e.g., \code{"p-value (log-rank)"}).
 }
