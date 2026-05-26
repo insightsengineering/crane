@@ -58,7 +58,7 @@
 #' # is event indicator (1=event), and 'arm' is the treatment group)
 #' # for data handling
 #' library(dplyr)
-#'
+#' library(survival)
 #' # Prepare data in a modern dplyr-friendly way
 #' surv_data <- lung |>
 #'   mutate(
