@@ -3,11 +3,11 @@ skip_on_cran()
 # Setup small, reproducible datasets using {cards}
 ADSL_subset <- cards::ADSL |>
   dplyr::filter(TRTA %in% c("Placebo", "Xanomeline High Dose", "Xanomeline Low Dose")) |>
-  dplyr::slice(1:30)
+  dplyr::slice_head(n = 30)
 
 ADAE_subset <- cards::ADAE |>
   dplyr::filter(USUBJID %in% ADSL_subset$USUBJID) |>
-  dplyr::slice(1:30)
+  dplyr::slice_head(n = 30)
 
 # Define standard pools for testing
 standard_pools <- list(
@@ -415,4 +415,74 @@ test_that("tbl_with_pools() skips if an rlang::expr() evaluates to 0 rows", {
     ),
     error = TRUE
   )
+})
+
+
+# --- 13. Pipeline: tbl_with_pools + tbl_hierarchical_rate_by_grade + add_grade_column ---
+test_that("tbl_with_pools() + add_grade_column() pipeline does not duplicate rows (#226)", {
+  # Regression test: deferred grade-column injection avoids row duplication
+  # during tbl_merge() inside tbl_with_pools().
+
+  # Full ADSL + filtered ADAE (3 SOCs/AETERMs) — needs enough hierarchical
+  # depth for tbl_hierarchical_rate_by_grade; file-level subsets are too small.
+  ADSL_pipe <- cards::ADSL
+  ADAE_pipe <- cards::ADAE |>
+    dplyr::filter(
+      AESOC %in% unique(cards::ADAE$AESOC)[1:3],
+      AETERM %in% unique(cards::ADAE$AETERM)[1:3]
+    )
+
+  pools <- list(
+    "Any Xanomeline" = c("Xanomeline High Dose", "Xanomeline Low Dose"),
+    "All Patients" = "all"
+  )
+
+  grade_groups <- list(
+    "Grade 1-2" = c("1", "2"),
+    "Grade 3-4" = c("3", "4")
+  )
+
+  # the merge should complete without row explosion
+  expect_silent(
+    merged_tbl <- tbl_with_pools(
+      data = ADAE_pipe,
+      pools = pools,
+      by = "TRTA",
+      denominator = ADSL_pipe,
+      keep_original = TRUE,
+      .tbl_fun = tbl_hierarchical_rate_by_grade,
+      variables = c(AEBODSYS, AEDECOD, AETOXGR),
+      grade_groups = grade_groups
+    )
+  )
+
+  # verify no Cartesian explosion: row count should match a single table
+  single_tbl <- tbl_hierarchical_rate_by_grade(
+    ADAE_pipe,
+    variables = c(AEBODSYS, AEDECOD, AETOXGR),
+    denominator = ADSL_pipe,
+    by = TRTA,
+    grade_groups = grade_groups
+  )
+  # merged table should have same number of rows (not exponentially more)
+  expect_equal(nrow(merged_tbl$table_body), nrow(single_tbl$table_body))
+
+  # verify label column retains unique values (not all blank)
+  grade_labels <- merged_tbl$table_body |>
+    dplyr::filter(variable == "AETOXGR") |>
+    dplyr::pull(label)
+  expect_true(all(grade_labels != ""))
+
+  # apply add_grade_column() to the merged result
+  final_tbl <- merged_tbl |> add_grade_column()
+
+  # after styling: label_grade exists, grade labels blanked from label
+  expect_true("label_grade" %in% names(final_tbl$table_body))
+  grade_labels_after <- final_tbl$table_body |>
+    dplyr::filter(variable == "AETOXGR") |>
+    dplyr::pull(label)
+  expect_true(all(grade_labels_after == ""))
+
+  # custom_info is extracted from the first sub-table
+  expect_true(!is.null(merged_tbl$tbls[[1]]$custom_info))
 })

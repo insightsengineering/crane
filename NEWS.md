@@ -1,4 +1,4 @@
-# crane 0.3.1.9041
+# crane 0.3.1.9042
 
 ## New Functions and Functionality
 
@@ -32,6 +32,8 @@
 * `get_cox_pairwise_df()` now allows for different methods to compute p-value (#191) and to handle ties (#193).
 
 * `tbl_coxph()` now accepts a data.frame created by `get_cox_pairwise_df()` as input. (#207)
+
+* Added `add_grade_column()` to inject a grade-label column into `tbl_hierarchical_rate_by_grade()` output. Decoupled from the table builder to prevent Cartesian join explosion in `tbl_merge()`. (#226)
 
 ### Other Updates
 
