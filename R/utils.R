@@ -55,3 +55,16 @@ case_switch <- function(..., .default = NULL) {
     return(0)
   }
 }
+
+#' Check if formula contains namespace
+#' @keywords internal
+#' @noRd
+.check_formula_for_namespace <- function(formula) {
+  formula_str <- paste(deparse(formula), collapse = " ")
+  if (grepl("\\b[a-zA-Z][a-zA-Z0-9.]*::", formula_str)) {
+    cli::cli_abort(
+      "{.arg formula} must be specified without namespace.",
+      call = get_cli_abort_call()
+    )
+  }
+}

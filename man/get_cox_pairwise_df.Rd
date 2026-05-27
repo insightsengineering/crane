@@ -11,7 +11,8 @@ get_cox_pairwise_df(
   ref_group = NULL,
   ties = c("exact", "efron", "breslow"),
   test = c("log-rank", "gehan-breslow", "tarone", "peto", "prentice",
-    "fleming-harrington", "likelihood-ratio")
+    "fleming-harrington", "likelihood-ratio"),
+  ...
 )
 }
 \arguments{
@@ -45,6 +46,11 @@ Default is "exact".}
 A string specifying the type of test to compute the p-value.
 Must be one of "log-rank", "gehan-breslow" (wilcoxon), "tarone", "peto",
 "prentice" (modified peto), "fleming-harrington", or "likelihood-ratio".}
+
+\item{...}{Additional arguments passed to \code{survival::coxph()} and \code{summary()}
+two arguments are supported:
+\code{conf.int} (default \code{0.95}) to adjust the CI level;
+\code{robust = TRUE} to compute robust standard errors;}
 }
 \value{
 A \code{data.frame} with one row per comparison arm (stored as rownames).
@@ -52,6 +58,7 @@ The columns are:
 \itemize{
 \item \code{HR}: The Hazard Ratio formatted to two decimal places.
 \item \verb{95\% CI}: The 95\% Wald confidence interval as \code{"(lower, upper)"}.
+Setting \code{robust = TRUE} results in robust sandwich CIs.
 \item \verb{p-value (<test>)}: The p-value from the selected \code{test}, where
 \verb{<test>} is the title-cased test name (e.g., \code{"p-value (log-rank)"}).
 }

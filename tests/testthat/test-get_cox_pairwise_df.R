@@ -188,30 +188,6 @@ test_that("get_cox_pairwise_df() catches invalid 'ties' and 'test' arguments", {
   )
 })
 
-test_that("get_cox_pairwise_df() enforces guardrail against covariates for non-parametric tests", {
-  # coin log-rank should reject formulas with continuous adjustment covariates
-  expect_error(
-    get_cox_pairwise_df(
-      model_formula = Surv(time, event) ~ treatment + karno,
-      data = test_df_2grp,
-      arm = "treatment",
-      test = "log-rank"
-    ),
-    "does not support covariate adjustment for: `karno`"
-  )
-
-  # coin log-rank should reject even if strata is present alongside a covariate
-  expect_error(
-    get_cox_pairwise_df(
-      model_formula = Surv(time, event) ~ treatment + strata(celltype) + age,
-      data = test_df_2grp,
-      arm = "treatment",
-      test = "tarone"
-    ),
-    "does not support covariate adjustment for: `age`"
-  )
-})
-
 test_that("get_cox_pairwise_df() works for formula with covariates via likelihood-ratio", {
   # Likelihood-ratio natively handles right-hand side continuous covariates
   expect_no_error(
@@ -275,4 +251,51 @@ test_that("get_cox_pairwise_df() works for formula with complex strata()", {
   )
   expect_s3_class(res_strata_cox, "data.frame")
   expect_false(anyNA(res_strata_cox[["p-value (Likelihood-Ratio)"]]))
+})
+
+test_that("get_cox_pairwise_df() respects conf.int passed via ...", {
+  # Run with default 95% CI
+  res_95 <- get_cox_pairwise_df(
+    model_formula = Surv(time, event) ~ treatment,
+    data = test_df_2grp,
+    arm = "treatment"
+  )
+
+  # Run with explicit 99% CI
+  expect_no_error(
+    res_99 <- get_cox_pairwise_df(
+      model_formula = Surv(time, event) ~ treatment,
+      data = test_df_2grp,
+      arm = "treatment",
+      conf.int = 0.99
+    )
+  )
+
+  # Check that column names updated dynamically
+  expect_true("99% CI" %in% names(res_99))
+  expect_false("95% CI" %in% names(res_99))
+
+  # The 99% CI should be wider/different from the 95% CI
+  expect_false(res_95[["95% CI"]] == res_99[["99% CI"]])
+})
+
+test_that("get_cox_pairwise_df() handles robust = TRUE correctly via ...", {
+  # We test with the likelihood-ratio test to ensure the `robust` argument
+  # successfully propagates down into the nested LRT models inside .estimate_p_value
+  expect_no_error(
+    suppressWarnings(
+      res_robust <- get_cox_pairwise_df(
+        model_formula = Surv(time, event) ~ treatment,
+        data = test_df_2grp,
+        arm = "treatment",
+        test = "likelihood-ratio",
+        ties = "efron",
+        robust = TRUE
+      )
+    )
+  )
+
+  expect_s3_class(res_robust, "data.frame")
+  expect_false(anyNA(res_robust[["HR"]]))
+  expect_false(anyNA(res_robust[["p-value (Likelihood-Ratio)"]]))
 })

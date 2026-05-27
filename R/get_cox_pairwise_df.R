@@ -31,12 +31,17 @@
 #'   A string specifying the type of test to compute the p-value.
 #'   Must be one of "log-rank", "gehan-breslow" (wilcoxon), "tarone", "peto",
 #'   "prentice" (modified peto), "fleming-harrington", or "likelihood-ratio".
+#' @param ... Additional arguments passed to `survival::coxph()` and `summary()`
+#'    two arguments are supported:
+#'    `conf.int` (default `0.95`) to adjust the CI level;
+#'   `robust = TRUE` to compute robust standard errors;
 #'
 #' @return A `data.frame` with one row per comparison arm (stored as rownames).
 #' The columns are:
 #' \itemize{
 #'   \item `HR`: The Hazard Ratio formatted to two decimal places.
 #'   \item `95% CI`: The 95% Wald confidence interval as `"(lower, upper)"`.
+#'      Setting `robust = TRUE` results in robust sandwich CIs.
 #'   \item `p-value (<test>)`: The p-value from the selected `test`, where
 #'     `<test>` is the title-cased test name (e.g., `"p-value (log-rank)"`).
 #' }
@@ -115,11 +120,37 @@ get_cox_pairwise_df <- function(
     "prentice",
     "fleming-harrington",
     "likelihood-ratio"
-  )
+  ),
+  ...
 ) {
   set_cli_abort_call()
 
+  # Parse the dot-dot-dot list
+  dots <- list(...)
+
+  # Extract explicit parameters, applying defaults if missing
+  conf_int <- if ("conf.int" %in% names(dots)) dots[["conf.int"]] else 0.95
+  robust <- if ("robust" %in% names(dots)) dots[["robust"]] else FALSE
+
+  invalid_dots <- setdiff(names(dots), c("robust", "conf.int"))
   # Input checks
+
+  # Check for invalid ... arguments
+  if (length(invalid_dots) > 0) {
+    cli::cli_abort(
+      c(
+        "Invalid argument{?s} passed via {.code ...}.",
+        "i" = "Only {.arg robust} and {.arg conf.int} are supported at the moment.",
+        "x" = "Unrecognized argument{?s}: {.arg {invalid_dots}}."
+      ),
+      call = get_cli_abort_call()
+    )
+  }
+
+  check_numeric(conf_int)
+  check_scalar_range(conf_int, c(0, 1), include_bounds = FALSE)
+  check_logical(robust)
+
   if (!rlang::is_formula(model_formula)) {
     cli::cli_abort(
       "{.arg model_formula} must be a {.cls formula}.",
@@ -127,7 +158,7 @@ get_cox_pairwise_df <- function(
     )
   }
 
-  check_formula_for_namespace(model_formula)
+  .check_formula_for_namespace(model_formula)
 
   if (!is.factor(data[[arm]])) {
     cli::cli_abort(
@@ -137,7 +168,22 @@ get_cox_pairwise_df <- function(
   }
 
   ties <- match.arg(ties)
+  if (robust && ties == "exact") {
+    cli::cli_abort(
+      c(
+        "Robust standard errors cannot be calculated with the {.val exact} tie-handling method.",
+        "i" = "Please change {.arg ties} to {.val efron} or {.val breslow} when using {.code robust = TRUE}."
+      ),
+      call = get_cli_abort_call()
+    )
+  }
+
   test <- match.arg(test)
+
+  # Prepare remaining dots for coxph (remove conf.int so it doesn't crash coxph)
+  coxph_dots <- dots
+  coxph_dots[["conf.int"]] <- NULL
+  coxph_dots[["robust"]] <- robust
 
   # Determine reference and comparison groups
   ref_group <- if (!is.null(ref_group)) {
@@ -165,13 +211,15 @@ get_cox_pairwise_df <- function(
     # Explicitly relevel the factor so the reference group is ALWAYS first.
     comp_df[[arm]] <- factor(comp_df[[arm]], levels = c(ref_group, current_arm))
 
-    # Wald CIs are calculated with all ties methods
-    coxph_ans <- survival::coxph(
-      formula = model_formula,
-      data = comp_df,
-      ties = ties
-    ) |> summary()
+    # Safely inject the remaining dots into the coxph call
+    cox_args <- c(
+      list(formula = model_formula, data = comp_df, ties = ties),
+      coxph_dots
+    )
+    fit_full <- do.call(survival::coxph, cox_args)
 
+    # Extract summary with our specified conf.int
+    coxph_ans <- summary(fit_full, conf.int = conf_int)
     # Pass the 'ties' argument down so the LRT matches the main Cox estimate
     log_rank_pvalue <- .estimate_p_value(model_formula, comp_df, test, arm, ties)
 
@@ -195,7 +243,7 @@ get_cox_pairwise_df <- function(
 
   names(res) <- c(
     "HR",
-    "95% CI",
+    paste0(conf_int * 100, "% CI"),
     paste0("p-value (", test_name, ")")
   )
   res
@@ -203,7 +251,8 @@ get_cox_pairwise_df <- function(
 
 #' Estimate p-value for a pairwise survival comparison
 #'
-#' Dispatches to `coin::logrank_test()` for weighted log-rank variants
+#' Dispatches to `survival::survdiff()` for standard log-rank,
+#' `coin::logrank_test()` for weighted log-rank variants,
 #' or to a nested likelihood-ratio test via `survival::coxph()`.
 #'
 #' @param formula (`formula`)\cr survival formula, e.g. `Surv(time, status) ~ arm`.
@@ -215,17 +264,39 @@ get_cox_pairwise_df <- function(
 #' @returns A single numeric p-value.
 #' @noRd
 .estimate_p_value <- function(formula, data, test, arm, ties) {
-  test_type <- switch(test,
-    "log-rank" = "logrank",
-    "gehan-breslow" = "Gehan-Breslow",
-    "tarone" = "Tarone-Ware",
-    "peto" = "Peto-Peto",
-    "prentice" = "Prentice",
-    "fleming-harrington" = "Fleming-Harrington",
-    "likelihood-ratio" = "lr"
-  )
+  if (test == "log-rank") {
+    # --- 1. Standard Log-Rank via survival (Matches SAS & rtables) ---
+    sdiff <- survival::survdiff(formula, data = data)
 
-  if (test_type != "lr") {
+    # Calculate the asymptotic p-value using the chi-square statistic
+    # Degrees of freedom is (number of groups - 1)
+    p_value <- stats::pchisq(sdiff$chisq, df = length(sdiff$n) - 1, lower.tail = FALSE)
+  } else if (test == "likelihood-ratio") {
+    # --- 2. Likelihood-Ratio Test via survival ---
+    # Fit the full Cox model
+    fit_full <- survival::coxph(formula, data = data, ties = ties)
+
+    # Safely create the reduced formula by dropping the arm variable
+    reduced_formula <- stats::update(formula, paste(". ~ . -", arm))
+
+    # Fit the reduced model explicitly to avoid drop1 environment scope errors
+    fit_reduced <- survival::coxph(reduced_formula, data = data, ties = ties)
+
+    # Execute the nested Likelihood-Ratio Test
+    anova_res <- stats::anova(fit_reduced, fit_full, test = "Chisq")
+
+    # Extract the p-value for the second row (the full model comparison)
+    p_value <- anova_res[["Pr(>|Chi|)"]][[2]]
+  } else {
+    # --- 3. Weighted Variants via coin ---
+    test_type <- switch(test,
+      "gehan-breslow" = "Gehan-Breslow",
+      "tarone" = "Tarone-Ware",
+      "peto" = "Peto-Peto",
+      "prentice" = "Prentice",
+      "fleming-harrington" = "Fleming-Harrington"
+    )
+
     if (!requireNamespace("coin", quietly = TRUE)) {
       cli::cli_abort(
         paste(
@@ -244,21 +315,6 @@ get_cox_pairwise_df <- function(
     )
 
     p_value <- as.numeric(coin::pvalue(test_result))
-  } else {
-    # Fit the full Cox model
-    fit_full <- survival::coxph(formula, data = data, ties = ties)
-
-    # Safely create the reduced formula by dropping the arm variable
-    reduced_formula <- stats::update(formula, paste(". ~ . -", arm))
-
-    # Fit the reduced model explicitly to avoid drop1 environment scope errors
-    fit_reduced <- survival::coxph(reduced_formula, data = data, ties = ties)
-
-    # Execute the nested Likelihood-Ratio Test
-    anova_res <- stats::anova(fit_reduced, fit_full, test = "Chisq")
-
-    # Extract the p-value for the second row (the full model comparison)
-    p_value <- anova_res[["Pr(>|Chi|)"]][[2]]
   }
 
   p_value
