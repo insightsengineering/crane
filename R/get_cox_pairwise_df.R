@@ -45,7 +45,7 @@
 #'   data to the current arm and the reference arm, and then:
 #'   \itemize{
 #'     \item Fits a Cox model using `survival::coxph()`.
-#'     \item Computes a p-value via, which dispatches
+#'     \item Computes a p-value, which dispatches
 #'       to `coin::logrank_test()` for weighted log-rank variants or to
 #'       `survival::survreg()` for the likelihood-ratio test.
 #' }
