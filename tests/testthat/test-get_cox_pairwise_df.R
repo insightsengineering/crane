@@ -1,6 +1,6 @@
 skip_if_pkg_not_installed(c("survival", "dplyr", "coin"))
 
-# Setup shared test data 
+# Setup shared test data
 set.seed(42)
 test_df_2grp <- survival::veteran |>
   dplyr::mutate(
@@ -199,7 +199,7 @@ test_that("get_cox_pairwise_df() enforces guardrail against covariates for non-p
     ),
     "does not support covariate adjustment for: `karno`"
   )
-  
+
   # coin log-rank should reject even if strata is present alongside a covariate
   expect_error(
     get_cox_pairwise_df(
@@ -261,7 +261,7 @@ test_that("get_cox_pairwise_df() works for formula with complex strata()", {
   )
   expect_s3_class(res_strata_multi, "data.frame")
   expect_false(anyNA(res_strata_multi[["p-value (log-rank)"]]))
-  
+
   # 3. Ensure the likelihood-ratio test properly handles complex strata natively
   expect_no_error(
     suppressWarnings(

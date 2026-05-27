@@ -118,7 +118,7 @@ get_cox_pairwise_df <- function(
   )
 ) {
   set_cli_abort_call()
-  
+
   # Input checks
   if (!rlang::is_formula(model_formula)) {
     cli::cli_abort(
@@ -165,7 +165,7 @@ get_cox_pairwise_df <- function(
         call = get_cli_abort_call()
       )
     }
-    
+
     comp_df <- data[as.character(data[[arm]]) %in% subset_arm, ]
 
     # Explicitly relevel the factor so the reference group is ALWAYS first.
@@ -240,7 +240,7 @@ get_cox_pairwise_df <- function(
         )
       )
     }
-    
+
     coin_formula <- .check_and_rewrite_formula(formula, arm)
 
     test_result <- coin::logrank_test(
@@ -250,20 +250,19 @@ get_cox_pairwise_df <- function(
     )
 
     p_value <- as.numeric(coin::pvalue(test_result))
-    
   } else {
-    # Fit the full Cox model 
+    # Fit the full Cox model
     fit_full <- survival::coxph(formula, data = data, ties = ties)
 
     # Safely create the reduced formula by dropping the arm variable
     reduced_formula <- stats::update(formula, paste(". ~ . -", arm))
-    
+
     # Fit the reduced model explicitly to avoid drop1 environment scope errors
     fit_reduced <- survival::coxph(reduced_formula, data = data, ties = ties)
-    
+
     # Execute the nested Likelihood-Ratio Test
     anova_res <- stats::anova(fit_reduced, fit_full, test = "Chisq")
-    
+
     # Extract the p-value for the second row (the full model comparison)
     p_value <- anova_res[["Pr(>|Chi|)"]][[2]]
   }
@@ -289,11 +288,11 @@ get_cox_pairwise_df <- function(
   # Safely identify strata calls directly from the right-hand side labels
   strata_idx <- grep("^strata\\(", term_labels)
   strata_calls <- term_labels[strata_idx]
-  
+
   # --- 1. GUARDRAIL VALIDATION ---
   valid_terms <- c(arm, strata_calls)
   invalid_terms <- setdiff(term_labels, valid_terms)
-  
+
   if (length(invalid_terms) > 0) {
     cli::cli_abort(
       paste(
@@ -316,7 +315,7 @@ get_cox_pairwise_df <- function(
   }))
 
   lhs_terms <- arm
-  
+
   # If there are multiple strata variables, wrap them in interaction()
   # If single, force as.factor() to satisfy coin::logrank_test requirements
   if (length(strata_vars) > 1) {
@@ -324,7 +323,7 @@ get_cox_pairwise_df <- function(
   } else {
     block_str <- paste0("as.factor(", strata_vars[1], ")")
   }
-  
+
   rhs_str <- paste(lhs_terms, "|", block_str)
 
   # Rebuild the formula preserving the exact LHS response and original environment
@@ -353,11 +352,11 @@ get_cox_pairwise_df <- function(
   # Safely identify strata calls directly from the right-hand side labels
   strata_idx <- grep("^strata\\(", term_labels)
   strata_calls <- term_labels[strata_idx]
-  
+
   # --- 1. GUARDRAIL VALIDATION ---
   valid_terms <- c(arm, strata_calls)
   invalid_terms <- setdiff(term_labels, valid_terms)
-  
+
   if (length(invalid_terms) > 0) {
     cli::cli_abort(
       paste(
@@ -380,7 +379,7 @@ get_cox_pairwise_df <- function(
   }))
 
   lhs_terms <- arm
-  
+
   # If there are multiple strata variables, wrap them in interaction()
   # If single, force as.factor() to satisfy coin::logrank_test requirements
   if (length(strata_vars) > 1) {
@@ -388,7 +387,7 @@ get_cox_pairwise_df <- function(
   } else {
     block_str <- paste0("as.factor(", strata_vars[1], ")")
   }
-  
+
   rhs_str <- paste(lhs_terms, "|", block_str)
 
   # Rebuild the formula preserving the exact LHS response and original environment
