@@ -25,8 +25,8 @@
 #'   selected as the reference group.
 #' @param ties (`character`)\cr
 #'   A string specifying the method for tie handling in the Cox model.
-#'   Must be one of "discrete", "exact", "efron", or "breslow".
-#'   Default is "discrete".
+#'   Must be one of "exact", "efron", or "breslow".
+#'   Default is "exact".
 #' @param test (`character`)\cr
 #'   A string specifying the type of test to compute the p-value.
 #'   Must be one of "log-rank", "gehan-breslow" (wilcoxon), "tarone", "peto",
@@ -106,7 +106,7 @@ get_cox_pairwise_df <- function(
   data,
   arm,
   ref_group = NULL,
-  ties = c("discrete", "exact", "efron", "breslow"),
+  ties = c("exact", "efron", "breslow"),
   test = c(
     "log-rank",
     "gehan-breslow",
@@ -166,18 +166,16 @@ get_cox_pairwise_df <- function(
     }
     comp_df <- data[as.character(data[[arm]]) %in% subset_arm, ]
 
-    comp_df[[arm]] <- droplevels(comp_df[[arm]])
+    # Explicitly relevel the factor so the reference group is ALWAYS first.
+    # This correctly replaces droplevels() while enforcing the right baseline.
+    comp_df[[arm]] <- factor(comp_df[[arm]], levels = c(ref_group, current_arm))
 
     # Wald CIs are calculated with all ties methods
-    if (ties == "discrete") {
-      coxph_ans <- .get_discrete_cox(formula = model_formula, data = comp_df)
-    } else {
-      coxph_ans <- survival::coxph(
-        formula = model_formula,
-        data = comp_df,
-        ties = ties
-      ) |> summary()
-    }
+    coxph_ans <- survival::coxph(
+      formula = model_formula,
+      data = comp_df,
+      ties = ties
+    ) |> summary()
 
     log_rank_pvalue <- .estimate_p_value(model_formula, comp_df, test, arm)
 
@@ -239,7 +237,7 @@ get_cox_pairwise_df <- function(
         )
       )
     }
-    coin_formula <- .rewrite_strata_term(formula, model = "coin")
+    coin_formula <- .rewrite_strata_term(formula, model = "log-rank")
 
     test_result <- coin::logrank_test(
       formula = coin_formula,
@@ -249,7 +247,7 @@ get_cox_pairwise_df <- function(
 
     p_value <- as.numeric(coin::pvalue(test_result))
   } else {
-    clean_formula <- .rewrite_strata_term(formula, model = "linear")
+    clean_formula <- .rewrite_strata_term(formula, model = "likelihood-ratio")
     # SAS LR test assumes an exponential distribution
     # fit the model
     fit_cov <- survival::survreg(clean_formula, data = data, dist = "exponential")
@@ -269,80 +267,6 @@ get_cox_pairwise_df <- function(
   p_value
 }
 
-#' Fit a discrete-time Cox model (pooled logistic regression)
-#'
-#' @description
-#' Helper function to simulate SAS's `TIES=DISCRETE` option. It expands the data
-#' into person-time format, fits a logistic regression model, and calculates
-#' Wald confidence intervals.
-#'
-#' @param formula (`formula`)\cr
-#'   The original survival formula.
-#' @param data (`data.frame`)\cr
-#'   The subsetted data containing exactly two arms.
-#'
-#' @returns A list mimicking `summary(coxph)` containing a `conf.int` data.frame
-#' @noRd
-.get_discrete_cox <- function(formula, data) {
-  # Flatten strata terms into standard GLM covariates
-  clean_formula <- .rewrite_strata_term(formula, model = "linear")
-
-  mf <- stats::model.frame(clean_formula, data = data)
-  surv_resp <- stats::model.response(mf)
-
-  # Extract the actual status variable name directly from the formula.
-  # Surv() forces its internal matrix column names to "time" and "status",
-  # so we must bypass it and read the original variable name (e.g., 'is_event').
-  lhs_vars <- all.vars(clean_formula[[2]])
-  status_var <- lhs_vars[length(lhs_vars)]
-
-  event_times <- sort(unique(surv_resp[, 1][surv_resp[, 2] == 1]))
-
-  # Transforming to person-time guarantees proper risk sets for tied intervals
-  data_long <- survival::survSplit(
-    formula = clean_formula,
-    data = data,
-    cut = event_times,
-    episode = ".time_int"
-  )
-
-  # Construct the update template dynamically using the extracted status variable name
-  # This creates: status_var ~ . + as.factor(.time_int)
-  update_pattern <- stats::reformulate(
-    termlabels = c(".", "as.factor(.time_int)"),
-    response = status_var
-  )
-
-  # Apply the update to the original formula
-  # This safely replaces the Surv(...) LHS with the raw status variable,
-  # retains all RHS covariates, and adds the discrete time intervals.
-  glm_formula <- stats::update(clean_formula, update_pattern)
-
-  glm_fit <- stats::glm(
-    glm_formula,
-    data = data_long,
-    family = stats::binomial(link = "logit")
-  )
-
-  coefs <- stats::coef(glm_fit)
-  wald_ci_log <- stats::confint.default(glm_fit)
-
-  lower_log_ci <- wald_ci_log[, "2.5 %"]
-  upper_log_ci <- wald_ci_log[, "97.5 %"]
-  hr <- exp(coefs)
-
-  conf_int_df <- data.frame(
-    "exp(coef)"  = hr,
-    "exp(-coef)" = 1 / hr,
-    "lower .95"  = exp(lower_log_ci),
-    "upper .95"  = exp(upper_log_ci),
-    row.names    = names(coefs),
-    check.names  = FALSE
-  )
-
-  list(conf.int = conf_int_df)
-}
-
 #' Rewrite survival formula with strata() for specific models
 #'
 #' @description
@@ -350,11 +274,11 @@ get_cox_pairwise_df <- function(
 #' syntaxes supported by target modeling engines.
 #'
 #' @param formula (`formula`)\cr The original survival formula.
-#' @param model (`string`)\cr The target model: `"coin"` or `"linear"`.
+#' @param model (`string`)\cr The target model: `"log-rank"` or `"likelihood-ratio"`.
 #'
 #' @returns A modified `formula` with `strata()` terms properly translated.
 #' @noRd
-.rewrite_strata_term <- function(formula, model = c("coin", "linear")) {
+.rewrite_strata_term <- function(formula, model = c("log-rank", "likelihood-ratio")) {
   model <- match.arg(model)
 
   f_terms <- stats::terms(formula)
@@ -376,8 +300,9 @@ get_cox_pairwise_df <- function(
     sapply(as.list(str2lang(x))[-1], deparse)
   }))
 
-  if (model == "coin") {
-    # coin requires block syntax: response ~ predictors | strata
+  if (model == "log-rank") {
+    # coin is used for log-rank and
+    # requires block syntax: response ~ predictors | strata
     lhs_terms <- if (length(non_strata_labels) > 0) {
       paste(non_strata_labels, collapse = " + ")
     } else {

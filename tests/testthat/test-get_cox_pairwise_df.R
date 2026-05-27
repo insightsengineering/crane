@@ -114,7 +114,8 @@ test_that(paste0(
 })
 
 test_that("get_cox_pairwise_df() works with all valid 'ties' methods", {
-  ties_methods <- c("discrete", "exact", "efron", "breslow")
+  # REMOVED "discrete" from this list
+  ties_methods <- c("exact", "efron", "breslow")
 
   for (t_method in ties_methods) {
     expect_no_error(

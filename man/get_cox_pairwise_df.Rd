@@ -9,7 +9,7 @@ get_cox_pairwise_df(
   data,
   arm,
   ref_group = NULL,
-  ties = c("discrete", "exact", "efron", "breslow"),
+  ties = c("exact", "efron", "breslow"),
   test = c("log-rank", "gehan-breslow", "tarone", "peto", "prentice",
     "fleming-harrington", "likelihood-ratio")
 )
@@ -38,8 +38,8 @@ selected as the reference group.}
 
 \item{ties}{(\code{character})\cr
 A string specifying the method for tie handling in the Cox model.
-Must be one of "discrete", "exact", "efron", or "breslow".
-Default is "discrete".}
+Must be one of "exact", "efron", or "breslow".
+Default is "exact".}
 
 \item{test}{(\code{character})\cr
 A string specifying the type of test to compute the p-value.
