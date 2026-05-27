@@ -47,7 +47,7 @@
 #'     \item Fits a Cox model using `survival::coxph()`.
 #'     \item Computes a p-value, which dispatches
 #'       to `coin::logrank_test()` for weighted log-rank variants or to
-#'       `survival::survreg()` for the likelihood-ratio test.
+#'       a nested `survival::coxph()` LRT for the likelihood-ratio test.
 #' }
 #'
 #' @seealso `annotate_gg_km()`, `gg_km()`, `survival::coxph()`,
@@ -118,6 +118,7 @@ get_cox_pairwise_df <- function(
   )
 ) {
   set_cli_abort_call()
+  
   # Input checks
   if (!rlang::is_formula(model_formula)) {
     cli::cli_abort(
@@ -164,10 +165,10 @@ get_cox_pairwise_df <- function(
         call = get_cli_abort_call()
       )
     }
+    
     comp_df <- data[as.character(data[[arm]]) %in% subset_arm, ]
 
     # Explicitly relevel the factor so the reference group is ALWAYS first.
-    # This correctly replaces droplevels() while enforcing the right baseline.
     comp_df[[arm]] <- factor(comp_df[[arm]], levels = c(ref_group, current_arm))
 
     # Wald CIs are calculated with all ties methods
@@ -177,7 +178,8 @@ get_cox_pairwise_df <- function(
       ties = ties
     ) |> summary()
 
-    log_rank_pvalue <- .estimate_p_value(model_formula, comp_df, test, arm)
+    # Pass the 'ties' argument down so the LRT matches the main Cox estimate
+    log_rank_pvalue <- .estimate_p_value(model_formula, comp_df, test, arm, ties)
 
     conf_int_row <- paste0(arm, current_arm)
     current_row <- data.frame(
@@ -208,16 +210,17 @@ get_cox_pairwise_df <- function(
 #' Estimate p-value for a pairwise survival comparison
 #'
 #' Dispatches to `coin::logrank_test()` for weighted log-rank variants
-#' or to a likelihood-ratio test via `survival::survreg()`.
+#' or to a nested likelihood-ratio test via `survival::coxph()`.
 #'
 #' @param formula (`formula`)\cr survival formula, e.g. `Surv(time, status) ~ arm`.
 #' @param data (`data.frame`)\cr subset containing exactly two arm levels.
 #' @param test (`string`)\cr test name as accepted by [get_cox_pairwise_df()].
 #' @param arm (`string`)\cr column name of the arm variable in `data`.
+#' @param ties (`character`)\cr tie handling method for the Cox LRT.
 #'
 #' @returns A single numeric p-value.
 #' @noRd
-.estimate_p_value <- function(formula, data, test, arm) {
+.estimate_p_value <- function(formula, data, test, arm, ties) {
   test_type <- switch(test,
     "log-rank" = "logrank",
     "gehan-breslow" = "Gehan-Breslow",
@@ -237,7 +240,8 @@ get_cox_pairwise_df <- function(
         )
       )
     }
-    coin_formula <- .rewrite_strata_term(formula, model = "log-rank")
+    
+    coin_formula <- .check_and_rewrite_formula(formula, arm)
 
     test_result <- coin::logrank_test(
       formula = coin_formula,
@@ -246,22 +250,22 @@ get_cox_pairwise_df <- function(
     )
 
     p_value <- as.numeric(coin::pvalue(test_result))
+    
   } else {
-    clean_formula <- .rewrite_strata_term(formula, model = "likelihood-ratio")
-    # SAS LR test assumes an exponential distribution
-    # fit the model
-    fit_cov <- survival::survreg(clean_formula, data = data, dist = "exponential")
+    # Fit the full Cox model 
+    fit_full <- survival::coxph(formula, data = data, ties = ties)
 
-    # fit the null model
-    drop_arm_formula <- stats::as.formula(paste(". ~ . -", arm))
-    # to account for possible covariates
-    null_formula <- stats::update(clean_formula, drop_arm_formula)
-    fit_null <- survival::survreg(null_formula, data = data, dist = "exponential")
-
-    # calculate the difference and estimate the statistics
-    lrt_stat <- 2 * (fit_cov$loglik[2] - fit_null$loglik[2])
-    df <- fit_cov$df - fit_null$df
-    p_value <- stats::pchisq(lrt_stat, df, lower.tail = FALSE)
+    # Safely create the reduced formula by dropping the arm variable
+    reduced_formula <- stats::update(formula, paste(". ~ . -", arm))
+    
+    # Fit the reduced model explicitly to avoid drop1 environment scope errors
+    fit_reduced <- survival::coxph(reduced_formula, data = data, ties = ties)
+    
+    # Execute the nested Likelihood-Ratio Test
+    anova_res <- stats::anova(fit_reduced, fit_full, test = "Chisq")
+    
+    # Extract the p-value for the second row (the full model comparison)
+    p_value <- anova_res[["Pr(>|Chi|)"]][[2]]
   }
 
   p_value
@@ -274,50 +278,118 @@ get_cox_pairwise_df <- function(
 #' syntaxes supported by target modeling engines.
 #'
 #' @param formula (`formula`)\cr The original survival formula.
-#' @param model (`string`)\cr The target model: `"log-rank"` or `"likelihood-ratio"`.
+#' @param arm (`character`)\cr The name of the primary arm variable.
 #'
 #' @returns A modified `formula` with `strata()` terms properly translated.
 #' @noRd
-.rewrite_strata_term <- function(formula, model = c("log-rank", "likelihood-ratio")) {
-  model <- match.arg(model)
-
+.check_and_rewrite_formula <- function(formula, arm) {
   f_terms <- stats::terms(formula)
   term_labels <- attr(f_terms, "term.labels")
 
   # Safely identify strata calls directly from the right-hand side labels
   strata_idx <- grep("^strata\\(", term_labels)
+  strata_calls <- term_labels[strata_idx]
+  
+  # --- 1. GUARDRAIL VALIDATION ---
+  valid_terms <- c(arm, strata_calls)
+  invalid_terms <- setdiff(term_labels, valid_terms)
+  
+  if (length(invalid_terms) > 0) {
+    cli::cli_abort(
+      paste(
+        "This log-rank test method does not support covariate adjustment",
+        "for: {.var {invalid_terms}}.",
+        "Please use stratification (e.g., {.code ~ {arm} + strata(var)})",
+        "or switch to {.code test = 'likelihood-ratio'}."
+      )
+    )
+  }
 
   # If there are no strata terms, return the formula completely untouched
   if (length(strata_idx) == 0) {
     return(formula)
   }
 
+  # Use R's Abstract Syntax Tree (AST) to safely extract strata arguments
+  strata_vars <- unlist(lapply(strata_calls, function(x) {
+    sapply(as.list(str2lang(x))[-1], deparse)
+  }))
+
+  lhs_terms <- arm
+  
+  # If there are multiple strata variables, wrap them in interaction()
+  # If single, force as.factor() to satisfy coin::logrank_test requirements
+  if (length(strata_vars) > 1) {
+    block_str <- paste0("interaction(", paste(strata_vars, collapse = ", "), ")")
+  } else {
+    block_str <- paste0("as.factor(", strata_vars[1], ")")
+  }
+  
+  rhs_str <- paste(lhs_terms, "|", block_str)
+
+  # Rebuild the formula preserving the exact LHS response and original environment
+  stats::reformulate(
+    termlabels = rhs_str,
+    response = formula[[2]],
+    env = environment(formula)
+  )
+}
+
+#' Rewrite survival formula with strata() for specific models
+#'
+#' @description
+#' Parses a survival formula and safely translates `strata()` wrappers into
+#' syntaxes supported by target modeling engines.
+#'
+#' @param formula (`formula`)\cr The original survival formula.
+#' @param arm (`character`)\cr The name of the primary arm variable.
+#'
+#' @returns A modified `formula` with `strata()` terms properly translated.
+#' @noRd
+.check_and_rewrite_formula <- function(formula, arm) {
+  f_terms <- stats::terms(formula)
+  term_labels <- attr(f_terms, "term.labels")
+
+  # Safely identify strata calls directly from the right-hand side labels
+  strata_idx <- grep("^strata\\(", term_labels)
   strata_calls <- term_labels[strata_idx]
-  non_strata_labels <- term_labels[-strata_idx]
+  
+  # --- 1. GUARDRAIL VALIDATION ---
+  valid_terms <- c(arm, strata_calls)
+  invalid_terms <- setdiff(term_labels, valid_terms)
+  
+  if (length(invalid_terms) > 0) {
+    cli::cli_abort(
+      paste(
+        "This log-rank test method does not support covariate adjustment",
+        "for: {.var {invalid_terms}}.",
+        "Please use stratification (e.g., {.code ~ {arm} + strata(var)})",
+        "or switch to {.code test = 'likelihood-ratio'}."
+      )
+    )
+  }
+
+  # If there are no strata terms, return the formula completely untouched
+  if (length(strata_idx) == 0) {
+    return(formula)
+  }
 
   # Use R's Abstract Syntax Tree (AST) to safely extract strata arguments
   strata_vars <- unlist(lapply(strata_calls, function(x) {
     sapply(as.list(str2lang(x))[-1], deparse)
   }))
 
-  if (model == "log-rank") {
-    # coin is used for log-rank and
-    # requires block syntax: response ~ predictors | strata
-    lhs_terms <- if (length(non_strata_labels) > 0) {
-      paste(non_strata_labels, collapse = " + ")
-    } else {
-      "1"
-    }
-    rhs_str <- paste(lhs_terms, "|", paste(strata_vars, collapse = " + "))
+  lhs_terms <- arm
+  
+  # If there are multiple strata variables, wrap them in interaction()
+  # If single, force as.factor() to satisfy coin::logrank_test requirements
+  if (length(strata_vars) > 1) {
+    block_str <- paste0("interaction(", paste(strata_vars, collapse = ", "), ")")
   } else {
-    # glm treats strata purely as normal fixed-effect covariates
-    all_labels <- c(non_strata_labels, strata_vars)
-    rhs_str <- if (length(all_labels) > 0) {
-      paste(all_labels, collapse = " + ")
-    } else {
-      "1"
-    }
+    block_str <- paste0("as.factor(", strata_vars[1], ")")
   }
+  
+  rhs_str <- paste(lhs_terms, "|", block_str)
 
   # Rebuild the formula preserving the exact LHS response and original environment
   stats::reformulate(

@@ -114,7 +114,6 @@ test_that(paste0(
 })
 
 test_that("get_cox_pairwise_df() works with all valid 'ties' methods", {
-  # REMOVED "discrete" from this list
   ties_methods <- c("exact", "efron", "breslow")
 
   for (t_method in ties_methods) {
@@ -189,10 +188,32 @@ test_that("get_cox_pairwise_df() catches invalid 'ties' and 'test' arguments", {
   )
 })
 
-test_that("get_cox_pairwise_df() works for formula with covariates", {
-  # Added 'karno' as a covariate.
-  # Likelihood-ratio is utilized because standard coin::logrank_test
-  # syntax does not support continuous right-hand side covariates.
+test_that("get_cox_pairwise_df() enforces guardrail against covariates for non-parametric tests", {
+  # coin log-rank should reject formulas with continuous adjustment covariates
+  expect_error(
+    get_cox_pairwise_df(
+      model_formula = Surv(time, event) ~ treatment + karno,
+      data = test_df_2grp,
+      arm = "treatment",
+      test = "log-rank"
+    ),
+    "does not support covariate adjustment for: `karno`"
+  )
+  
+  # coin log-rank should reject even if strata is present alongside a covariate
+  expect_error(
+    get_cox_pairwise_df(
+      model_formula = Surv(time, event) ~ treatment + strata(celltype) + age,
+      data = test_df_2grp,
+      arm = "treatment",
+      test = "tarone"
+    ),
+    "does not support covariate adjustment for: `age`"
+  )
+})
+
+test_that("get_cox_pairwise_df() works for formula with covariates via likelihood-ratio", {
+  # Likelihood-ratio natively handles right-hand side continuous covariates
   expect_no_error(
     suppressWarnings(
       res_covariate <- get_cox_pairwise_df(
@@ -209,12 +230,12 @@ test_that("get_cox_pairwise_df() works for formula with covariates", {
   expect_false(anyNA(res_covariate[["p-value (Likelihood-Ratio)"]]))
 })
 
-test_that("get_cox_pairwise_df() works for formula with strata()", {
-  # 1. Test log-rank with strata (uses coin engine)
+test_that("get_cox_pairwise_df() works for formula with complex strata()", {
+  # 1. Test log-rank with a single strata variable (uses coin engine)
   expect_no_error(
     suppressWarnings(
       res_strata_lr <- get_cox_pairwise_df(
-        model_formula = Surv(time, event) ~ treatment + strata(celltype),
+        model_formula = Surv(time, event) ~ treatment + strata(prior),
         data = test_df_2grp,
         arm = "treatment",
         ties = "efron",
@@ -225,18 +246,33 @@ test_that("get_cox_pairwise_df() works for formula with strata()", {
   expect_s3_class(res_strata_lr, "data.frame")
   expect_false(anyNA(res_strata_lr[["p-value (log-rank)"]]))
 
-  # 2. Test likelihood-ratio with strata (uses updated parametric survreg engine)
+  # 2. Test log-rank with multiple strata variables inside a single strata() call
+  # We use 'prior' and 'trt' (2 levels each) to avoid <2 observation block sparsity
   expect_no_error(
     suppressWarnings(
-      res_strata_lrt <- get_cox_pairwise_df(
-        model_formula = Surv(time, event) ~ treatment + strata(celltype),
+      res_strata_multi <- get_cox_pairwise_df(
+        model_formula = Surv(time, event) ~ treatment + strata(prior, trt),
         data = test_df_2grp,
         arm = "treatment",
         ties = "efron",
+        test = "log-rank"
+      )
+    )
+  )
+  expect_s3_class(res_strata_multi, "data.frame")
+  expect_false(anyNA(res_strata_multi[["p-value (log-rank)"]]))
+  
+  # 3. Ensure the likelihood-ratio test properly handles complex strata natively
+  expect_no_error(
+    suppressWarnings(
+      res_strata_cox <- get_cox_pairwise_df(
+        model_formula = Surv(time, event) ~ treatment + strata(prior) + karno,
+        data = test_df_2grp,
+        arm = "treatment",
         test = "likelihood-ratio"
       )
     )
   )
-  expect_s3_class(res_strata_lrt, "data.frame")
-  expect_false(anyNA(res_strata_lrt[["p-value (Likelihood-Ratio)"]]))
+  expect_s3_class(res_strata_cox, "data.frame")
+  expect_false(anyNA(res_strata_cox[["p-value (Likelihood-Ratio)"]]))
 })

@@ -67,9 +67,9 @@ The function iterates through each non-reference arm, subsets the
 data to the current arm and the reference arm, and then:
 \itemize{
 \item Fits a Cox model using \code{survival::coxph()}.
-\item Computes a p-value via, which dispatches
+\item Computes a p-value, which dispatches
 to \code{coin::logrank_test()} for weighted log-rank variants or to
-\code{survival::survreg()} for the likelihood-ratio test.
+a nested \code{survival::coxph()} LRT for the likelihood-ratio test.
 }
 }
 \examples{
