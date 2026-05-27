@@ -1,6 +1,6 @@
 skip_if_pkg_not_installed(c("survival", "dplyr", "coin"))
 
-# Setup shared test data using completely different data and formulas
+# Setup shared test data 
 set.seed(42)
 test_df_2grp <- survival::veteran |>
   dplyr::mutate(
