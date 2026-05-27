@@ -36,13 +36,11 @@ test_that(
   "get_cox_pairwise_df() returns non-NA hazard ratios with more than two arms",
   {
     expect_no_error(
-      suppressWarnings(
-        result <- get_cox_pairwise_df(
-          model_formula = Surv(time, event) ~ treatment,
-          data = test_df_3grp,
-          arm = "treatment",
-          ref_group = "Placebo"
-        )
+      result <- get_cox_pairwise_df(
+        model_formula = Surv(time, event) ~ treatment,
+        data = test_df_3grp,
+        arm = "treatment",
+        ref_group = "Placebo"
       )
     )
     expect_s3_class(result, "data.frame")
@@ -60,12 +58,10 @@ test_that(
 
 test_that("get_cox_pairwise_df() uses first factor level as default ref_group", {
   expect_no_error(
-    suppressWarnings(
-      result <- get_cox_pairwise_df(
-        model_formula = Surv(time, event) ~ treatment,
-        data = test_df_3grp,
-        arm = "treatment"
-      )
+    result <- get_cox_pairwise_df(
+      model_formula = Surv(time, event) ~ treatment,
+      data = test_df_3grp,
+      arm = "treatment"
     )
   )
   expect_equal(nrow(result), 2L)
@@ -118,13 +114,11 @@ test_that("get_cox_pairwise_df() works with all valid 'ties' methods", {
 
   for (t_method in ties_methods) {
     expect_no_error(
-      suppressWarnings(
-        res <- get_cox_pairwise_df(
-          model_formula = Surv(time, event) ~ treatment,
-          data = test_df_2grp,
-          arm = "treatment",
-          ties = t_method
-        )
+      res <- get_cox_pairwise_df(
+        model_formula = Surv(time, event) ~ treatment,
+        data = test_df_2grp,
+        arm = "treatment",
+        ties = t_method
       )
     )
     expect_s3_class(res, "data.frame")
@@ -144,13 +138,11 @@ test_that("get_cox_pairwise_df() works with all valid 'test' methods", {
 
   for (t_method in test_methods) {
     expect_no_error(
-      suppressWarnings(
-        res <- get_cox_pairwise_df(
-          model_formula = Surv(time, event) ~ treatment,
-          data = test_df_2grp,
-          arm = "treatment",
-          test = t_method
-        )
+      res <- get_cox_pairwise_df(
+        model_formula = Surv(time, event) ~ treatment,
+        data = test_df_2grp,
+        arm = "treatment",
+        test = t_method
       )
     )
 
@@ -191,13 +183,11 @@ test_that("get_cox_pairwise_df() catches invalid 'ties' and 'test' arguments", {
 test_that("get_cox_pairwise_df() works for formula with covariates via likelihood-ratio", {
   # Likelihood-ratio natively handles right-hand side continuous covariates
   expect_no_error(
-    suppressWarnings(
-      res_covariate <- get_cox_pairwise_df(
-        model_formula = Surv(time, event) ~ treatment + karno,
-        data = test_df_2grp,
-        arm = "treatment",
-        test = "likelihood-ratio"
-      )
+    res_covariate <- get_cox_pairwise_df(
+      model_formula = Surv(time, event) ~ treatment + karno,
+      data = test_df_2grp,
+      arm = "treatment",
+      test = "likelihood-ratio"
     )
   )
 
@@ -209,14 +199,12 @@ test_that("get_cox_pairwise_df() works for formula with covariates via likelihoo
 test_that("get_cox_pairwise_df() works for formula with complex strata()", {
   # 1. Test log-rank with a single strata variable (uses coin engine)
   expect_no_error(
-    suppressWarnings(
-      res_strata_lr <- get_cox_pairwise_df(
-        model_formula = Surv(time, event) ~ treatment + strata(prior),
-        data = test_df_2grp,
-        arm = "treatment",
-        ties = "efron",
-        test = "log-rank"
-      )
+    res_strata_lr <- get_cox_pairwise_df(
+      model_formula = Surv(time, event) ~ treatment + strata(prior),
+      data = test_df_2grp,
+      arm = "treatment",
+      ties = "efron",
+      test = "log-rank"
     )
   )
   expect_s3_class(res_strata_lr, "data.frame")
@@ -225,14 +213,12 @@ test_that("get_cox_pairwise_df() works for formula with complex strata()", {
   # 2. Test log-rank with multiple strata variables inside a single strata() call
   # We use 'prior' and 'trt' (2 levels each) to avoid <2 observation block sparsity
   expect_no_error(
-    suppressWarnings(
-      res_strata_multi <- get_cox_pairwise_df(
-        model_formula = Surv(time, event) ~ treatment + strata(prior, trt),
-        data = test_df_2grp,
-        arm = "treatment",
-        ties = "efron",
-        test = "log-rank"
-      )
+    res_strata_multi <- get_cox_pairwise_df(
+      model_formula = Surv(time, event) ~ treatment + strata(prior, trt),
+      data = test_df_2grp,
+      arm = "treatment",
+      ties = "efron",
+      test = "log-rank"
     )
   )
   expect_s3_class(res_strata_multi, "data.frame")
@@ -240,13 +226,11 @@ test_that("get_cox_pairwise_df() works for formula with complex strata()", {
 
   # 3. Ensure the likelihood-ratio test properly handles complex strata natively
   expect_no_error(
-    suppressWarnings(
-      res_strata_cox <- get_cox_pairwise_df(
-        model_formula = Surv(time, event) ~ treatment + strata(prior) + karno,
-        data = test_df_2grp,
-        arm = "treatment",
-        test = "likelihood-ratio"
-      )
+    res_strata_cox <- get_cox_pairwise_df(
+      model_formula = Surv(time, event) ~ treatment + strata(prior) + karno,
+      data = test_df_2grp,
+      arm = "treatment",
+      test = "likelihood-ratio"
     )
   )
   expect_s3_class(res_strata_cox, "data.frame")
@@ -283,15 +267,13 @@ test_that("get_cox_pairwise_df() handles robust = TRUE correctly via ...", {
   # We test with the likelihood-ratio test to ensure the `robust` argument
   # successfully propagates down into the nested LRT models inside .estimate_p_value
   expect_no_error(
-    suppressWarnings(
-      res_robust <- get_cox_pairwise_df(
-        model_formula = Surv(time, event) ~ treatment,
-        data = test_df_2grp,
-        arm = "treatment",
-        test = "likelihood-ratio",
-        ties = "efron",
-        robust = TRUE
-      )
+    res_robust <- get_cox_pairwise_df(
+      model_formula = Surv(time, event) ~ treatment,
+      data = test_df_2grp,
+      arm = "treatment",
+      test = "likelihood-ratio",
+      ties = "efron",
+      robust = TRUE
     )
   )
 
