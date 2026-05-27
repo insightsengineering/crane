@@ -107,7 +107,7 @@ Proportional Hazards summary table as an annotation box.
 
 }}
 \examples{
-\dontshow{if (requireNamespace("survival", quietly = TRUE) && requireNamespace("coin", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (requireNamespace("coin", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 # Preparing the Kaplan-Meier Plot
 library(survival)
 use_lung <- lung

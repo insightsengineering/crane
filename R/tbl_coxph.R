@@ -15,7 +15,7 @@
 #'
 #' @seealso `get_cox_pairwise_df()`.
 #'
-#' @examplesIf requireNamespace("survival", quietly = TRUE) && requireNamespace("coin", quietly = TRUE)
+#' @examplesIf requireNamespace("coin", quietly = TRUE)
 #' # Setup sample survival data
 #' library(survival)
 #' surv_data <- lung |>

@@ -22,7 +22,7 @@ presenting the p-value, Hazard Ratio, and 95\% Confidence Interval in a
 stacked layout where statistics form the rows of the table.
 }
 \examples{
-\dontshow{if (requireNamespace("survival", quietly = TRUE) && requireNamespace("coin", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (requireNamespace("coin", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 # Setup sample survival data
 library(survival)
 surv_data <- lung |>

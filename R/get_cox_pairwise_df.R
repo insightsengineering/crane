@@ -53,7 +53,7 @@
 #' @seealso `annotate_gg_km()`, `gg_km()`, `survival::coxph()`,
 #'   `coin::logrank_test()`.
 #'
-#' @examplesIf requireNamespace("survival", quietly = TRUE) && requireNamespace("coin", quietly = TRUE)
+#' @examplesIf requireNamespace("coin", quietly = TRUE)
 #' # Example data setup (assuming 'time' is event time, 'status'
 #' # is event indicator (1=event), and 'arm' is the treatment group)
 #' # for data handling
@@ -127,13 +127,7 @@ get_cox_pairwise_df <- function(
     )
   }
 
-  formula_str <- paste(deparse(model_formula), collapse = " ")
-  if (grepl("\\b[a-zA-Z][a-zA-Z0-9.]*::", formula_str)) {
-    cli::cli_abort(
-      "{.arg model_formula} must be specified without namespace.",
-      call = get_cli_abort_call()
-    )
-  }
+  check_formula_for_namespace(model_formula)
 
   if (!is.factor(data[[arm]])) {
     cli::cli_abort(

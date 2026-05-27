@@ -92,7 +92,7 @@ support for various customizations like censoring marks, Confidence  Intervals (
 
 }}
 \examples{
-\dontshow{if (requireNamespace("survival", quietly = TRUE) && requireNamespace("coin", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (requireNamespace("coin", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 # Data preparation for KM plot
 library(survival)
 use_lung <- lung
