@@ -53,7 +53,7 @@
 #' @seealso `annotate_gg_km()`, `gg_km()`, `survival::coxph()`,
 #'   `coin::logrank_test()`.
 #'
-#' @examplesIf requireNamespace("survival", quietly = TRUE)
+#' @examplesIf requireNamespace("survival", quietly = TRUE) && requireNamespace("coin", quietly = TRUE)
 #' # Example data setup (assuming 'time' is event time, 'status'
 #' # is event indicator (1=event), and 'arm' is the treatment group)
 #' # for data handling
