@@ -274,13 +274,23 @@ get_cox_pairwise_df <- function(
   } else if (test == "likelihood-ratio") {
     # --- 2. Likelihood-Ratio Test via survival ---
     if (.check_has_strata(formula)) {
+      # Inform user of the engine swap for stratified LRTs
+      cli::cli_warn(
+        c(
+          "Stratified formula detected for {.val likelihood-ratio} test.",
+          "i" = paste(
+            "Using {.fun survival::coxph} (partial-likelihood LRT) instead",
+            "of {.fun survival::survreg} (exponential LRT)."
+          )
+        )
+      )
+
       # Fit the full Cox model
       fit_full <- survival::coxph(formula, data = data, ties = ties)
       # Safely create the reduced formula by dropping the arm variable
       reduced_formula <- stats::update(formula, paste(". ~ . -", arm))
       # Fit the reduced model explicitly to avoid drop1 environment scope errors
-      fit_reduced <- survival::coxph(reduced_formula, data = data, ties = ties) 
-
+      fit_reduced <- survival::coxph(reduced_formula, data = data, ties = ties)
     } else {
       fit_full <- survival::survreg(formula, data = data, dist = "exponential")
       # fit the null model
@@ -293,7 +303,6 @@ get_cox_pairwise_df <- function(
     anova_res <- stats::anova(fit_reduced, fit_full, test = "Chisq")
     # Extract the p-value for the second row (the full model comparison)
     p_value <- anova_res[2, ncol(anova_res)]
-
   } else {
     # --- 3. Weighted Variants via coin ---
     test_type <- switch(test,
@@ -329,6 +338,13 @@ get_cox_pairwise_df <- function(
   p_value
 }
 
+#' Check if formula contains `strata()`
+#'
+#'
+#' @param formula (`formula`)\cr Any formula, typically survival.
+#'
+#' @returns `TRUE` or `FALSE`.
+#' @noRd
 .check_has_strata <- function(formula) {
   t <- terms(formula, specials = "strata")
   !is.null(attr(t, "specials")$strata)
@@ -353,7 +369,7 @@ get_cox_pairwise_df <- function(
   strata_idx <- grep("^strata\\(", term_labels)
   strata_calls <- term_labels[strata_idx]
 
-  # --- 1. GUARDRAIL VALIDATION ---
+  # GUARDRAIL VALIDATION
   valid_terms <- c(arm, strata_calls)
   invalid_terms <- setdiff(term_labels, valid_terms)
 

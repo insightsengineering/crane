@@ -225,13 +225,14 @@ test_that("get_cox_pairwise_df() works for formula with complex strata()", {
   expect_false(anyNA(res_strata_multi[["p-value (log-rank)"]]))
 
   # 3. Ensure the likelihood-ratio test properly handles complex strata natively
-  expect_no_error(
+  expect_warning(
     res_strata_cox <- get_cox_pairwise_df(
       model_formula = Surv(time, event) ~ treatment + strata(prior) + karno,
       data = test_df_2grp,
       arm = "treatment",
       test = "likelihood-ratio"
-    )
+    ),
+    "Stratified formula detected"
   )
   expect_s3_class(res_strata_cox, "data.frame")
   expect_false(anyNA(res_strata_cox[["p-value (Likelihood-Ratio)"]]))
@@ -280,4 +281,55 @@ test_that("get_cox_pairwise_df() handles robust = TRUE correctly via ...", {
   expect_s3_class(res_robust, "data.frame")
   expect_false(anyNA(res_robust[["HR"]]))
   expect_false(anyNA(res_robust[["p-value (Likelihood-Ratio)"]]))
+})
+
+test_that("get_cox_pairwise_df() dispatches to the correct LRT engine based on strata", {
+  # Setup comparable data mirroring the function's internal releveling
+  comp_df <- test_df_2grp
+  comp_df$treatment <- factor(comp_df$treatment, levels = c("Placebo", "DrugX"))
+
+  # --- 1. No strata: Expect dispatch to survreg() (exponential distribution) ---
+  res_no_strata <- suppressWarnings(
+    get_cox_pairwise_df(
+      model_formula = Surv(time, event) ~ treatment,
+      data = test_df_2grp,
+      arm = "treatment",
+      ref_group = "Placebo",
+      test = "likelihood-ratio"
+    )
+  )
+
+  # Manual calculation via parametric survreg
+  fit_full_reg <- survival::survreg(Surv(time, event) ~ treatment, data = comp_df, dist = "exponential")
+  fit_null_reg <- survival::survreg(Surv(time, event) ~ 1, data = comp_df, dist = "exponential")
+
+  loglik_full <- fit_full_reg$loglik[length(fit_full_reg$loglik)]
+  loglik_null <- fit_null_reg$loglik[length(fit_null_reg$loglik)]
+  stat <- 2 * (loglik_full - loglik_null)
+  df <- length(fit_full_reg$coefficients) - length(fit_null_reg$coefficients)
+  expected_pval_reg <- stats::pchisq(stat, df, lower.tail = FALSE)
+
+  expect_equal(res_no_strata[["p-value (Likelihood-Ratio)"]], expected_pval_reg)
+
+  # --- 2. With strata: Expect dispatch to coxph() (nested anova) ---
+  # Expect the new cli warning for the engine swap
+  expect_warning(
+    res_strata <- get_cox_pairwise_df(
+      model_formula = Surv(time, event) ~ treatment + strata(celltype),
+      data = test_df_2grp,
+      arm = "treatment",
+      ref_group = "Placebo",
+      test = "likelihood-ratio",
+      ties = "efron"
+    ),
+    "Stratified formula detected"
+  )
+
+  # Manual calculation via semi-parametric coxph
+  fit_full_cox <- survival::coxph(Surv(time, event) ~ treatment + strata(celltype), data = comp_df, ties = "efron")
+  fit_null_cox <- survival::coxph(Surv(time, event) ~ strata(celltype), data = comp_df, ties = "efron")
+  anova_res <- stats::anova(fit_null_cox, fit_full_cox, test = "Chisq")
+  expected_pval_cox <- anova_res[2, ncol(anova_res)]
+
+  expect_equal(res_strata[["p-value (Likelihood-Ratio)"]], expected_pval_cox)
 })
