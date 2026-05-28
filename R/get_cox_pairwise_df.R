@@ -273,20 +273,27 @@ get_cox_pairwise_df <- function(
     p_value <- stats::pchisq(sdiff$chisq, df = length(sdiff$n) - 1, lower.tail = FALSE)
   } else if (test == "likelihood-ratio") {
     # --- 2. Likelihood-Ratio Test via survival ---
-    # Fit the full Cox model
-    fit_full <- survival::coxph(formula, data = data, ties = ties)
+    if (.check_has_strata(formula)) {
+      # Fit the full Cox model
+      fit_full <- survival::coxph(formula, data = data, ties = ties)
+      # Safely create the reduced formula by dropping the arm variable
+      reduced_formula <- stats::update(formula, paste(". ~ . -", arm))
+      # Fit the reduced model explicitly to avoid drop1 environment scope errors
+      fit_reduced <- survival::coxph(reduced_formula, data = data, ties = ties) 
 
-    # Safely create the reduced formula by dropping the arm variable
-    reduced_formula <- stats::update(formula, paste(". ~ . -", arm))
-
-    # Fit the reduced model explicitly to avoid drop1 environment scope errors
-    fit_reduced <- survival::coxph(reduced_formula, data = data, ties = ties)
+    } else {
+      fit_full <- survival::survreg(formula, data = data, dist = "exponential")
+      # fit the null model
+      reduced_formula <- stats::update(formula, paste(". ~ . -", arm))
+      # to account for possible covariates
+      fit_reduced <- survival::survreg(reduced_formula, data = data, dist = "exponential")
+    }
 
     # Execute the nested Likelihood-Ratio Test
     anova_res <- stats::anova(fit_reduced, fit_full, test = "Chisq")
-
     # Extract the p-value for the second row (the full model comparison)
-    p_value <- anova_res[["Pr(>|Chi|)"]][[2]]
+    p_value <- anova_res[2, ncol(anova_res)]
+
   } else {
     # --- 3. Weighted Variants via coin ---
     test_type <- switch(test,
@@ -306,10 +313,12 @@ get_cox_pairwise_df <- function(
       )
     }
 
-    coin_formula <- .check_and_rewrite_formula(formula, arm)
+    if (.check_has_strata(formula)) {
+      formula <- .rewrite_formula(formula, arm)
+    }
 
     test_result <- coin::logrank_test(
-      formula = coin_formula,
+      formula = formula,
       data = data,
       type = test_type
     )
@@ -318,6 +327,11 @@ get_cox_pairwise_df <- function(
   }
 
   p_value
+}
+
+.check_has_strata <- function(formula) {
+  t <- terms(formula, specials = "strata")
+  !is.null(attr(t, "specials")$strata)
 }
 
 #' Rewrite survival formula with strata() for specific models
@@ -331,7 +345,7 @@ get_cox_pairwise_df <- function(
 #'
 #' @returns A modified `formula` with `strata()` terms properly translated.
 #' @noRd
-.check_and_rewrite_formula <- function(formula, arm) {
+.rewrite_formula <- function(formula, arm) {
   f_terms <- stats::terms(formula)
   term_labels <- attr(f_terms, "term.labels")
 
@@ -352,11 +366,6 @@ get_cox_pairwise_df <- function(
         "or switch to {.code test = 'likelihood-ratio'}."
       )
     )
-  }
-
-  # If there are no strata terms, return the formula completely untouched
-  if (length(strata_idx) == 0) {
-    return(formula)
   }
 
   # Use R's Abstract Syntax Tree (AST) to safely extract strata arguments
