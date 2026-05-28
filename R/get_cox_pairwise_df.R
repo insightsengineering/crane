@@ -346,7 +346,7 @@ get_cox_pairwise_df <- function(
 #' @returns `TRUE` or `FALSE`.
 #' @noRd
 .check_has_strata <- function(formula) {
-  t <- terms(formula, specials = "strata")
+  t <- stats::terms(formula, specials = "strata")
   !is.null(attr(t, "specials")$strata)
 }
 
