@@ -101,6 +101,7 @@ test_that("with assign_summary_type-arg:cat_threshold=0L each data type is alway
 })
 
 test_that("theme pre-conversion modifies header not to be bold and border only 0.5", {
+  skip_if_not_installed("pharmaverseadam")
   tbl <- with_gtsummary_theme(
     x = theme_gtsummary_roche(),
     pharmaverseadam::adsl |>
