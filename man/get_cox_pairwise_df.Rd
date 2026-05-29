@@ -11,7 +11,8 @@ get_cox_pairwise_df(
   ref_group = NULL,
   ties = c("exact", "efron", "breslow"),
   test = c("log-rank", "gehan-breslow", "tarone", "peto", "prentice",
-    "fleming-harrington", "likelihood-ratio")
+    "fleming-harrington", "likelihood-ratio"),
+  ...
 )
 }
 \arguments{
@@ -38,19 +39,28 @@ selected as the reference group.}
 
 \item{ties}{(\code{character})\cr
 A string specifying the method for tie handling in the Cox model.
-Must be one of "exact", "efron", or "breslow".}
+Must be one of "exact", "efron", or "breslow".
+Default is "exact".}
 
 \item{test}{(\code{character})\cr
 A string specifying the type of test to compute the p-value.
 Must be one of "log-rank", "gehan-breslow" (wilcoxon), "tarone", "peto",
 "prentice" (modified peto), "fleming-harrington", or "likelihood-ratio".}
+
+\item{...}{Additional arguments passed to \code{survival::coxph()} and \code{summary()}
+two arguments are supported:
+\code{conf.int} (default \code{0.95}) to adjust the CI level;
+\code{robust = TRUE} to compute robust standard errors;}
 }
 \value{
 A \code{data.frame} with one row per comparison arm (stored as rownames).
 The columns are:
 \itemize{
 \item \code{HR}: The Hazard Ratio formatted to two decimal places.
-\item \verb{95\% CI}: The 95\\% confidence interval as \code{"(lower, upper)"}.
+\item \code{conf.int} (default \code{0.95}): Adjusts the confidence interval level.
+\strong{Note:} Changing this value dynamically updates the corresponding
+column name in the output (e.g., passing \code{0.99} renames the column
+to \code{"99\% CI"}).
 \item \verb{p-value (<test>)}: The p-value from the selected \code{test}, where
 \verb{<test>} is the title-cased test name (e.g., \code{"p-value (log-rank)"}).
 }
@@ -66,25 +76,33 @@ The function iterates through each non-reference arm, subsets the
 data to the current arm and the reference arm, and then:
 \itemize{
 \item Fits a Cox model using \code{survival::coxph()}.
-\item Computes a p-value via \code{\link[=.estimate_p_value]{.estimate_p_value()}}, which dispatches
+\item Computes a p-value, which dispatches
 to \code{coin::logrank_test()} for weighted log-rank variants or to
-\code{survival::survreg()} for the likelihood-ratio test.
+a nested \code{survival::coxph()} LRT for the likelihood-ratio test.
 }
+}
+\note{
+When \code{robust = TRUE} is specified, the Hazard Ratio and Confidence Intervals are
+computed using robust sandwich standard errors. However, the p-values across all
+tests (including the likelihood-ratio test) are calculated using standard,
+non-robust model variances.
 }
 \examples{
+\dontshow{if (requireNamespace("coin", quietly = TRUE) && requireNamespace("survival", quietly = TRUE) && requireNamespace("dplyr", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 # Example data setup (assuming 'time' is event time, 'status'
 # is event indicator (1=event), and 'arm' is the treatment group)
-library(dplyr) # For better data handling
-
+# for data handling
+library(dplyr)
+library(survival)
 # Prepare data in a modern dplyr-friendly way
-surv_data <- survival::lung |>
+surv_data <- lung |>
   mutate(
     arm = factor(sample(c("A", "B", "C"), n(), replace = TRUE)),
     status = status - 1 # Convert status to 0/1
   ) |>
   filter(if_all(everything(), ~ !is.na(.)))
 
-formula <- survival::Surv(time, status) ~ arm
+formula <- Surv(time, status) ~ arm
 
 # Example 1: Default usage (ties = "exact", test = "log-rank")
 results_default <- get_cox_pairwise_df(
@@ -116,7 +134,7 @@ results_lr <- get_cox_pairwise_df(
   test = "likelihood-ratio"
 )
 print(results_lr)
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{annotate_gg_km()}, \code{gg_km()}, \code{survival::coxph()},
