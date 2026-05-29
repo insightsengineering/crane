@@ -20,7 +20,7 @@ against a specified reference group."><meta property="og:image" content="https:/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1.9042</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1.9044</span>
       </span>
     </div>
 
@@ -79,7 +79,8 @@ against a specified reference group.</p>
 <span>  ref_group <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ties <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"exact"</span>, <span class="st">"efron"</span>, <span class="st">"breslow"</span><span class="op">)</span>,</span>
 <span>  test <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"log-rank"</span>, <span class="st">"gehan-breslow"</span>, <span class="st">"tarone"</span>, <span class="st">"peto"</span>, <span class="st">"prentice"</span>,</span>
-<span>    <span class="st">"fleming-harrington"</span>, <span class="st">"likelihood-ratio"</span><span class="op">)</span></span>
+<span>    <span class="st">"fleming-harrington"</span>, <span class="st">"likelihood-ratio"</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -119,7 +120,8 @@ selected as the reference group.</p></dd>
 <dt id="arg-ties">ties<a class="anchor" aria-label="anchor" href="#arg-ties"></a></dt>
 <dd><p>(<code>character</code>)<br>
 A string specifying the method for tie handling in the Cox model.
-Must be one of "exact", "efron", or "breslow".</p></dd>
+Must be one of "exact", "efron", or "breslow".
+Default is "exact".</p></dd>
 
 
 <dt id="arg-test">test<a class="anchor" aria-label="anchor" href="#arg-test"></a></dt>
@@ -128,12 +130,22 @@ A string specifying the type of test to compute the p-value.
 Must be one of "log-rank", "gehan-breslow" (wilcoxon), "tarone", "peto",
 "prentice" (modified peto), "fleming-harrington", or "likelihood-ratio".</p></dd>
 
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>Additional arguments passed to <code><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">survival::coxph()</a></code> and <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code>
+two arguments are supported:
+<code>conf.int</code> (default <code>0.95</code>) to adjust the CI level;
+<code>robust = TRUE</code> to compute robust standard errors;</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
     <p>A <code>data.frame</code> with one row per comparison arm (stored as rownames).
 The columns are:</p><ul><li><p><code>HR</code>: The Hazard Ratio formatted to two decimal places.</p></li>
-<li><p><code>95% CI</code>: The 95\<!-- % confidence interval as \code{"(lower, upper)"}. --></p></li>
+<li><p><code>conf.int</code> (default <code>0.95</code>): Adjusts the confidence interval level.
+<strong>Note:</strong> Changing this value dynamically updates the corresponding
+column name in the output (e.g., passing <code>0.99</code> renames the column
+to <code>"99% CI"</code>).</p></li>
 <li><p><code>p-value (&lt;test&gt;)</code>: The p-value from the selected <code>test</code>, where
 <code>&lt;test&gt;</code> is the title-cased test name (e.g., <code>"p-value (log-rank)"</code>).</p></li>
 </ul></div>
@@ -141,10 +153,17 @@ The columns are:</p><ul><li><p><code>HR</code>: The Hazard Ratio formatted to tw
     <h2>Details</h2>
     <p>The function iterates through each non-reference arm, subsets the
 data to the current arm and the reference arm, and then:</p><ul><li><p>Fits a Cox model using <code><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">survival::coxph()</a></code>.</p></li>
-<li><p>Computes a p-value via <code><a href="dot-estimate_p_value.html">.estimate_p_value()</a></code>, which dispatches
+<li><p>Computes a p-value, which dispatches
 to <code><a href="https://rdrr.io/pkg/coin/man/SurvivalTests.html" class="external-link">coin::logrank_test()</a></code> for weighted log-rank variants or to
-<code><a href="https://rdrr.io/pkg/survival/man/survreg.html" class="external-link">survival::survreg()</a></code> for the likelihood-ratio test.</p></li>
+a nested <code><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">survival::coxph()</a></code> LRT for the likelihood-ratio test.</p></li>
 </ul></div>
+    <div id="note">
+    <h2>Note</h2>
+    <p>When <code>robust = TRUE</code> is specified, the Hazard Ratio and Confidence Intervals are
+computed using robust sandwich standard errors. However, the p-values across all
+tests (including the likelihood-ratio test) are calculated using standard,
+non-robust model variances.</p>
+    </div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="annotate_gg_km.html">annotate_gg_km()</a></code>, <code><a href="gg_km.html">gg_km()</a></code>, <code><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">survival::coxph()</a></code>,
@@ -155,7 +174,8 @@ to <code><a href="https://rdrr.io/pkg/coin/man/SurvivalTests.html" class="extern
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Example data setup (assuming 'time' is event time, 'status'</span></span></span>
 <span class="r-in"><span><span class="co"># is event indicator (1=event), and 'arm' is the treatment group)</span></span></span>
-<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span> <span class="co"># For better data handling</span></span></span>
+<span class="r-in"><span><span class="co"># for data handling</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘dplyr’</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:stats’:</span>
@@ -164,16 +184,16 @@ to <code><a href="https://rdrr.io/pkg/coin/man/SurvivalTests.html" class="extern
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:base’:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     intersect, setdiff, setequal, union</span>
-<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival" class="external-link">survival</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="co"># Prepare data in a modern dplyr-friendly way</span></span></span>
-<span class="r-in"><span><span class="va">surv_data</span> <span class="op">&lt;-</span> <span class="fu">survival</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/survival/man/lung.html" class="external-link">lung</a></span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span><span class="va">surv_data</span> <span class="op">&lt;-</span> <span class="va">lung</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    arm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span><span class="op">)</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>    status <span class="op">=</span> <span class="va">status</span> <span class="op">-</span> <span class="fl">1</span> <span class="co"># Convert status to 0/1</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">if_all</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html" class="external-link">everything</a></span><span class="op">(</span><span class="op">)</span>, <span class="op">~</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">.</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">formula</span> <span class="op">&lt;-</span> <span class="fu">survival</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">arm</span></span></span>
+<span class="r-in"><span><span class="va">formula</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">arm</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 1: Default usage (ties = "exact", test = "log-rank")</span></span></span>
 <span class="r-in"><span><span class="va">results_default</span> <span class="op">&lt;-</span> <span class="fu">get_cox_pairwise_df</span><span class="op">(</span></span></span>
@@ -184,8 +204,8 @@ to <code><a href="https://rdrr.io/pkg/coin/man/SurvivalTests.html" class="extern
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">results_default</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     HR       95% CI p-value (log-rank)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> B 0.90 (0.59, 1.37)          0.6271416</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> C 0.72 (0.46, 1.13)          0.1521904</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> B 0.90 (0.59, 1.37)          0.6307971</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> C 0.72 (0.46, 1.13)          0.1542472</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 2: Using Breslow ties and the Gehan-Breslow test</span></span></span>
 <span class="r-in"><span><span class="va">results_wilcoxon</span> <span class="op">&lt;-</span> <span class="fu">get_cox_pairwise_df</span><span class="op">(</span></span></span>
@@ -214,7 +234,6 @@ to <code><a href="https://rdrr.io/pkg/coin/man/SurvivalTests.html" class="extern
 <span class="r-out co"><span class="r-pr">#&gt;</span>     HR       95% CI p-value (Likelihood-Ratio)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> B 0.90 (0.59, 1.37)                  0.7108187</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> C 0.72 (0.46, 1.13)                  0.1240071</span>
-<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
