@@ -46,7 +46,7 @@
 #' The columns are:
 #' \itemize{
 #'   \item `HR`: The Hazard Ratio formatted to two decimal places.
-#'    \item `conf.int` (default `0.95`): Adjusts the confidence interval level.
+#'   \item `conf.int` (default `0.95`): Adjusts the confidence interval level.
 #'      **Note:** Changing this value dynamically updates the corresponding
 #'      column name in the output (e.g., passing `0.99` renames the column
 #'      to `"99% CI"`).
