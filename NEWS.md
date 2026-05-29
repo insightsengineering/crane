@@ -35,6 +35,14 @@
 
 * Added `add_grade_column()` to inject a grade-label column into `tbl_hierarchical_rate_by_grade()` output. Decoupled from the table builder to prevent Cartesian join explosion in `tbl_merge()`. (#226)
 
+* `get_cox_pairwise_df()` now fully supports `strata()` terms in survival formulas (#256).
+
+* The `"likelihood-ratio"` test now intelligently switches between `survival::survreg()` (for unstratified models) and `survival::coxph()` (for stratified models) (#256).
+
+* Stripped package namespace prefixes (e.g., `survival::`) from survival formulas to prevent evaluation errors (#256).
+
+* Added `...` support in `get_cox_pairwise_df()` for `conf.int` (e.g., to adjust CI level) and `robust = TRUE` (for robust standard errors).
+
 ### Other Updates
 
 * `tbl_hierarchical_rate_and_count()` now emits zero-rows for unobserved factor levels in the first hierarchical variable. (#233)
@@ -71,6 +79,8 @@ all events (#217)
 * `tbl_roche_subgroups()` now shows `n`, `Events`, and `Median` per arm when `time_to_event` is specified. The total column shows `Total Events` instead of `Total n`. (#235)
 
 * Skip tests if suggested packages are missing (Failing test due to missing suggested package #252, @llrs-roche)
+
+* The default `"log-rank"` test now uses `survival::survdiff()` instead of `coin`, aligning output more closely with SAS and `rtables`
 
 # crane 0.3.1
 
