@@ -271,7 +271,7 @@ get_cox_pairwise_df <- function(
 #'
 #' @returns A single numeric p-value.
 #' @noRd
-.estimate_p_value <- function(formula, data, test, arm, ties, call = get_cli_abort_call()) {
+.estimate_p_value <- function(formula, data, test, arm, ties) {
   if (test == "log-rank") {
     # --- 1. Standard Log-Rank via survival (Matches SAS & rtables) ---
     sdiff <- survival::survdiff(formula, data = data)
@@ -291,7 +291,7 @@ get_cox_pairwise_df <- function(
             "of {.fun survival::survreg} (exponential LRT)."
           )
         ),
-        call = call
+        call = get_cli_abort_call()
       )
 
       # Fit the full Cox model
@@ -325,7 +325,7 @@ get_cox_pairwise_df <- function(
     rlang::check_installed(
       "coin",
       reason = paste("to run log-rank tests using the", test_type, "method."),
-      call = call
+      call = get_cli_abort_call()
     )
 
     if (.check_has_strata(formula)) {
@@ -367,7 +367,7 @@ get_cox_pairwise_df <- function(
 #'
 #' @returns A modified `formula` with `strata()` terms properly translated.
 #' @noRd
-.rewrite_formula <- function(formula, arm, call = get_cli_abort_call()) {
+.rewrite_formula <- function(formula, arm) {
   f_terms <- stats::terms(formula)
   term_labels <- attr(f_terms, "term.labels")
 
@@ -387,7 +387,7 @@ get_cox_pairwise_df <- function(
         "Please use stratification (e.g., {.code ~ {arm} + strata(var)})",
         "or switch to {.code test = 'likelihood-ratio'}."
       ),
-      call = call
+      call = get_cli_abort_call()
     )
   }
 
