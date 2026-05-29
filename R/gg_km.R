@@ -28,7 +28,7 @@ NULL
 #' Data setup assumes `"time"` is event time, `"status"` is event indicator (`1` represents an event),
 #' while `"arm"` is the treatment group.
 #'
-#' @examplesIf requireNamespace("coin", quietly = TRUE)
+#' @examples
 #' # Data preparation for KM plot
 #' library(survival)
 #' use_lung <- lung

@@ -57,8 +57,10 @@ A \code{data.frame} with one row per comparison arm (stored as rownames).
 The columns are:
 \itemize{
 \item \code{HR}: The Hazard Ratio formatted to two decimal places.
-\item \verb{95\% CI}: The 95\% Wald confidence interval as \code{"(lower, upper)"}.
-Setting \code{robust = TRUE} results in robust sandwich CIs.
+\item \code{conf.int} (default \code{0.95}): Adjusts the confidence interval level.
+\strong{Note:} Changing this value dynamically updates the corresponding
+column name in the output (e.g., passing \code{0.99} renames the column
+to \code{"99\% CI"}).
 \item \verb{p-value (<test>)}: The p-value from the selected \code{test}, where
 \verb{<test>} is the title-cased test name (e.g., \code{"p-value (log-rank)"}).
 }
@@ -78,6 +80,12 @@ data to the current arm and the reference arm, and then:
 to \code{coin::logrank_test()} for weighted log-rank variants or to
 a nested \code{survival::coxph()} LRT for the likelihood-ratio test.
 }
+}
+\note{
+When \code{robust = TRUE} is specified, the Hazard Ratio and Confidence Intervals are
+computed using robust sandwich standard errors. However, the p-values across all
+tests (including the likelihood-ratio test) are calculated using standard,
+non-robust model variances.
 }
 \examples{
 \dontshow{if (requireNamespace("coin", quietly = TRUE)) withAutoprint(\{ # examplesIf}

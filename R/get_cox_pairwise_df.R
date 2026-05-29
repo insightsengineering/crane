@@ -36,12 +36,20 @@
 #'    `conf.int` (default `0.95`) to adjust the CI level;
 #'   `robust = TRUE` to compute robust standard errors;
 #'
+#' @note
+#' When `robust = TRUE` is specified, the Hazard Ratio and Confidence Intervals are
+#' computed using robust sandwich standard errors. However, the p-values across all
+#' tests (including the likelihood-ratio test) are calculated using standard,
+#' non-robust model variances.
+#'
 #' @return A `data.frame` with one row per comparison arm (stored as rownames).
 #' The columns are:
 #' \itemize{
 #'   \item `HR`: The Hazard Ratio formatted to two decimal places.
-#'   \item `95% CI`: The 95% Wald confidence interval as `"(lower, upper)"`.
-#'      Setting `robust = TRUE` results in robust sandwich CIs.
+#'    \item `conf.int` (default `0.95`): Adjusts the confidence interval level.
+#'      **Note:** Changing this value dynamically updates the corresponding
+#'      column name in the output (e.g., passing `0.99` renames the column
+#'      to `"99% CI"`).
 #'   \item `p-value (<test>)`: The p-value from the selected `test`, where
 #'     `<test>` is the title-cased test name (e.g., `"p-value (log-rank)"`).
 #' }
@@ -139,9 +147,9 @@ get_cox_pairwise_df <- function(
   if (length(invalid_dots) > 0) {
     cli::cli_abort(
       c(
-        "Invalid argument{?s} passed via {.code ...}.",
+        "Invalid argument(s) passed via {.code ...}.",
         "i" = "Only {.arg robust} and {.arg conf.int} are supported at the moment.",
-        "x" = "Unrecognized argument{?s}: {.arg {invalid_dots}}."
+        "x" = "Unrecognized argument(s): {.arg {invalid_dots}}."
       ),
       call = get_cli_abort_call()
     )
@@ -313,14 +321,10 @@ get_cox_pairwise_df <- function(
       "fleming-harrington" = "Fleming-Harrington"
     )
 
-    if (!requireNamespace("coin", quietly = TRUE)) {
-      cli::cli_abort(
-        paste(
-          "The {.pkg coin} package is required to run",
-          "log-rank tests using the {test_type} method."
-        )
-      )
-    }
+    rlang::check_installed(
+      "coin",
+      reason = paste("to run log-rank tests using the", test_type, "method.")
+    )
 
     if (.check_has_strata(formula)) {
       formula <- .rewrite_formula(formula, arm)

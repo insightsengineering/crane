@@ -107,7 +107,6 @@ Proportional Hazards summary table as an annotation box.
 
 }}
 \examples{
-\dontshow{if (requireNamespace("coin", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 # Preparing the Kaplan-Meier Plot
 library(survival)
 use_lung <- lung
@@ -120,7 +119,7 @@ fit_kmg01 <- survfit(formula, use_lung)
 surv_plot_data <- process_survfit(fit_kmg01)
 
 plt_kmg01 <- gg_km(surv_plot_data)
-\dontshow{\}) # examplesIf}
+
 # Annotate Plot with Numbers at Risk Table
 annotate_riskdf(plt_kmg01, fit_kmg01)
 
