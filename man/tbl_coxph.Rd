@@ -22,6 +22,7 @@ presenting the p-value, Hazard Ratio, and 95\% Confidence Interval in a
 stacked layout where statistics form the rows of the table.
 }
 \examples{
+\dontshow{if (requireNamespace("survival", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 # Setup sample survival data
 library(survival)
 surv_data <- lung |>
@@ -62,7 +63,7 @@ custom[[pval_col]] <- ifelse(
   sprintf("\%.3f", custom[[pval_col]])
 )
 tbl_coxph(pairwise_df = custom)
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{get_cox_pairwise_df()}.

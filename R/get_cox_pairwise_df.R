@@ -66,7 +66,7 @@
 #' @seealso `annotate_gg_km()`, `gg_km()`, `survival::coxph()`,
 #'   `coin::logrank_test()`.
 #'
-#' @examplesIf requireNamespace("coin", quietly = TRUE)
+#' @examplesIf requireNamespace("coin", quietly = TRUE) && requireNamespace("survival", quietly = TRUE) && requireNamespace("dplyr", quietly = TRUE)
 #' # Example data setup (assuming 'time' is event time, 'status'
 #' # is event indicator (1=event), and 'arm' is the treatment group)
 #' # for data handling
@@ -271,7 +271,7 @@ get_cox_pairwise_df <- function(
 #'
 #' @returns A single numeric p-value.
 #' @noRd
-.estimate_p_value <- function(formula, data, test, arm, ties) {
+.estimate_p_value <- function(formula, data, test, arm, ties, call = get_cli_abort_call()) {
   if (test == "log-rank") {
     # --- 1. Standard Log-Rank via survival (Matches SAS & rtables) ---
     sdiff <- survival::survdiff(formula, data = data)
@@ -290,7 +290,8 @@ get_cox_pairwise_df <- function(
             "Using {.fun survival::coxph} (partial-likelihood LRT) instead",
             "of {.fun survival::survreg} (exponential LRT)."
           )
-        )
+        ),
+        call = call
       )
 
       # Fit the full Cox model
@@ -323,7 +324,8 @@ get_cox_pairwise_df <- function(
 
     rlang::check_installed(
       "coin",
-      reason = paste("to run log-rank tests using the", test_type, "method.")
+      reason = paste("to run log-rank tests using the", test_type, "method."),
+      call = call
     )
 
     if (.check_has_strata(formula)) {
@@ -365,7 +367,7 @@ get_cox_pairwise_df <- function(
 #'
 #' @returns A modified `formula` with `strata()` terms properly translated.
 #' @noRd
-.rewrite_formula <- function(formula, arm) {
+.rewrite_formula <- function(formula, arm, call = get_cli_abort_call()) {
   f_terms <- stats::terms(formula)
   term_labels <- attr(f_terms, "term.labels")
 
@@ -384,7 +386,8 @@ get_cox_pairwise_df <- function(
         "for: {.var {invalid_terms}}.",
         "Please use stratification (e.g., {.code ~ {arm} + strata(var)})",
         "or switch to {.code test = 'likelihood-ratio'}."
-      )
+      ),
+      call = call
     )
   }
 

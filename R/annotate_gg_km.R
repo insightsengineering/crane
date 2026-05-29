@@ -46,7 +46,7 @@
 #' @seealso [gg_km()], [process_survfit()], and [get_cox_pairwise_df()] for
 #'   related functionalities.
 #'
-#' @examples
+#' @examplesIf requireNamespace("survival", quietly = TRUE)
 #' # Preparing the Kaplan-Meier Plot
 #' library(survival)
 #' use_lung <- lung

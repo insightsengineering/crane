@@ -88,7 +88,7 @@ tests (including the likelihood-ratio test) are calculated using standard,
 non-robust model variances.
 }
 \examples{
-\dontshow{if (requireNamespace("coin", quietly = TRUE)) withAutoprint(\{ # examplesIf}
+\dontshow{if (requireNamespace("coin", quietly = TRUE) && requireNamespace("survival", quietly = TRUE) && requireNamespace("dplyr", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 # Example data setup (assuming 'time' is event time, 'status'
 # is event indicator (1=event), and 'arm' is the treatment group)
 # for data handling

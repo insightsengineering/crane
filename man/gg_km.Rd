@@ -92,6 +92,7 @@ support for various customizations like censoring marks, Confidence  Intervals (
 
 }}
 \examples{
+\dontshow{if (requireNamespace("survival", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 # Data preparation for KM plot
 library(survival)
 use_lung <- lung
@@ -106,7 +107,7 @@ fit_kmg01 <- survfit(formula, use_lung)
 # Process survfit data for plotting
 surv_plot_data <- process_survfit(fit_kmg01)
 head(surv_plot_data)
-
+\dontshow{\}) # examplesIf}
 # Example of making the KM plot
 plt_kmg01 <- gg_km(surv_plot_data)
 

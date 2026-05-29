@@ -1,6 +1,5 @@
 skip_if_pkg_not_installed(c("survival", "dplyr", "coin"))
-suppressPackageStartupMessages(library(survival))
-
+withr::local_package("survival")
 # Setup shared test data
 set.seed(42)
 test_df_2grp <- survival::veteran |>
