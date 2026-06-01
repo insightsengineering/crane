@@ -25,7 +25,7 @@ tbl_demographics <- function(..., nonmissing = "always") {
 #' @export
 g_lineplot <- function(...) {
   lifecycle::deprecate_soft(
-    "0.3.1.9017",
+    "0.3.2",
     "crane::g_lineplot()",
     "crane::gg_lineplot"
   )
@@ -35,7 +35,7 @@ g_lineplot <- function(...) {
 #' @export
 g_lineplot_table <- function(...) {
   lifecycle::deprecate_soft(
-    "0.3.1.9017",
+    "0.3.2",
     "crane::g_lineplot_table()",
     "crane::annotate_gg()"
   )
@@ -45,7 +45,7 @@ g_lineplot_table <- function(...) {
 #' @export
 preprocess_lineplot_data <- function(...) {
   lifecycle::deprecate_soft(
-    "0.3.1.9017",
+    "0.3.2",
     "crane::preprocess_lineplot_data()",
     "crane::annotate_gg()"
   )
