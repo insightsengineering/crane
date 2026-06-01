@@ -37,6 +37,7 @@ jobs:
         checking Rd .usage sections .* NOTE
         checking for unstated dependencies in vignettes .* NOTE
         checking top-level files .* NOTE
+      deps-installation-method: setup-r-dependencies
       cache-version: v2
   r-cmd-non-cran:
     name: R CMD Check (non-CRAN) 🧬
@@ -58,6 +59,7 @@ jobs:
         checking Rd .usage sections .* NOTE
         checking for unstated dependencies in vignettes .* NOTE
         checking top-level files .* NOTE
+      deps-installation-method: setup-r-dependencies
       cache-version: v2
   coverage:
     name: Coverage 📔
