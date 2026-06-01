@@ -62,10 +62,6 @@ Suggests:
     tidyselect,
     withr (>= 3.0.1),
     yaml
-Remotes:
-    ddsjoberg/gtsummary@main,
-    insightsengineering/cards@main,
-    insightsengineering/cardx@main
 Config/Needs/check: hms
 Config/Needs/website: rmarkdown, yaml
 Config/testthat/edition: 3
