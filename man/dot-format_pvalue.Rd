@@ -19,6 +19,6 @@ to pre-format the p-value column in \code{pairwise_df} before calling
 \code{\link[=tbl_coxph]{tbl_coxph()}}.
 }
 \examples{
-.format_pvalue(0.000156)
+crane:::.format_pvalue(0.000156)
 }
 \keyword{internal}

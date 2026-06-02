@@ -149,7 +149,7 @@ tbl_coxph <- function(pairwise_df) {
 #'    ci_formatted = "0.25-0.35",
 #'    pval_formatted = 0.005
 #' )
-#' .get_single_comp_table(tbl, pval_label = "p-val")
+#' crane:::.get_single_comp_table(tbl, pval_label = "p-val")
 .get_single_comp_table <- function(data_subset, pval_label = NULL) {
   # Check which pre-formatted columns made it into the subset
   has_pval <- "pval_formatted" %in% names(data_subset)
@@ -222,7 +222,7 @@ tbl_coxph <- function(pairwise_df) {
 #' @returns A character vector of formatted p-values.
 #' @keywords internal
 #' @examples
-#' .format_pvalue(0.000156)
+#' crane:::.format_pvalue(0.000156)
 .format_pvalue <- function(x) {
   if (is.character(x)) {
     return(x)

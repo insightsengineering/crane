@@ -28,6 +28,6 @@ tbl <- tibble::tibble(comparison_label = "A-B",
    ci_formatted = "0.25-0.35",
    pval_formatted = 0.005
 )
-.get_single_comp_table(tbl, pval_label = "p-val")
+crane:::.get_single_comp_table(tbl, pval_label = "p-val")
 }
 \keyword{internal}
