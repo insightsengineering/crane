@@ -34,7 +34,7 @@
 #'    parameters used in [gtsummary::tbl_split_by_rows()]. See example 4.
 #'  * Split by columns - you can split the data frame by columns by using `split_by_columns` parameter. Use the same
 #'    parameters from [gtsummary::tbl_split_by_rows()]. See example 5.
-#'
+#' @returns A table listing of class "tbl_listing".
 #' @examplesIf crane:::is_pkg_installed("labelled")
 #' # Load the trial dataset
 #' trial_data <- trial |>

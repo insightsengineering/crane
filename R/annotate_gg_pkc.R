@@ -23,7 +23,7 @@
 #'   The font size for the table text. Defaults to `3.5`.
 #' @param rel_height_plot (`numeric`)\cr
 #'   Relative height of the plot vs the table. Defaults to `0.75`.
-#'
+#' @returns A ggplot2 object: a plot with a table at the bottom.
 #' @seealso [gg_pkc_lineplot()] for related functionalities.
 #' @examples
 #' # Prepare PK Data using the built-in Theoph dataset

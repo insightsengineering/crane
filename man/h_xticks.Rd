@@ -20,4 +20,7 @@ A numeric vector of x-axis tick positions.
 \description{
 Determines the positions for x-axis ticks based on the data and user input.
 }
+\examples{
+NULL
+}
 \keyword{internal}

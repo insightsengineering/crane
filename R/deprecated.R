@@ -5,6 +5,9 @@
 #' supported.
 #'
 #' @name deprecated
+#' @returns Warnings
+#' @examples
+#' NULL
 #' @keywords internal
 NULL
 

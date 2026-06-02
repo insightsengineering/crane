@@ -22,4 +22,12 @@ Internal helper function to build a formatted \code{gtsummary} table for a singl
 comparison arm. It conditionally extracts available statistics from the
 subsetted data and stacks them into rows for the final display.
 }
+\examples{
+tbl <- tibble::tibble(comparison_label = "A-B",
+   hr_formatted = "5.21",
+   ci_formatted = "0.25-0.35",
+   pval_formatted = 0.005
+)
+.get_single_comp_table(tbl, pval_label = "p-val")
+}
 \keyword{internal}

@@ -18,4 +18,7 @@ to four decimal places. Character input is returned as-is, allowing users
 to pre-format the p-value column in \code{pairwise_df} before calling
 \code{\link[=tbl_coxph]{tbl_coxph()}}.
 }
+\examples{
+.format_pvalue(0.000156)
+}
 \keyword{internal}
