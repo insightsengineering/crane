@@ -44,7 +44,6 @@ jobs:
         checking examples .* NOTE
         checking Rd line widths .* NOTE
         checking top-level files .* NOTE
-      deps-installation-method: setup-r-dependencies
       skip-r-cmd-install: true
   coverage:
     name: Coverage 📔
