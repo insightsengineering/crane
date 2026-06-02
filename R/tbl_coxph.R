@@ -144,10 +144,11 @@ tbl_coxph <- function(pairwise_df) {
 #'
 #' @keywords internal
 #' @examples
-#' tbl <- tibble::tibble(comparison_label = "A-B",
-#'    hr_formatted = "5.21",
-#'    ci_formatted = "0.25-0.35",
-#'    pval_formatted = 0.005
+#' tbl <- tibble::tibble(
+#'   comparison_label = "A-B",
+#'   hr_formatted = "5.21",
+#'   ci_formatted = "0.25-0.35",
+#'   pval_formatted = 0.005
 #' )
 #' crane:::.get_single_comp_table(tbl, pval_label = "p-val")
 .get_single_comp_table <- function(data_subset, pval_label = NULL) {

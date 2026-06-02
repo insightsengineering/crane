@@ -77,6 +77,7 @@ trial |>
   add_forest(table_engine = "gt")
 
 # Realistic example ---------------------------------------------------------
+\donttest{
 if (requireNamespace("broom.helpers", quietly = TRUE)) {
   trial |>
     tbl_roche_subgroups(
@@ -91,5 +92,6 @@ if (requireNamespace("broom.helpers", quietly = TRUE)) {
     ) |>
     add_forest(pvalue = starts_with("p.value"), table_engine = "flextable") |>
     flextable::set_header_labels(ggplot = "---------")
+}
 }
 }

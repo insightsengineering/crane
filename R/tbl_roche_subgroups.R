@@ -49,6 +49,7 @@
 #' # coxph regression ----------------------------------------------------------
 #' # please use browser() inside .tbl_fun to check if the coxph model throws an error
 #' # and use tryCatch to modify the input/output accordingly
+#' \donttest{
 #' df_adtte |>
 #'   tbl_roche_subgroups(
 #'     rsp = status,
@@ -66,7 +67,7 @@
 #'       )
 #'   ) |>
 #'   modify_header(starts_with("estimate") ~ "**Hazard Ratio**")
-#'
+#' }
 #' @export
 tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun, time_to_event = NULL) {
   set_cli_abort_call()

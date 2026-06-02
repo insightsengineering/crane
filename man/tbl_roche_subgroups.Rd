@@ -67,6 +67,7 @@ df_adtte |>
 # coxph regression ----------------------------------------------------------
 # please use browser() inside .tbl_fun to check if the coxph model throws an error
 # and use tryCatch to modify the input/output accordingly
+\donttest{
 df_adtte |>
   tbl_roche_subgroups(
     rsp = status,
@@ -84,5 +85,6 @@ df_adtte |>
       )
   ) |>
   modify_header(starts_with("estimate") ~ "**Hazard Ratio**")
+}
 \dontshow{\}) # examplesIf}
 }
