@@ -17,7 +17,7 @@
 #'
 #' @returns a 'gtsummary' table
 #'
-#' @examples
+#' @examplesIf identical(Sys.getenv("NOT_CRAN"), "true")
 #' set.seed(1)
 #'
 #' # prepare sample data

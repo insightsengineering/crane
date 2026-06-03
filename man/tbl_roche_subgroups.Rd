@@ -36,6 +36,7 @@ a 'gtsummary' table
 Function adapted from \code{gtforester::tbl_subgroups()}.
 }
 \examples{
+\dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true")) withAutoprint(\{ # examplesIf}
 set.seed(1)
 
 # prepare sample data
@@ -62,7 +63,7 @@ df_adtte |>
         )
   ) |>
   modify_header(starts_with("estimate") ~ "**Odds Ratio**")
-
+\dontshow{\}) # examplesIf}
 \dontshow{if (rlang::is_installed("survival")) withAutoprint(\{ # examplesIf}
 # coxph regression ----------------------------------------------------------
 # please use browser() inside .tbl_fun to check if the coxph model throws an error
