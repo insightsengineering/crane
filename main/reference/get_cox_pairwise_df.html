@@ -20,7 +20,7 @@ against a specified reference group."><meta property="og:image" content="https:/
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1.9044</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.2</span>
       </span>
     </div>
 
@@ -204,8 +204,8 @@ non-robust model variances.</p>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">results_default</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     HR       95% CI p-value (log-rank)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> B 0.90 (0.59, 1.37)          0.6307971</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> C 0.72 (0.46, 1.13)          0.1542472</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> B 1.25 (0.82, 1.92)          0.2928890</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> C 1.27 (0.80, 2.02)          0.3011297</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 2: Using Breslow ties and the Gehan-Breslow test</span></span></span>
 <span class="r-in"><span><span class="va">results_wilcoxon</span> <span class="op">&lt;-</span> <span class="fu">get_cox_pairwise_df</span><span class="op">(</span></span></span>
@@ -218,8 +218,8 @@ non-robust model variances.</p>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">results_wilcoxon</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     HR       95% CI p-value (Gehan-Breslow)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> B 0.90 (0.59, 1.37)              0.96027942</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> C 0.72 (0.46, 1.13)              0.09715618</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> B 1.25 (0.82, 1.92)               0.6724338</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> C 1.27 (0.80, 2.02)               0.4594753</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Example 3: Using Efron ties and the Likelihood-Ratio test</span></span></span>
 <span class="r-in"><span><span class="va">results_lr</span> <span class="op">&lt;-</span> <span class="fu">get_cox_pairwise_df</span><span class="op">(</span></span></span>
@@ -232,8 +232,8 @@ non-robust model variances.</p>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">results_lr</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     HR       95% CI p-value (Likelihood-Ratio)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> B 0.90 (0.59, 1.37)                  0.7108187</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> C 0.72 (0.46, 1.13)                  0.1240071</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> B 1.25 (0.82, 1.92)                  0.5390843</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> C 1.27 (0.80, 2.02)                  0.4362390</span>
 </code></pre></div>
     </div>
   </div>
