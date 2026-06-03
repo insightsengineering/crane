@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.2</span>
       </span>
     </div>
 
@@ -84,13 +84,21 @@
         </td>
         <td><p>Hierarchical Rates and Counts</p></td>
       </tr><tr><td>
-          <p><code><a href="tbl_hierarchical_rate_by_grade.html">tbl_hierarchical_rate_by_grade()</a></code> <code><a href="tbl_hierarchical_rate_by_grade.html">add_overall(<i>&lt;tbl_hierarchical_rate_by_grade&gt;</i>)</a></code> </p>
+          <p><code><a href="tbl_hierarchical_rate_by_grade.html">tbl_hierarchical_rate_by_grade()</a></code> <code><a href="tbl_hierarchical_rate_by_grade.html">add_overall(<i>&lt;tbl_hierarchical_rate_by_grade&gt;</i>)</a></code> <code><a href="tbl_hierarchical_rate_by_grade.html">add_grade_column()</a></code> </p>
         </td>
         <td><p>AE Rates by Highest Toxicity Grade</p></td>
+      </tr><tr><td>
+          <p><code><a href="tbl_hierarchical_incidence_rate.html">tbl_hierarchical_incidence_rate()</a></code> </p>
+        </td>
+        <td><p>Hierarchical Exposure-Adjusted Incidence Rates</p></td>
       </tr><tr><td>
           <p><code><a href="add_hierarchical_count_row.html">add_hierarchical_count_row()</a></code> </p>
         </td>
         <td><p>Add row with counts</p></td>
+      </tr><tr><td>
+          <p><code><a href="ard_tabulate_abnormal_by_baseline.html">ard_tabulate_abnormal_by_baseline()</a></code> </p>
+        </td>
+        <td><p>ARD Tabulate Abnormality by Baseline Status</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="survival-analysis-tables">Survival Analysis Tables <a href="#survival-analysis-tables" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
@@ -103,6 +111,74 @@
           <p><code><a href="tbl_survfit_times.html">tbl_survfit_times()</a></code> <code><a href="tbl_survfit_times.html">add_difference_row(<i>&lt;tbl_survfit_times&gt;</i>)</a></code> <code><a href="tbl_survfit_times.html">add_overall(<i>&lt;tbl_survfit_times&gt;</i>)</a></code> </p>
         </td>
         <td><p>Survival Times</p></td>
+      </tr><tr><td>
+          <p><code><a href="tbl_coxph.html">tbl_coxph()</a></code> </p>
+        </td>
+        <td><p>Pairwise Cox Proportional Hazards Table</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="mixed-effect-models-with-repeated-measures-mmrm-tables">Mixed effect Models with Repeated Measures (MMRM) Tables <a href="#mixed-effect-models-with-repeated-measures-mmrm-tables" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="tbl_mmrm.html">get_mmrm_results()</a></code> <code><a href="tbl_mmrm.html">tbl_mmrm()</a></code> </p>
+        </td>
+        <td><p>Get and display MMRM Results in a Formatted Table</p></td>
+      </tr><tr><td>
+          <p><code><a href="gg_mmrm_lineplot.html">gg_mmrm_lineplot()</a></code> </p>
+        </td>
+        <td><p>Create MMRM Line Plot</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="pharmacokinetic-plots">Pharmacokinetic Plots <a href="#pharmacokinetic-plots" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="gg_pkc_lineplot.html">gg_pkc_lineplot()</a></code> </p>
+        </td>
+        <td><p>Plot Pharmacokinetic Concentration Time Profile</p></td>
+      </tr><tr><td>
+          <p><code><a href="annotate_pkc_df.html">annotate_pkc_df()</a></code> </p>
+        </td>
+        <td><p>Annotate PK Plot with Summary Table</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="kaplan-meier-plot">Kaplan-Meier Plot <a href="#kaplan-meier-plot" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="gg_km.html">process_survfit()</a></code> <code><a href="gg_km.html">gg_km()</a></code> </p>
+        </td>
+        <td><p>Kaplan-Meier Plot</p></td>
+      </tr><tr><td>
+          <p><code><a href="annotate_gg_km.html">annotate_riskdf()</a></code> <code><a href="annotate_gg_km.html">annotate_surv_med()</a></code> <code><a href="annotate_gg_km.html">annotate_coxph()</a></code> </p>
+        </td>
+        <td><p>Annotate Kaplan-Meier Plot</p></td>
+      </tr><tr><td>
+          <p><code><a href="get_cox_pairwise_df.html">get_cox_pairwise_df()</a></code> </p>
+        </td>
+        <td><p>Generate Table of Pairwise Cox-PH and Log-Rank Results</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="forest-plot">Forest Plot <a href="#forest-plot" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="add_forest.html">add_forest()</a></code> </p>
+        </td>
+        <td><p>Add a Forest Plot Column to a gtsummary Table</p></td>
+      </tr><tr><td>
+          <p><code><a href="tbl_roche_subgroups.html">tbl_roche_subgroups()</a></code> </p>
+        </td>
+        <td><p>Subgroup Analyses</p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="line-plots">Line Plots <a href="#line-plots" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="gg_lineplot.html">gg_lineplot()</a></code> </p>
+        </td>
+        <td><p>Generate a Summary Line Plot from Raw Data</p></td>
+      </tr><tr><td>
+          <p><code><a href="annotate_lineplot_df.html">annotate_lineplot_df()</a></code> </p>
+        </td>
+        <td><p>Annotate Line Plot with Summary Table</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="standard-listings">Standard Listings <a href="#standard-listings" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
@@ -112,6 +188,18 @@
         </td>
         <td><p>Create listings from a data frame</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
+          <h2 id="tables-with-overlapping-pooled-columns">Tables with overlapping pooled columns <a href="#tables-with-overlapping-pooled-columns" class="anchor" aria-hidden="true"></a></h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="tbl_with_pools.html">tbl_with_pools()</a></code> </p>
+        </td>
+        <td><p>Create a gtsummary table with overlapping pooled columns</p></td>
+      </tr><tr><td>
+          <p><code><a href="df_add_poolings.html">df_add_poolings()</a></code> </p>
+        </td>
+        <td><p>Add custom pooling to an ADaM dataset list - see <strong>DISCLAIMER</strong></p></td>
+      </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="null-reports">Null Reports <a href="#null-reports" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
         </th>
@@ -120,9 +208,13 @@
         </td>
         <td><p>Creates null report</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="forest-plot">Forest plot <a href="#forest-plot" class="anchor" aria-hidden="true"></a></h2>
+          <h2 id="risk-management-plan-tables">Risk Management Plan Tables <a href="#risk-management-plan-tables" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
         </th>
+      </tr></tbody><tbody><tr><td>
+          <p><code><a href="tbl_rmpt.html">tbl_rmpt()</a></code> <code><a href="tbl_rmpt.html">add_overall(<i>&lt;tbl_rmpt&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Risk Management Plan Table (RMPT)</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
           <h2 id="styling">Styling <a href="#styling" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
@@ -147,34 +239,26 @@
           <p><code><a href="label_roche.html">style_roche_pvalue()</a></code> <code><a href="label_roche.html">label_roche_pvalue()</a></code> <code><a href="label_roche.html">style_roche_percent()</a></code> <code><a href="label_roche.html">label_roche_percent()</a></code> <code><a href="label_roche.html">style_roche_ratio()</a></code> <code><a href="label_roche.html">label_roche_ratio()</a></code> <code><a href="label_roche.html">style_roche_number()</a></code> <code><a href="label_roche.html">label_roche_number()</a></code> </p>
         </td>
         <td><p>Formatting percent and p-values</p></td>
+      </tr><tr><td>
+          <p><code><a href="reverse_ci.html">reverse_ci()</a></code> </p>
+        </td>
+        <td><p>Reverse Confidence Interval</p></td>
+      </tr><tr><td>
+          <p><code><a href="reverse_rate_difference.html">reverse_rate_difference()</a></code> </p>
+        </td>
+        <td><p>Reverse Rate Difference</p></td>
+      </tr><tr><td>
+          <p><code><a href="adjust_stat_columns_wrap.html">adjust_stat_columns_wrap()</a></code> </p>
+        </td>
+        <td><p>Adjust Statistics Columns Wrapping</p></td>
       </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="kaplan-meier-plot">Kaplan-Meier Plot <a href="#kaplan-meier-plot" class="anchor" aria-hidden="true"></a></h2>
+          <h2 id="deprecated">Deprecated <a href="#deprecated" class="anchor" aria-hidden="true"></a></h2>
           <p class="section-desc"></p>
         </th>
       </tr></tbody><tbody><tr><td>
-          <p><code><a href="gg_km.html">process_survfit()</a></code> <code><a href="gg_km.html">gg_km()</a></code> </p>
+          <p><code><a href="deprecated.html">tbl_demographics()</a></code> <code><a href="deprecated.html">g_lineplot()</a></code> <code><a href="deprecated.html">g_lineplot_table()</a></code> <code><a href="deprecated.html">preprocess_lineplot_data()</a></code> </p>
         </td>
-        <td><p>Kaplan-Meier Plot</p></td>
-      </tr><tr><td>
-          <p><code><a href="annotate_gg_km.html">annotate_riskdf()</a></code> <code><a href="annotate_gg_km.html">annotate_surv_med()</a></code> <code><a href="annotate_gg_km.html">annotate_coxph()</a></code> </p>
-        </td>
-        <td><p>Annotate Kaplan-Meier Plot</p></td>
-      </tr><tr><td>
-          <p><code><a href="get_cox_pairwise_df.html">get_cox_pairwise_df()</a></code> </p>
-        </td>
-        <td><p>Generate Table of Pairwise Cox-PH and Log-Rank Results</p></td>
-      </tr></tbody><tbody><tr><th colspan="2">
-          <h2 id="forest-plot">Forest Plot <a href="#forest-plot" class="anchor" aria-hidden="true"></a></h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr></tbody><tbody><tr><td>
-          <p><code><a href="g_forest.html">g_forest()</a></code> </p>
-        </td>
-        <td><p>Create a Combined gtsummary Table and Forest Plot</p></td>
-      </tr><tr><td>
-          <p><code><a href="tbl_roche_subgroups.html">tbl_roche_subgroups()</a></code> </p>
-        </td>
-        <td><p>Subgroup Analyses</p></td>
+        <td><p>Deprecated functions</p></td>
       </tr></tbody></table></div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -184,7 +268,7 @@
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Daniel D. Sjoberg, Emily de la Rua, Davide Garolini, Joe Zhu, F. Hoffmann-La Roche AG.</p>
+  <p></p><p>Developed by Daniel D. Sjoberg, Emily de la Rua, Davide Garolini, Chi Zhang, Joe Zhu, Jan Szczypiński, F. Hoffmann-La Roche AG.</p>
 </div>
 
 <div class="pkgdown">

@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.2</span>
       </span>
     </div>
 
@@ -57,9 +57,56 @@
   <div class="col-md-9 contents">
     <div class="page-header">
       <h1 data-toc-skip>Changelog <small></small></h1>
-      <small>Source: <a href="https://github.com/insightsengineering/crane/blob/v0.3.1/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/insightsengineering/crane/blob/v0.3.2/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="0.3.2" id="crane-032">crane 0.3.2<a class="anchor" aria-label="anchor" href="#crane-032"></a></h2>
+<div class="section level3">
+<h3 id="new-functions-and-functionality-0-3-2">New Functions and Functionality<a class="anchor" aria-label="anchor" href="#new-functions-and-functionality-0-3-2"></a></h3>
+<ul><li><p>Added <code><a href="../reference/deprecated.html">g_lineplot()</a></code> for creating line plots with optional summary statistics table. Includes helper functions <code>calc_stats()</code>, <code><a href="../reference/deprecated.html">g_lineplot_table()</a></code>, and <code><a href="../reference/deprecated.html">preprocess_lineplot_data()</a></code>.</p></li>
+<li><p>Added <code><a href="../reference/ard_tabulate_abnormal_by_baseline.html">ard_tabulate_abnormal_by_baseline()</a></code> for creating an Analysis Results Data (ARD) object counting participants with abnormal assessments, stratified by their baseline status.</p></li>
+<li><p>Added <code><a href="../reference/tbl_mmrm.html">tbl_mmrm()</a></code> and <code><a href="../reference/tbl_mmrm.html">get_mmrm_results()</a></code> functions to create regression tables for Mixed Models for Repeated Measures (MMRM). (<a href="https://github.com/insightsengineering/crane/issues/163" class="external-link">#163</a>)</p></li>
+<li><p>Added <code><a href="../reference/gg_mmrm_lineplot.html">gg_mmrm_lineplot()</a></code> to create line plots of MMRM results. (<a href="https://github.com/insightsengineering/crane/issues/181" class="external-link">#181</a>)</p></li>
+<li><p>Added <code><a href="../reference/gg_pkc_lineplot.html">gg_pkc_lineplot()</a></code> to create line plots for PK data. (<a href="https://github.com/insightsengineering/crane/issues/185" class="external-link">#185</a>)</p></li>
+<li><p>Added <code>annotate_gg_pkc()</code> to add optional summary statistics table to <code><a href="../reference/gg_pkc_lineplot.html">gg_pkc_lineplot()</a></code>. (<a href="https://github.com/insightsengineering/crane/issues/189" class="external-link">#189</a>)</p></li>
+<li><p>Refactored the underlying <code>data.frame</code> alignment and rendering methodology used for plot annotations. Functions for table annotation now use a completely rebuilt engine that ensures X-axis synchronization for stacked tables (<code><a href="../reference/annotate_gg_km.html">annotate_riskdf()</a></code>) and flexible, reliable placement for floating tables (<code><a href="../reference/annotate_gg_km.html">annotate_surv_med()</a></code>, <code><a href="../reference/annotate_gg_km.html">annotate_coxph()</a></code>). (<a href="https://github.com/insightsengineering/crane/issues/189" class="external-link">#189</a>)</p></li>
+<li><p>Refactored functions for lineplot plotting - added <code><a href="../reference/gg_lineplot.html">gg_lineplot()</a></code> and <code>annotate_gg()</code> to create lineplots and annotate summary statistics table. (<a href="https://github.com/insightsengineering/crane/issues/184" class="external-link">#184</a>)</p></li>
+<li><p>Added functions <code><a href="../reference/reverse_ci.html">reverse_ci()</a></code>, <code><a href="../reference/reverse_rate_difference.html">reverse_rate_difference()</a></code> to reverse confidence intervals and rate differences in tables from <code>add_row_difference()</code>. (<a href="https://github.com/insightsengineering/crane/issues/204" class="external-link">#204</a>)</p></li>
+<li><p><code><a href="../reference/deprecated.html">g_lineplot()</a></code>, <code><a href="../reference/deprecated.html">g_lineplot_table()</a></code>, and <code><a href="../reference/deprecated.html">preprocess_lineplot_data()</a></code> were deprecated. (<a href="https://github.com/insightsengineering/crane/issues/184" class="external-link">#184</a>)</p></li>
+<li><p>Added <code><a href="../reference/tbl_coxph.html">tbl_coxph()</a></code> to render pairwise Cox proportional hazards results as a gtsummary table. (<a href="https://github.com/insightsengineering/crane/issues/159" class="external-link">#159</a>)</p></li>
+<li><p>Added <code><a href="../reference/tbl_hierarchical_incidence_rate.html">tbl_hierarchical_incidence_rate()</a></code> which computes the incidence rate of adverse events (<a href="https://github.com/insightsengineering/crane/issues/211" class="external-link">#211</a>)</p></li>
+<li><p>Added <code><a href="../reference/adjust_stat_columns_wrap.html">adjust_stat_columns_wrap()</a></code> which keep the presentation of statistics in one row (<a href="https://github.com/insightsengineering/crane/issues/219" class="external-link">#219</a>)</p></li>
+<li><p><code><a href="../reference/get_cox_pairwise_df.html">get_cox_pairwise_df()</a></code> now allows for different methods to compute p-value (<a href="https://github.com/insightsengineering/crane/issues/191" class="external-link">#191</a>) and to handle ties (<a href="https://github.com/insightsengineering/crane/issues/193" class="external-link">#193</a>).</p></li>
+<li><p><code><a href="../reference/tbl_coxph.html">tbl_coxph()</a></code> now accepts a data.frame created by <code><a href="../reference/get_cox_pairwise_df.html">get_cox_pairwise_df()</a></code> as input. (<a href="https://github.com/insightsengineering/crane/issues/207" class="external-link">#207</a>)</p></li>
+<li><p>Added <code><a href="../reference/tbl_hierarchical_rate_by_grade.html">add_grade_column()</a></code> to inject a grade-label column into <code><a href="../reference/tbl_hierarchical_rate_by_grade.html">tbl_hierarchical_rate_by_grade()</a></code> output. Decoupled from the table builder to prevent Cartesian join explosion in <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_merge.html" class="external-link">tbl_merge()</a></code>. (<a href="https://github.com/insightsengineering/crane/issues/226" class="external-link">#226</a>)</p></li>
+<li><p><code><a href="../reference/get_cox_pairwise_df.html">get_cox_pairwise_df()</a></code> now fully supports <code><a href="https://rdrr.io/pkg/survival/man/strata.html" class="external-link">strata()</a></code> terms in survival formulas (<a href="https://github.com/insightsengineering/crane/issues/256" class="external-link">#256</a>).</p></li>
+<li><p>The <code>"likelihood-ratio"</code> test now intelligently switches between <code><a href="https://rdrr.io/pkg/survival/man/survreg.html" class="external-link">survival::survreg()</a></code> (for unstratified models) and <code><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">survival::coxph()</a></code> (for stratified models) (<a href="https://github.com/insightsengineering/crane/issues/256" class="external-link">#256</a>).</p></li>
+<li><p>Stripped package namespace prefixes (e.g., <code>survival::</code>) from survival formulas to prevent evaluation errors (<a href="https://github.com/insightsengineering/crane/issues/256" class="external-link">#256</a>).</p></li>
+<li><p>Added <code>...</code> support in <code><a href="../reference/get_cox_pairwise_df.html">get_cox_pairwise_df()</a></code> for <code>conf.int</code> (e.g., to adjust CI level) and <code>robust = TRUE</code> (for robust standard errors).</p></li>
+</ul><div class="section level4">
+<h4 id="other-updates-0-3-2">Other Updates<a class="anchor" aria-label="anchor" href="#other-updates-0-3-2"></a></h4>
+<ul><li><p><code><a href="../reference/tbl_hierarchical_rate_and_count.html">tbl_hierarchical_rate_and_count()</a></code> now emits zero-rows for unobserved factor levels in the first hierarchical variable. (<a href="https://github.com/insightsengineering/crane/issues/233" class="external-link">#233</a>)</p></li>
+<li><p><code><a href="../reference/df2gg_aligned.html">df2gg_aligned()</a></code> and <code><a href="../reference/df2gg_floating.html">df2gg_floating()</a></code> now preserve original ggplot objects in <code>attr(result, "plotlist")</code> for downstream data extraction after combining with <code>cowplot</code>. (<a href="https://github.com/insightsengineering/crane/issues/208" class="external-link">#208</a>)</p></li>
+<li><p>Remove warning when data has more levels than needed for grade_groups on tbl_hierarchical_rate_by_grade.</p></li>
+<li><p>Changed the default <code>conf.type</code> from <code>"log"</code> to <code>"plain"</code> (linear) in <code><a href="../reference/tbl_survfit_times.html">tbl_survfit_times()</a></code> and <code><a href="../reference/tbl_survfit_quantiles.html">tbl_survfit_quantiles()</a></code> to align with GDSR guidelines. (<a href="https://github.com/insightsengineering/crane/issues/173" class="external-link">#173</a>)</p></li>
+<li><p>Removed bold from headers when using <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_strata.html" class="external-link">tbl_strata()</a></code> (<a href="https://github.com/insightsengineering/crane/issues/133" class="external-link">#133</a>).</p></li>
+<li><p>Unified border width in <code><a href="../reference/theme_gtsummary_roche.html">theme_gtsummary_roche()</a></code> to 0.5 for header. (<a href="https://github.com/insightsengineering/crane/issues/154" class="external-link">#154</a>)</p></li>
+<li><p>Added example on how to stratify <code><a href="../reference/tbl_baseline_chg.html">tbl_baseline_chg()</a></code> by <code>PARAM</code> and split into a list.</p></li>
+<li><p>Adjusted <code><a href="../reference/tbl_mmrm.html">tbl_mmrm()</a></code> to allow <code>base_df = NULL</code>.</p></li>
+<li><p>Fixed two bugs related to summary statistics calculation in <code><a href="../reference/ard_tabulate_abnormal_by_baseline.html">ard_tabulate_abnormal_by_baseline()</a></code>. (<a href="https://github.com/insightsengineering/crane/issues/198" class="external-link">#198</a>)</p></li>
+<li><p>Fixed a bug in <code><a href="../reference/gg_pkc_lineplot.html">gg_pkc_lineplot()</a></code> causing misplaced error bars on a log scale. (<a href="https://github.com/insightsengineering/crane/issues/199" class="external-link">#199</a>)</p></li>
+<li><p>Adjusted <code><a href="../reference/gg_pkc_lineplot.html">gg_pkc_lineplot()</a></code> to use <code><a href="../reference/tbl_roche_summary.html">tbl_roche_summary()</a></code> for automatic decimals formatting.</p></li>
+<li><p>Adjusted <code><a href="../reference/tbl_hierarchical_incidence_rate.html">tbl_hierarchical_incidence_rate()</a></code> to handle first event as well as all events (<a href="https://github.com/insightsengineering/crane/issues/217" class="external-link">#217</a>)</p></li>
+<li><p>Adjusted <code><a href="../reference/tbl_baseline_chg.html">tbl_baseline_chg()</a></code> to allow for custiomization of display statistics (<a href="https://github.com/insightsengineering/crane/issues/222" class="external-link">#222</a>)</p></li>
+<li><p>Changed baseline statistic argument in <code><a href="../reference/tbl_baseline_chg.html">tbl_baseline_chg()</a></code> (<a href="https://github.com/insightsengineering/crane/issues/224" class="external-link">#224</a>)</p></li>
+<li><p>Adjusted <code><a href="../reference/modify_zero_recode.html">modify_zero_recode()</a></code> to account for strings comprising regular and non-breaking spaces (<a href="https://github.com/insightsengineering/crane/issues/230" class="external-link">#230</a>)</p></li>
+<li><p><code><a href="../reference/tbl_roche_subgroups.html">tbl_roche_subgroups()</a></code> now shows <code>n</code>, <code>Events</code>, and <code>Median</code> per arm when <code>time_to_event</code> is specified. The total column shows <code>Total Events</code> instead of <code>Total n</code>. (<a href="https://github.com/insightsengineering/crane/issues/235" class="external-link">#235</a>)</p></li>
+<li><p>Skip tests if suggested packages are missing (Failing test due to missing suggested package <a href="https://github.com/insightsengineering/crane/issues/252" class="external-link">#252</a>, <a href="https://github.com/llrs-roche" class="external-link">@llrs-roche</a>)</p></li>
+<li><p>The default <code>"log-rank"</code> test now uses <code><a href="https://rdrr.io/pkg/survival/man/survdiff.html" class="external-link">survival::survdiff()</a></code> instead of <code>coin</code>, aligning output more closely with SAS and <code>rtables</code></p></li>
+</ul></div>
+</div>
+</div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="0.3.1" id="crane-031">crane 0.3.1<small>2026-01-21</small><a class="anchor" aria-label="anchor" href="#crane-031"></a></h2>
 <div class="section level3">
@@ -139,7 +186,7 @@
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Daniel D. Sjoberg, Emily de la Rua, Davide Garolini, Joe Zhu, F. Hoffmann-La Roche AG.</p>
+  <p></p><p>Developed by Daniel D. Sjoberg, Emily de la Rua, Davide Garolini, Chi Zhang, Joe Zhu, Jan Szczypiński, F. Hoffmann-La Roche AG.</p>
 </div>
 
 <div class="pkgdown">

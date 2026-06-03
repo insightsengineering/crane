@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.2</span>
       </span>
     </div>
 
@@ -57,7 +57,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Subgroup Analyses</h1>
-    <small class="dont-index">Source: <a href="https://github.com/insightsengineering/crane/blob/v0.3.1/R/tbl_roche_subgroups.R" class="external-link"><code>R/tbl_roche_subgroups.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/insightsengineering/crane/blob/v0.3.2/R/tbl_roche_subgroups.R" class="external-link"><code>R/tbl_roche_subgroups.R</code></a></small>
     <div class="hidden name"><code>tbl_roche_subgroups.Rd</code></div>
     </div>
 
@@ -66,7 +66,7 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">tbl_roche_subgroups</span><span class="op">(</span><span class="va">data</span>, <span class="va">rsp</span>, <span class="va">by</span>, <span class="va">subgroups</span>, <span class="va">.tbl_fun</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">tbl_roche_subgroups</span><span class="op">(</span><span class="va">data</span>, <span class="va">rsp</span>, <span class="va">by</span>, <span class="va">subgroups</span>, <span class="va">.tbl_fun</span>, time_to_event <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -99,6 +99,13 @@ A function or formula. If a <em>function</em>, it is used as is.
 If a formula, e.g. <code>~ .x %&gt;% tbl_summary() %&gt;% add_p()</code>, it is converted to a function.
 The stratified data frame is passed to this function.</p></dd>
 
+
+<dt id="arg-time-to-event">time_to_event<a class="anchor" aria-label="anchor" href="#arg-time-to-event"></a></dt>
+<dd><p>(<code><a href="https://dplyr.tidyverse.org/reference/dplyr_tidy_select.html" class="external-link">tidy-select</a></code>)<br>
+Variable to use in time-to-event analyses. If specified, the mid table
+shows n (subjects), Events (from <code>rsp</code>), and Median per arm instead of
+responder rates. The total column shows Total Events instead of Total n.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -108,22 +115,56 @@ The stratified data frame is passed to this function.</p></dd>
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># identical(Sys.getenv("NOT_CRAN"), "true")</span></span></span>
-<span class="r-in"><span><span class="va">tbl</span> <span class="op">&lt;-</span></span></span>
-<span class="r-in"><span>  <span class="va">trial</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu">tbl_roche_subgroups</span><span class="op">(</span></span></span>
-<span class="r-in"><span>    rsp <span class="op">=</span> <span class="st">"response"</span>,</span></span>
-<span class="r-in"><span>    by <span class="op">=</span> <span class="st">"trt"</span>,</span></span>
-<span class="r-in"><span>    subgroups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"grade"</span>, <span class="st">"stage"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    .tbl_fun <span class="op">=</span></span></span>
-<span class="r-in"><span>      <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">response</span> <span class="op">~</span> <span class="va">trt</span>, data <span class="op">=</span> <span class="va">.x</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>        <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_regression.html" class="external-link">tbl_regression</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>          show_single_row <span class="op">=</span> <span class="va">trt</span>,</span></span>
-<span class="r-in"><span>          exponentiate <span class="op">=</span> <span class="cn">TRUE</span></span></span>
-<span class="r-in"><span>        <span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">tbl</span></span></span>
+<span class="r-in"><span><span class="co"># prepare sample data</span></span></span>
+<span class="r-in"><span><span class="va">df_adtte</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  time <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">rexp</a></span><span class="op">(</span><span class="fl">100</span>, rate <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  status <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  arm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Arm A"</span>, <span class="st">"Arm B"</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  grade <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"I"</span>, <span class="st">"II"</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  strata <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1"</span>, <span class="st">"2"</span><span class="op">)</span>, <span class="fl">100</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>arm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/relevel.html" class="external-link">relevel</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">arm</span><span class="op">)</span>, ref <span class="op">=</span> <span class="st">"Arm A"</span><span class="op">)</span><span class="op">)</span> <span class="co"># Set Reference</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># logistic regression -------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="va">df_adtte</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">tbl_roche_subgroups</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    rsp <span class="op">=</span> <span class="st">"status"</span>,</span></span>
+<span class="r-in"><span>    by <span class="op">=</span> <span class="st">"arm"</span>,</span></span>
+<span class="r-in"><span>    subgroups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"grade"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    .tbl_fun <span class="op">=</span></span></span>
+<span class="r-in"><span>      <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm</a></span><span class="op">(</span><span class="va">status</span> <span class="op">~</span> <span class="va">arm</span>, data <span class="op">=</span> <span class="va">.x</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>        <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_regression.html" class="external-link">tbl_regression</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>          show_single_row <span class="op">=</span> <span class="va">arm</span>,</span></span>
+<span class="r-in"><span>          exponentiate <span class="op">=</span> <span class="cn">TRUE</span> <span class="co"># , tidy_fun = broom.helpers::tidy_parameters</span></span></span>
+<span class="r-in"><span>        <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/modify.html" class="external-link">modify_header</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"estimate"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"**Odds Ratio**"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span><span class="co"># coxph regression ----------------------------------------------------------</span></span></span>
+<span class="r-in"><span><span class="co"># please use browser() inside .tbl_fun to check if the coxph model throws an error</span></span></span>
+<span class="r-in"><span><span class="co"># and use tryCatch to modify the input/output accordingly</span></span></span>
+<span class="r-in"><span><span class="co"># \donttest{</span></span></span>
+<span class="r-in"><span><span class="va">df_adtte</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu">tbl_roche_subgroups</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    rsp <span class="op">=</span> <span class="va">status</span>,</span></span>
+<span class="r-in"><span>    by <span class="op">=</span> <span class="va">arm</span>,</span></span>
+<span class="r-in"><span>    time_to_event <span class="op">=</span> <span class="va">time</span>, <span class="co"># Specify time variable for time-to-event analyses (different mid table)</span></span></span>
+<span class="r-in"><span>    subgroups <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">grade</span>, <span class="va">strata</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    <span class="op">~</span> <span class="fu">survival</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">coxph</a></span><span class="op">(</span> <span class="co"># Please use coxph for time-to-event analyses</span></span></span>
+<span class="r-in"><span>      <span class="fu">survival</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span><span class="va">time</span>, <span class="va">status</span><span class="op">)</span> <span class="op">~</span> <span class="va">arm</span>,</span></span>
+<span class="r-in"><span>      data <span class="op">=</span> <span class="va">.x</span>,</span></span>
+<span class="r-in"><span>      ties <span class="op">=</span> <span class="st">"exact"</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># Exact Ties</span></span></span>
+<span class="r-in"><span>      <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_regression.html" class="external-link">tbl_regression</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>        show_single_row <span class="op">=</span> <span class="va">arm</span>,</span></span>
+<span class="r-in"><span>        exponentiate <span class="op">=</span> <span class="cn">TRUE</span> <span class="co"># Get Hazard Ratios</span></span></span>
+<span class="r-in"><span>      <span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/modify.html" class="external-link">modify_header</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/starts_with.html" class="external-link">starts_with</a></span><span class="op">(</span><span class="st">"estimate"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"**Hazard Ratio**"</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'df_adtte' not found</span>
+<span class="r-in"><span><span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -134,7 +175,7 @@ The stratified data frame is passed to this function.</p></dd>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Daniel D. Sjoberg, Emily de la Rua, Davide Garolini, Joe Zhu, F. Hoffmann-La Roche AG.</p>
+  <p></p><p>Developed by Daniel D. Sjoberg, Emily de la Rua, Davide Garolini, Chi Zhang, Joe Zhu, Jan Szczypiński, F. Hoffmann-La Roche AG.</p>
 </div>
 
 <div class="pkgdown">
