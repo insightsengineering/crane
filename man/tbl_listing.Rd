@@ -37,6 +37,9 @@ columns to highlight for duplicate values. If \code{NULL}, nothing is done.}
 \item{value}{(\code{string})\cr
 string to use for blank values. Defaults to \code{NA}. It should not be changed.}
 }
+\value{
+A table listing of class "tbl_listing".
+}
 \description{
 This function creates a listing from a data frame. Common uses
 rely on few pre-processing steps, such as ensuring unique values in key columns or split

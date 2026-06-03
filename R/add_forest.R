@@ -52,19 +52,23 @@
 #'   add_forest(table_engine = "gt")
 #'
 #' # Realistic example ---------------------------------------------------------
-#' trial |>
-#'   tbl_roche_subgroups(
-#'     rsp = "response",
-#'     by = "trt",
-#'     subgroups = c("grade"),
-#'     ~ glm(response ~ trt, data = .x) |>
-#'       gtsummary::tbl_regression(
-#'         show_single_row = trt,
-#'         exponentiate = TRUE # , tidy_fun = broom.helpers::tidy_parameters
-#'       )
-#'   ) |>
-#'   add_forest(pvalue = starts_with("p.value"), table_engine = "flextable") |>
-#'   flextable::set_header_labels(ggplot = "---------")
+#' \donttest{
+#' if (requireNamespace("broom.helpers", quietly = TRUE)) {
+#'   trial |>
+#'     tbl_roche_subgroups(
+#'       rsp = "response",
+#'       by = "trt",
+#'       subgroups = c("grade"),
+#'       ~ glm(response ~ trt, data = .x) |>
+#'         gtsummary::tbl_regression(
+#'           show_single_row = trt,
+#'           exponentiate = TRUE # , tidy_fun = broom.helpers::tidy_parameters
+#'         )
+#'     ) |>
+#'     add_forest(pvalue = starts_with("p.value"), table_engine = "flextable") |>
+#'     flextable::set_header_labels(ggplot = "---------")
+#' }
+#' }
 #' @export
 add_forest <- function(x,
                        estimate = starts_with("estimate"),

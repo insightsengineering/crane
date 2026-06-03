@@ -42,6 +42,9 @@ The font size for the table text. Defaults to \code{3.5}.}
 \item{rel_height_plot}{(\code{numeric})\cr
 Relative height of the plot vs the table. Defaults to \code{0.75}.}
 }
+\value{
+A ggplot2 object: a plot with a table at the bottom.
+}
 \description{
 These functions provide capabilities to annotate Pharmacokinetics plot
 (\code{\link[=gg_pkc_lineplot]{gg_pkc_lineplot()}}) with additional summary statistics table.

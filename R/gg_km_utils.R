@@ -10,6 +10,8 @@
 #' @return A numeric vector of x-axis tick positions.
 #'
 #' @keywords internal
+#' @examples
+#' NULL
 h_xticks <- function(data, xticks = NULL, max_time = NULL) {
   if (is.null(xticks)) {
     if (is.null(max_time)) {
@@ -46,6 +48,8 @@ h_xticks <- function(data, xticks = NULL, max_time = NULL) {
 #' @return A data frame with columns "N", "Median", and the confidence interval label.
 #'
 #' @keywords internal
+#' @examples
+#' NULL
 h_tbl_median_surv <- function(fit_km, strata_levels = "All") {
   y <- if (is.null(fit_km$strata)) {
     as.data.frame(t(summary(fit_km)$table), row.names = strata_levels)

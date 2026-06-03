@@ -4,7 +4,7 @@
 #'
 #' @param label (`string`)\cr label to display in the header of the null report. It defaults to
 #'   "No observations met the reporting criteria for this output."
-#'
+#' @returns A gtsummary object of class tbl_null_report.
 #' @examples
 #' tbl_null_report(label = "No data available for the selected criteria.")
 #'

@@ -26,3 +26,11 @@ on a single line when protected. Column headers and labels remain unaffected.
 For the rare cases when protecting creates ugly squashed label column
 protection can be reversed using the same function.
 }
+\examples{
+tbl <- gtsummary::tbl_summary(
+  trial,
+  by = trt,
+  include = c(age, grade)
+)
+adjust_stat_columns_wrap(tbl, "protect")
+}
