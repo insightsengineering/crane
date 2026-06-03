@@ -12,6 +12,9 @@ tbl_null_report(
 \item{label}{(\code{string})\cr label to display in the header of the null report. It defaults to
 "No observations met the reporting criteria for this output."}
 }
+\value{
+A gtsummary object of class tbl_null_report.
+}
 \description{
 This function creates a null report for tables or listings without any statistics.
 }

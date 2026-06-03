@@ -120,6 +120,7 @@ tbl_rmpt(
 
 # Example 2 --------------------------------
 # Add overall column at the end
+\donttest{
 tbl_rmpt(
   data = df_adex,
   variable = AVAL_CAT,
@@ -139,5 +140,6 @@ tbl_rmpt(
   denominator = df_adsl,
   label = "Treatment Exposure Duration"
 )
+}
 
 }
