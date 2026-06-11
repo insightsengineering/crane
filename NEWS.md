@@ -1,5 +1,11 @@
 # crane 0.3.2.9000
 
+* `tbl_hierarchical_incidence_rate()` gains an `overall_row` argument to control whether the overall summary row is included. (#264)
+
+* `tbl_hierarchical_incidence_rate()` now supports `add_overall()` to append an unstratified "Overall" column pooling all treatment arms. (#264)
+
+* `tbl_hierarchical_incidence_rate()` now renders spanning headers for treatment arm columns. (#264)
+
 # crane 0.3.2
 
 ## New Functions and Functionality
