@@ -44,6 +44,10 @@
 #' @param digits (`numeric(1)`)\cr
 #'   An integer specifying the number of decimal places to round the incidence
 #'   estimates, confidence intervals, and person-years to. Defaults to `2`.
+#' @param overall_row (`logical(1)`)\cr
+#'   Whether to include an overall summary row aggregating across all
+#'   hierarchical levels. Default is `TRUE`. The overall row label can be
+#'   customized via `label = list("..ard_hierarchical_overall.." = "Custom Label")`.
 #'
 #' @returns a gtsummary table of class `"tbl_hierarchical_incidence_rate"`.
 #' @name tbl_hierarchical_incidence_rate
@@ -86,6 +90,57 @@
 #'   )
 #' )
 #'
+#' # Custom overall row label
+#' tbl_hierarchical_incidence_rate(
+#'   data = adae,
+#'   denominator = adsl,
+#'   variables = c(AESOC, AEDECOD),
+#'   by = ARM,
+#'   start_date = TRTSDT,
+#'   end_date = TRTEDT,
+#'   event_date = AESTDTC,
+#'   label = list("..ard_hierarchical_overall.." = "Any Adverse Event")
+#' )
+#'
+#' # Without the overall row
+#' tbl_hierarchical_incidence_rate(
+#'   data = adae,
+#'   denominator = adsl,
+#'   variables = c(AESOC, AEDECOD),
+#'   by = ARM,
+#'   start_date = TRTSDT,
+#'   end_date = TRTEDT,
+#'   event_date = AESTDTC,
+#'   overall_row = FALSE
+#' )
+#'
+#' # Add an unstratified "Overall" column pooling all treatment arms
+#' tbl_hierarchical_incidence_rate(
+#'   data = adae,
+#'   denominator = adsl,
+#'   variables = c(AESOC, AEDECOD),
+#'   by = ARM,
+#'   start_date = TRTSDT,
+#'   end_date = TRTEDT,
+#'   event_date = AESTDTC
+#' ) |>
+#'   add_overall()
+#'
+#' # Customize spanning headers after table creation
+#' tbl_hierarchical_incidence_rate(
+#'   data = adae,
+#'   denominator = adsl,
+#'   variables = c(AESOC, AEDECOD),
+#'   by = ARM,
+#'   start_date = TRTSDT,
+#'   end_date = TRTEDT,
+#'   event_date = AESTDTC
+#' ) |>
+#'   gtsummary::modify_spanning_header(
+#'     tidyselect::starts_with("stat_1") ~ "Placebo (N = 3)",
+#'     tidyselect::starts_with("stat_2") ~ "Treatment (N = 2)"
+#'   )
+#'
 #' @export
 tbl_hierarchical_incidence_rate <- function(data,
                                             denominator,
@@ -101,6 +156,7 @@ tbl_hierarchical_incidence_rate <- function(data,
                                             conf.level = 0.95,
                                             conf.type = "normal",
                                             digits = 2,
+                                            overall_row = TRUE,
                                             label = NULL) {
   # 1. Base Input Validation (Missingness and standard classes)
   event_type <- rlang::arg_match(event_type)
@@ -120,6 +176,7 @@ tbl_hierarchical_incidence_rate <- function(data,
   check_string(conf.type)
   check_numeric(digits)
   check_scalar(digits)
+  check_scalar_logical(overall_row)
   if (!is.null(label) && !is.list(label)) {
     cli::cli_abort("{.arg label} must be a list or NULL.")
   }
@@ -143,15 +200,16 @@ tbl_hierarchical_incidence_rate <- function(data,
   check_scalar(end_date)
   check_scalar(event_date)
 
-  # Save inputs and call arguments
   tbl_final <- list()
-  tbl_final$call_list <- list(tbl_hierarchical_incidence_rate = match.call())
-  tbl_final$inputs <- as.list(environment())
 
-  # 4. Extract overall label BEFORE `cards` processes the dataset
-  overall_label <- "All Adverse Events"
-  if (is.list(label) && "..ard_hierarchical_overall.." %in% names(label)) {
-    overall_label <- label[["..ard_hierarchical_overall.."]]
+  # Extract overall label BEFORE `cards` processes the dataset
+
+  overall_label <- NULL
+  if (overall_row) {
+    overall_label <- "All Adverse Events"
+    if (is.list(label) && "..ard_hierarchical_overall.." %in% names(label)) {
+      overall_label <- label[["..ard_hierarchical_overall.."]]
+    }
   }
 
   # 5. Auto-extract Labels for Dataset Columns
@@ -171,28 +229,34 @@ tbl_hierarchical_incidence_rate <- function(data,
     id = dplyr::all_of(id),
     denominator = denominator,
     label = label,
-    overall_row = TRUE
+    overall_row = overall_row
   ) |>
     gtsummary::sort_hierarchical() |>
     gtsummary::modify_header(
       gtsummary::all_stat_cols() ~ "No. of\nParticipants\nwith AE (%)"
-    ) |>
-    gtsummary::modify_table_body(~ .x |> dplyr::mutate(
-      label = dplyr::if_else(
-        dplyr::row_number() == 1, .env$overall_label, .data$label
-      )
-    ))
-
-  # 6. Generate ARDs cleanly using explicit piping
-  ard_overall <- .prep_incidence_rate_data(
-    data, denominator, id, by, start_date,
-    end_date, event_date, event_type, NULL
-  ) |>
-    .compute_incidence_rate_ard(
-      by, NULL, digits,
-      n_person_time = n_person_time, unit_label = unit_label,
-      conf.level = conf.level, conf.type = conf.type
     )
+
+  if (overall_row) {
+    tbl_base <- tbl_base |>
+      gtsummary::modify_table_body(~ .x |> dplyr::mutate(
+        label = dplyr::if_else(
+          dplyr::row_number() == 1, .env$overall_label, .data$label
+        )
+      ))
+  }
+
+  # Generate ARDs cleanly using explicit piping
+  if (overall_row) {
+    ard_overall <- .prep_incidence_rate_data(
+      data, denominator, id, by, start_date,
+      end_date, event_date, event_type, NULL
+    ) |>
+      .compute_incidence_rate_ard(
+        by, NULL, digits,
+        n_person_time = n_person_time, unit_label = unit_label,
+        conf.level = conf.level, conf.type = conf.type
+      )
+  }
 
   ard_lvl1 <- .prep_incidence_rate_data(
     data, denominator, id, by, start_date,
@@ -245,29 +309,37 @@ tbl_hierarchical_incidence_rate <- function(data,
   )
 
   tbls_rates <- lapply(names(tbl_stat_labels), function(stat) {
-    list(
-      gtsummary::tbl_ard_summary(
+    tbl_hier <- gtsummary::tbl_ard_hierarchical(
+      cards = ard_hierarchical_combined,
+      by = dplyr::all_of(by),
+      variables = dplyr::all_of(variables),
+      statistic = ~stat
+    )
+
+    if (overall_row) {
+      tbl_overall_stat <- gtsummary::tbl_ard_summary(
         ard_overall,
         by = dplyr::all_of(by), statistic = ~stat
       ) |>
         gtsummary::modify_table_body(~ .x |> dplyr::mutate(
           row_type = "level", var_label = NA, label = .env$overall_label,
           group1 = "..ard_hierarchical_overall.."
-        )),
+        ))
 
-      # use combined ard in the function call
-      gtsummary::tbl_ard_hierarchical(
-        cards = ard_hierarchical_combined,
-        by = dplyr::all_of(by),
-        variables = dplyr::all_of(variables),
-        statistic = ~stat
-      )
-    ) |>
-      gtsummary::tbl_stack(attr_order = 2:1, quiet = TRUE) |>
+      tbl_hier <- list(tbl_overall_stat, tbl_hier) |>
+        gtsummary::tbl_stack(attr_order = 2:1, quiet = TRUE)
+    }
+
+    tbl_hier |>
       gtsummary::modify_header(
         gtsummary::all_stat_cols() ~ tbl_stat_labels[[stat]]
       )
   })
+
+  # Extract arm-to-column mapping before merge for spanning headers
+  arm_header_map <- tbl_base$table_styling$header |>
+    dplyr::filter(grepl("^stat_", .data$column)) |>
+    dplyr::select("column", "label", "modify_stat_level", "modify_stat_n")
 
   tbl_final <- c(list(tbl_base), tbls_rates) |>
     gtsummary::tbl_merge(tab_spanner = FALSE) |>
@@ -277,9 +349,124 @@ tbl_hierarchical_incidence_rate <- function(data,
     }) |>
     gtsummary::remove_footnote_header(tidyselect::everything())
 
+  # Apply spanning headers from the arm mapping (e.g., stat_1_* -> "Placebo\nN = 3")
+  if (!is.null(by) && nrow(arm_header_map) > 0L) {
+    spanning_formulas <- lapply(seq_len(nrow(arm_header_map)), function(i) {
+      arm_idx <- sub("^stat_", "", arm_header_map$column[i])
+      arm_level <- arm_header_map$modify_stat_level[i]
+      arm_n <- arm_header_map$modify_stat_n[i]
+      prefix <- paste0("stat_", arm_idx, "_")
+      spanner_label <- paste0(arm_level, "\nN = ", arm_n)
+      rlang::new_formula(
+        lhs = rlang::expr(tidyselect::starts_with(!!prefix)),
+        rhs = rlang::expr(!!spanner_label)
+      )
+    })
+
+    tbl_final <- rlang::inject(
+      gtsummary::modify_spanning_header(tbl_final, !!!spanning_formulas)
+    )
+  }
+
+  # Store inputs for add_overall() reconstruction
+  tbl_final$inputs <- mget(
+    names(formals(tbl_hierarchical_incidence_rate)),
+    envir = environment()
+  )
+  tbl_final$call_list <- list(tbl_hierarchical_incidence_rate = match.call())
+
   class(tbl_final) <- c("tbl_hierarchical_incidence_rate", class(tbl_final))
 
   tbl_final
+}
+
+#' @rdname tbl_hierarchical_incidence_rate
+#' @export
+add_overall.tbl_hierarchical_incidence_rate <- function(
+    x,
+    last = TRUE,
+    col_label = "Overall\nN = {style_number(N)}",
+    ...) {
+  rlang::check_dots_empty()
+
+  if (is.null(x$inputs[["by"]]) || length(x$inputs[["by"]]) == 0L) {
+    cli::cli_inform(c(
+      "Cannot add an overall column when the table has no {.arg by} variable.",
+      i = "Returning table unaltered."
+    ))
+    return(x)
+  }
+
+  # Rebuild the table with by = NULL to get the unstratified overall
+  args_overall <- utils::modifyList(x$inputs, list(by = NULL), keep.null = TRUE)
+  tbl_overall <- do.call(tbl_hierarchical_incidence_rate, args_overall)
+
+  # The overall table has stat_0_1..stat_0_5 (single arm, 5 panels)
+  # Rename them to stat_0_* for consistency
+  overall_stat_cols <- grep(
+    "^stat_", names(tbl_overall$table_body), value = TRUE
+  )
+
+  # Verify row alignment
+  if (!identical(x$table_body$label, tbl_overall$table_body$label)) {
+    cli::cli_abort(
+      "Row structure mismatch between stratified and overall tables."
+    )
+  }
+
+  # Rename overall columns: stat_0_1, stat_0_2, ... stat_0_5
+  new_col_names <- paste0("stat_0_", seq_along(overall_stat_cols))
+  overall_body <- tbl_overall$table_body |>
+    dplyr::select(dplyr::all_of(overall_stat_cols))
+  names(overall_body) <- new_col_names
+
+  # Bind overall columns into the main table
+  x$table_body <- dplyr::bind_cols(x$table_body, overall_body)
+
+  # Copy header styling from overall table, renaming columns
+  overall_header <- tbl_overall$table_styling$header |>
+    dplyr::filter(grepl("^stat_", .data$column))
+  overall_header$column <- new_col_names
+
+  # Resolve the col_label with glue (N = total denominator count)
+  total_n <- nrow(x$inputs$denominator)
+  N <- total_n
+  style_number <- gtsummary::style_number
+  resolved_label <- glue::glue(col_label)
+
+  # Set spanning header for overall columns
+  overall_header$spanning_header <- NA_character_
+
+  x$table_styling$header <- dplyr::bind_rows(
+    x$table_styling$header, overall_header
+  )
+
+  # Add spanning header for overall columns
+  x <- gtsummary::modify_spanning_header(
+    x,
+    tidyselect::starts_with("stat_0_") ~ resolved_label
+  )
+
+  # Reorder columns: if last = FALSE, place overall before stratified columns
+  if (!last) {
+    x <- x |>
+      gtsummary::modify_table_body(\(body) {
+        stat_cols <- sort(grep("^stat_", names(body), value = TRUE))
+        dplyr::relocate(body, dplyr::all_of(stat_cols), .after = "label")
+      })
+  } else {
+    x <- x |>
+      gtsummary::modify_table_body(\(body) {
+        overall_cols <- grep("^stat_0_", names(body), value = TRUE)
+        dplyr::relocate(body, dplyr::all_of(overall_cols), .after = dplyr::last_col())
+      })
+  }
+
+  # Append overall inner tables so gather_ard() can recurse into them
+  x$tbls <- c(x$tbls, stats::setNames(tbl_overall$tbls, paste0("add_overall_", seq_along(tbl_overall$tbls))))
+
+  x$call_list <- c(x$call_list, list(add_overall = match.call()))
+  x
 }
 
 # ==============================================================================

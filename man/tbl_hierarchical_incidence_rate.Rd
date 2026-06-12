@@ -19,7 +19,15 @@ tbl_hierarchical_incidence_rate(
   conf.level = 0.95,
   conf.type = "normal",
   digits = 2,
+  overall_row = TRUE,
   label = NULL
+)
+
+\method{add_overall}{tbl_hierarchical_incidence_rate}(
+  x,
+  last = TRUE,
+  col_label = "Overall\nN = {style_number(N)}",
+  ...
 )
 }
 \arguments{
@@ -79,6 +87,11 @@ Confidence interval type. Default is \code{"normal"}. Passed directly to
 An integer specifying the number of decimal places to round the incidence
 estimates, confidence intervals, and person-years to. Defaults to \code{2}.}
 
+\item{overall_row}{(\code{logical(1)})\cr
+Whether to include an overall summary row aggregating across all
+hierarchical levels. Default is \code{TRUE}. The overall row label can be
+customized via \code{label = list("..ard_hierarchical_overall.." = "Custom Label")}.}
+
 \item{label}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
 used to override default labels in hierarchical table, e.g. \code{list(AESOC = "System Organ Class")}.
 The default for each variable is the column label attribute, \code{attr(., 'label')}.
@@ -134,5 +147,56 @@ tbl_hierarchical_incidence_rate(
     "..ard_hierarchical_overall.." = "All Adverse Events"
   )
 )
+
+# Custom overall row label
+tbl_hierarchical_incidence_rate(
+  data = adae,
+  denominator = adsl,
+  variables = c(AESOC, AEDECOD),
+  by = ARM,
+  start_date = TRTSDT,
+  end_date = TRTEDT,
+  event_date = AESTDTC,
+  label = list("..ard_hierarchical_overall.." = "Any Adverse Event")
+)
+
+# Without the overall row
+tbl_hierarchical_incidence_rate(
+  data = adae,
+  denominator = adsl,
+  variables = c(AESOC, AEDECOD),
+  by = ARM,
+  start_date = TRTSDT,
+  end_date = TRTEDT,
+  event_date = AESTDTC,
+  overall_row = FALSE
+)
+
+# Add an unstratified "Overall" column pooling all treatment arms
+tbl_hierarchical_incidence_rate(
+  data = adae,
+  denominator = adsl,
+  variables = c(AESOC, AEDECOD),
+  by = ARM,
+  start_date = TRTSDT,
+  end_date = TRTEDT,
+  event_date = AESTDTC
+) |>
+  add_overall()
+
+# Customize spanning headers after table creation
+tbl_hierarchical_incidence_rate(
+  data = adae,
+  denominator = adsl,
+  variables = c(AESOC, AEDECOD),
+  by = ARM,
+  start_date = TRTSDT,
+  end_date = TRTEDT,
+  event_date = AESTDTC
+) |>
+  gtsummary::modify_spanning_header(
+    tidyselect::starts_with("stat_1") ~ "Placebo (N = 3)",
+    tidyselect::starts_with("stat_2") ~ "Treatment (N = 2)"
+  )
 
 }
