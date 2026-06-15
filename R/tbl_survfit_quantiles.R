@@ -173,19 +173,37 @@ tbl_survfit_quantiles <- function(data,
       formula = form,
       data = data
     ) |>
-    stats::setNames(c("time", by)) |>
-    dplyr::mutate(time = .data$time[, 1])
+    stats::setNames(c("surv_obj", by)) |>
+    dplyr::mutate(
+      time = .data$surv_obj[, 1],
+      status = .data$surv_obj[, 2]
+    )
 
   ard_followup_range <-
-    cards::ard_summary(
+    cards::ard_mvsummary(
       df_time,
       variables = "time",
       by = any_of(by),
-      statistic = everything() ~ cards::continuous_summary_fns(c("min", "max"))
+      statistic = list(
+        time = list(
+          min = function(x, data, ...) {
+            val <- min(data$time, na.rm = TRUE)
+            is_cens <- all(data$status[data$time == val & !is.na(data$time)] == 0, na.rm = TRUE)
+            fmt_val <- estimate_fun(val)
+            if (is_cens) paste0(fmt_val, "*") else fmt_val
+          },
+          max = function(x, data, ...) {
+            val <- max(data$time, na.rm = TRUE)
+            is_cens <- all(data$status[data$time == val & !is.na(data$time)] == 0, na.rm = TRUE)
+            fmt_val <- estimate_fun(val)
+            if (is_cens) paste0(fmt_val, "*") else fmt_val
+          }
+        )
+      )
     ) |>
     cards::update_ard_fmt_fun(
       stat_names = c("min", "max"),
-      fmt_fun = estimate_fun
+      fmt_fun = as.character
     )
 
   # calculate ARD for by vars
