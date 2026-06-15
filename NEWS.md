@@ -1,4 +1,6 @@
-# crane 0.3.2.9000
+# crane 0.3.3
+
+* Fixed minor typo in the DESCRIPTION file.
 
 # crane 0.3.2
 
