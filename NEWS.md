@@ -84,7 +84,7 @@ all events (#217)
 
 * The default `"log-rank"` test now uses `survival::survdiff()` instead of `coin`, aligning output more closely with SAS and `rtables`
 
-* `tbl_survfit_quantiles()` now indicates censored observation in min/max values with `*` (#1922)
+* `tbl_survfit_quantiles()` now indicates censored observation in min/max values with `*` (#192)
 
 # crane 0.3.1
 
