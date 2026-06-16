@@ -80,7 +80,7 @@ it from ARDs.
 Here's the general outline for creating this table directly from ARDs.
 \enumerate{
 \item Create an ARD of survival quantiles using \code{cardx::ard_survival_survfit()}.
-\item Construct an ARD of the minimum and maximum survival times using \code{cards::ard_summary()}.
+\item Construct an ARD of the minimum and maximum survival times using \code{cards::ard_mvsummary()}.
 \item Combine the ARDs and build summary table with \code{gtsummary::tbl_ard_summary()}.
 }
 
@@ -99,13 +99,29 @@ ard_surv_quantiles <-
     variable_level = list(NULL)
   )
 
-# get the min/max followup time
+# get the min/max followup time with censor flags
+df_time <- cards::ADTTE |>
+  dplyr::mutate(time = AVAL, status = 1 - CNSR)
+
 ard_surv_min_max <-
-  cards::ard_summary(
-    data = cards::ADTTE,
-    variables = AVAL,
+  cards::ard_mvsummary(
+    df_time,
+    variables = "time",
     by = "TRTA",
-    statistic = everything() ~ cards::continuous_summary_fns(c("min", "max"))
+    statistic = list(
+      time = list(
+        min = function(x, data, ...) min(data$time, na.rm = TRUE),
+        max = function(x, data, ...) max(data$time, na.rm = TRUE),
+        min_cens = function(x, data, ...) \{
+          val <- min(data$time, na.rm = TRUE)
+          if (isTRUE(all(data$status[data$time == val] == 0, na.rm = TRUE))) "*" else ""
+        \},
+        max_cens = function(x, data, ...) \{
+          val <- max(data$time, na.rm = TRUE)
+          if (isTRUE(all(data$status[data$time == val] == 0, na.rm = TRUE))) "*" else ""
+        \}
+      )
+    )
   )
 
 # stack the ARDs and pass them to `tbl_ard_summary()`
@@ -115,14 +131,14 @@ cards::bind_ard(
 ) |>
   tbl_ard_summary(
     by = "TRTA",
-    type = list(prob = "continuous2", AVAL = "continuous"),
+    type = list(prob = "continuous2", time = "continuous"),
     statistic = list(
       prob = c("\{estimate50\}", "(\{conf.low50\}, \{conf.high50\})", "\{estimate25\}, \{estimate75\}"),
-      AVAL = "\{min\} to \{max\}"
+      time = "\{min\}\{min_cens\} to \{max\}\{max_cens\}"
     ),
     label = list(
       prob = "Time to event",
-      AVAL = "Range"
+      time = "Range"
     )
   ) |>
   # directly modify the labels in the table to match spec

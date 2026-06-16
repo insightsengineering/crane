@@ -2,7 +2,7 @@ skip_if_pkg_not_installed(c("survival", "withr"))
 
 test_that("tbl_survfit_quantiles() works", {
   withr::local_options(list(width = 120))
-  
+
   # Using the default value of the `y` argument
   expect_silent(
     tbl <-
@@ -67,17 +67,17 @@ test_that("tbl_survfit_quantiles() censoring asterisks logic", {
     data = cards::ADTTE,
     by = "TRTA"
   )
-  
+
   # 1. ARD check: Ensure 'min' and 'max' stats are strictly numeric and do not contain '*'
-  ard_minmax <- tbl$cards$tbl_survfit_quantiles |> 
+  ard_minmax <- tbl$cards$tbl_survfit_quantiles |>
     dplyr::filter(stat_name %in% c("min", "max"))
-  
+
   expect_false(any(grepl("\\*", as.character(unlist(ard_minmax$stat)))))
   expect_true(all(vapply(ard_minmax$stat, is.numeric, FUN.VALUE = logical(1))))
-  
+
   # 2. Table check: Ensure '*' is printed in the Range row of the final table body
   range_row <- tbl$table_body |> dplyr::filter(label == "Range")
-  
+
   # ADTTE has censored maximums, so we expect at least one '*' to be rendered in the table columns
   expect_true(any(grepl("\\*", unlist(range_row))))
 })
