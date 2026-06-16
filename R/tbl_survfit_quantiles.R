@@ -41,7 +41,7 @@
 #'
 #' Here's the general outline for creating this table directly from ARDs.
 #' 1. Create an ARD of survival quantiles using `cardx::ard_survival_survfit()`.
-#' 2. Construct an ARD of the minimum and maximum survival times using `cards::ard_summary()`.
+#' 2. Construct an ARD of the minimum and maximum survival times using `cards::ard_mvsummary()`.
 #' 3. Combine the ARDs and build summary table with `gtsummary::tbl_ard_summary()`.
 #'
 #' ```r
@@ -60,13 +60,29 @@
 #'     variable_level = list(NULL)
 #'   )
 #'
-#' # get the min/max followup time
+#' # get the min/max followup time with censor flags
+#' df_time <- cards::ADTTE |>
+#'   dplyr::mutate(time = AVAL, status = 1 - CNSR)
+#'
 #' ard_surv_min_max <-
-#'   cards::ard_summary(
-#'     data = cards::ADTTE,
-#'     variables = AVAL,
+#'   cards::ard_mvsummary(
+#'     df_time,
+#'     variables = "time",
 #'     by = "TRTA",
-#'     statistic = everything() ~ cards::continuous_summary_fns(c("min", "max"))
+#'     statistic = list(
+#'       time = list(
+#'         min = function(x, data, ...) min(data$time, na.rm = TRUE),
+#'         max = function(x, data, ...) max(data$time, na.rm = TRUE),
+#'         min_cens = function(x, data, ...) {
+#'           val <- min(data$time, na.rm = TRUE)
+#'           if (isTRUE(all(data$status[data$time == val] == 0, na.rm = TRUE))) "*" else ""
+#'         },
+#'         max_cens = function(x, data, ...) {
+#'           val <- max(data$time, na.rm = TRUE)
+#'           if (isTRUE(all(data$status[data$time == val] == 0, na.rm = TRUE))) "*" else ""
+#'         }
+#'       )
+#'     )
 #'   )
 #'
 #' # stack the ARDs and pass them to `tbl_ard_summary()`
@@ -76,14 +92,14 @@
 #' ) |>
 #'   tbl_ard_summary(
 #'     by = "TRTA",
-#'     type = list(prob = "continuous2", AVAL = "continuous"),
+#'     type = list(prob = "continuous2", time = "continuous"),
 #'     statistic = list(
 #'       prob = c("{estimate50}", "({conf.low50}, {conf.high50})", "{estimate25}, {estimate75}"),
-#'       AVAL = "{min} to {max}"
+#'       time = "{min}{min_cens} to {max}{max_cens}"
 #'     ),
 #'     label = list(
 #'       prob = "Time to event",
-#'       AVAL = "Range"
+#'       time = "Range"
 #'     )
 #'   ) |>
 #'   # directly modify the labels in the table to match spec
@@ -186,23 +202,19 @@ tbl_survfit_quantiles <- function(data,
       by = any_of(by),
       statistic = list(
         time = list(
-          min = function(x, data, ...) {
-            val <- min(data$time, na.rm = TRUE)
-            is_cens <- all(data$status[data$time == val & !is.na(data$time)] == 0, na.rm = TRUE)
-            fmt_val <- estimate_fun(val)
-            if (is_cens) paste0(fmt_val, "*") else fmt_val
-          },
-          max = function(x, data, ...) {
-            val <- max(data$time, na.rm = TRUE)
-            is_cens <- all(data$status[data$time == val & !is.na(data$time)] == 0, na.rm = TRUE)
-            fmt_val <- estimate_fun(val)
-            if (is_cens) paste0(fmt_val, "*") else fmt_val
-          }
+          min = function(x, data, ...) min(data$time, na.rm = TRUE),
+          max = function(x, data, ...) max(data$time, na.rm = TRUE),
+          min_cens = function(x, data, ...) .get_censoring_flag(data, "min"),
+          max_cens = function(x, data, ...) .get_censoring_flag(data, "max")
         )
       )
     ) |>
     cards::update_ard_fmt_fun(
       stat_names = c("min", "max"),
+      fmt_fun = estimate_fun
+    ) |>
+    cards::update_ard_fmt_fun(
+      stat_names = c("min_cens", "max_cens"),
       fmt_fun = as.character
     )
 
@@ -238,7 +250,7 @@ tbl_survfit_quantiles <- function(data,
       type = list(prob = "continuous2", time = "continuous"),
       statistic = list(
         prob = c("{estimate50}", "({conf.low50}, {conf.high50})", "{estimate25}, {estimate75}"),
-        time = "{min} to {max}"
+        time = "{min}{min_cens} to {max}{max_cens}"
       ),
       label = list(
         prob = header,
@@ -288,6 +300,39 @@ tbl_survfit_quantiles <- function(data,
   res[["call_list"]] <- list(tbl_survfit_quantiles = match.call())
   res |>
     structure(class = c("tbl_survfit_quantiles", "gtsummary"))
+}
+
+#' Check for Censoring at Extreme Times
+#'
+#' @description
+#' Helper function to evaluate whether all observations at a given extreme time
+#' point (minimum or maximum) are censored. This flag is used to append
+#' asterisks to survival quantiles in summary tables.
+#'
+#' @param data (`data.frame`)\cr
+#'   A data frame containing the survival data with columns `time` and `status`.
+#' @param type (`character`)\cr
+#'   A string indicating which extreme to evaluate, either `"min"` or `"max"`.
+#'
+#' @return A character string. Returns `"*"` if all events at the evaluated time
+#'   are censored, and `""` otherwise.
+#' @noRd
+.get_censoring_flag <- function(data, type = c("min", "max")) {
+  type <- match.arg(type)
+
+  # Use dynamic function matching to prevent repeating the subsetting logic
+  # for both boundaries
+  fun <- match.fun(type)
+  val <- fun(data$time, na.rm = TRUE)
+
+  # Evaluate true censoring by ensuring all records tied at the boundary time
+  # strictly have an event status of 0
+  is_cens <- all(
+    data$status[data$time == val & !is.na(data$time)] == 0,
+    na.rm = TRUE
+  )
+
+  if (isTRUE(is_cens)) "*" else ""
 }
 
 #' @export

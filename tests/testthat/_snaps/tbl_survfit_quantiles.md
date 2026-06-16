@@ -13,7 +13,19 @@
 ---
 
     Code
-      as.data.frame(tbl)
+      as.data.frame(tbl_str)
+    Output
+                        Drug A  \n(N = 98) Drug B  \n(N = 102)
+      1   Time to event               <NA>                <NA>
+      2          Median               23.5                21.2
+      3          95% CI         (20.9, NE)          (18.0, NE)
+      4 25% and 75%-ile           17.4, NE            14.5, NE
+      5           Range       3.5 to 24.0*        5.3 to 24.0*
+
+---
+
+    Code
+      as.data.frame(tbl_expr)
     Output
                         Drug A  \n(N = 98) Drug B  \n(N = 102)
       1   Time to event               <NA>                <NA>
