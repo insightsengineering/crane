@@ -380,13 +380,22 @@ tbl_hierarchical_incidence_rate <- function(data,
   tbl_final
 }
 
+#' @param x (`tbl_hierarchical_incidence_rate`)\cr
+#'   a table created with [tbl_hierarchical_incidence_rate()].
+#' @param last (`logical(1)`)\cr
+#'   whether to place the overall column last. Default is `TRUE`.
+#' @param col_label (`string`)\cr
+#'   label for the overall column. Default is `"Overall\nN = {style_number(N)}"`.
+#' @param ... These dots are for future extensions and must be empty.
+#'
 #' @rdname tbl_hierarchical_incidence_rate
 #' @export
 add_overall.tbl_hierarchical_incidence_rate <- function(
-    x,
-    last = TRUE,
-    col_label = "Overall\nN = {style_number(N)}",
-    ...) {
+  x,
+  last = TRUE,
+  col_label = "Overall\nN = {style_number(N)}",
+  ...
+) {
   rlang::check_dots_empty()
 
   if (is.null(x$inputs[["by"]]) || length(x$inputs[["by"]]) == 0L) {
@@ -404,7 +413,8 @@ add_overall.tbl_hierarchical_incidence_rate <- function(
   # The overall table has stat_0_1..stat_0_5 (single arm, 5 panels)
   # Rename them to stat_0_* for consistency
   overall_stat_cols <- grep(
-    "^stat_", names(tbl_overall$table_body), value = TRUE
+    "^stat_", names(tbl_overall$table_body),
+    value = TRUE
   )
 
   # Verify row alignment

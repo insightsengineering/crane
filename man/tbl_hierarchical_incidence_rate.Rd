@@ -2,6 +2,7 @@
 % Please edit documentation in R/tbl_hierarchical_incidence_rate.R
 \name{tbl_hierarchical_incidence_rate}
 \alias{tbl_hierarchical_incidence_rate}
+\alias{add_overall.tbl_hierarchical_incidence_rate}
 \title{Hierarchical Exposure-Adjusted Incidence Rates}
 \usage{
 tbl_hierarchical_incidence_rate(
@@ -23,12 +24,7 @@ tbl_hierarchical_incidence_rate(
   label = NULL
 )
 
-\method{add_overall}{tbl_hierarchical_incidence_rate}(
-  x,
-  last = TRUE,
-  col_label = "Overall\nN = {style_number(N)}",
-  ...
-)
+\method{add_overall}{tbl_hierarchical_incidence_rate}(x, last = TRUE, col_label = "Overall\\nN = {style_number(N)}", ...)
 }
 \arguments{
 \item{data}{(\code{data.frame})\cr
@@ -96,6 +92,17 @@ customized via \code{label = list("..ard_hierarchical_overall.." = "Custom Label
 used to override default labels in hierarchical table, e.g. \code{list(AESOC = "System Organ Class")}.
 The default for each variable is the column label attribute, \code{attr(., 'label')}.
 If no label has been set, the column name is used.}
+
+\item{x}{(\code{tbl_hierarchical_incidence_rate})\cr
+a table created with \code{\link[=tbl_hierarchical_incidence_rate]{tbl_hierarchical_incidence_rate()}}.}
+
+\item{last}{(\code{logical(1)})\cr
+whether to place the overall column last. Default is \code{TRUE}.}
+
+\item{col_label}{(\code{string})\cr
+label for the overall column. Default is \code{"Overall\\nN = {style_number(N)}"}.}
+
+\item{...}{These dots are for future extensions and must be empty.}
 }
 \value{
 a gtsummary table of class \code{"tbl_hierarchical_incidence_rate"}.
