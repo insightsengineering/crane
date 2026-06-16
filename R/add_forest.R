@@ -235,7 +235,10 @@ add_forest <- function(x,
       flextable::padding(padding.top = 0, part = "body") |>
       flextable::padding(padding.bottom = 7, part = "body") |>
       flextable::padding(j = "ggplot", padding.bottom = 0, part = "body") |>
-      flextable::valign(valign = "bottom", part = "body")
+      flextable::valign(valign = "bottom", part = "body") |>
+      # without autofit the wide forest table keeps a fixed layout and spills
+      # off the page when saved to docx
+      flextable::set_table_properties(layout = "autofit")
   }
 
   out

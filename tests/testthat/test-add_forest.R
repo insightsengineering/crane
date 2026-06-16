@@ -28,7 +28,7 @@ test_that("add_forest(table_engine = 'flextable') works", {
   )
 
   expect_error(
-    tbl <- trial |>
+    forest_ft <- trial |>
       tbl_roche_subgroups(
         subgroups = c("grade", "stage"),
         rsp = "response",
@@ -45,6 +45,10 @@ test_that("add_forest(table_engine = 'flextable') works", {
       ),
     NA
   )
+
+  # autofit layout lets Word reflow the wide table instead of spilling off the
+  # page in docx output (#270)
+  expect_identical(forest_ft$properties$layout, "autofit")
 })
 
 test_that("add_forest handles extreme limits and character NA p-values safely", {

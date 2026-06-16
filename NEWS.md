@@ -1,5 +1,7 @@
 # crane 0.3.3
 
+* `add_forest()` now returns a flextable with an autofit layout so wide forest tables reflow to the page width instead of spilling off the page in docx output. (#270)
+
 * Fixed minor typo in the DESCRIPTION file.
 
 # crane 0.3.2
