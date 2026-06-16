@@ -1,4 +1,6 @@
-# crane 0.3.2.9000
+# crane 0.3.3
+
+* Fixed minor typo in the DESCRIPTION file.
 
 * `tbl_hierarchical_incidence_rate()` gains an `overall_row` argument to control whether the overall summary row is included. (#264)
 
