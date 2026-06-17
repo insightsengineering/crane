@@ -48,6 +48,21 @@
 #'   Whether to include an overall summary row aggregating across all
 #'   hierarchical levels. Default is `TRUE`. The overall row label can be
 #'   customized via `label = list("..ard_hierarchical_overall.." = "Custom Label")`.
+#' @param spanning_label (`string`)\cr
+#'   A [glue][glue::glue]-style template for the per-arm spanning headers when
+#'   `by` is supplied. Available substitutions are `{level}` (the arm level) and
+#'   `{n}` (the arm participant count). Default is `"{level}  \\n(N = {n})"`,
+#'   matching the column-header convention used elsewhere in the package.
+#' @param x (`tbl_hierarchical_incidence_rate`)\cr
+#'   A table created with [tbl_hierarchical_incidence_rate()].
+#' @param last (`logical(1)`)\cr
+#'   When `add_overall()` is used, whether to place the overall columns after
+#'   (`TRUE`) or before (`FALSE`) the stratified columns. Default is `FALSE`.
+#' @param col_label (`string`)\cr
+#'   A [glue][glue::glue]-style template for the overall spanning header added by
+#'   `add_overall()`. Resolved against the column header context (e.g. `{N}`,
+#'   `{n}`). Default is `"All Participants  \\n(N = {style_roche_number(N)})"`.
+#' @param ... These dots are for future extensions and must be empty.
 #'
 #' @returns a gtsummary table of class `"tbl_hierarchical_incidence_rate"`.
 #' @name tbl_hierarchical_incidence_rate
@@ -126,7 +141,7 @@
 #' ) |>
 #'   add_overall()
 #'
-#' # Customize spanning headers after table creation
+#' # Customize the per-arm spanning headers with a glue template
 #' tbl_hierarchical_incidence_rate(
 #'   data = adae,
 #'   denominator = adsl,
@@ -134,12 +149,9 @@
 #'   by = ARM,
 #'   start_date = TRTSDT,
 #'   end_date = TRTEDT,
-#'   event_date = AESTDTC
-#' ) |>
-#'   gtsummary::modify_spanning_header(
-#'     tidyselect::starts_with("stat_1") ~ "Placebo (N = 3)",
-#'     tidyselect::starts_with("stat_2") ~ "Treatment (N = 2)"
-#'   )
+#'   event_date = AESTDTC,
+#'   spanning_label = "{level} (N = {n})"
+#' )
 #'
 #' @export
 tbl_hierarchical_incidence_rate <- function(data,
@@ -157,7 +169,9 @@ tbl_hierarchical_incidence_rate <- function(data,
                                             conf.type = "normal",
                                             digits = 2,
                                             overall_row = TRUE,
+                                            spanning_label = "{level}  \n(N = {n})",
                                             label = NULL) {
+  set_cli_abort_call()
   # 1. Base Input Validation (Missingness and standard classes)
   event_type <- rlang::arg_match(event_type)
 
@@ -177,8 +191,9 @@ tbl_hierarchical_incidence_rate <- function(data,
   check_numeric(digits)
   check_scalar(digits)
   check_scalar_logical(overall_row)
+  check_string(spanning_label)
   if (!is.null(label) && !is.list(label)) {
-    cli::cli_abort("{.arg label} must be a list or NULL.")
+    cli::cli_abort("{.arg label} must be a list or NULL.", call = get_cli_abort_call())
   }
 
   # 2. Process Tidy-Select Arguments (Evaluates unquoted inputs to strings)
@@ -200,16 +215,13 @@ tbl_hierarchical_incidence_rate <- function(data,
   check_scalar(end_date)
   check_scalar(event_date)
 
-  tbl_final <- list()
+  # Save inputs and call arguments for downstream methods (e.g. add_overall())
+  inputs <- as.list(environment())
 
   # Extract overall label BEFORE `cards` processes the dataset
-
-  overall_label <- NULL
-  if (overall_row) {
-    overall_label <- "All Adverse Events"
-    if (is.list(label) && "..ard_hierarchical_overall.." %in% names(label)) {
-      overall_label <- label[["..ard_hierarchical_overall.."]]
-    }
+  overall_label <- "All Adverse Events"
+  if (is.list(label) && "..ard_hierarchical_overall.." %in% names(label)) {
+    overall_label <- label[["..ard_hierarchical_overall.."]]
   }
 
   # 5. Auto-extract Labels for Dataset Columns
@@ -237,16 +249,16 @@ tbl_hierarchical_incidence_rate <- function(data,
     )
 
   if (overall_row) {
+    # `tbl_hierarchical(overall_row = TRUE)` generates a default label for the
+    # overall row; override it with the user-specified label (if any).
     tbl_base <- tbl_base |>
       gtsummary::modify_table_body(~ .x |> dplyr::mutate(
         label = dplyr::if_else(
           dplyr::row_number() == 1, .env$overall_label, .data$label
         )
       ))
-  }
 
-  # Generate ARDs cleanly using explicit piping
-  if (overall_row) {
+    # Generate the overall (unstratified-across-hierarchy) ARD
     ard_overall <- .prep_incidence_rate_data(
       data, denominator, id, by, start_date,
       end_date, event_date, event_type, NULL
@@ -349,17 +361,22 @@ tbl_hierarchical_incidence_rate <- function(data,
     }) |>
     gtsummary::remove_footnote_header(tidyselect::everything())
 
-  # Apply spanning headers from the arm mapping (e.g., stat_1_* -> "Placebo\nN = 3")
+  # Apply per-arm spanning headers. The label is a glue template resolved with
+  # `level` (arm level) and `n` (arm participant count), e.g. "Placebo  \n(N = 3)".
   if (!is.null(by) && nrow(arm_header_map) > 0L) {
     spanning_formulas <- lapply(seq_len(nrow(arm_header_map)), function(i) {
       arm_idx <- sub("^stat_", "", arm_header_map$column[i])
-      arm_level <- arm_header_map$modify_stat_level[i]
-      arm_n <- arm_header_map$modify_stat_n[i]
       prefix <- paste0("stat_", arm_idx, "_")
-      spanner_label <- paste0(arm_level, "\nN = ", arm_n)
+      spanner_label <- glue::glue_data(
+        list(
+          level = arm_header_map$modify_stat_level[i],
+          n = arm_header_map$modify_stat_n[i]
+        ),
+        spanning_label
+      )
       rlang::new_formula(
         lhs = rlang::expr(tidyselect::starts_with(!!prefix)),
-        rhs = rlang::expr(!!spanner_label)
+        rhs = rlang::expr(!!as.character(spanner_label))
       )
     })
 
@@ -368,11 +385,8 @@ tbl_hierarchical_incidence_rate <- function(data,
     )
   }
 
-  # Store inputs for add_overall() reconstruction
-  tbl_final$inputs <- mget(
-    names(formals(tbl_hierarchical_incidence_rate)),
-    envir = environment()
-  )
+  # Save inputs and call arguments for downstream methods (e.g. add_overall())
+  tbl_final$inputs <- inputs
   tbl_final$call_list <- list(tbl_hierarchical_incidence_rate = match.call())
 
   class(tbl_final) <- c("tbl_hierarchical_incidence_rate", class(tbl_final))
@@ -380,100 +394,93 @@ tbl_hierarchical_incidence_rate <- function(data,
   tbl_final
 }
 
-#' @param x (`tbl_hierarchical_incidence_rate`)\cr
-#'   a table created with [tbl_hierarchical_incidence_rate()].
-#' @param last (`logical(1)`)\cr
-#'   whether to place the overall column last. Default is `TRUE`.
-#' @param col_label (`string`)\cr
-#'   label for the overall column. Default is `"Overall\nN = {style_number(N)}"`.
-#' @param ... These dots are for future extensions and must be empty.
-#'
 #' @rdname tbl_hierarchical_incidence_rate
 #' @export
 add_overall.tbl_hierarchical_incidence_rate <- function(
-  x,
-  last = TRUE,
-  col_label = "Overall\nN = {style_number(N)}",
-  ...
-) {
-  rlang::check_dots_empty()
+    x,
+    last = FALSE,
+    col_label = "All Participants  \n(N = {style_roche_number(N)})",
+    ...) {
+  # check inputs ---------------------------------------------------------------
+  set_cli_abort_call()
+  check_dots_empty(call = get_cli_abort_call())
+  check_string(col_label)
+  check_scalar_logical(last)
 
-  if (is.null(x$inputs[["by"]]) || length(x$inputs[["by"]]) == 0L) {
-    cli::cli_inform(c(
-      "Cannot add an overall column when the table has no {.arg by} variable.",
-      i = "Returning table unaltered."
-    ))
+  if (is_empty(x$inputs[["by"]])) {
+    cli::cli_inform(
+      c("Original table was not stratified, and overall columns cannot be added.",
+        i = "Table has been returned unaltered."
+      )
+    )
     return(x)
   }
 
-  # Rebuild the table with by = NULL to get the unstratified overall
+  # build overall table --------------------------------------------------------
+  # rebuild with `by = NULL`; the unstratified table has a single panel set
+  # (stat_0_1 .. stat_0_5) that we splice into the stratified table.
   args_overall <- utils::modifyList(x$inputs, list(by = NULL), keep.null = TRUE)
   tbl_overall <- do.call(tbl_hierarchical_incidence_rate, args_overall)
 
-  # The overall table has stat_0_1..stat_0_5 (single arm, 5 panels)
-  # Rename them to stat_0_* for consistency
-  overall_stat_cols <- grep(
-    "^stat_", names(tbl_overall$table_body),
-    value = TRUE
-  )
+  overall_stat_cols <- grep("^stat_", names(tbl_overall$table_body), value = TRUE)
 
-  # Verify row alignment
+  # check the tbls have the same structure before merging
   if (!identical(x$table_body$label, tbl_overall$table_body$label)) {
-    cli::cli_abort(
-      "Row structure mismatch between stratified and overall tables."
+    cli::cli_inform(
+      c("!" = "The structures of the original table and the overall table are not
+         identical, and the resulting table may be malformed.")
     )
   }
 
-  # Rename overall columns: stat_0_1, stat_0_2, ... stat_0_5
+  # rename overall columns to stat_0_1 .. stat_0_n
   new_col_names <- paste0("stat_0_", seq_along(overall_stat_cols))
   overall_body <- tbl_overall$table_body |>
-    dplyr::select(dplyr::all_of(overall_stat_cols))
-  names(overall_body) <- new_col_names
+    dplyr::select(dplyr::all_of(overall_stat_cols)) |>
+    stats::setNames(new_col_names)
 
-  # Bind overall columns into the main table
   x$table_body <- dplyr::bind_cols(x$table_body, overall_body)
 
-  # Copy header styling from overall table, renaming columns
+  # copy header styling for the overall columns, renaming to stat_0_*
   overall_header <- tbl_overall$table_styling$header |>
     dplyr::filter(grepl("^stat_", .data$column))
   overall_header$column <- new_col_names
-
-  # Resolve the col_label with glue (N = total denominator count)
-  total_n <- nrow(x$inputs$denominator)
-  N <- total_n
-  style_number <- gtsummary::style_number
-  resolved_label <- glue::glue(col_label)
-
-  # Set spanning header for overall columns
   overall_header$spanning_header <- NA_character_
 
-  x$table_styling$header <- dplyr::bind_rows(
-    x$table_styling$header, overall_header
-  )
+  x$table_styling$header <- dplyr::bind_rows(x$table_styling$header, overall_header)
 
-  # Add spanning header for overall columns
+  # spanning header for overall columns -- `col_label` is a glue template
+  # resolved by gtsummary against the column header context (`N`, `n`, ...).
   x <- gtsummary::modify_spanning_header(
     x,
-    tidyselect::starts_with("stat_0_") ~ resolved_label
+    tidyselect::starts_with("stat_0_") ~ col_label
   )
 
-  # Reorder columns: if last = FALSE, place overall before stratified columns
-  if (!last) {
-    x <- x |>
-      gtsummary::modify_table_body(\(body) {
-        stat_cols <- sort(grep("^stat_", names(body), value = TRUE))
-        dplyr::relocate(body, dplyr::all_of(stat_cols), .after = "label")
-      })
-  } else {
+  # reorder columns: overall first unless `last = TRUE` --------------------------
+  if (isTRUE(last)) {
     x <- x |>
       gtsummary::modify_table_body(\(body) {
         overall_cols <- grep("^stat_0_", names(body), value = TRUE)
         dplyr::relocate(body, dplyr::all_of(overall_cols), .after = dplyr::last_col())
       })
+  } else {
+    x <- x |>
+      gtsummary::modify_table_body(\(body) {
+        stat_cols <- sort(grep("^stat_", names(body), value = TRUE))
+        dplyr::relocate(body, dplyr::all_of(stat_cols), .after = "label")
+      })
   }
 
-  # Append overall inner tables so gather_ard() can recurse into them
-  x$tbls <- c(x$tbls, stats::setNames(tbl_overall$tbls, paste0("add_overall_", seq_along(tbl_overall$tbls))))
+  # correct ARD structure ------------------------------------------------------
+  # the table is a `tbl_merge` of several panels, so ARDs live in `$tbls`
+  # (no single `$cards` slot). Append the overall panels' inner tables so
+  # `gather_ard()` recurses into the overall ARDs as well.
+  x$tbls <- c(
+    x$tbls,
+    stats::setNames(
+      tbl_overall$tbls,
+      paste0("add_overall_", seq_along(tbl_overall$tbls))
+    )
+  )
 
   x$call_list <- c(x$call_list, list(add_overall = match.call()))
   x

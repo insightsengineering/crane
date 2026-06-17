@@ -259,6 +259,27 @@ test_that("spanning headers are applied for treatment arms", {
   # each arm should appear in the spanning headers
   expect_true(any(grepl("Pbo", spanners$spanning_header)))
   expect_true(any(grepl("Trt", spanners$spanning_header)))
+
+  # default uses the package convention "{level}  \n(N = {n})"
+  expect_true(any(grepl("\\(N = [0-9]+\\)", spanners$spanning_header)))
+})
+
+test_that("spanning_label glue template customizes treatment arm headers", {
+  tbl <- tbl_hierarchical_incidence_rate(
+    data = adae_test,
+    denominator = adsl_test,
+    variables = c(AESOC, AEDECOD),
+    by = ARM,
+    start_date = TRTSDT,
+    end_date = TRTEDT,
+    event_date = AESTDTC,
+    spanning_label = "{level} / n={n}"
+  )
+
+  spanners <- tbl$table_styling$spanning_header
+  # custom format should appear instead of the default parenthesized form
+  expect_true(any(grepl("/ n=[0-9]+", spanners$spanning_header)))
+  expect_false(any(grepl("\\(N = [0-9]+\\)", spanners$spanning_header)))
 })
 
 test_that("add_overall appends overall columns", {
@@ -286,9 +307,26 @@ test_that("add_overall appends overall columns", {
   # overall columns should exist
   expect_true(any(grepl("^stat_0_", names(tbl_overall$table_body))))
 
-  # spanning header should contain "Overall"
+  # spanning header should contain the default overall label
   spanners <- tbl_overall$table_styling$spanning_header
-  expect_true(any(grepl("Overall", spanners$spanning_header)))
+  expect_true(any(grepl("All Participants", spanners$spanning_header)))
+})
+
+test_that("add_overall accepts a custom col_label", {
+  tbl <- tbl_hierarchical_incidence_rate(
+    data = adae_test,
+    denominator = adsl_test,
+    variables = c(AESOC, AEDECOD),
+    by = ARM,
+    start_date = TRTSDT,
+    end_date = TRTEDT,
+    event_date = AESTDTC
+  )
+
+  tbl_overall <- tbl |> add_overall(col_label = "Overall (N = {N})")
+
+  spanners <- tbl_overall$table_styling$spanning_header
+  expect_true(any(grepl("Overall \\(N = ", spanners$spanning_header)))
 })
 
 test_that("add_overall with last = TRUE places overall columns at the end", {
@@ -327,7 +365,7 @@ test_that("add_overall on table without by returns unaltered", {
 
   expect_message(
     tbl_result <- tbl_no_by |> add_overall(),
-    "Cannot add an overall column"
+    "Original table was not stratified"
   )
 
   # table should be unchanged

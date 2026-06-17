@@ -21,10 +21,16 @@ tbl_hierarchical_incidence_rate(
   conf.type = "normal",
   digits = 2,
   overall_row = TRUE,
+  spanning_label = "{level}  \\n(N = {n})",
   label = NULL
 )
 
-\method{add_overall}{tbl_hierarchical_incidence_rate}(x, last = TRUE, col_label = "Overall\\nN = {style_number(N)}", ...)
+\method{add_overall}{tbl_hierarchical_incidence_rate}(
+  x,
+  last = FALSE,
+  col_label = "All Participants  \\n(N = {style_roche_number(N)})",
+  ...
+)
 }
 \arguments{
 \item{data}{(\code{data.frame})\cr
@@ -88,19 +94,28 @@ Whether to include an overall summary row aggregating across all
 hierarchical levels. Default is \code{TRUE}. The overall row label can be
 customized via \code{label = list("..ard_hierarchical_overall.." = "Custom Label")}.}
 
+\item{spanning_label}{(\code{string})\cr
+A \link[glue:glue]{glue}-style template for the per-arm spanning headers when
+\code{by} is supplied. Available substitutions are \code{{level}} (the arm level) and
+\code{{n}} (the arm participant count). Default is \code{"{level}  \\\\n(N = {n})"},
+matching the column-header convention used elsewhere in the package.}
+
 \item{label}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
 used to override default labels in hierarchical table, e.g. \code{list(AESOC = "System Organ Class")}.
 The default for each variable is the column label attribute, \code{attr(., 'label')}.
 If no label has been set, the column name is used.}
 
 \item{x}{(\code{tbl_hierarchical_incidence_rate})\cr
-a table created with \code{\link[=tbl_hierarchical_incidence_rate]{tbl_hierarchical_incidence_rate()}}.}
+A table created with \code{\link[=tbl_hierarchical_incidence_rate]{tbl_hierarchical_incidence_rate()}}.}
 
 \item{last}{(\code{logical(1)})\cr
-whether to place the overall column last. Default is \code{TRUE}.}
+When \code{add_overall()} is used, whether to place the overall columns after
+(\code{TRUE}) or before (\code{FALSE}) the stratified columns. Default is \code{FALSE}.}
 
 \item{col_label}{(\code{string})\cr
-label for the overall column. Default is \code{"Overall\\nN = {style_number(N)}"}.}
+A \link[glue:glue]{glue}-style template for the overall spanning header added by
+\code{add_overall()}. Resolved against the column header context (e.g. \code{{N}},
+\code{{n}}). Default is \code{"All Participants  \\\\n(N = {style_roche_number(N)})"}.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 }
@@ -191,7 +206,7 @@ tbl_hierarchical_incidence_rate(
 ) |>
   add_overall()
 
-# Customize spanning headers after table creation
+# Customize the per-arm spanning headers with a glue template
 tbl_hierarchical_incidence_rate(
   data = adae,
   denominator = adsl,
@@ -199,11 +214,8 @@ tbl_hierarchical_incidence_rate(
   by = ARM,
   start_date = TRTSDT,
   end_date = TRTEDT,
-  event_date = AESTDTC
-) |>
-  gtsummary::modify_spanning_header(
-    tidyselect::starts_with("stat_1") ~ "Placebo (N = 3)",
-    tidyselect::starts_with("stat_2") ~ "Treatment (N = 2)"
-  )
+  event_date = AESTDTC,
+  spanning_label = "{level} (N = {n})"
+)
 
 }
