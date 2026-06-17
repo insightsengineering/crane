@@ -103,6 +103,16 @@ ard_surv_quantiles <-
 df_time <- cards::ADTTE |>
   dplyr::mutate(time = AVAL, status = 1 - CNSR)
 
+# 1. Create a simple helper to check if an extreme time is censored
+get_cens_flag <- function(data, val) \{
+  is_cens <- all(data$status[data$time == val] == 0, na.rm = TRUE)
+  if (isTRUE(is_cens)) "*" else ""
+\}
+
+# 2. Get the min/max followup time with censor flags
+df_time <- cards::ADTTE |>
+  dplyr::mutate(time = AVAL, status = 1 - CNSR)
+
 ard_surv_min_max <-
   cards::ard_mvsummary(
     df_time,
@@ -112,19 +122,13 @@ ard_surv_min_max <-
       time = list(
         min = function(x, data, ...) min(data$time, na.rm = TRUE),
         max = function(x, data, ...) max(data$time, na.rm = TRUE),
-        min_cens = function(x, data, ...) \{
-          val <- min(data$time, na.rm = TRUE)
-          if (isTRUE(all(data$status[data$time == val] == 0, na.rm = TRUE))) "*" else ""
-        \},
-        max_cens = function(x, data, ...) \{
-          val <- max(data$time, na.rm = TRUE)
-          if (isTRUE(all(data$status[data$time == val] == 0, na.rm = TRUE))) "*" else ""
-        \}
+        min_cens = function(x, data, ...) get_cens_flag(data, min(data$time, na.rm = TRUE)),
+        max_cens = function(x, data, ...) get_cens_flag(data, max(data$time, na.rm = TRUE))
       )
     )
   )
 
-# stack the ARDs and pass them to `tbl_ard_summary()`
+# 3. Stack the ARDs and format the table
 cards::bind_ard(
   ard_surv_quantiles,
   ard_surv_min_max
@@ -141,22 +145,22 @@ cards::bind_ard(
       time = "Range"
     )
   ) |>
-  # directly modify the labels in the table to match spec
+  # cleanly rename the default ARD statistics
   modify_table_body(
     ~ .x |>
       dplyr::mutate(
-        label = dplyr::case_when(
-          .data$label == "Survival Probability" ~ "Median",
-          .data$label == "(CI Lower Bound, CI Upper Bound)" ~ "95\% CI",
-          .data$label == "Survival Probability, Survival Probability" ~ "25\% and 75\%-ile",
-          .default = .data$label
+        label = dplyr::case_match(
+          label,
+          "Survival Probability" ~ "Median",
+          "(CI Lower Bound, CI Upper Bound)" ~ "95\% CI",
+          "Survival Probability, Survival Probability" ~ "25\% and 75\%-ile",
+          .default = label
         )
       )
   ) |>
   # update indentation to match spec
   modify_indent(columns = "label", rows = label == "95\% CI", indent = 8L) |>
-  modify_indent(columns = "label", rows = .data$label == "Range", indent = 4L) |>
-  # remove default footnotes
+  modify_indent(columns = "label", rows = label == "Range", indent = 4L) |>
   remove_footnote_header(columns = all_stat_cols())
 }\if{html}{\out{</div>}}
 }
