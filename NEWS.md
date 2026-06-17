@@ -1,4 +1,4 @@
-# crane 0.3.3
+# crane 0.3.3.9000
 
 * Fixed minor typo in the DESCRIPTION file.
 
@@ -91,6 +91,8 @@ all events (#217)
 * Skip tests if suggested packages are missing (Failing test due to missing suggested package #252, @llrs-roche)
 
 * The default `"log-rank"` test now uses `survival::survdiff()` instead of `coin`, aligning output more closely with SAS and `rtables`
+
+* `tbl_survfit_quantiles()` now indicates censored observation in min/max values with `*` (#192)
 
 # crane 0.3.1
 
