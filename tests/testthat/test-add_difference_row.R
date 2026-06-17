@@ -10,7 +10,7 @@ tbl <- tbl_survfit_times(surv_df)
 
 test_that("add_difference_row.tbl_survfit_times() works", {
   withr::local_options(list(width = 200))
-  
+
   # Standard use (times inferred automatically)
   expect_silent(
     tbl1 <- tbl |>
@@ -55,7 +55,7 @@ test_that("add_difference_row.tbl_survfit_times() error messaging works", {
   # Error 1: Model has no stratification variable
   fit_unstrat <- survival::survfit(survival::Surv(AVAL, 1 - CNSR) ~ 1, data = cards::ADTTE)
   df_unstrat <- get_surv_times_df(fit_unstrat, times = c(30, 60))
-  
+
   expect_snapshot(
     error = TRUE,
     tbl_survfit_times(df_unstrat) |>
