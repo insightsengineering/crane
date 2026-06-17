@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3.9000</span>
       </span>
     </div>
 
@@ -61,7 +61,7 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.3.3" id="crane-033">crane 0.3.3<a class="anchor" aria-label="anchor" href="#crane-033"></a></h2>
+<h2 class="page-header" data-toc-text="0.3.3.9000" id="crane-0339000">crane 0.3.3.9000<a class="anchor" aria-label="anchor" href="#crane-0339000"></a></h2>
 <ul><li>Fixed minor typo in the DESCRIPTION file.</li>
 </ul></div>
     <div class="section level2">
@@ -108,6 +108,7 @@
 <li><p><code><a href="../reference/tbl_roche_subgroups.html">tbl_roche_subgroups()</a></code> now shows <code>n</code>, <code>Events</code>, and <code>Median</code> per arm when <code>time_to_event</code> is specified. The total column shows <code>Total Events</code> instead of <code>Total n</code>. (<a href="https://github.com/insightsengineering/crane/issues/235" class="external-link">#235</a>)</p></li>
 <li><p>Skip tests if suggested packages are missing (Failing test due to missing suggested package <a href="https://github.com/insightsengineering/crane/issues/252" class="external-link">#252</a>, <a href="https://github.com/llrs-roche" class="external-link">@llrs-roche</a>)</p></li>
 <li><p>The default <code>"log-rank"</code> test now uses <code><a href="https://rdrr.io/pkg/survival/man/survdiff.html" class="external-link">survival::survdiff()</a></code> instead of <code>coin</code>, aligning output more closely with SAS and <code>rtables</code></p></li>
+<li><p><code><a href="../reference/tbl_survfit_quantiles.html">tbl_survfit_quantiles()</a></code> now indicates censored observation in min/max values with <code>*</code> (<a href="https://github.com/insightsengineering/crane/issues/192" class="external-link">#192</a>)</p></li>
 </ul></div>
 </div>
 </div>
