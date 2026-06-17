@@ -14,7 +14,7 @@
 #'   Numeric vector of times at which to calculate the differences. If `NULL` (default), the function
 #'   will attempt to infer the times dynamically from the table inputs.
 #' @param reference (`string`)\cr
-#'   Value of the `by` variable that is the reference for each of the difference calculations.
+#'   Value of the `by` variable that is the reference for each of the difference calculations. 
 #'   For factors, use the character level. The reference column will appear as the leftmost column in the table.
 #' @param pvalue_fun (`function`)\cr
 #'   Function to round and format the `p.value` statistic. Default is [label_roche_pvalue()].
@@ -54,7 +54,7 @@ add_difference_row.tbl_survfit_times <- function(x,
   # extract formula and data from fit ------------------------------------------
   form <- fit$call$formula |> stats::as.formula()
   by <- all.vars(form[[3]])
-
+  
   if (length(by) == 0) {
     cli::cli_abort(
       "Cannot run {.fun add_difference_row} when the {.arg fit} model does not include a strata/by variable.",
@@ -75,13 +75,13 @@ add_difference_row.tbl_survfit_times <- function(x,
   if (is.null(times)) {
     # Extract the original dataframe passed to tbl_survfit_times
     surv_df <- x$inputs$data
-    if (is.null(surv_df)) surv_df <- x$inputs[[1]]
-
+    if (is.null(surv_df)) surv_df <- x$inputs[[1]] 
+    
     if (!is.null(surv_df) && "Time" %in% colnames(surv_df)) {
       times <- as.numeric(unique(surv_df$Time))
       times <- times[!is.na(times)]
     }
-
+    
     if (is.null(times) || length(times) == 0) {
       cli::cli_abort(
         "Could not infer {.arg times} dynamically from the table inputs. Please provide the {.arg times} argument explicitly.",
