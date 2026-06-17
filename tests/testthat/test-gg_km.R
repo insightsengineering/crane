@@ -15,6 +15,9 @@ model_formula <- rlang::new_formula(
 )
 fit_kmg01 <- survival::survfit(model_formula, anl)
 
+# Extract pre-calculated data frame for annotate_surv_med
+surv_df <- get_surv_times_df(fit_kmg01, times = c(100, 200))
+
 test_that("gg_km() works and handles annotations correctly", {
   expect_no_error(
     surv_plot_data <- process_survfit(fit_kmg01)
@@ -33,7 +36,7 @@ test_that("gg_km() works and handles annotations correctly", {
   # 1. Test floating annotations (These can be safely piped together)
   expect_no_error(
     plt_floats <- gg_km(surv_plot_data) |>
-      annotate_surv_med(fit_kmg01) |>
+      annotate_surv_med(surv_tbl = surv_df) |>
       annotate_coxph(coxph_tbl)
   )
 
@@ -66,7 +69,7 @@ test_that("plotlist attribute is preserved through annotate_* stacking", {
   expect_s3_class(plist_risk$table, "ggplot")
 
   # Single floating annotation: annotate_surv_med -> df2gg_floating
-  plt_med <- base_plt |> annotate_surv_med(fit_kmg01)
+  plt_med <- base_plt |> annotate_surv_med(surv_tbl = surv_df)
   plist_med <- attr(plt_med, "plotlist")
   expect_true(!is.null(plist_med))
   expect_named(plist_med, c("main", "table"))
@@ -74,7 +77,7 @@ test_that("plotlist attribute is preserved through annotate_* stacking", {
 
   # Stacked floating annotations: surv_med |> coxph
   plt_stacked <- base_plt |>
-    annotate_surv_med(fit_kmg01) |>
+    annotate_surv_med(surv_tbl = surv_df) |>
     annotate_coxph(coxph_tbl)
 
   plist_top <- attr(plt_stacked, "plotlist")
