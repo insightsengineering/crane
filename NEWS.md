@@ -2,6 +2,12 @@
 
 * Fixed minor typo in the DESCRIPTION file.
 
+* `tbl_hierarchical_incidence_rate()` gains an `overall_row` argument to control whether the overall summary row is included. (#264)
+
+* `tbl_hierarchical_incidence_rate()` now supports `add_overall()` to append an unstratified column pooling all treatment arms, consistent with the other `add_overall()` methods in the package (`last = FALSE` and a glue `col_label` by default). (#264)
+
+* `tbl_hierarchical_incidence_rate()` now renders spanning headers for treatment arm columns, customizable via the new `spanning_label` glue argument (e.g. `"{level} (N = {n})"`). (#264)
+
 # crane 0.3.2
 
 ## New Functions and Functionality
