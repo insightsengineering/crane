@@ -236,9 +236,12 @@ add_forest <- function(x,
       flextable::padding(padding.bottom = 7, part = "body") |>
       flextable::padding(j = "ggplot", padding.bottom = 0, part = "body") |>
       flextable::valign(valign = "bottom", part = "body") |>
-      # without autofit the wide forest table keeps a fixed layout and spills
-      # off the page when saved to docx
-      flextable::set_table_properties(layout = "autofit")
+      # The forest table is wider than the page. `layout = "autofit"` alone
+      # emits `tblW = 0%` (Word "AutoFit to Contents"), which sizes columns to
+      # their natural width and still overflows. Pairing it with `width = 1`
+      # emits `tblW = 100%` ("AutoFit to Window") so Word scales the table to
+      # the page width while the plot column keeps its 2.5in x 0.4in images.
+      flextable::set_table_properties(layout = "autofit", width = 1)
   }
 
   out

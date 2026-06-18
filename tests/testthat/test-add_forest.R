@@ -46,9 +46,12 @@ test_that("add_forest(table_engine = 'flextable') works", {
     NA
   )
 
-  # autofit layout lets Word reflow the wide table instead of spilling off the
-  # page in docx output (#270)
+  # autofit layout + 100% preferred width lets Word reflow the wide table to
+  # the page ("AutoFit to Window") instead of spilling off the page in docx
+  # output. `layout = "autofit"` alone keeps a 0% preferred width ("AutoFit to
+  # Contents") and still overflows (#270).
   expect_identical(forest_ft$properties$layout, "autofit")
+  expect_identical(forest_ft$properties$width, 1)
 })
 
 test_that("add_forest handles extreme limits and character NA p-values safely", {
