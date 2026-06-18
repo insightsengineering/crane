@@ -24,6 +24,16 @@ p_cow <- cowplot::ggdraw(p_base) # Used to trigger cowplot errors
 # Cox Data
 cox_df <- data.frame(Term = "B vs A", HR = "1.2", p = "0.05")
 
+# Surv Times Data (for testing annotate_surv_med)
+surv_df <- data.frame(
+  Strata = c("A", "B"),
+  Time = c(100, 100),
+  Survival = c("0.85", "0.75"),
+  check.names = FALSE
+)
+# Add rownames to trigger the table's rownames-to-column shifting logic
+rownames(surv_df) <- c("Arm A", "Arm B")
+
 # ------------------------------------------------------------------------------
 # 2. TESTS FOR annotate_riskdf()
 # ------------------------------------------------------------------------------
@@ -62,32 +72,29 @@ test_that("annotate_surv_med() handles all branches and inputs", {
   expect_no_error(
     annotate_surv_med(
       p_base,
-      fit_strat,
+      surv_tbl = surv_df,
       table_position = c(x = 0.5, y = 0.5, w = 0.1, h = 0.1)
     )
   )
 
   # Success: Cowplot input
-  expect_no_error(annotate_surv_med(p_cow, fit_strat))
-
-  # Success: Unstratified
-  expect_no_error(annotate_surv_med(p_base, fit_single))
+  expect_no_error(annotate_surv_med(p_cow, surv_tbl = surv_df))
 
   # Error: Invalid plot
   expect_error(
-    annotate_surv_med(list(), fit_strat),
+    annotate_surv_med(list(), surv_tbl = surv_df),
     "must be a ggplot or cowplot object"
   )
 
-  # Error: Invalid survfit
+  # Error: Invalid surv_tbl (Now expects a data.frame, not survfit)
   expect_error(
-    annotate_surv_med(p_base, list()),
-    "must be a survfit object"
+    annotate_surv_med(p_base, surv_tbl = list()),
+    "must be a data.frame"
   )
 
   # Fill Logic: Custom color and FALSE
-  expect_no_error(annotate_surv_med(p_base, fit_strat, fill = "red"))
-  expect_no_error(annotate_surv_med(p_base, fit_strat, fill = FALSE))
+  expect_no_error(annotate_surv_med(p_base, surv_tbl = surv_df, fill = "red"))
+  expect_no_error(annotate_surv_med(p_base, surv_tbl = surv_df, fill = FALSE))
 })
 
 # ------------------------------------------------------------------------------
@@ -103,7 +110,7 @@ test_that("annotate_coxph() handles all branches and inputs", {
     "must be a ggplot or cowplot object"
   )
 
-  # Error: Invalid dataframe (
+  # Error: Invalid dataframe
   expect_error(annotate_coxph(p_base, list()), "must be a data.frame")
 
   # Fill Logic: Custom color

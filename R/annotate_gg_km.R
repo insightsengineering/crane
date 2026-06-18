@@ -12,8 +12,11 @@
 #'   require a pure `ggplot2` object.
 #' @param fit_km (`survfit`)\cr
 #'   A fitted Kaplan-Meier object of class `survfit` (from the `survival`
-#'   package). This object contains the necessary survival data used to
-#'   calculate and generate the content displayed in the annotation table.
+#'   package). This object contains the necessary survival data used by
+#'   `annotate_riskdf()` to calculate and generate the content displayed.
+#' @param surv_tbl (`data.frame`)\cr
+#'   A data frame containing the pre-calculated survival summary results,
+#'   such as the output from `get_surv_times_df()`.
 #' @param coxph_tbl (`data.frame`)\cr
 #'   A data frame containing the pre-calculated Cox-PH results, derived
 #'   using function `get_cox_pairwise_df()`.
@@ -63,25 +66,7 @@
 #' @name annotate_gg_km
 NULL
 
-#' @describeIn annotate_gg_km The function `annotate_riskdf` adds a "Numbers
-#'   at Risk" table below a Kaplan-Meier plot using `patchwork`.\cr
-#'   **Note:** For this specific function, `gg_plt` must be a pure `ggplot2`
-#'   object (not a combined `cowplot` object) because it requires exact X-axis
-#'   extraction.
-#'
-#' @return The function `annotate_riskdf` returns a `cowplot` object combining
-#'   the KM plot and the 'Numbers at Risk' table.
-#'
-#' @examples
-#' # Annotate Plot with Numbers at Risk Table
-#' annotate_riskdf(plt_kmg01, fit_kmg01)
-#'
-#' # Change order of y-axis (arm)
-#' use_lung2 <- use_lung
-#' use_lung2$arm <- factor(use_lung2$arm, levels = c("C", "B", "A"))
-#' fit_kmg01 <- survival::survfit(formula, use_lung2)
-#' annotate_riskdf(plt_kmg01, fit_kmg01) # rerun gg_km to change legend order
-#'
+#' @rdname annotate_gg_km
 #' @export
 annotate_riskdf <- function(gg_plt,
                             fit_km,
@@ -102,10 +87,6 @@ annotate_riskdf <- function(gg_plt,
       paste0(
         "`gg_plt` must be a pure ggplot object (not a cowplot object) for",
         "`annotate_riskdf`."
-      ),
-      "i" = paste0(
-        "cowplot objects are not supported because",
-        "exact X-axis extraction is required."
       )
     )
   }
@@ -136,15 +117,8 @@ annotate_riskdf <- function(gg_plt,
       strata = strata_levels
     )
   } else {
-    strata_lst <- strsplit(
-      sub("=", "equals", levels(annot_tbl$strata)),
-      "equals"
-    )
-    levels(annot_tbl$strata) <- matrix(
-      unlist(strata_lst),
-      ncol = 2,
-      byrow = TRUE
-    )[, 2]
+    # Utilizing base R regex to safely strip variable names from strata levels
+    levels(annot_tbl$strata) <- sub("^[^=]+=", "", levels(annot_tbl$strata))
 
     data.frame(
       n.risk = annot_tbl$n.risk,
@@ -184,66 +158,26 @@ annotate_riskdf <- function(gg_plt,
   res
 }
 
-#' @describeIn annotate_gg_km The `annotate_surv_med` function adds a
-#'   median survival time summary table as an annotation box.
-#'
-#' @return The function `annotate_surv_med` returns a `cowplot` object\cr
-#'   with the median survival table annotation added.
-#'
-#' @examples
-#' # Annotate Kaplan-Meier Plot with Median Survival Table
-#' annotate_surv_med(plt_kmg01, fit_kmg01)
-#'
-#' @export
-annotate_surv_med <- function(gg_plt,
-                              fit_km,
-                              table_position = c(
-                                x = 0.8,
-                                y = 0.85,
-                                w = 0.32,
-                                h = 0.16
-                              ),
-                              ...) {
-  set_cli_abort_call()
-
-  default_eargs <- list(
-    font_size = 10,
-    fill = TRUE
-  )
-
-  eargs <- list(...)
-  eargs <- utils::modifyList(default_eargs, eargs)
-
-  # Check explicitly allows cowplot objects for floating tables
+#' Internal helper for floating table annotations
+#' @keywords internal
+#' @noRd
+.add_floating_annotation <- function(gg_plt, tbl, table_position, eargs) {
   if (!inherits(gg_plt, c("gg", "ggplot", "cowplot"))) {
     rlang::abort("`gg_plt` must be a ggplot or cowplot object.")
   }
 
-  if (!inherits(fit_km, "survfit")) {
-    rlang::abort("`fit_km` must be a survfit object.")
+  if (!inherits(tbl, "data.frame")) {
+    rlang::abort("Input table must be a data.frame.")
   }
 
-
-  strata_levels <- if (is.null(fit_km$strata)) "All" else levels(fit_km$strata)
-
-  surv_med_tbl <- h_tbl_median_surv(
-    fit_km = fit_km,
-    strata_levels = strata_levels
-  )
-
-  if (!identical(rownames(surv_med_tbl), as.character(seq_len(nrow(surv_med_tbl))))) {
-    surv_med_tbl <- data.frame(
-      " " = rownames(surv_med_tbl),
-      surv_med_tbl,
-      check.names = FALSE
-    )
+  if (!identical(rownames(tbl), as.character(seq_len(nrow(tbl))))) {
+    tbl <- data.frame(" " = rownames(tbl), tbl, check.names = FALSE)
   }
 
   bg_fill <- if (isTRUE(eargs[["fill"]])) "#00000020" else eargs[["fill"]]
 
-  # Call the floating table engine
-  res <- df2gg_floating(
-    df = surv_med_tbl,
+  df2gg_floating(
+    df = tbl,
     gg_plt = gg_plt,
     x = table_position["x"],
     y = table_position["y"],
@@ -253,28 +187,24 @@ annotate_surv_med <- function(gg_plt,
     colwidths = NULL,
     bg_fill = bg_fill
   )
-
-  res
 }
 
-#' @describeIn annotate_gg_km The function `annotate_coxph()` adds a Cox
-#'   Proportional Hazards summary table as an annotation box.
-#'
-#'
-#' @return The function `annotate_coxph` returns a `cowplot` object\cr
-#'   with the Cox-PH table annotation added.
-#'
-#' @examples
-#' # Annotate Kaplan-Meier Plot with Cox-PH Table
-#' coxph_tbl <- get_cox_pairwise_df(
-#'   formula,
-#'   data = use_lung, arm = "arm", ref_group = "A"
-#' )
-#' result <- annotate_coxph(plt_kmg01, coxph_tbl)
-#'
-#' # Extract original plots from any annotated result
-#' attr(result, "plotlist")$main
-#'
+#' @rdname annotate_gg_km
+#' @export
+annotate_surv_med <- function(gg_plt,
+                              surv_tbl,
+                              table_position = c(
+                                x = 0.8,
+                                y = 0.85,
+                                w = 0.32,
+                                h = 0.16
+                              ),
+                              ...) {
+  eargs <- utils::modifyList(list(font_size = 10, fill = TRUE), list(...))
+  .add_floating_annotation(gg_plt, surv_tbl, table_position, eargs)
+}
+
+#' @rdname annotate_gg_km
 #' @export
 annotate_coxph <- function(gg_plt,
                            coxph_tbl,
@@ -285,47 +215,6 @@ annotate_coxph <- function(gg_plt,
                              h = 0.125
                            ),
                            ...) {
-  set_cli_abort_call()
-
-  default_eargs <- list(
-    fill = TRUE,
-    font_size = 10
-  )
-
-  eargs <- list(...)
-  eargs <- utils::modifyList(default_eargs, eargs)
-
-  # Check explicitly allows cowplot objects for floating tables
-  if (!inherits(gg_plt, c("gg", "ggplot", "cowplot"))) {
-    rlang::abort("`gg_plt` must be a ggplot or cowplot object.")
-  }
-
-  if (!inherits(coxph_tbl, "data.frame")) {
-    rlang::abort("`coxph_tbl` must be a data.frame.")
-  }
-
-  if (!identical(rownames(coxph_tbl), as.character(seq_len(nrow(coxph_tbl))))) {
-    coxph_tbl <- data.frame(
-      " " = rownames(coxph_tbl),
-      coxph_tbl,
-      check.names = FALSE
-    )
-  }
-
-  bg_fill <- if (isTRUE(eargs[["fill"]])) "#00000020" else eargs[["fill"]]
-
-  # Call the floating table engine
-  res <- df2gg_floating(
-    df = coxph_tbl,
-    gg_plt = gg_plt,
-    x = table_position["x"],
-    y = table_position["y"],
-    w = table_position["w"],
-    h = table_position["h"],
-    font_size = eargs[["font_size"]],
-    colwidths = NULL,
-    bg_fill = bg_fill
-  )
-
-  res
+  eargs <- utils::modifyList(list(font_size = 10, fill = TRUE), list(...))
+  .add_floating_annotation(gg_plt, coxph_tbl, table_position, eargs)
 }

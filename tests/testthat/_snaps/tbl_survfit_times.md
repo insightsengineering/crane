@@ -1,73 +1,34 @@
-# tbl_survfit_times() works
+# tbl_survfit_times() works for stratified data
 
     Code
       as.data.frame(tbl)
     Output
-                                   Placebo  \n(N = 86) Xanomeline High Dose  \n(N = 84) Xanomeline Low Dose  \n(N = 84)
-      1                    Time 30                <NA>                             <NA>                            <NA>
-      2 Patients remaining at risk                  69                               38                              42
-      3        Event Free Rate (%)                84.4                             53.0                            53.4
-      4                     95% CI        (76.7, 92.2)                     (41.7, 64.4)                    (42.3, 64.4)
-      5                    Time 60                <NA>                             <NA>                            <NA>
-      6 Patients remaining at risk                  59                               14                              20
-      7        Event Free Rate (%)                76.8                             24.3                            31.1
-      8                     95% CI        (67.7, 86.0)                     (13.9, 34.7)                    (20.2, 41.9)
+                                  Time                          
+      1              Placebo N at Risk         69.0         59.0
+      2                 <NA>  Survival         0.84         0.77
+      3                 <NA>    95% CI (0.77, 0.93) (0.68, 0.87)
+      4 Xanomeline High Dose N at Risk         38.0         14.0
+      5                 <NA>  Survival         0.53         0.24
+      6                 <NA>    95% CI (0.43, 0.66) (0.16, 0.37)
+      7  Xanomeline Low Dose N at Risk         42.0         20.0
+      8                 <NA>  Survival         0.53         0.31
+      9                 <NA>    95% CI (0.43, 0.66) (0.22, 0.44)
 
----
-
-    Code
-      as.data.frame(tbl)
-    Output
-                                   Drug A  \n(N = 98) Drug B  \n(N = 102)
-      1                    Time 12               <NA>                <NA>
-      2 Patients remaining at risk                 89                  88
-      3        Event Free Rate (%)               90.8                86.3
-      4                     95% CI       (85.1, 96.5)        (79.6, 93.0)
-      5                    Time 15               <NA>                <NA>
-      6 Patients remaining at risk                 83                  75
-      7        Event Free Rate (%)               84.7                73.5
-      8                     95% CI       (77.6, 91.8)        (65.0, 82.1)
-
----
+# tbl_survfit_times() works for unstratified data
 
     Code
       as.data.frame(tbl)
     Output
-                                   Overall  \n(N = 254)
-      1                    Time 30                 <NA>
-      2 Patients remaining at risk                  149
-      3        Event Free Rate (%)                 64.1
-      4                     90% CI         (59.1, 69.4)
-      5                    Time 60                 <NA>
-      6 Patients remaining at risk                   93
-      7        Event Free Rate (%)                 45.7
-      8                     90% CI         (40.5, 51.5)
+             Time                          
+      1 N at Risk        149.0         93.0
+      2  Survival         0.64         0.46
+      3    90% CI (0.58, 0.70) (0.40, 0.53)
 
-# tbl_survfit_times(by) messaging
+# tbl_survfit_times() adapts to user modifications (dropping columns)
 
     Code
-      tbl_survfit_times(data = cards::ADTTE, by = everything(), times = 30)
-    Condition
-      Error in `tbl_survfit_times()`:
-      ! The `by` argument must be length 1 or empty.
-
----
-
-    Code
-      tbl_survfit_times(data = dplyr::rename(gtsummary::trial, time = trt), by = "time", y = "survival::Surv(ttdeath, death)",
-      times = 30)
-    Condition
-      Error in `tbl_survfit_times()`:
-      ! The `by` column cannot be named "time".
-
-# add_overall.tbl_survfit_times() works
-
-    Code
-      as.data.frame(add_overall(tbl_survfit_times(data = cards::ADTTE, by = "TRTA", times = 30, label = "Day {time}"), last = TRUE, col_label = "**All Participants**  \nN = {n}"))
+      tbl_df
     Output
-                                   Placebo  \n(N = 86) Xanomeline High Dose  \n(N = 84) Xanomeline Low Dose  \n(N = 84) All Participants  \nN = 254
-      1                     Day 30                <NA>                             <NA>                            <NA>                        <NA>
-      2 Patients remaining at risk                  69                               38                              42                         149
-      3        Event Free Rate (%)                84.4                             53.0                            53.4                        64.1
-      4                     95% CI        (76.7, 92.2)                     (41.7, 64.4)                    (42.3, 64.4)                (58.0, 70.2)
+            Time     
+      1 Survival 0.64
 

@@ -53,3 +53,37 @@ preprocess_lineplot_data <- function(...) {
     "crane::annotate_gg()"
   )
 }
+
+#' @rdname deprecated
+#' @export
+add_overall.tbl_survfit_times <- function(x, ...) {
+  lifecycle::deprecate_stop(
+    when = "0.3.4", # Replace with the package version where this became defunct
+    what = "add_overall()",
+    details = paste(
+      "Since we decoupled the architecture, a user wanting an overall column",
+      "alongside stratified columns should simply fit an unstratified model,",
+      "extract the dataframe, and use standard `dplyr::bind_rows()` with",
+      "their stratified dataframe before pushing the combined output into",
+      "`tbl_survfit_times()`."
+    )
+  )
+}
+
+#' @rdname deprecated
+#' @export
+add_difference_row.tbl_survfit_times <- function(x, ...) {
+  lifecycle::deprecate_stop(
+    when = "0.3.4", # Replace with the package version where this became defunct
+    what = "add_difference_row()",
+    with = "get_surv_diff_df()",
+    details = paste(
+      "`add_difference_row()` is defunct for `tbl_survfit_times`.",
+      "Since the architecture was decoupled, the table object no longer",
+      "contains the raw data required to calculate survival differences.",
+      "Please use the new `get_surv_diff_df()` function to extract difference",
+      "statistics, bind those rows to your survival dataframe using",
+      "`dplyr::bind_rows()`, and then render the final `tbl_survfit_times()`."
+    )
+  )
+}

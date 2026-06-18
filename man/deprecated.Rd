@@ -6,6 +6,8 @@
 \alias{g_lineplot}
 \alias{g_lineplot_table}
 \alias{preprocess_lineplot_data}
+\alias{add_overall.tbl_survfit_times}
+\alias{add_difference_row.tbl_survfit_times}
 \title{Deprecated functions}
 \usage{
 tbl_demographics(..., nonmissing = "always")
@@ -15,6 +17,10 @@ g_lineplot(...)
 g_lineplot_table(...)
 
 preprocess_lineplot_data(...)
+
+\method{add_overall}{tbl_survfit_times}(x, ...)
+
+\method{add_difference_row}{tbl_survfit_times}(x, ...)
 }
 \value{
 Warnings
