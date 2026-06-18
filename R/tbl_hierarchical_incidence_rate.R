@@ -397,10 +397,11 @@ tbl_hierarchical_incidence_rate <- function(data,
 #' @rdname tbl_hierarchical_incidence_rate
 #' @export
 add_overall.tbl_hierarchical_incidence_rate <- function(
-    x,
-    last = FALSE,
-    col_label = "All Participants  \n(N = {style_roche_number(N)})",
-    ...) {
+  x,
+  last = FALSE,
+  col_label = "All Participants  \n(N = {style_roche_number(N)})",
+  ...
+) {
   # check inputs ---------------------------------------------------------------
   set_cli_abort_call()
   check_dots_empty(call = get_cli_abort_call())
