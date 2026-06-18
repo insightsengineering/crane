@@ -88,7 +88,7 @@ get_surv_diff_df <- function(fit_km, times, reference, conf_int = 0.95,
   res_df <- data.frame(
     Strata = paste(wide_df$comp_level, "vs", reference, "(Diff)"),
     Time = wide_df$time,
-    `N at Risk` = NA_character_,
+    `N at Risk` = NA_real_,
     Survival = sprintf("%.2f", wide_df$estimate * scale),
     CI = paste0(
       "(", sprintf("%.2f", wide_df$conf.low * scale),
