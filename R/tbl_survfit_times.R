@@ -133,4 +133,3 @@ tbl_survfit_times <- function(surv_df) {
 
   res
 }
-
