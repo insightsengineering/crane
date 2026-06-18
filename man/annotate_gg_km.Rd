@@ -3,8 +3,6 @@
 \name{annotate_gg_km}
 \alias{annotate_gg_km}
 \alias{annotate_riskdf}
-\alias{annotate_surv_med}
-\alias{annotate_coxph}
 \title{Annotate Kaplan-Meier Plot}
 \usage{
 annotate_riskdf(
@@ -13,20 +11,6 @@ annotate_riskdf(
   title = "Patients at Risk:",
   rel_height_plot = 0.75,
   xlab = "Days",
-  ...
-)
-
-annotate_surv_med(
-  gg_plt,
-  surv_tbl,
-  table_position = c(x = 0.8, y = 0.85, w = 0.32, h = 0.16),
-  ...
-)
-
-annotate_coxph(
-  gg_plt,
-  coxph_tbl,
-  table_position = c(x = 0.29, y = 0.51, w = 0.4, h = 0.125),
   ...
 )
 }
@@ -69,25 +53,19 @@ inside the annotation box. Default is \code{10}.
 A data frame containing the pre-calculated survival summary results,
 such as the output from \code{get_surv_times_df()}.}
 
+\item{coxph_tbl}{(\code{data.frame})\cr
+A data frame containing the pre-calculated Cox-PH results, derived
+using function \code{get_cox_pairwise_df()}.}
+
 \item{table_position}{(\code{numeric})\cr
 A named numeric vector \code{c(x, y, w, h)} defining the position and size of
 the floating table. \code{x} and \code{y} are the coordinates (0 to 1),
 while \code{w} and \code{h} represent width and height (0 to 1). Defaults vary
 by function.}
-
-\item{coxph_tbl}{(\code{data.frame})\cr
-A data frame containing the pre-calculated Cox-PH results, derived
-using function \code{get_cox_pairwise_df()}.}
 }
 \value{
 The function \code{annotate_riskdf} returns a \code{cowplot} object combining
 the KM plot and the 'Numbers at Risk' table.
-
-The function \code{annotate_surv_med} returns a \code{cowplot} object\cr
-with the survival table annotation added.
-
-The function \code{annotate_coxph} returns a \code{cowplot} object\cr
-with the Cox-PH table annotation added.
 }
 \description{
 These functions provide capabilities to annotate Kaplan-Meier plots (\code{\link[=gg_km]{gg_km()}})
@@ -102,12 +80,6 @@ at Risk" table below a Kaplan-Meier plot using \code{patchwork}.\cr
 \strong{Note:} For this specific function, \code{gg_plt} must be a pure \code{ggplot2}
 object (not a combined \code{cowplot} object) because it requires exact X-axis
 extraction.
-
-\item \code{annotate_surv_med()}: The \code{annotate_surv_med} function adds a
-survival summary table as an annotation box.
-
-\item \code{annotate_coxph()}: The function \code{annotate_coxph()} adds a Cox
-Proportional Hazards summary table as an annotation box.
 
 }}
 \examples{
@@ -133,20 +105,6 @@ use_lung2 <- use_lung
 use_lung2$arm <- factor(use_lung2$arm, levels = c("C", "B", "A"))
 fit_kmg01 <- survival::survfit(formula, use_lung2)
 annotate_riskdf(plt_kmg01, fit_kmg01) # rerun gg_km to change legend order
-
-# Annotate Kaplan-Meier Plot with Survival Times Table
-surv_df <- get_surv_times_df(fit_kmg01, times = c(100, 200))
-annotate_surv_med(plt_kmg01, surv_tbl = surv_df)
-
-# Annotate Kaplan-Meier Plot with Cox-PH Table
-coxph_tbl <- get_cox_pairwise_df(
-  formula,
-  data = use_lung, arm = "arm", ref_group = "A"
-)
-result <- annotate_coxph(plt_kmg01, coxph_tbl)
-
-# Extract original plots from any annotated result
-attr(result, "plotlist")$main
 
 }
 \seealso{

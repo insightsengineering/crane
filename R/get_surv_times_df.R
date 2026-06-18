@@ -60,12 +60,7 @@ get_surv_times_df <- function(fit_km, times, conf_int = 0.95, scale = 1) {
   # Remove variable prefix from strata to maintain clean downstream headers
   # without cluttering tables with 'arm=A', 'arm=B' etc.
   if (!is.null(fit_km$strata)) {
-    strata_lst <- strsplit(sub("=", "equals", strata_levels), "equals")
-    strata_levels <- vapply(
-      strata_lst,
-      FUN = function(x) x[2],
-      FUN.VALUE = character(1)
-    )
+    strata_levels <- sub("^[^=]+=", "", strata_levels)
   }
 
   df <- data.frame(

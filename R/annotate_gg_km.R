@@ -183,125 +183,41 @@ annotate_riskdf <- function(gg_plt,
   res
 }
 
-#' @describeIn annotate_gg_km The `annotate_surv_med` function adds a
-#'   survival summary table as an annotation box.
-#'
-#' @return The function `annotate_surv_med` returns a `cowplot` object\cr
-#'   with the survival table annotation added.
-#'
-#' @examples
-#' # Annotate Kaplan-Meier Plot with Survival Times Table
-#' surv_df <- get_surv_times_df(fit_kmg01, times = c(100, 200))
-#' annotate_surv_med(plt_kmg01, surv_tbl = surv_df)
-#'
-#' @export
-annotate_surv_med <- function(gg_plt,
-                              surv_tbl,
-                              table_position = c(
-                                x = 0.8,
-                                y = 0.85,
-                                w = 0.32,
-                                h = 0.16
-                              ),
+annotate_surv_med <- function(gg_plt, surv_tbl,
+                              table_position = c(x = 0.8, y = 0.85, w = 0.32, h = 0.16),
                               ...) {
-  default_eargs <- list(
-    font_size = 10,
-    fill = TRUE
-  )
-
-  eargs <- list(...)
-  eargs <- utils::modifyList(default_eargs, eargs)
-
-  if (!inherits(gg_plt, c("gg", "ggplot", "cowplot"))) {
-    rlang::abort("`gg_plt` must be a ggplot or cowplot object.")
-  }
-
-  if (!inherits(surv_tbl, "data.frame")) {
-    rlang::abort("`surv_tbl` must be a data.frame.")
-  }
-
-  if (!identical(rownames(surv_tbl), as.character(seq_len(nrow(surv_tbl))))) {
-    surv_tbl <- data.frame(
-      " " = rownames(surv_tbl),
-      surv_tbl,
-      check.names = FALSE
-    )
-  }
-
-  bg_fill <- if (isTRUE(eargs[["fill"]])) "#00000020" else eargs[["fill"]]
-
-  # Call the floating table engine
-  res <- df2gg_floating(
-    df = surv_tbl,
-    gg_plt = gg_plt,
-    x = table_position["x"],
-    y = table_position["y"],
-    w = table_position["w"],
-    h = table_position["h"],
-    font_size = eargs[["font_size"]],
-    colwidths = NULL,
-    bg_fill = bg_fill
-  )
-
-  res
+  eargs <- utils::modifyList(list(font_size = 10, fill = TRUE), list(...))
+  .add_floating_annotation(gg_plt, surv_tbl, table_position, eargs)
 }
 
-#' @describeIn annotate_gg_km The function `annotate_coxph()` adds a Cox
-#'   Proportional Hazards summary table as an annotation box.
-#'
-#' @return The function `annotate_coxph` returns a `cowplot` object\cr
-#'   with the Cox-PH table annotation added.
-#'
-#' @examples
-#' # Annotate Kaplan-Meier Plot with Cox-PH Table
-#' coxph_tbl <- get_cox_pairwise_df(
-#'   formula,
-#'   data = use_lung, arm = "arm", ref_group = "A"
-#' )
-#' result <- annotate_coxph(plt_kmg01, coxph_tbl)
-#'
-#' # Extract original plots from any annotated result
-#' attr(result, "plotlist")$main
-#'
-#' @export
-annotate_coxph <- function(gg_plt,
-                           coxph_tbl,
-                           table_position = c(
-                             x = 0.29,
-                             y = 0.51,
-                             w = 0.4,
-                             h = 0.125
-                           ),
+annotate_coxph <- function(gg_plt, coxph_tbl,
+                           table_position = c(x = 0.29, y = 0.51, w = 0.4, h = 0.125),
                            ...) {
-  default_eargs <- list(
-    fill = TRUE,
-    font_size = 10
-  )
+  eargs <- utils::modifyList(list(font_size = 10, fill = TRUE), list(...))
+  .add_floating_annotation(gg_plt, coxph_tbl, table_position, eargs)
+}
 
-  eargs <- list(...)
-  eargs <- utils::modifyList(default_eargs, eargs)
-
+#' Internal helper for floating table annotations
+#' @keywords internal
+#' @noRd
+.add_floating_annotation <- function(gg_plt, tbl, table_position, eargs) {
   if (!inherits(gg_plt, c("gg", "ggplot", "cowplot"))) {
     rlang::abort("`gg_plt` must be a ggplot or cowplot object.")
   }
 
-  if (!inherits(coxph_tbl, "data.frame")) {
-    rlang::abort("`coxph_tbl` must be a data.frame.")
+  if (!inherits(tbl, "data.frame")) {
+    rlang::abort("Input table must be a data.frame.")
   }
 
-  if (!identical(rownames(coxph_tbl), as.character(seq_len(nrow(coxph_tbl))))) {
-    coxph_tbl <- data.frame(
-      " " = rownames(coxph_tbl),
-      coxph_tbl,
-      check.names = FALSE
-    )
+  # Abstracted rowname check
+  if (!identical(rownames(tbl), as.character(seq_len(nrow(tbl))))) {
+    tbl <- data.frame(" " = rownames(tbl), tbl, check.names = FALSE)
   }
 
   bg_fill <- if (isTRUE(eargs[["fill"]])) "#00000020" else eargs[["fill"]]
 
-  # Call the floating table engine
-  res <- df2gg_floating(
-    df = coxph_tbl,
+  df2gg_floating(
+    df = tbl,
     gg_plt = gg_plt,
     x = table_position["x"],
     y = table_position["y"],
@@ -311,6 +227,4 @@ annotate_coxph <- function(gg_plt,
     colwidths = NULL,
     bg_fill = bg_fill
   )
-
-  res
 }
