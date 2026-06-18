@@ -66,25 +66,7 @@
 #' @name annotate_gg_km
 NULL
 
-#' @describeIn annotate_gg_km The function `annotate_riskdf` adds a "Numbers
-#'   at Risk" table below a Kaplan-Meier plot using `patchwork`.\cr
-#'   **Note:** For this specific function, `gg_plt` must be a pure `ggplot2`
-#'   object (not a combined `cowplot` object) because it requires exact X-axis
-#'   extraction.
-#'
-#' @return The function `annotate_riskdf` returns a `cowplot` object combining
-#'   the KM plot and the 'Numbers at Risk' table.
-#'
-#' @examples
-#' # Annotate Plot with Numbers at Risk Table
-#' annotate_riskdf(plt_kmg01, fit_kmg01)
-#'
-#' # Change order of y-axis (arm)
-#' use_lung2 <- use_lung
-#' use_lung2$arm <- factor(use_lung2$arm, levels = c("C", "B", "A"))
-#' fit_kmg01 <- survival::survfit(formula, use_lung2)
-#' annotate_riskdf(plt_kmg01, fit_kmg01) # rerun gg_km to change legend order
-#'
+#' @rdname annotate_gg_km
 #' @export
 annotate_riskdf <- function(gg_plt,
                             fit_km,
@@ -135,15 +117,8 @@ annotate_riskdf <- function(gg_plt,
       strata = strata_levels
     )
   } else {
-    strata_lst <- strsplit(
-      sub("=", "equals", levels(annot_tbl$strata)),
-      "equals"
-    )
-    levels(annot_tbl$strata) <- matrix(
-      unlist(strata_lst),
-      ncol = 2,
-      byrow = TRUE
-    )[, 2]
+    # Utilizing base R regex to safely strip variable names from strata levels
+    levels(annot_tbl$strata) <- sub("^[^=]+=", "", levels(annot_tbl$strata))
 
     data.frame(
       n.risk = annot_tbl$n.risk,
@@ -183,20 +158,6 @@ annotate_riskdf <- function(gg_plt,
   res
 }
 
-annotate_surv_med <- function(gg_plt, surv_tbl,
-                              table_position = c(x = 0.8, y = 0.85, w = 0.32, h = 0.16),
-                              ...) {
-  eargs <- utils::modifyList(list(font_size = 10, fill = TRUE), list(...))
-  .add_floating_annotation(gg_plt, surv_tbl, table_position, eargs)
-}
-
-annotate_coxph <- function(gg_plt, coxph_tbl,
-                           table_position = c(x = 0.29, y = 0.51, w = 0.4, h = 0.125),
-                           ...) {
-  eargs <- utils::modifyList(list(font_size = 10, fill = TRUE), list(...))
-  .add_floating_annotation(gg_plt, coxph_tbl, table_position, eargs)
-}
-
 #' Internal helper for floating table annotations
 #' @keywords internal
 #' @noRd
@@ -209,7 +170,6 @@ annotate_coxph <- function(gg_plt, coxph_tbl,
     rlang::abort("Input table must be a data.frame.")
   }
 
-  # Abstracted rowname check
   if (!identical(rownames(tbl), as.character(seq_len(nrow(tbl))))) {
     tbl <- data.frame(" " = rownames(tbl), tbl, check.names = FALSE)
   }
@@ -227,4 +187,34 @@ annotate_coxph <- function(gg_plt, coxph_tbl,
     colwidths = NULL,
     bg_fill = bg_fill
   )
+}
+
+#' @rdname annotate_gg_km
+#' @export
+annotate_surv_med <- function(gg_plt,
+                              surv_tbl,
+                              table_position = c(
+                                x = 0.8,
+                                y = 0.85,
+                                w = 0.32,
+                                h = 0.16
+                              ),
+                              ...) {
+  eargs <- utils::modifyList(list(font_size = 10, fill = TRUE), list(...))
+  .add_floating_annotation(gg_plt, surv_tbl, table_position, eargs)
+}
+
+#' @rdname annotate_gg_km
+#' @export
+annotate_coxph <- function(gg_plt,
+                           coxph_tbl,
+                           table_position = c(
+                             x = 0.29,
+                             y = 0.51,
+                             w = 0.4,
+                             h = 0.125
+                           ),
+                           ...) {
+  eargs <- utils::modifyList(list(font_size = 10, fill = TRUE), list(...))
+  .add_floating_annotation(gg_plt, coxph_tbl, table_position, eargs)
 }
