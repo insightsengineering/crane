@@ -18,7 +18,7 @@ annotate_riskdf(
 
 annotate_surv_med(
   gg_plt,
-  fit_km,
+  surv_tbl,
   table_position = c(x = 0.8, y = 0.85, w = 0.32, h = 0.16),
   ...
 )
@@ -38,8 +38,8 @@ require a pure \code{ggplot2} object.}
 
 \item{fit_km}{(\code{survfit})\cr
 A fitted Kaplan-Meier object of class \code{survfit} (from the \code{survival}
-package). This object contains the necessary survival data used to
-calculate and generate the content displayed in the annotation table.}
+package). This object contains the necessary survival data used by
+\code{annotate_riskdf()} to calculate and generate the content displayed.}
 
 \item{title}{(\code{character})\cr
 A single string value indicating whether to include a title above the
@@ -65,6 +65,10 @@ have a background fill. Default is \code{TRUE}.
 inside the annotation box. Default is \code{10}.
 }}
 
+\item{surv_tbl}{(\code{data.frame})\cr
+A data frame containing the pre-calculated survival summary results,
+such as the output from \code{get_surv_times_df()}.}
+
 \item{table_position}{(\code{numeric})\cr
 A named numeric vector \code{c(x, y, w, h)} defining the position and size of
 the floating table. \code{x} and \code{y} are the coordinates (0 to 1),
@@ -80,7 +84,7 @@ The function \code{annotate_riskdf} returns a \code{cowplot} object combining
 the KM plot and the 'Numbers at Risk' table.
 
 The function \code{annotate_surv_med} returns a \code{cowplot} object\cr
-with the median survival table annotation added.
+with the survival table annotation added.
 
 The function \code{annotate_coxph} returns a \code{cowplot} object\cr
 with the Cox-PH table annotation added.
@@ -100,7 +104,7 @@ object (not a combined \code{cowplot} object) because it requires exact X-axis
 extraction.
 
 \item \code{annotate_surv_med()}: The \code{annotate_surv_med} function adds a
-median survival time summary table as an annotation box.
+survival summary table as an annotation box.
 
 \item \code{annotate_coxph()}: The function \code{annotate_coxph()} adds a Cox
 Proportional Hazards summary table as an annotation box.
@@ -130,8 +134,9 @@ use_lung2$arm <- factor(use_lung2$arm, levels = c("C", "B", "A"))
 fit_kmg01 <- survival::survfit(formula, use_lung2)
 annotate_riskdf(plt_kmg01, fit_kmg01) # rerun gg_km to change legend order
 
-# Annotate Kaplan-Meier Plot with Median Survival Table
-annotate_surv_med(plt_kmg01, fit_kmg01)
+# Annotate Kaplan-Meier Plot with Survival Times Table
+surv_df <- get_surv_times_df(fit_kmg01, times = c(100, 200))
+annotate_surv_med(plt_kmg01, surv_tbl = surv_df)
 
 # Annotate Kaplan-Meier Plot with Cox-PH Table
 coxph_tbl <- get_cox_pairwise_df(
