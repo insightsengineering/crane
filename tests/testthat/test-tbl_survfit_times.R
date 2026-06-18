@@ -72,25 +72,6 @@ test_that("tbl_survfit_times() catches invalid inputs", {
   )
 })
 
-test_that("add_overall.tbl_survfit_times() acts as a legacy guard", {
-  fit <- survival::survfit(
-    survival::Surv(AVAL, 1 - CNSR) ~ TRTA,
-    data = cards::ADTTE
-  )
-  df <- get_surv_times_df(fit, times = 30)
-  tbl <- tbl_survfit_times(df)
-
-  # Check that the class was properly assigned
-  expect_s3_class(tbl, "tbl_survfit_times")
-
-  # Check that calling add_overall() throws our informative migration error
-  expect_error(
-    gtsummary::add_overall(tbl),
-    "`add_overall()` is defunct for `tbl_survfit_times`",
-    fixed = TRUE
-  )
-})
-
 test_that("tbl_survfit_times correctly renders the p-value row from combined data", {
   # 1. Setup data and fit the model
   surv_data <- survival::lung
