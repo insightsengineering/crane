@@ -46,12 +46,13 @@ test_that("add_forest(table_engine = 'flextable') works", {
     NA
   )
 
-  # autofit layout + 100% preferred width lets Word reflow the wide table to
-  # the page ("AutoFit to Window") instead of spilling off the page in docx
-  # output. `layout = "autofit"` alone keeps a 0% preferred width ("AutoFit to
-  # Contents") and still overflows (#270).
-  expect_identical(forest_ft$properties$layout, "autofit")
-  expect_identical(forest_ft$properties$width, 1)
+  # The plot column has a fixed width and holds an image of exactly that width.
+  # The default 5pt horizontal cell padding would push the image past the column
+  # and overflow the page in docx; zeroing it makes the image fit the cell
+  # content box exactly so the table stays on the page (#270).
+  gg <- which(forest_ft$col_keys == "ggplot")
+  expect_identical(unique(forest_ft$body$styles$pars$padding.left$data[, gg]), 0)
+  expect_identical(unique(forest_ft$body$styles$pars$padding.right$data[, gg]), 0)
 })
 
 test_that("add_forest handles extreme limits and character NA p-values safely", {

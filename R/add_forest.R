@@ -217,13 +217,21 @@ add_forest <- function(x,
       ") |>
       gt::tab_style(style = gt::cell_text(whitespace = "nowrap"), locations = gt::cells_body())
   } else if (table_engine == "flextable") {
+    # The plot column has a fixed width. Render the image to exactly that width
+    # and remove the cell's horizontal padding so the raster fills its content
+    # box instead of being forced wider than the cell (which, under Word's fixed
+    # table layout, pushes the column out and makes the table overflow the page).
+    # The plot's proportions are unchanged; only the cell geometry is matched.
+    ggplot_col_width <- 2.5
     out <- out |>
       gtsummary::as_flex_table() |>
       flextable::mk_par(
         j = "ggplot",
         value = flextable::as_paragraph(
           suppressMessages( # avoid `height` was translated to `width`. message
-            flextable::gg_chunk(value = lst_ggplots_final, height = 0.4, width = 2.5)
+            flextable::gg_chunk(
+              value = lst_ggplots_final, height = 0.4, width = ggplot_col_width
+            )
           )
         )
       ) |>
@@ -231,17 +239,14 @@ add_forest <- function(x,
       flextable::line_spacing(j = "ggplot", space = 0, part = "body") |>
       flextable::valign(valign = "center", part = "body") |>
       flextable::align(j = "ggplot", align = "center", part = "header") |>
-      flextable::width(j = "ggplot", width = 2.5) |>
       flextable::padding(padding.top = 0, part = "body") |>
       flextable::padding(padding.bottom = 7, part = "body") |>
       flextable::padding(j = "ggplot", padding.bottom = 0, part = "body") |>
-      flextable::valign(valign = "bottom", part = "body") |>
-      # The forest table is wider than the page. `layout = "autofit"` alone
-      # emits `tblW = 0%` (Word "AutoFit to Contents"), which sizes columns to
-      # their natural width and still overflows. Pairing it with `width = 1`
-      # emits `tblW = 100%` ("AutoFit to Window") so Word scales the table to
-      # the page width while the plot column keeps its 2.5in x 0.4in images.
-      flextable::set_table_properties(layout = "autofit", width = 1)
+      # zero horizontal padding on the plot column so the fixed-width image fits
+      # the cell content box exactly (default 5pt L/R padding would overflow it)
+      flextable::padding(j = "ggplot", padding.left = 0, padding.right = 0, part = "all") |>
+      flextable::width(j = "ggplot", width = ggplot_col_width) |>
+      flextable::valign(valign = "bottom", part = "body")
   }
 
   out

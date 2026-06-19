@@ -1,6 +1,6 @@
 # crane 0.3.3
 
-* `add_forest()` now returns a flextable that fits the page width (autofit layout at 100% preferred width) so wide forest tables no longer spill off the page in docx output. (#270)
+* `add_forest()` now removes the horizontal padding of the forest-plot column in flextable output so the fixed-width plot fits its cell exactly and wide forest tables no longer spill off the page in docx. (#270)
 
 * Fixed minor typo in the DESCRIPTION file.
 
