@@ -26,29 +26,33 @@
       flextable::fontsize(size = 7, part = "footer")
       
       $user_added3[[2]]
-      flextable::border_outer(part = "header", border = list(width = 0.5, 
+      flextable::hline_top(part = "header", border = list(width = 0.5, 
           color = "#666666", style = "solid"))
       
       $user_added3[[3]]
-      flextable::border_inner_h(part = "header", border = list(width = 0.5, 
+      flextable::hline_bottom(part = "header", border = list(width = 0.5, 
           color = "#666666", style = "solid"))
       
       $user_added3[[4]]
-      flextable::valign(valign = "top", part = "all")
+      flextable::border_inner_h(part = "header", border = list(width = 0.5, 
+          color = "#666666", style = "solid"))
       
       $user_added3[[5]]
-      flextable::font(fontname = "Arial", part = "all")
+      flextable::valign(valign = "top", part = "all")
       
       $user_added3[[6]]
-      flextable::padding(padding.top = 0, part = "all")
+      flextable::font(fontname = "Arial", part = "all")
       
       $user_added3[[7]]
-      flextable::padding(padding.bottom = 0, part = "all")
+      flextable::padding(padding.top = 0, part = "all")
       
       $user_added3[[8]]
-      flextable::line_spacing(space = 1, part = "all")
+      flextable::padding(padding.bottom = 0, part = "all")
       
       $user_added3[[9]]
+      flextable::line_spacing(space = 1, part = "all")
+      
+      $user_added3[[10]]
       flextable::set_table_properties(layout = "autofit")
       
       
