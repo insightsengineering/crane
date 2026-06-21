@@ -96,13 +96,13 @@ theme_gtsummary_roche <- function(font_size = NULL,
         ),
         valign = list( # valign only because it will append to to last commands
           rlang::expr(flextable::fontsize(size = !!((font_size %||% 8) - 1), part = "footer")), # second fontsize spectbl
-          # Horizontal rules only on the header: a top and bottom rule plus the
-          # inner horizontal rules between header rows. Avoid border_outer() here
-          # so no vertical frame is drawn around the title/study/parameter block
-          # (which also left an inconsistent missing right border).
-          rlang::expr(flextable::hline_top(part = "header", border = !!border)),
-          rlang::expr(flextable::hline_bottom(part = "header", border = !!border)),
-          rlang::expr(flextable::border_inner_h(part = "header", border = !!border)), # fix different line sizes
+          # Column labels get an outer border only: clear any internal borders
+          # between header rows, then frame the block with a single outer box.
+          rlang::expr(flextable::border_inner_h(
+            part = "header",
+            border = flextable::fp_border_default(width = 0)
+          )),
+          rlang::expr(flextable::border_outer(part = "header", border = !!border)),
           rlang::expr(flextable::valign(valign = "top", part = "all")),
           rlang::expr(flextable::font(fontname = "Arial", part = "all")),
           rlang::expr(flextable::padding(padding.top = 0, part = "all")),

@@ -119,8 +119,16 @@ test_that("theme pre-conversion modifies header not to be bold and border only 0
   # check no bold syntax in header
   expect_true(all(!grepl(tbl$header$dataset[1, -1], pattern = "\\*")))
 
-  # check border width is 0.5
-  expect_true(all(tbl$header$styles$cells$border.width.bottom$data == 0.5))
+  # Column labels are framed with an outer border only (width 0.5), so the
+  # outer edges carry the border while inner edges between header rows are 0.
+  n_hdr <- nrow(tbl$header$dataset)
+  bottom <- tbl$header$styles$cells$border.width.bottom$data
+  top <- tbl$header$styles$cells$border.width.top$data
+  expect_true(all(top[1, ] == 0.5)) # top of the block
+  expect_true(all(bottom[n_hdr, ] == 0.5)) # bottom of the block
+  if (n_hdr > 1) {
+    expect_true(all(bottom[-n_hdr, ] == 0)) # no internal horizontal borders
+  }
 })
 
 test_that("theme pre-conversion protects stat columns with non-breaking spaces", {

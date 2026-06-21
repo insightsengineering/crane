@@ -1,6 +1,6 @@
 # crane 0.3.3.9001
 
-* `theme_gtsummary_roche()` no longer draws a vertical frame around the flextable header; only horizontal rules are kept. This removes the box around the title/study/parameter block and the inconsistent missing right border. (#272)
+* `theme_gtsummary_roche()` now frames the flextable column labels with an outer border only, removing the internal borders between header rows and the inconsistent missing right border. (#272)
 
 * Fixed minor typo in the DESCRIPTION file.
 
