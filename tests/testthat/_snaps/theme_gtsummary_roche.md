@@ -26,7 +26,8 @@
       flextable::fontsize(size = 7, part = "footer")
       
       $user_added3[[2]]
-      flextable::border_inner_h(part = "header", border = flextable::fp_border_default(width = 0))
+      flextable::border_inner_h(part = "header", border = officer::fp_border(width = 0, 
+          style = "none"))
       
       $user_added3[[3]]
       flextable::border_outer(part = "header", border = list(width = 0.5, 
@@ -51,4 +52,3 @@
       flextable::set_table_properties(layout = "autofit")
       
       
-

@@ -96,11 +96,11 @@ theme_gtsummary_roche <- function(font_size = NULL,
         ),
         valign = list( # valign only because it will append to to last commands
           rlang::expr(flextable::fontsize(size = !!((font_size %||% 8) - 1), part = "footer")), # second fontsize spectbl
-          # Column labels get an outer border only: clear any internal borders
-          # between header rows, then frame the block with a single outer box.
+          # outer box only. style = "none" (not width = 0) so docx doesn't draw
+          # a line between a spanner and the column labels.
           rlang::expr(flextable::border_inner_h(
             part = "header",
-            border = flextable::fp_border_default(width = 0)
+            border = officer::fp_border(width = 0, style = "none")
           )),
           rlang::expr(flextable::border_outer(part = "header", border = !!border)),
           rlang::expr(flextable::valign(valign = "top", part = "all")),

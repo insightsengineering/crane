@@ -128,7 +128,51 @@ test_that("theme pre-conversion modifies header not to be bold and border only 0
   expect_true(all(bottom[n_hdr, ] == 0.5)) # bottom of the block
   if (n_hdr > 1) {
     expect_true(all(bottom[-n_hdr, ] == 0)) # no internal horizontal borders
+    # The internal border must also be style "none": a width-0 solid border is
+    # still written as a visible single line in docx (regression with spanners).
+    style_bottom <- tbl$header$styles$cells$border.style.bottom$data
+    expect_true(all(style_bottom[-n_hdr, ] == "none"))
   }
+})
+
+test_that("theme draws no internal horizontal line between spanner and column labels in docx", {
+  skip_if_not_installed("officer")
+  skip_if_not_installed("flextable")
+
+  tbl <- with_gtsummary_theme(
+    x = theme_gtsummary_roche(),
+    {
+      t1 <- gtsummary::trial |> gtsummary::tbl_summary(by = trt, include = age)
+      t2 <- gtsummary::trial |> gtsummary::tbl_summary(by = trt, include = grade)
+      gtsummary::tbl_merge(
+        list(t1, t2),
+        tab_spanner = c("**Group A**", "**Group B**")
+      ) |>
+        gtsummary::as_flex_table()
+    }
+  )
+
+  f <- withr::local_tempfile(fileext = ".docx")
+  flextable::save_as_docx(tbl, path = f)
+  d <- withr::local_tempdir()
+  utils::unzip(f, exdir = d)
+  xml <- paste(readLines(file.path(d, "word", "document.xml"), warn = FALSE), collapse = "")
+  rows <- regmatches(xml, gregexpr("<w:tr\\b.*?</w:tr>", xml))[[1]]
+
+  spanner <- rows[grepl("Group A", rows)][1]
+  labels <- rows[grepl("Characteristic", rows)][1]
+
+  border_val <- function(row, side) {
+    m <- regmatches(row, regexpr(sprintf('<w:%s w:val="[a-z]+"', side), row))
+    if (length(m)) sub('.*w:val="([a-z]+)".*', "\\1", m) else NA_character_
+  }
+
+  # No line between the spanner row and the column-label row.
+  expect_identical(border_val(spanner, "bottom"), "none")
+  expect_identical(border_val(labels, "top"), "none")
+  # Outer frame of the header block is kept.
+  expect_identical(border_val(spanner, "top"), "single")
+  expect_identical(border_val(labels, "bottom"), "single")
 })
 
 test_that("theme pre-conversion protects stat columns with non-breaking spaces", {
