@@ -138,6 +138,9 @@ test_that("theme pre-conversion modifies header not to be bold and border only 0
 test_that("theme draws no internal horizontal line between spanner and column labels in docx", {
   skip_if_not_installed("officer")
   skip_if_not_installed("flextable")
+  # xml2 is an indirect dependency of officer/flextable, so it is always
+  # available whenever this test runs; guard anyway for clarity.
+  skip_if_not_installed("xml2")
 
   tbl <- with_gtsummary_theme(
     x = theme_gtsummary_roche(),
@@ -146,7 +149,8 @@ test_that("theme draws no internal horizontal line between spanner and column la
       t2 <- gtsummary::trial |> gtsummary::tbl_summary(by = trt, include = grade)
       gtsummary::tbl_merge(
         list(t1, t2),
-        tab_spanner = c("**Group A**", "**Group B**")
+        tab_spanner = c("**Group A**", "**Group B**"),
+        quiet = TRUE
       ) |>
         gtsummary::as_flex_table()
     }
@@ -156,15 +160,24 @@ test_that("theme draws no internal horizontal line between spanner and column la
   flextable::save_as_docx(tbl, path = f)
   d <- withr::local_tempdir()
   utils::unzip(f, exdir = d)
-  xml <- paste(readLines(file.path(d, "word", "document.xml"), warn = FALSE), collapse = "")
-  rows <- regmatches(xml, gregexpr("<w:tr\\b.*?</w:tr>", xml))[[1]]
 
-  spanner <- rows[grepl("Group A", rows)][1]
-  labels <- rows[grepl("Characteristic", rows)][1]
+  doc <- xml2::read_xml(file.path(d, "word", "document.xml"))
+  ns <- xml2::xml_ns(doc)
+  rows <- xml2::xml_find_all(doc, ".//w:tr", ns)
 
+  # Locate the spanner row and the column-label row by their text content.
+  row_text <- vapply(rows, xml2::xml_text, character(1))
+  spanner <- rows[[which(grepl("Group A", row_text))[1]]]
+  labels <- rows[[which(grepl("Characteristic", row_text))[1]]]
+
+  # Border style of the first cell on a given side, via XPath.
   border_val <- function(row, side) {
-    m <- regmatches(row, regexpr(sprintf('<w:%s w:val="[a-z]+"', side), row))
-    if (length(m)) sub('.*w:val="([a-z]+)".*', "\\1", m) else NA_character_
+    node <- xml2::xml_find_first(
+      row,
+      sprintf(".//w:tc[1]//w:tcBorders/w:%s", side),
+      ns
+    )
+    if (inherits(node, "xml_missing")) NA_character_ else xml2::xml_attr(node, "val")
   }
 
   # No line between the spanner row and the column-label row.
