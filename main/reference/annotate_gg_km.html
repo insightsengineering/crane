@@ -20,7 +20,7 @@ the cowplot package for flexible placement."><meta property="og:image" content="
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3.9001</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3.9002</span>
       </span>
     </div>
 
@@ -166,6 +166,13 @@ the KM plot and the 'Numbers at Risk' table.</p>
 with the median survival table annotation added.</p>
 <p>The function <code>annotate_coxph</code> returns a <code>cowplot</code> object<br>
 with the Cox-PH table annotation added.</p>
+    </div>
+    <div id="details">
+    <h2>Details</h2>
+    <p><code>annotate_riskdf()</code> reuses the plot's x-axis breaks, so custom ticks set with
+<code>ggplot2::scale_x_continuous(breaks = ...)</code> are reflected in the "Numbers at
+Risk" table. When the plot has no usable numeric breaks, the breaks are
+computed automatically.</p>
     </div>
     <div id="functions">
     <h2>Functions</h2>
