@@ -1,4 +1,4 @@
-# crane 0.3.3.9002
+# crane 0.3.3.9003
 
 * `annotate_riskdf()` now builds the "Numbers at Risk" table at the plot's x-axis breaks, so custom ticks set with `ggplot2::scale_x_continuous(breaks = ...)` are reflected in the table. (#278)
 
