@@ -20,21 +20,10 @@
 #'   columns to highlight for duplicate values. If `NULL`, nothing is done.
 #' @param value (`string`)\cr
 #'   string to use for blank values. Defaults to `NA`. It should not be changed.
-#' @param spl_col (`string`)\cr
-#'   name of the column that the listing was split by (i.e. the `variable_level`
-#'   passed to [gtsummary::tbl_split_by_rows()]). Used to build the caption and,
-#'   when `hide_spl_col = TRUE`, to hide that column on each page.
-#' @param pattern (`string`)\cr
-#'   a [glue][glue::glue] pattern used to build each page's caption from the
-#'   split level. The `{spl_level}` token is replaced by the split value.
-#'   Defaults to `"Parameter: {spl_level}"`, matching parameter-split tables
-#'   such as laboratory listings split by `PARAM`.
-#' @param hide_spl_col (`flag`)\cr
-#'   whether to hide `spl_col` on each split page, since it is redundant after a
-#'   single-level split. Defaults to `TRUE`. Silently does nothing when the
-#'   column is absent or already hidden.
 #'
 #' @name tbl_listing
+#' @seealso [modify_split_caption()] to label each page of a split table and
+#'   hide the redundant split column.
 #' @note
 #' Common pre-processing steps for the data frame that may be common:
 #'  * Unique values - this should be enforced in pre-processing by users.
@@ -180,56 +169,6 @@ remove_duplicate_keys <- function(x, keys = NULL, value = NA) {
       kcol_vec[!disp] <- value
       x$table_body[[kcol]] <- kcol_vec
     }
-  }
-
-  x
-}
-
-#' @export
-#' @rdname tbl_listing
-modify_split_caption <- function(x,
-                                 spl_col,
-                                 pattern = "Parameter: {spl_level}",
-                                 hide_spl_col = TRUE) {
-  set_cli_abort_call()
-
-  # map over a list of split tables --------------------------------------------
-  if (is.list(x) && inherits(x[[1]], "gtsummary")) {
-    return(
-      map(
-        x,
-        modify_split_caption,
-        spl_col = spl_col,
-        pattern = pattern,
-        hide_spl_col = hide_spl_col
-      ) |>
-        structure(class = class(x))
-    )
-  }
-
-  # checks ---------------------------------------------------------------------
-  check_not_missing(x)
-  check_class(x, "gtsummary")
-  check_not_missing(spl_col)
-  check_string(spl_col)
-  check_string(pattern)
-  check_scalar_logical(hide_spl_col)
-
-  # build the caption from the split level -------------------------------------
-  # `variable_level` is the gtsummary-native attribute set by
-  # tbl_split_by_rows(variable_level = ); row-number splits do not set it, so
-  # those pages are skipped silently.
-  spl_level <- attr(x, "variable_level")
-  if (!is_empty(spl_level)) {
-    caption <- glue::glue(pattern)
-    x <- gtsummary::modify_caption(x, as.character(caption))
-    # keep the attribute in sync so decorators that read it show the same text
-    attr(x, "variable_level") <- as.character(caption)
-  }
-
-  # hide the split column, if present and not already hidden --------------------
-  if (isTRUE(hide_spl_col) && spl_col %in% x$table_styling$header$column) {
-    x <- gtsummary::modify_column_hide(x, columns = all_of(spl_col))
   }
 
   x

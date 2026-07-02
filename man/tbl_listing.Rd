@@ -3,7 +3,6 @@
 \name{tbl_listing}
 \alias{tbl_listing}
 \alias{remove_duplicate_keys}
-\alias{modify_split_caption}
 \title{Create listings from a data frame}
 \usage{
 tbl_listing(
@@ -14,13 +13,6 @@ tbl_listing(
 )
 
 remove_duplicate_keys(x, keys = NULL, value = NA)
-
-modify_split_caption(
-  x,
-  spl_col,
-  pattern = "Parameter: {spl_level}",
-  hide_spl_col = TRUE
-)
 }
 \arguments{
 \item{data}{(\code{data.frame})\cr
@@ -44,22 +36,6 @@ columns to highlight for duplicate values. If \code{NULL}, nothing is done.}
 
 \item{value}{(\code{string})\cr
 string to use for blank values. Defaults to \code{NA}. It should not be changed.}
-
-\item{spl_col}{(\code{string})\cr
-name of the column that the listing was split by (i.e. the \code{variable_level}
-passed to \code{\link[gtsummary:tbl_split_by_rows]{gtsummary::tbl_split_by_rows()}}). Used to build the caption and,
-when \code{hide_spl_col = TRUE}, to hide that column on each page.}
-
-\item{pattern}{(\code{string})\cr
-a \link[glue:glue]{glue} pattern used to build each page's caption from the
-split level. The \code{{spl_level}} token is replaced by the split value.
-Defaults to \code{"Parameter: {spl_level}"}, matching parameter-split tables
-such as laboratory listings split by \code{PARAM}.}
-
-\item{hide_spl_col}{(\code{flag})\cr
-whether to hide \code{spl_col} on each split page, since it is redundant after a
-single-level split. Defaults to \code{TRUE}. Silently does nothing when the
-column is absent or already hidden.}
 }
 \value{
 A table listing of class "tbl_listing".
@@ -147,4 +123,8 @@ by_stage <- tbl_listing(trial_data, split_by_rows = list(variable_level = "stage
   modify_split_caption(spl_col = "stage", pattern = "Stage: {spl_level}")
 by_stage[[1]]
 \dontshow{\}) # examplesIf}
+}
+\seealso{
+\code{\link[=modify_split_caption]{modify_split_caption()}} to label each page of a split table and
+hide the redundant split column.
 }
