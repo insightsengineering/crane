@@ -1,6 +1,6 @@
 Package: crane
 Title: Supplements the 'gtsummary' Package for Pharmaceutical Reporting
-Version: 0.3.3.9002
+Version: 0.3.3.9003
 Authors@R: c(
     person("Daniel D.", "Sjoberg", , "danield.sjoberg@gmail.com", role = "aut",
            comment = c(ORCID = "0000-0003-0862-2018", note = "Original creator of the package")),
@@ -55,11 +55,13 @@ Suggests:
     labelled,
     magick,
     mmrm,
+    officer,
     parameters,
     pharmaverseadam,
     testthat (>= 3.0.0),
     tidyselect,
     withr (>= 3.0.1),
+    xml2,
     yaml
 Config/Needs/check: hms
 Config/Needs/website: rmarkdown, yaml
