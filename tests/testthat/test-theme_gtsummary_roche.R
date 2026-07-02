@@ -166,7 +166,7 @@ test_that("theme draws no internal horizontal line between spanner and column la
   rows <- xml2::xml_find_all(doc, ".//w:tr", ns)
 
   # Locate the spanner row and the column-label row by their text content.
-  row_text <- vapply(rows, xml2::xml_text, character(1))
+  row_text <- xml2::xml_text(rows)
   spanner <- rows[[which(grepl("Group A", row_text))[1]]]
   labels <- rows[[which(grepl("Characteristic", row_text))[1]]]
 
