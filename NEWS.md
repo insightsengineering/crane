@@ -2,6 +2,8 @@
 
 * `annotate_riskdf()` now builds the "Numbers at Risk" table at the plot's x-axis breaks, so custom ticks set with `ggplot2::scale_x_continuous(breaks = ...)` are reflected in the table. (#278)
 
+* `theme_gtsummary_roche()` now frames the flextable column labels with an outer border only, removing the internal borders between header rows and the inconsistent missing right border. (#272)
+
 * Fixed minor typo in the DESCRIPTION file.
 
 * `tbl_hierarchical_incidence_rate()` gains an `overall_row` argument to control whether the overall summary row is included. (#264)
