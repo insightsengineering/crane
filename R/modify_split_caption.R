@@ -3,7 +3,7 @@
 #' @description
 #' Post-process a table that was paginated with
 #' [gtsummary::tbl_split_by_rows()] (via its `variable_level` argument). For each
-#' page, a caption is built from the split level using a [glue][glue::glue]
+#' page, a caption is built from the split level using a [glue()]
 #' `pattern`, and the now-redundant split column is hidden.
 #'
 #' This is useful for any split `{gtsummary}` table, such as listings
