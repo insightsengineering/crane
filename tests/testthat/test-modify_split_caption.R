@@ -18,13 +18,13 @@ test_that("modify_split_caption() labels each page and hides the split column", 
   expect_s3_class(out, "tbl_split")
   expect_s3_class(out[[1]], "tbl_listing")
 
-  # default pattern is applied on every page via the variable_level attribute
-  # (the subtitle source read by decorators); no gtsummary caption is set, so
-  # the label is not duplicated after decoration
+  # default pattern is applied on every page as both a caption (visible when
+  # the page prints on its own) and the variable_level attribute (promoted to a
+  # subtitle row by reporting engines)
   expect_equal(attr(out[[1]], "variable_level"), "Parameter: Drug B")
   expect_equal(attr(out[[2]], "variable_level"), "Parameter: Drug A")
-  expect_null(out[[1]]$table_styling$caption)
-  expect_null(out[[2]]$table_styling$caption)
+  expect_equal(as.character(out[[1]]$table_styling$caption), "Parameter: Drug B")
+  expect_equal(as.character(out[[2]]$table_styling$caption), "Parameter: Drug A")
 
   # the split column is hidden by default on every page
   expect_true(hide_flag(out[[1]], "trt"))

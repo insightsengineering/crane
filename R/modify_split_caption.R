@@ -10,11 +10,12 @@
 #' ([tbl_listing()]) split by treatment, or baseline/change tables
 #' ([tbl_baseline_chg()]) and shift tables ([tbl_shift()]) split by `PARAM`.
 #'
-#' The label is written to the native `variable_level` attribute rather than a
-#' `{gtsummary}` caption, so decorators that read that attribute (e.g.
-#' `citril::decorate_tlg()`) render it as a page subtitle. Writing a caption as
-#' well would duplicate the text after decoration (once as the subtitle, once as
-#' a separate centered caption).
+#' The label is set both as a `{gtsummary}` caption (via
+#' [gtsummary::modify_caption()]) and on the native `variable_level` attribute.
+#' The caption makes the subtitle visible when the table is printed on its own
+#' (it renders inside the table's `<caption>` element), while `variable_level`
+#' lets downstream reporting engines promote the same text to a dedicated
+#' subtitle row.
 #'
 #' @param x (`tbl_split`, `list`, or `gtsummary`)\cr
 #'   a table split with [gtsummary::tbl_split_by_rows()], the list of split
@@ -33,8 +34,9 @@
 #'   single-level split. Defaults to `TRUE`. Silently does nothing when the
 #'   column is absent or already hidden.
 #'
-#' @returns an object of the same class as `x`, with the split subtitle set on
-#'   the `variable_level` attribute (and the split column hidden) on each page.
+#' @returns an object of the same class as `x`, with the split subtitle set as a
+#'   caption and on the `variable_level` attribute (and the split column hidden)
+#'   on each page.
 #'
 #' @seealso [tbl_listing()], [tbl_baseline_chg()], [tbl_shift()],
 #'   [gtsummary::tbl_split_by_rows()]
@@ -90,10 +92,10 @@ modify_split_caption <- function(x,
   spl_level <- attr(x, "variable_level")
   if (!is_empty(spl_level)) {
     subtitle <- as.character(glue::glue(pattern))
-    # store the formatted label back on `variable_level`; citril's
-    # decorate_tlg() reads it and renders it as a subtitle row. We deliberately
-    # do not set a gtsummary caption here: as_flex_table() would render it as a
-    # separate (centered) caption and duplicate the subtitle after decoration.
+    # set the label as a caption so it is visible when the page is printed on
+    # its own, and mirror it onto `variable_level` so reporting engines can
+    # promote the same text to a dedicated subtitle row.
+    x <- gtsummary::modify_caption(x, caption = subtitle)
     attr(x, "variable_level") <- subtitle
   }
 

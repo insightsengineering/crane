@@ -33,8 +33,9 @@ single-level split. Defaults to \code{TRUE}. Silently does nothing when the
 column is absent or already hidden.}
 }
 \value{
-an object of the same class as \code{x}, with the split subtitle set on
-the \code{variable_level} attribute (and the split column hidden) on each page.
+an object of the same class as \code{x}, with the split subtitle set as a
+caption and on the \code{variable_level} attribute (and the split column hidden)
+on each page.
 }
 \description{
 Post-process a table that was paginated with
@@ -46,11 +47,12 @@ This is useful for any split \code{{gtsummary}} table, such as listings
 (\code{\link[=tbl_listing]{tbl_listing()}}) split by treatment, or baseline/change tables
 (\code{\link[=tbl_baseline_chg]{tbl_baseline_chg()}}) and shift tables (\code{\link[=tbl_shift]{tbl_shift()}}) split by \code{PARAM}.
 
-The label is written to the native \code{variable_level} attribute rather than a
-\code{{gtsummary}} caption, so decorators that read that attribute (e.g.
-\code{citril::decorate_tlg()}) render it as a page subtitle. Writing a caption as
-well would duplicate the text after decoration (once as the subtitle, once as
-a separate centered caption).
+The label is set both as a \code{{gtsummary}} caption (via
+\code{\link[gtsummary:modify_caption]{gtsummary::modify_caption()}}) and on the native \code{variable_level} attribute.
+The caption makes the subtitle visible when the table is printed on its own
+(it renders inside the table's \verb{<caption>} element), while \code{variable_level}
+lets downstream reporting engines promote the same text to a dedicated
+subtitle row.
 }
 \examples{
 lst <- gtsummary::trial |>
