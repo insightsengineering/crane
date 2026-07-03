@@ -38,21 +38,16 @@
 #'   [gtsummary::tbl_split_by_rows()]
 #'
 #' @examples
-#' library(gtsummary)
-#'
-#' df <- trial |>
+#' lst <- gtsummary::trial |>
 #'   dplyr::select(trt, age, grade) |>
-#'   dplyr::arrange(trt)
+#'   dplyr::arrange(trt) |>
+#'   tbl_listing(split_by_rows = list(variable_level = "trt"))
 #'
 #' # Split a listing by treatment, then caption each page and drop the column
-#' split_tbls <- tbl_listing(df, split_by_rows = list(variable_level = "trt")) |>
-#'   modify_split_caption(spl_col = "trt", pattern = "Treatment: {spl_level}")
-#' split_tbls[[1]]
+#' modify_split_caption(lst, spl_col = "trt", pattern = "Treatment: {spl_level}")[[1]]
 #'
 #' # Keep the split column and use the default "Parameter:" caption
-#' tbl_listing(df, split_by_rows = list(variable_level = "trt")) |>
-#'   modify_split_caption(spl_col = "trt", hide_spl_col = FALSE) |>
-#'   _[[1]]
+#' modify_split_caption(lst, spl_col = "trt", hide_spl_col = FALSE)[[1]]
 #'
 #' @export
 modify_split_caption <- function(x,
@@ -60,6 +55,15 @@ modify_split_caption <- function(x,
                                  pattern = "Parameter: {spl_level}",
                                  hide_spl_col = TRUE) {
   set_cli_abort_call()
+
+  # checks ---------------------------------------------------------------------
+  # argument checks run before the map so a list of split tables is validated
+  # once, up front, rather than on each recursive call.
+  check_not_missing(x)
+  check_not_missing(spl_col)
+  check_string(spl_col)
+  check_string(pattern)
+  check_scalar_logical(hide_spl_col)
 
   # map over a list of split tables --------------------------------------------
   if (is.list(x) && inherits(x[[1]], "gtsummary")) {
@@ -75,13 +79,7 @@ modify_split_caption <- function(x,
     )
   }
 
-  # checks ---------------------------------------------------------------------
-  check_not_missing(x)
   check_class(x, "gtsummary")
-  check_not_missing(spl_col)
-  check_string(spl_col)
-  check_string(pattern)
-  check_scalar_logical(hide_spl_col)
 
   # build the caption from the split level -------------------------------------
   # `variable_level` is the gtsummary-native attribute set by
@@ -96,7 +94,7 @@ modify_split_caption <- function(x,
   }
 
   # hide the split column, if present and not already hidden --------------------
-  if (isTRUE(hide_spl_col) && spl_col %in% x$table_styling$header$column) {
+  if (isTRUE(hide_spl_col) && all(spl_col %in% x$table_styling$header$column)) {
     x <- gtsummary::modify_column_hide(x, columns = all_of(spl_col))
   }
 

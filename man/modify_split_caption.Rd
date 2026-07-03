@@ -39,7 +39,7 @@ split column hidden) on each page.
 \description{
 Post-process a table that was paginated with
 \code{\link[gtsummary:tbl_split_by_rows]{gtsummary::tbl_split_by_rows()}} (via its \code{variable_level} argument). For each
-page, a caption is built from the split level using a \link[glue:glue]{glue}
+page, a caption is built from the split level using a \code{\link[glue:glue]{glue()}}
 \code{pattern}, and the now-redundant split column is hidden.
 
 This is useful for any split \code{{gtsummary}} table, such as listings
@@ -51,21 +51,16 @@ native \code{variable_level} attribute, so decorators that read that attribute
 (e.g. to render a page subtitle) show the same text.
 }
 \examples{
-library(gtsummary)
-
-df <- trial |>
+lst <- gtsummary::trial |>
   dplyr::select(trt, age, grade) |>
-  dplyr::arrange(trt)
+  dplyr::arrange(trt) |>
+  tbl_listing(split_by_rows = list(variable_level = "trt"))
 
 # Split a listing by treatment, then caption each page and drop the column
-split_tbls <- tbl_listing(df, split_by_rows = list(variable_level = "trt")) |>
-  modify_split_caption(spl_col = "trt", pattern = "Treatment: {spl_level}")
-split_tbls[[1]]
+modify_split_caption(lst, spl_col = "trt", pattern = "Treatment: {spl_level}")[[1]]
 
 # Keep the split column and use the default "Parameter:" caption
-tbl_listing(df, split_by_rows = list(variable_level = "trt")) |>
-  modify_split_caption(spl_col = "trt", hide_spl_col = FALSE) |>
-  _[[1]]
+modify_split_caption(lst, spl_col = "trt", hide_spl_col = FALSE)[[1]]
 
 }
 \seealso{

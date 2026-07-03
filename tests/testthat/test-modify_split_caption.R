@@ -18,12 +18,16 @@ test_that("modify_split_caption() labels each page and hides the split column", 
   expect_s3_class(out, "tbl_split")
   expect_s3_class(out[[1]], "tbl_listing")
 
-  # default pattern is applied and kept in sync with the variable_level attribute
+  # default pattern is applied on every page and kept in sync with the
+  # variable_level attribute
   expect_equal(as.character(out[[1]]$table_styling$caption), "Parameter: Drug B")
   expect_equal(attr(out[[1]], "variable_level"), "Parameter: Drug B")
+  expect_equal(as.character(out[[2]]$table_styling$caption), "Parameter: Drug A")
+  expect_equal(attr(out[[2]], "variable_level"), "Parameter: Drug A")
 
-  # the split column is hidden by default
+  # the split column is hidden by default on every page
   expect_true(hide_flag(out[[1]], "trt"))
+  expect_true(hide_flag(out[[2]], "trt"))
 })
 
 test_that("modify_split_caption() honors a custom glue pattern", {
