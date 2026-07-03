@@ -4,6 +4,8 @@
 
 * `theme_gtsummary_roche()` now frames the flextable column labels with an outer border only, removing the internal borders between header rows and the inconsistent missing right border. (#272)
 
+* `add_forest()` now removes the horizontal padding of the forest-plot column in flextable output so the fixed-width plot fits its cell exactly and wide forest tables no longer spill off the page in docx. (#270)
+
 * Fixed minor typo in the DESCRIPTION file.
 
 * `tbl_hierarchical_incidence_rate()` gains an `overall_row` argument to control whether the overall summary row is included. (#264)

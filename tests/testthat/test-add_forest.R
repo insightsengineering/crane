@@ -28,7 +28,7 @@ test_that("add_forest(table_engine = 'flextable') works", {
   )
 
   expect_error(
-    tbl <- trial |>
+    forest_ft <- trial |>
       tbl_roche_subgroups(
         subgroups = c("grade", "stage"),
         rsp = "response",
@@ -45,6 +45,14 @@ test_that("add_forest(table_engine = 'flextable') works", {
       ),
     NA
   )
+
+  # The plot column has a fixed width and holds an image of exactly that width.
+  # The default 5pt horizontal cell padding would push the image past the column
+  # and overflow the page in docx; zeroing it makes the image fit the cell
+  # content box exactly so the table stays on the page (#270).
+  gg <- which(forest_ft$col_keys == "ggplot")
+  expect_identical(unique(forest_ft$body$styles$pars$padding.left$data[, gg]), 0)
+  expect_identical(unique(forest_ft$body$styles$pars$padding.right$data[, gg]), 0)
 })
 
 test_that("add_forest handles extreme limits and character NA p-values safely", {
