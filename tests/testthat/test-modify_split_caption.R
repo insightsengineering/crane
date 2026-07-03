@@ -18,12 +18,13 @@ test_that("modify_split_caption() labels each page and hides the split column", 
   expect_s3_class(out, "tbl_split")
   expect_s3_class(out[[1]], "tbl_listing")
 
-  # default pattern is applied on every page and kept in sync with the
-  # variable_level attribute
-  expect_equal(as.character(out[[1]]$table_styling$caption), "Parameter: Drug B")
+  # default pattern is applied on every page via the variable_level attribute
+  # (the subtitle source read by decorators); no gtsummary caption is set, so
+  # the label is not duplicated after decoration
   expect_equal(attr(out[[1]], "variable_level"), "Parameter: Drug B")
-  expect_equal(as.character(out[[2]]$table_styling$caption), "Parameter: Drug A")
   expect_equal(attr(out[[2]], "variable_level"), "Parameter: Drug A")
+  expect_null(out[[1]]$table_styling$caption)
+  expect_null(out[[2]]$table_styling$caption)
 
   # the split column is hidden by default on every page
   expect_true(hide_flag(out[[1]], "trt"))
@@ -34,7 +35,7 @@ test_that("modify_split_caption() honors a custom glue pattern", {
   out <- tbl_listing(tld, split_by_rows = list(variable_level = "trt")) |>
     modify_split_caption(spl_col = "trt", pattern = "Treatment: {spl_level}")
 
-  expect_equal(as.character(out[[1]]$table_styling$caption), "Treatment: Drug B")
+  expect_equal(attr(out[[1]], "variable_level"), "Treatment: Drug B")
 })
 
 test_that("modify_split_caption(hide_spl_col = FALSE) keeps the split column", {
@@ -42,18 +43,18 @@ test_that("modify_split_caption(hide_spl_col = FALSE) keeps the split column", {
     modify_split_caption(spl_col = "trt", hide_spl_col = FALSE)
 
   expect_false(hide_flag(out[[1]], "trt"))
-  # caption is still applied
-  expect_equal(as.character(out[[1]]$table_styling$caption), "Parameter: Drug B")
+  # subtitle is still applied
+  expect_equal(attr(out[[1]], "variable_level"), "Parameter: Drug B")
 })
 
 test_that("modify_split_caption() is silent when the column is absent or already hidden", {
   base <- tbl_listing(tld, split_by_rows = list(variable_level = "trt"))
 
-  # absent column -> no error, no caption change beyond the default label
+  # absent column -> no error, subtitle still applied from the split level
   expect_no_error(
     out_absent <- modify_split_caption(base, spl_col = "not_a_column")
   )
-  expect_equal(as.character(out_absent[[1]]$table_styling$caption), "Parameter: Drug B")
+  expect_equal(attr(out_absent[[1]], "variable_level"), "Parameter: Drug B")
 
   # applying twice is idempotent (column already hidden the second time)
   expect_no_error(
@@ -69,7 +70,7 @@ test_that("modify_split_caption() skips row-number splits that lack a level", {
   out <- tbl_listing(tld, split_by_rows = list(row_numbers = c(2, 3))) |>
     modify_split_caption(spl_col = "trt", hide_spl_col = FALSE)
 
-  expect_null(out[[1]]$table_styling$caption)
+  expect_null(attr(out[[1]], "variable_level"))
 })
 
 test_that("modify_split_caption() works on a single (non-list) split element", {
@@ -77,7 +78,7 @@ test_that("modify_split_caption() works on a single (non-list) split element", {
   out <- modify_split_caption(one, spl_col = "trt")
 
   expect_s3_class(out, "tbl_listing")
-  expect_equal(as.character(out$table_styling$caption), "Parameter: Drug B")
+  expect_equal(attr(out, "variable_level"), "Parameter: Drug B")
   expect_true(hide_flag(out, "trt"))
 })
 

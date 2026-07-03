@@ -2,7 +2,7 @@
 % Please edit documentation in R/modify_split_caption.R
 \name{modify_split_caption}
 \alias{modify_split_caption}
-\title{Caption and Trim Split Tables}
+\title{Label and Trim Split Tables}
 \usage{
 modify_split_caption(
   x,
@@ -22,10 +22,10 @@ name of the column the table was split by (the \code{variable_level} passed to
 when \code{hide_spl_col = TRUE}.}
 
 \item{pattern}{(\code{string})\cr
-a \link[glue:glue]{glue} pattern used to build each page's caption from the
-split level. The \code{{spl_level}} token is replaced by the split value.
-Defaults to \code{"Parameter: {spl_level}"}, matching parameter-split tables
-such as laboratory tables split by \code{PARAM}.}
+a \code{\link[glue:glue]{glue()}} pattern used to build each page's subtitle from the split level.
+The \code{{spl_level}} token is replaced by the split value. Defaults to
+\code{"Parameter: {spl_level}"}, matching parameter-split tables such as
+laboratory tables split by \code{PARAM}.}
 
 \item{hide_spl_col}{(\code{flag})\cr
 whether to hide \code{spl_col} on each split page, since it is redundant after a
@@ -33,22 +33,24 @@ single-level split. Defaults to \code{TRUE}. Silently does nothing when the
 column is absent or already hidden.}
 }
 \value{
-an object of the same class as \code{x}, with the caption set (and the
-split column hidden) on each page.
+an object of the same class as \code{x}, with the split subtitle set on
+the \code{variable_level} attribute (and the split column hidden) on each page.
 }
 \description{
 Post-process a table that was paginated with
 \code{\link[gtsummary:tbl_split_by_rows]{gtsummary::tbl_split_by_rows()}} (via its \code{variable_level} argument). For each
-page, a caption is built from the split level using a \code{\link[glue:glue]{glue()}}
+page, a subtitle is built from the split level using a \code{\link[glue:glue]{glue()}}
 \code{pattern}, and the now-redundant split column is hidden.
 
 This is useful for any split \code{{gtsummary}} table, such as listings
 (\code{\link[=tbl_listing]{tbl_listing()}}) split by treatment, or baseline/change tables
 (\code{\link[=tbl_baseline_chg]{tbl_baseline_chg()}}) and shift tables (\code{\link[=tbl_shift]{tbl_shift()}}) split by \code{PARAM}.
 
-The caption is written both to the \code{{gtsummary}} caption and back to the
-native \code{variable_level} attribute, so decorators that read that attribute
-(e.g. to render a page subtitle) show the same text.
+The label is written to the native \code{variable_level} attribute rather than a
+\code{{gtsummary}} caption, so decorators that read that attribute (e.g.
+\code{citril::decorate_tlg()}) render it as a page subtitle. Writing a caption as
+well would duplicate the text after decoration (once as the subtitle, once as
+a separate centered caption).
 }
 \examples{
 lst <- gtsummary::trial |>
@@ -56,10 +58,10 @@ lst <- gtsummary::trial |>
   dplyr::arrange(trt) |>
   tbl_listing(split_by_rows = list(variable_level = "trt"))
 
-# Split a listing by treatment, then caption each page and drop the column
+# Split a listing by treatment, then subtitle each page and drop the column
 modify_split_caption(lst, spl_col = "trt", pattern = "Treatment: {spl_level}")[[1]]
 
-# Keep the split column and use the default "Parameter:" caption
+# Keep the split column and use the default "Parameter:" subtitle
 modify_split_caption(lst, spl_col = "trt", hide_spl_col = FALSE)[[1]]
 
 }
