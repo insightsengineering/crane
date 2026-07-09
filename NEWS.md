@@ -16,6 +16,8 @@
 
 ## New Functions and Functionality
 
+* Added `tbl_ancova()` for building ANCOVA tables with adjusted means and treatment-vs-control contrasts using `emmeans`. (#6)
+
 * Added `g_lineplot()` for creating line plots with optional summary statistics table. Includes helper functions `calc_stats()`, `g_lineplot_table()`, and `preprocess_lineplot_data()`.
 
 * Added `ard_tabulate_abnormal_by_baseline()` for creating an Analysis Results Data (ARD) object counting participants with abnormal assessments, stratified by their baseline status.
