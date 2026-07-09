@@ -1,0 +1,170 @@
+---
+title: "Modular TLG Pipeline"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Overview
+
+{crane} separates TLG creation into three independent layers:
+
+1. **Compute** — produce a statistics data frame
+2. **Tabulate** — render it as a `{gtsummary}` table
+3. **Customize** — adjust formatting, headers, or styling
+
+Each layer can be swapped or modified without touching the others.
+This article walks through the pattern using `tbl_coxph()` as the primary
+example, then shows how the same idea applies to other crane components.
+
+## The three layers
+
+### Layer 1: Compute
+
+`get_cox_pairwise_df()` fits Cox models and returns a plain data frame.
+No formatting decisions are made here beyond rounding HR and CI to two
+decimal places.
+
+```{r compute, message=FALSE}
+library(crane)
+library(survival)
+
+surv_data <- survival::lung |>
+  dplyr::mutate(
+    arm = factor(
+      sample(c("A", "B", "C"), dplyr::n(), replace = TRUE),
+      levels = c("A", "B", "C")
+    )
+  )
+
+pairwise_df <- get_cox_pairwise_df(
+  data = surv_data,
+  formula = Surv(time, status) ~ arm,
+  arm = "arm",
+  ref_group = "A"
+)
+
+pairwise_df
+```
+
+The result is a regular `data.frame` with one row per comparison arm.
+You can inspect it, filter it, or replace it entirely with results from
+a different statistical engine.
+
+### Layer 2: Tabulate
+
+`tbl_coxph()` takes the data frame and renders it as a `{gtsummary}` table.
+It does not re-compute anything — it only formats and displays.
+
+```{r tabulate}
+tbl_coxph(pairwise_df)
+```
+
+### Layer 3: Customize
+
+Formatting can be adjusted at multiple points.
+
+**Before tabulation** — pre-format columns in the data frame.
+Character values in the p-value column are passed through as-is:
+
+```{r customize-pre}
+pval_col <- grep("p-value", names(pairwise_df), value = TRUE)
+custom_df <- pairwise_df
+custom_df[[pval_col]] <- ifelse(
+  custom_df[[pval_col]] < 0.001, "<0.001",
+  sprintf("%.3f", custom_df[[pval_col]])
+)
+
+tbl_coxph(custom_df)
+```
+
+**After tabulation** — use `{gtsummary}` modifiers on the output:
+
+```{r customize-post}
+tbl_coxph(pairwise_df) |>
+  gtsummary::modify_header(label ~ "**Comparison**")
+```
+
+**Selecting columns** — pass a subset of the data frame to control which
+statistics appear:
+
+```{r customize-cols}
+# HR and CI only (no p-value)
+tbl_coxph(pairwise_df[, c("HR", "95% CI")])
+```
+
+## Where digits are set
+
+| What | Where | Default | How to change |
+|---|---|---|---|
+| HR | `get_cox_pairwise_df()` | `%.2f` | Modify the data frame column |
+| 95% CI | `get_cox_pairwise_df()` | `(%.2f, %.2f)` | Modify the data frame column |
+| p-value | `.format_pvalue()` in `tbl_coxph()` | `%.4f` / `<0.0001` | Pre-format as character |
+
+## Other modular components
+
+The compute → tabulate → customize pattern appears throughout {crane}:
+
+### `tbl_hierarchical_rate_by_grade()` + `add_grade_column()`
+
+The grade-label column is injected *after* table construction by
+`add_grade_column()`. This avoids a Cartesian join when merging tables
+with `tbl_merge()`:
+
+```r
+# Compute + tabulate
+tbl <- tbl_hierarchical_rate_by_grade(data, ...)
+
+# Customize (add grade column after merging)
+tbl_merge(list(tbl_a, tbl_b)) |>
+  add_grade_column()
+```
+
+### `tbl_roche_subgroups()` + `add_forest()`
+
+The forest plot is a separate post-processing step. The subgroup table
+is built first, then the plot is layered on:
+
+```r
+tbl <- data |>
+  tbl_roche_subgroups(
+    rsp = "is_event",
+    by = all_of(arm_var),
+    subgroups = c("SEX", "RACE"),
+    .tbl_fun = my_regression_fun
+  )
+
+# Add forest plot as a separate layer
+plt <- tbl |> add_forest()
+```
+
+### `tbl_with_pools()`
+
+A pooling wrapper that accepts *any* `.tbl_fun`. The pooling logic
+(combining arms into summary groups) is independent of the table type:
+
+```r
+tbl_with_pools(
+  data = adae,
+  pools = list("Xanomeline" = c("Xanomeline Low Dose", "Xanomeline High Dose")),
+  by = "TRTA",
+  .tbl_fun = tbl_hierarchical
+)
+```
+
+## Swapping layers
+
+Because each layer is independent, you can swap any of them:
+ 
+- **Bring your own data frame** — compute statistics in SAS, Python, or
+  another R package, then pass the result to `tbl_coxph()`.
+- **Use a different `.tbl_fun`** — `tbl_roche_subgroups()` accepts any
+  function that returns a `gtsummary` object. Swap `tbl_regression()` for
+  a custom logistic regression wrapper.
+- **Post-process with standard gtsummary tools** — `modify_header()`,
+  `modify_fmt_fun()`, `modify_footnote()`, `modify_spanning_header()` all
+  work on crane output because it's standard `gtsummary` under the hood.
