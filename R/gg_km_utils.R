@@ -38,6 +38,32 @@ h_xticks <- function(data, xticks = NULL, max_time = NULL) {
   }
 }
 
+#' Extract X-axis Ticks From a Plot
+#'
+#' @description Reads the resolved x-axis breaks from a `ggplot` object so that
+#'   annotations (such as the risk table) can reuse the same tick positions the
+#'   plot displays. Uses the public `ggplot2::get_guide_data()` accessor rather
+#'   than the internal plot layout.
+#'
+#'   On a discrete axis `get_guide_data()` returns character values (the factor
+#'   levels), so a non-numeric `.value` signals a categorical axis with no
+#'   usable ticks.
+#'
+#' @param gg_plt (`ggplot`)\cr a Kaplan-Meier plot, typically from [gg_km()].
+#'
+#' @return A numeric vector of x-axis tick positions, or `NULL` when the plot has
+#'   no usable numeric breaks (e.g. a discrete x-axis).
+#'
+#' @keywords internal
+#' @noRd
+.get_plot_xticks <- function(gg_plt) {
+  guide <- ggplot2::get_guide_data(gg_plt, "x")
+  if (is.null(guide) || !is.numeric(guide$.value)) {
+    return(NULL)
+  }
+  guide$.value
+}
+
 #' @title Median Survival Summary Table
 #'
 #' @description Extracts and formats the median survival time and its confidence interval
