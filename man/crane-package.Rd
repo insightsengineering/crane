@@ -34,6 +34,7 @@ Authors:
 Other contributors:
 \itemize{
   \item Abinaya Yogasekaram \email{ayogasek@gmail.com} (\href{https://orcid.org/0009-0005-2083-1105}{ORCID}) [contributor]
+  \item Lluís Revilla Sancho \email{lluis.revilla_sancho@roche.com} (\href{https://orcid.org/0000-0001-9747-2570}{ORCID}) [contributor]
   \item F. Hoffmann-La Roche AG [copyright holder, funder]
 }
 
