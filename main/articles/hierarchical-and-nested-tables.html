@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3.9003</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3.9004</span>
       </span>
     </div>
 
@@ -111,7 +111,7 @@ tables and hierarchical tables commonly used in clinical reporting.</p>
 adverse event table summarizing adverse events (AEs) within System Organ
 Class (SOC).</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ADAE_subset</span> <span class="op">&lt;-</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://insightsengineering.github.io/cards/latest-tag/reference/adam.html" class="external-link">ADAE</a></span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">ADAE_subset</span> <span class="op">&lt;-</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/cards/man/adam.html" class="external-link">ADAE</a></span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">AEBODSYS</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SKIN AND SUBCUTANEOUS TISSUE DISORDERS"</span>, <span class="st">"EAR AND LABYRINTH DISORDERS"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span>.by <span class="op">=</span> <span class="va">AEBODSYS</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/row_number.html" class="external-link">row_number</a></span><span class="op">(</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">20</span><span class="op">)</span></span>
 <span></span>
@@ -120,7 +120,7 @@ Class (SOC).</p>
 <span>    data <span class="op">=</span> <span class="va">ADAE_subset</span>,</span>
 <span>    variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">AEBODSYS</span>, <span class="va">AEDECOD</span><span class="op">)</span>,</span>
 <span>    by <span class="op">=</span> <span class="va">TRTA</span>,</span>
-<span>    denominator <span class="op">=</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://insightsengineering.github.io/cards/latest-tag/reference/adam.html" class="external-link">ADSL</a></span>,</span>
+<span>    denominator <span class="op">=</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/cards/man/adam.html" class="external-link">ADSL</a></span>,</span>
 <span>    id <span class="op">=</span> <span class="va">USUBJID</span>,</span>
 <span>    overall_row <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span>  <span class="op">)</span></span>
@@ -718,7 +718,7 @@ variable as well as the label used for the “overall” row (if
 <span>    data <span class="op">=</span> <span class="va">ADAE_subset</span>,</span>
 <span>    variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">AEBODSYS</span>, <span class="va">AEDECOD</span><span class="op">)</span>,</span>
 <span>    by <span class="op">=</span> <span class="va">TRTA</span>,</span>
-<span>    denominator <span class="op">=</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://insightsengineering.github.io/cards/latest-tag/reference/adam.html" class="external-link">ADSL</a></span>,</span>
+<span>    denominator <span class="op">=</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/cards/man/adam.html" class="external-link">ADSL</a></span>,</span>
 <span>    id <span class="op">=</span> <span class="va">USUBJID</span>,</span>
 <span>    include <span class="op">=</span> <span class="va">AEDECOD</span>,</span>
 <span>    digits <span class="op">=</span> <span class="fu"><a href="https://tidyselect.r-lib.org/reference/everything.html" class="external-link">everything</a></span><span class="op">(</span><span class="op">)</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>p <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>,</span>
@@ -1306,7 +1306,7 @@ calculate <code>N</code> values in the table header.</p>
 <p>Only the <code>n</code> statistic is available when using this
 function.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ADAE_subset</span> <span class="op">&lt;-</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://insightsengineering.github.io/cards/latest-tag/reference/adam.html" class="external-link">ADAE</a></span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">ADAE_subset</span> <span class="op">&lt;-</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/cards/man/adam.html" class="external-link">ADAE</a></span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">AEBODSYS</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SKIN AND SUBCUTANEOUS TISSUE DISORDERS"</span>, <span class="st">"EAR AND LABYRINTH DISORDERS"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span>.by <span class="op">=</span> <span class="va">AEBODSYS</span>, <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/row_number.html" class="external-link">row_number</a></span><span class="op">(</span><span class="op">)</span> <span class="op">&lt;</span> <span class="fl">20</span><span class="op">)</span></span>
 <span></span>
@@ -1315,7 +1315,7 @@ function.</p>
 <span>    data <span class="op">=</span> <span class="va">ADAE_subset</span>,</span>
 <span>    variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">AEBODSYS</span>, <span class="va">AEDECOD</span><span class="op">)</span>,</span>
 <span>    by <span class="op">=</span> <span class="va">TRTA</span>,</span>
-<span>    denominator <span class="op">=</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://insightsengineering.github.io/cards/latest-tag/reference/adam.html" class="external-link">ADSL</a></span>,</span>
+<span>    denominator <span class="op">=</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/cards/man/adam.html" class="external-link">ADSL</a></span>,</span>
 <span>    overall_row <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
@@ -1881,7 +1881,7 @@ do so, the innermost hierarchy variable (the last variable in
 <code>variable</code>) must be converted to a factor variable. For
 example, consider the following table:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">ADAE_subset</span> <span class="op">&lt;-</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://insightsengineering.github.io/cards/latest-tag/reference/adam.html" class="external-link">ADAE</a></span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="va">ADAE_subset</span> <span class="op">&lt;-</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/cards/man/adam.html" class="external-link">ADAE</a></span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span></span>
 <span>    <span class="va">AEBODSYS</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SKIN AND SUBCUTANEOUS TISSUE DISORDERS"</span>, <span class="st">"EAR AND LABYRINTH DISORDERS"</span>, <span class="st">"CARDIAC DISORDERS"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -1892,7 +1892,7 @@ example, consider the following table:</p>
 <span>  data <span class="op">=</span> <span class="va">ADAE_subset</span>,</span>
 <span>  variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">AESOC</span>, <span class="va">AESEV</span><span class="op">)</span>,</span>
 <span>  id <span class="op">=</span> <span class="va">USUBJID</span>,</span>
-<span>  denominator <span class="op">=</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://insightsengineering.github.io/cards/latest-tag/reference/adam.html" class="external-link">ADSL</a></span>,</span>
+<span>  denominator <span class="op">=</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/cards/man/adam.html" class="external-link">ADSL</a></span>,</span>
 <span>  by <span class="op">=</span> <span class="va">TRTA</span>,</span>
 <span>  overall_row <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>AESEV <span class="op">=</span> <span class="st">"Highest Severity"</span><span class="op">)</span></span>
@@ -2458,18 +2458,18 @@ function.</p>
 <p>This function takes a hierarchical ARD object of class
 <code>"card"</code> and converts it to a hierarchical table.
 Hierarchical ARDs can be constructed using the
-<code><a href="https://insightsengineering.github.io/cards/latest-tag/reference/ard_stack_hierarchical.html" class="external-link">cards::ard_stack_hierarchical()</a></code> (for event rates) and
-<code><a href="https://insightsengineering.github.io/cards/latest-tag/reference/ard_stack_hierarchical.html" class="external-link">cards::ard_stack_hierarchical_count()</a></code> (for event counts)
+<code><a href="https://rdrr.io/pkg/cards/man/ard_stack_hierarchical.html" class="external-link">cards::ard_stack_hierarchical()</a></code> (for event rates) and
+<code><a href="https://rdrr.io/pkg/cards/man/ard_stack_hierarchical.html" class="external-link">cards::ard_stack_hierarchical_count()</a></code> (for event counts)
 functions.</p>
 <p>For example:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Build the ARD</span></span>
 <span><span class="va">ard</span> <span class="op">&lt;-</span></span>
-<span>  <span class="fu">cards</span><span class="fu">::</span><span class="fu"><a href="https://insightsengineering.github.io/cards/latest-tag/reference/ard_stack_hierarchical.html" class="external-link">ard_stack_hierarchical</a></span><span class="op">(</span></span>
+<span>  <span class="fu">cards</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cards/man/ard_stack_hierarchical.html" class="external-link">ard_stack_hierarchical</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">ADAE_subset</span>,</span>
 <span>    variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">AESOC</span>, <span class="va">AETERM</span><span class="op">)</span>,</span>
 <span>    by <span class="op">=</span> <span class="va">TRTA</span>,</span>
-<span>    denominator <span class="op">=</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://insightsengineering.github.io/cards/latest-tag/reference/adam.html" class="external-link">ADSL</a></span>,</span>
+<span>    denominator <span class="op">=</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/cards/man/adam.html" class="external-link">ADSL</a></span>,</span>
 <span>    id <span class="op">=</span> <span class="va">USUBJID</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
@@ -3105,10 +3105,10 @@ as follows using <code><a href="https://www.danieldsjoberg.com/gtsummary/referen
 <span>  <span class="va">ADAE_subset</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/distinct.html" class="external-link">distinct</a></span><span class="op">(</span><span class="va">USUBJID</span>, <span class="va">TRTA</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>AE_ANY <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">cards</span><span class="fu">::</span><span class="fu"><a href="https://insightsengineering.github.io/cards/latest-tag/reference/ard_tabulate_value.html" class="external-link">ard_tabulate_value</a></span><span class="op">(</span></span>
+<span>  <span class="fu">cards</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/cards/man/ard_tabulate_value.html" class="external-link">ard_tabulate_value</a></span><span class="op">(</span></span>
 <span>    by <span class="op">=</span> <span class="va">TRTA</span>,</span>
 <span>    variables <span class="op">=</span> <span class="va">AE_ANY</span>,</span>
-<span>    denominator <span class="op">=</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://insightsengineering.github.io/cards/latest-tag/reference/adam.html" class="external-link">ADSL</a></span></span>
+<span>    denominator <span class="op">=</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/cards/man/adam.html" class="external-link">ADSL</a></span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_ard_summary.html" class="external-link">tbl_ard_summary</a></span><span class="op">(</span>by <span class="op">=</span> <span class="va">TRTA</span>, label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>AE_ANY <span class="op">=</span> <span class="st">"Any AE"</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -4266,7 +4266,7 @@ recorded across all treatment groups are kept.</p>
 <span>    data <span class="op">=</span> <span class="va">ADAE_subset</span>,</span>
 <span>    variables <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">AEBODSYS</span>, <span class="va">AEDECOD</span><span class="op">)</span>,</span>
 <span>    by <span class="op">=</span> <span class="va">TRTA</span>,</span>
-<span>    denominator <span class="op">=</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://insightsengineering.github.io/cards/latest-tag/reference/adam.html" class="external-link">ADSL</a></span>,</span>
+<span>    denominator <span class="op">=</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://rdrr.io/pkg/cards/man/adam.html" class="external-link">ADSL</a></span>,</span>
 <span>    id <span class="op">=</span> <span class="va">USUBJID</span>,</span>
 <span>    overall_row <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
