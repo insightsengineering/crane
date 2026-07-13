@@ -183,7 +183,7 @@ gg_lineplot <- function(data,
   # 4. Add Variability Layer conditionally to avoid drawing degenerate lines
   if (variability != "none") {
     p <- p |>
-      gg_add_stats(stat, variability, conf_level)
+      gg_add_stats(stat, variability, conf_level, position = pd)
   }
 
   # 5. Theming
