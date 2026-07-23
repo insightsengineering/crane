@@ -28,13 +28,13 @@ Authors:
   \item Emily de la Rua \email{emilydelarua@gmail.com} (\href{https://orcid.org/0009-0000-8738-5561}{ORCID})
   \item Davide Garolini \email{davide.garolini@roche.com} (\href{https://orcid.org/0000-0002-1445-1369}{ORCID})
   \item Chi Zhang \email{chi.zhang.cz7@roche.com} (\href{https://orcid.org/0000-0003-0501-5909}{ORCID})
-  \item Jan Szczypiński \email{jan.szczypinski@external.roche.com} (\href{https://orcid.org/0000-0002-5682-5840}{ORCID})
+  \item Jan Szczypi<U+0144>ski \email{jan.szczypinski@external.roche.com} (\href{https://orcid.org/0000-0002-5682-5840}{ORCID})
 }
 
 Other contributors:
 \itemize{
   \item Abinaya Yogasekaram \email{ayogasek@gmail.com} (\href{https://orcid.org/0009-0005-2083-1105}{ORCID}) [contributor]
-  \item Lluís Revilla Sancho \email{lluis.revilla_sancho@roche.com} (\href{https://orcid.org/0000-0001-9747-2570}{ORCID}) [contributor]
+  \item Llu<U+00ED>s Revilla Sancho \email{lluis.revilla_sancho@roche.com} (\href{https://orcid.org/0000-0001-9747-2570}{ORCID}) [contributor]
   \item F. Hoffmann-La Roche AG [copyright holder, funder]
 }
 
