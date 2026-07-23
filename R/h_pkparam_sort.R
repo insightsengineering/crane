@@ -435,7 +435,14 @@ d_pkparam <- function() {
 #'
 #' @export
 h_pkparam_sort <- function(pk_data, key_var = "PARAMCD") {
-  assert_df_with_variables(pk_data, list(key_var = key_var))
+  set_cli_abort_call()
+  check_class(pk_data, "data.frame")
+  if (!key_var %in% names(pk_data)) {
+    cli::cli_abort(
+      "Column {.val {key_var}} not found in {.arg pk_data}.",
+      call = get_cli_abort_call()
+    )
+  }
   pk_data$PARAMCD <- pk_data[[key_var]]
 
   ordered_pk_data <- d_pkparam()
