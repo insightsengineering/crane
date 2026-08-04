@@ -92,6 +92,9 @@ fmt_3sig <- function(x) {
 #' @export
 imputation_rules <- function(stat_val, label, blq_ratio, postdose, rule = "1/3") {
   if (is.na(blq_ratio)) return(stat_val)
+  force(label)
+  force(postdose)
+  force(rule)
 
   dplyr::case_when(
     label == "Geom_mean" & (is.na(stat_val) | stat_val == "NA") ~ "NE",
