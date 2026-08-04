@@ -428,9 +428,8 @@ d_pkparam <- function() {
 #' @return A pharmacokinetic `data.frame` sorted by a `PARAM` variable.
 #'
 #' @examples
-#' library(dplyr)
-#'
-#' adpp <- tern_ex_adpp |> mutate(PKPARAM = factor(paste0(PARAM, " (", AVALU, ")")))
+#' adam <- syntheticadam::get_data()
+#' adpp <- adam$adpp
 #' pk_ordered_data <- h_pkparam_sort(adpp)
 #'
 #' @export
