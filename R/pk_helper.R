@@ -66,7 +66,9 @@ geom_mean <- function(x, na.rm = TRUE) {
 #'
 #' @export
 fmt_3sig <- function(x) {
-  if (is.na(x) || !is.finite(x)) return(NA_character_)
+  if (is.na(x) || !is.finite(x)) {
+    return(NA_character_)
+  }
   gsub("\\.$", "", formatC(signif(x, 3), digits = 3, format = "fg", flag = "#"))
 }
 
@@ -91,14 +93,15 @@ fmt_3sig <- function(x) {
 #'
 #' @export
 imputation_rules <- function(stat_val, label, blq_ratio, postdose, rule = "1/3") {
-  if (is.na(blq_ratio)) return(stat_val)
+  if (is.na(blq_ratio)) {
+    return(stat_val)
+  }
   force(label)
   force(postdose)
   force(rule)
 
   dplyr::case_when(
     label == "Geom_mean" & (is.na(stat_val) | stat_val == "NA") ~ "NE",
-
     is.null(rule) ~ stat_val,
 
     # 1/2 rule
@@ -118,7 +121,6 @@ imputation_rules <- function(stat_val, label, blq_ratio, postdose, rule = "1/3")
       label %in% c("Median", "Max", "Geom_mean", "No. obs.", "Number of LTR/BLQ") ~ stat_val,
       TRUE ~ "ND"
     ),
-
     TRUE ~ stat_val
   )
 }
