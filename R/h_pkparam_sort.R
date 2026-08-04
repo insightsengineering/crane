@@ -428,10 +428,11 @@ d_pkparam <- function() {
 #' @return A pharmacokinetic `data.frame` sorted by a `PARAM` variable.
 #'
 #' @examples
+#' \dontrun{
 #' adam <- syntheticadam::get_data()
 #' adpp <- adam$adpp
 #' pk_ordered_data <- h_pkparam_sort(adpp)
-#'
+#' }
 #' @export
 h_pkparam_sort <- function(pk_data, key_var = "PARAMCD") {
   set_cli_abort_call()

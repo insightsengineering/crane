@@ -18,8 +18,9 @@ A pharmacokinetic \code{data.frame} sorted by a \code{PARAM} variable.
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
 \examples{
+\dontrun{
 adam <- syntheticadam::get_data()
 adpp <- adam$adpp
 pk_ordered_data <- h_pkparam_sort(adpp)
-
+}
 }
