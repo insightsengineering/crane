@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0.966043755697357" branch-rate="0" lines-covered="4239" lines-valid="4388" branches-covered="0" branches-valid="0" complexity="0" version="3.6.5" timestamp="2026-07-23 20:33:56.795959">
+<coverage line-rate="0.964944229455953" branch-rate="0" lines-covered="4239" lines-valid="4393" branches-covered="0" branches-valid="0" complexity="0" version="3.6.5" timestamp="2026-08-04 21:36:25.766487">
   <sources>
     <source>/__w/crane/crane/crane</source>
   </sources>
   <packages>
-    <package name="crane" line-rate="0.966043755697357" branch-rate="0" complexity="0">
+    <package name="crane" line-rate="0.964944229455953" branch-rate="0" complexity="0">
       <classes>
         <class name="add_blank_rows.R" filename="R/add_blank_rows.R" line-rate="1" branch-rate="0" complexity="0">
           <methods>
@@ -4120,15 +4120,16 @@
               <lines>
                 <line number="69" hits="0" branch="false"/>
                 <line number="70" hits="0" branch="false"/>
+                <line number="72" hits="0" branch="false"/>
               </lines>
             </method>
             <method name="imputation_rules" signature="" line-rate="0" branch-rate="0" complexity="0">
               <lines>
-                <line number="94" hits="0" branch="false"/>
                 <line number="96" hits="0" branch="false"/>
                 <line number="97" hits="0" branch="false"/>
                 <line number="99" hits="0" branch="false"/>
-                <line number="102" hits="0" branch="false"/>
+                <line number="100" hits="0" branch="false"/>
+                <line number="101" hits="0" branch="false"/>
                 <line number="103" hits="0" branch="false"/>
                 <line number="104" hits="0" branch="false"/>
                 <line number="105" hits="0" branch="false"/>
@@ -4140,8 +4141,12 @@
                 <line number="115" hits="0" branch="false"/>
                 <line number="116" hits="0" branch="false"/>
                 <line number="117" hits="0" branch="false"/>
-                <line number="119" hits="0" branch="false"/>
                 <line number="120" hits="0" branch="false"/>
+                <line number="121" hits="0" branch="false"/>
+                <line number="122" hits="0" branch="false"/>
+                <line number="123" hits="0" branch="false"/>
+                <line number="124" hits="0" branch="false"/>
+                <line number="125" hits="0" branch="false"/>
               </lines>
             </method>
           </methods>
@@ -4153,11 +4158,12 @@
             <line number="50" hits="0" branch="false"/>
             <line number="69" hits="0" branch="false"/>
             <line number="70" hits="0" branch="false"/>
-            <line number="94" hits="0" branch="false"/>
+            <line number="72" hits="0" branch="false"/>
             <line number="96" hits="0" branch="false"/>
             <line number="97" hits="0" branch="false"/>
             <line number="99" hits="0" branch="false"/>
-            <line number="102" hits="0" branch="false"/>
+            <line number="100" hits="0" branch="false"/>
+            <line number="101" hits="0" branch="false"/>
             <line number="103" hits="0" branch="false"/>
             <line number="104" hits="0" branch="false"/>
             <line number="105" hits="0" branch="false"/>
@@ -4169,8 +4175,12 @@
             <line number="115" hits="0" branch="false"/>
             <line number="116" hits="0" branch="false"/>
             <line number="117" hits="0" branch="false"/>
-            <line number="119" hits="0" branch="false"/>
             <line number="120" hits="0" branch="false"/>
+            <line number="121" hits="0" branch="false"/>
+            <line number="122" hits="0" branch="false"/>
+            <line number="123" hits="0" branch="false"/>
+            <line number="124" hits="0" branch="false"/>
+            <line number="125" hits="0" branch="false"/>
           </lines>
         </class>
         <class name="reverse_difference_ci.R" filename="R/reverse_difference_ci.R" line-rate="1" branch-rate="0" complexity="0">
