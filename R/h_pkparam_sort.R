@@ -1,6 +1,6 @@
 #' Generate PK reference dataset
 #'
-#' @description `r lifecycle::badge("stable")`
+#' 
 #'
 #' @return A `data.frame` of PK parameters.
 #'
@@ -420,7 +420,7 @@ d_pkparam <- function() {
 
 #' Sort pharmacokinetic data by `PARAM` variable
 #'
-#' @description `r lifecycle::badge("stable")`
+#' 
 #'
 #' @param pk_data (`data.frame`)\cr pharmacokinetic data frame.
 #' @param key_var (`string`)\cr key variable used to merge pk_data and metadata created by [crane::d_pkparam()].
