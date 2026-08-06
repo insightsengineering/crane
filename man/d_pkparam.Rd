@@ -10,7 +10,7 @@ d_pkparam()
 A \code{data.frame} of PK parameters.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+Generate PK reference dataset
 }
 \examples{
 pk_reference_dataset <- d_pkparam()

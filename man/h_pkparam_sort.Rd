@@ -15,7 +15,7 @@ h_pkparam_sort(pk_data, key_var = "PARAMCD")
 A pharmacokinetic \code{data.frame} sorted by a \code{PARAM} variable.
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+Sort pharmacokinetic data by \code{PARAM} variable
 }
 \examples{
 \dontrun{
