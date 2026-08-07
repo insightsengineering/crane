@@ -13,7 +13,7 @@ geom_cv(x)
 A single numeric value representing the geometric coefficient of variation (\%).
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+Geometric Coefficient of Variation
 }
 \examples{
 geom_cv(c(1, 2, 3, 4, 5))

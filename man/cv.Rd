@@ -13,7 +13,7 @@ cv(x)
 A single numeric value representing the coefficient of variation (\%).
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+Coefficient of Variation
 }
 \examples{
 cv(c(1, 2, 3, 4, 5))

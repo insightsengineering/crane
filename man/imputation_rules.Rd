@@ -22,8 +22,6 @@ A \code{character} string: the original \code{stat_val}, \code{"ND"} (not determ
 or \code{"NE"} (not estimable).
 }
 \description{
-\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
-
 Applies BLQ (Below Limit of Quantification) imputation rules to a statistic
 based on the proportion of BLQ observations and dosing timing.
 }

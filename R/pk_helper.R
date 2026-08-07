@@ -1,6 +1,6 @@
 #' Coefficient of Variation
 #'
-#' @description `r lifecycle::badge("stable")`
+#' 
 #'
 #' @param x (`numeric`)\cr numeric vector.
 #'
@@ -16,7 +16,6 @@ cv <- function(x) {
 
 #' Geometric Coefficient of Variation
 #'
-#' @description `r lifecycle::badge("stable")`
 #'
 #' @param x (`numeric`)\cr numeric vector of positive values.
 #'
@@ -58,7 +57,7 @@ geom_mean <- function(x, na.rm = TRUE) {
 #'
 #' @param x (`numeric(1)`)\cr a single numeric value.
 #'
-#' @returns A `character` string, or `NA_character_` if `x` is `NA` or non-finite.
+#' @returns A `character` string, `"NE"` if `x` is `NA`, or `NA_character_` if `x` is non-finite.
 #'
 #' @examples
 #' fmt_3sig(0.001234)
@@ -66,15 +65,29 @@ geom_mean <- function(x, na.rm = TRUE) {
 #'
 #' @export
 fmt_3sig <- function(x) {
-  if (is.na(x) || !is.finite(x)) {
-    return(NA_character_)
-  }
-  gsub("\\.$", "", formatC(signif(x, 3), digits = 3, format = "fg", flag = "#"))
+  if (is.na(x)) return("NE")
+  if (!is.finite(x)) return(NA_character_)
+  gsub("\\.$", "", formatC(signif(x, 3), digits = 3, format = "fg",  flag = "#"))
+}
+
+#' Format to 1 Decimal Place
+#'
+#' @param x (`numeric(1)`)\cr a single numeric value.
+#'
+#' @returns A `character` string, `"NE"` if `x` is `NA`, or `NA_character_` if `x` is non-finite.
+#'
+#' @examples
+#' fmt_pct(45.678)
+#' fmt_pct(NA)
+#'
+#' @export
+fmt_pct <- function(x) {
+  if (is.na(x)) return("NE")
+  if (!is.finite(x)) return(NA_character_)
+  sprintf("%.1f", x)
 }
 
 #' Apply BLQ Imputation Rules
-#'
-#' @description `r lifecycle::badge("stable")`
 #'
 #' Applies BLQ (Below Limit of Quantification) imputation rules to a statistic
 #' based on the proportion of BLQ observations and dosing timing.

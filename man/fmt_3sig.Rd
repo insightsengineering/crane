@@ -10,7 +10,7 @@ fmt_3sig(x)
 \item{x}{(\code{numeric(1)})\cr a single numeric value.}
 }
 \value{
-A \code{character} string, or \code{NA_character_} if \code{x} is \code{NA} or non-finite.
+A \code{character} string, \code{"NE"} if \code{x} is \code{NA}, or \code{NA_character_} if \code{x} is non-finite.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
