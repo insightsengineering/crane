@@ -1,6 +1,6 @@
 #' Coefficient of Variation
 #'
-#' 
+#'
 #'
 #' @param x (`numeric`)\cr numeric vector.
 #'
@@ -65,9 +65,13 @@ geom_mean <- function(x, na.rm = TRUE) {
 #'
 #' @export
 fmt_3sig <- function(x) {
-  if (is.na(x)) return("NE")
-  if (!is.finite(x)) return(NA_character_)
-  gsub("\\.$", "", formatC(signif(x, 3), digits = 3, format = "fg",  flag = "#"))
+  if (is.na(x)) {
+    return("NE")
+  }
+  if (!is.finite(x)) {
+    return(NA_character_)
+  }
+  gsub("\\.$", "", formatC(signif(x, 3), digits = 3, format = "fg", flag = "#"))
 }
 
 #' Format to 1 Decimal Place
@@ -82,8 +86,12 @@ fmt_3sig <- function(x) {
 #'
 #' @export
 fmt_pct <- function(x) {
-  if (is.na(x)) return("NE")
-  if (!is.finite(x)) return(NA_character_)
+  if (is.na(x)) {
+    return("NE")
+  }
+  if (!is.finite(x)) {
+    return(NA_character_)
+  }
   sprintf("%.1f", x)
 }
 
