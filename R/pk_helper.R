@@ -11,7 +11,7 @@
 #'
 #' @export
 cv <- function(x) {
-  (100 * sd(x, na.rm = TRUE) / mean(x, na.rm = TRUE))
+  (100 * stats::sd(x, na.rm = TRUE) / mean(x, na.rm = TRUE))
 }
 
 #' Geometric Coefficient of Variation
@@ -26,7 +26,7 @@ cv <- function(x) {
 #'
 #' @export
 geom_cv <- function(x) {
-  (sqrt(exp(sd(log(x[x > 0]), na.rm = TRUE)^2) - 1)) * 100
+  (sqrt(exp(stats::sd(log(x[x > 0]), na.rm = TRUE)^2) - 1)) * 100
 }
 
 #' Geometric Mean
