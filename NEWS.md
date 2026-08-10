@@ -1,5 +1,7 @@
 # crane 0.3.3.9007
 
+* `annotate_lineplot_df()` gains a `font_size` argument to control the summary table font size, and `annotate_pkc_df()` now applies its `text_size` argument. (#295)
+
 * `annotate_riskdf()` now builds the "Numbers at Risk" table at the plot's x-axis breaks, so custom ticks set with `ggplot2::scale_x_continuous(breaks = ...)` are reflected in the table. (#278)
 
 * `theme_gtsummary_roche()` now frames the flextable column labels with an outer border only, removing the internal borders between header rows and the inconsistent missing right border. (#272)

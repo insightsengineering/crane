@@ -19,6 +19,8 @@
 #'   Can be a single integer (e.g., `2`), a vector of integers matching the statistics
 #'   (e.g., `c(0, 2, 2)`), or a `gtsummary` style formula. Defaults to `NULL`
 #'   (uses `gtsummary` default auto-formatting).
+#' @param font_size (`numeric`)\cr
+#'   Base font size for the summary table text. Defaults to `10`.
 #' @param rel_height_plot (`numeric`)\cr
 #'   Relative height of the plot vs the table. Defaults to `0.75`.
 #'
@@ -62,6 +64,7 @@ annotate_lineplot_df <- function(gg_plt,
                                  group = NULL,
                                  summary_stats = c("n", "mean", "sd"),
                                  digits = NULL,
+                                 font_size = 10,
                                  rel_height_plot = 0.75) {
   if (!inherits(gg_plt, "crane_gg_line")) {
     cli::cli_warn(c(
@@ -164,6 +167,8 @@ annotate_lineplot_df <- function(gg_plt,
     show_xaxis = FALSE,
     type = "GEN",
     y_labels = y_labels,
+    text_size = font_size / ggplot2::.pt,
+    label_size = font_size,
     rel_height_plot = rel_height_plot
   )
 }

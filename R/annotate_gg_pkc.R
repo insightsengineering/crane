@@ -181,6 +181,7 @@ annotate_pkc_df <- function(gg_plt,
     show_xaxis = FALSE,
     type = "PK",
     y_labels = pk_y_labels,
+    text_size = text_size,
     rel_height_plot = rel_height_plot
   )
 
