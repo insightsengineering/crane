@@ -7,18 +7,20 @@
 fmt_3sig(x)
 }
 \arguments{
-\item{x}{(\code{numeric(1)})\cr a single numeric value.}
+\item{x}{(\code{numeric})\cr a numeric vector.}
 }
 \value{
-A \code{character} string, \code{"NE"} if \code{x} is \code{NA}, or \code{NA_character_} if \code{x} is non-finite.
+A \code{character} vector the same length as \code{x}, with \code{NA_character_}
+where \code{x} is \code{NA} or non-finite.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-Formats a numeric value to 3 significant figures, removing trailing decimals.
+Formats numeric values to 3 significant figures, removing trailing decimals.
 }
 \examples{
 fmt_3sig(0.001234)
 fmt_3sig(123456)
+fmt_3sig(c(0.001234, NA, 123456))
 
 }

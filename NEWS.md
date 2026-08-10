@@ -1,3 +1,11 @@
+# crane 0.3.3.9008
+
+* `imputation_rules()` drops the `postdose` argument, which had no effect (the pre-dose and post-dose branches were identical). Timing-dependent BLQ substitution belongs in the data before summarizing. (#293)
+
+* `geom_mean()` returns `NA_real_` instead of `NaN` when all values are missing. (#293)
+
+* `fmt_3sig()` and `fmt_pct()` are now vectorized and return `NA_character_` for `NA` or non-finite input. (#293)
+
 # crane 0.3.3.9007
 
 * `annotate_riskdf()` now builds the "Numbers at Risk" table at the plot's x-axis breaks, so custom ticks set with `ggplot2::scale_x_continuous(breaks = ...)` are reflected in the table. (#278)

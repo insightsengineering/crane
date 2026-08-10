@@ -7,16 +7,19 @@
 fmt_pct(x)
 }
 \arguments{
-\item{x}{(\code{numeric(1)})\cr a single numeric value.}
+\item{x}{(\code{numeric})\cr a numeric vector.}
 }
 \value{
-A \code{character} string, \code{"NE"} if \code{x} is \code{NA}, or \code{NA_character_} if \code{x} is non-finite.
+A \code{character} vector the same length as \code{x}, with \code{NA_character_}
+where \code{x} is \code{NA} or non-finite.
 }
 \description{
-Format to 1 Decimal Place
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Formats numeric values to a single decimal place.
 }
 \examples{
 fmt_pct(45.678)
-fmt_pct(NA)
+fmt_pct(c(45.678, NA))
 
 }

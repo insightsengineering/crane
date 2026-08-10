@@ -12,7 +12,8 @@ geom_mean(x, na.rm = TRUE)
 \item{na.rm}{(\code{logical(1)})\cr whether to remove \code{NA} values. Default is \code{TRUE}.}
 }
 \value{
-A single numeric value, or \code{NA_real_} if any non-\code{NA} value is <= 0.
+A single numeric value, or \code{NA_real_} if there are no usable values
+or if any non-\code{NA} value is <= 0.
 }
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
