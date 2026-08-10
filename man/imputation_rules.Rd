@@ -4,7 +4,7 @@
 \alias{imputation_rules}
 \title{Apply BLQ Imputation Rules}
 \usage{
-imputation_rules(stat_val, label, blq_ratio, rule = "1/3")
+imputation_rules(stat_val, label, blq_ratio, postdose, rule = "1/3")
 }
 \arguments{
 \item{stat_val}{(\code{character(1)})\cr formatted statistic value.}
@@ -12,6 +12,10 @@ imputation_rules(stat_val, label, blq_ratio, rule = "1/3")
 \item{label}{(\code{character(1)})\cr label identifying the statistic type (e.g. \code{"Median"}, \code{"Max"}).}
 
 \item{blq_ratio}{(\code{numeric(1)})\cr proportion of BLQ observations (between 0 and 1).}
+
+\item{postdose}{(\code{logical(1)})\cr whether the timepoint is post-dose. The 1/3
+rule keeps a separate set of reportable statistics for pre-dose and
+post-dose timepoints.}
 
 \item{rule}{(\code{character(1)})\cr imputation rule to apply. One of \code{"1/3"} (default) or \code{"1/2"}.}
 }
@@ -22,18 +26,13 @@ or \code{"NE"} (not estimable).
 \description{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
-Applies BLQ (Below Limit of Quantification) display rules to a statistic
-based on the proportion of BLQ observations. When too many observations are
-BLQ, summary statistics that cannot be meaningfully reported are replaced by
-\code{"ND"} (not determined), and a geometric mean that could not be computed is
-replaced by \code{"NE"} (not estimable).
-}
-\details{
-This function only decides how a statistic is \emph{displayed} given the BLQ ratio.
-Any substitution of BLQ values in the data (e.g. based on dosing timing) must
-be applied upstream, before the statistics are computed.
+Applies BLQ (Below Limit of Quantification) imputation rules to a statistic
+based on the proportion of BLQ observations and dosing timing. When too many
+observations are BLQ, summary statistics that cannot be meaningfully reported
+are replaced by \code{"ND"} (not determined), and a geometric mean that could not
+be computed is replaced by \code{"NE"} (not estimable).
 }
 \examples{
-imputation_rules("1.23", "Mean", blq_ratio = 0.5, rule = "1/3")
+imputation_rules("1.23", "Mean", blq_ratio = 0.5, postdose = TRUE, rule = "1/3")
 
 }

@@ -109,49 +109,54 @@ fmt_pct <- function(x) {
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' Applies BLQ (Below Limit of Quantification) display rules to a statistic
-#' based on the proportion of BLQ observations. When too many observations are
-#' BLQ, summary statistics that cannot be meaningfully reported are replaced by
-#' `"ND"` (not determined), and a geometric mean that could not be computed is
-#' replaced by `"NE"` (not estimable).
+#' Applies BLQ (Below Limit of Quantification) imputation rules to a statistic
+#' based on the proportion of BLQ observations and dosing timing. When too many
+#' observations are BLQ, summary statistics that cannot be meaningfully reported
+#' are replaced by `"ND"` (not determined), and a geometric mean that could not
+#' be computed is replaced by `"NE"` (not estimable).
 #'
 #' @param stat_val (`character(1)`)\cr formatted statistic value.
 #' @param label (`character(1)`)\cr label identifying the statistic type (e.g. `"Median"`, `"Max"`).
 #' @param blq_ratio (`numeric(1)`)\cr proportion of BLQ observations (between 0 and 1).
+#' @param postdose (`logical(1)`)\cr whether the timepoint is post-dose. The 1/3
+#'   rule keeps a separate set of reportable statistics for pre-dose and
+#'   post-dose timepoints.
 #' @param rule (`character(1)`)\cr imputation rule to apply. One of `"1/3"` (default) or `"1/2"`.
 #'
 #' @returns A `character` string: the original `stat_val`, `"ND"` (not determined),
 #'   or `"NE"` (not estimable).
 #'
-#' @details
-#' This function only decides how a statistic is *displayed* given the BLQ ratio.
-#' Any substitution of BLQ values in the data (e.g. based on dosing timing) must
-#' be applied upstream, before the statistics are computed.
-#'
 #' @examples
-#' imputation_rules("1.23", "Mean", blq_ratio = 0.5, rule = "1/3")
+#' imputation_rules("1.23", "Mean", blq_ratio = 0.5, postdose = TRUE, rule = "1/3")
 #'
 #' @export
-imputation_rules <- function(stat_val, label, blq_ratio, rule = "1/3") {
+imputation_rules <- function(stat_val, label, blq_ratio, postdose, rule = "1/3") {
   if (is.null(rule) || is.na(blq_ratio)) {
     return(stat_val)
   }
   force(label)
+  force(postdose)
+
+  # statistics that remain reportable once the BLQ threshold is exceeded.
+  # the 1/3 rule keeps separate sets for pre-dose and post-dose timepoints
+  # (currently identical, split so PK SMEs can tune each independently).
+  keep_half <- c("Max", "No. obs.", "Number of LTR/BLQ")
+  keep_third_predose <- c("Median", "Max", "Geom_mean", "No. obs.", "Number of LTR/BLQ")
+  keep_third_postdose <- c("Median", "Max", "Geom_mean", "No. obs.", "Number of LTR/BLQ")
+
+  keep_third <- if (postdose) keep_third_postdose else keep_third_predose
 
   dplyr::case_when(
+    # a geometric mean that could not be computed is not estimable
     label == "Geom_mean" & (is.na(stat_val) | stat_val == "NA") ~ "NE",
 
-    # 1/2 rule
-    rule == "1/2" & blq_ratio > 0.5 ~ dplyr::case_when(
-      label %in% c("Max", "No. obs.", "Number of LTR/BLQ") ~ stat_val,
-      TRUE ~ "ND"
-    ),
+    # 1/2 rule: more than half of observations are BLQ
+    rule == "1/2" & blq_ratio > 0.5 ~
+      dplyr::if_else(label %in% keep_half, stat_val, "ND"),
 
-    # 1/3 rule
-    rule == "1/3" & blq_ratio > 1 / 3 ~ dplyr::case_when(
-      label %in% c("Median", "Max", "Geom_mean", "No. obs.", "Number of LTR/BLQ") ~ stat_val,
-      TRUE ~ "ND"
-    ),
+    # 1/3 rule: more than a third of observations are BLQ
+    rule == "1/3" & blq_ratio > 1 / 3 ~
+      dplyr::if_else(label %in% keep_third, stat_val, "ND"),
     TRUE ~ stat_val
   )
 }

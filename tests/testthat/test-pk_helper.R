@@ -67,29 +67,42 @@ test_that("fmt_pct() is vectorized and handles NA/non-finite", {
 
 test_that("imputation_rules() applies the 1/3 rule", {
   # above threshold: only Median, Max, Geom_mean, counts are kept
-  expect_identical(imputation_rules("1.2", "Mean", 0.9, "1/3"), "ND")
-  expect_identical(imputation_rules("1.2", "SD", 0.9, "1/3"), "ND")
-  expect_identical(imputation_rules("1.2", "Median", 0.9, "1/3"), "1.2")
-  expect_identical(imputation_rules("1.2", "Max", 0.9, "1/3"), "1.2")
-  expect_identical(imputation_rules("3", "No. obs.", 0.9, "1/3"), "3")
+  expect_identical(imputation_rules("1.2", "Mean", 0.9, TRUE, "1/3"), "ND")
+  expect_identical(imputation_rules("1.2", "SD", 0.9, TRUE, "1/3"), "ND")
+  expect_identical(imputation_rules("1.2", "Median", 0.9, TRUE, "1/3"), "1.2")
+  expect_identical(imputation_rules("1.2", "Max", 0.9, TRUE, "1/3"), "1.2")
+  expect_identical(imputation_rules("3", "No. obs.", 0.9, TRUE, "1/3"), "3")
   # at or below threshold: everything is kept
-  expect_identical(imputation_rules("1.2", "Mean", 1 / 3, "1/3"), "1.2")
-  expect_identical(imputation_rules("1.2", "Mean", 0.1, "1/3"), "1.2")
+  expect_identical(imputation_rules("1.2", "Mean", 1 / 3, TRUE, "1/3"), "1.2")
+  expect_identical(imputation_rules("1.2", "Mean", 0.1, TRUE, "1/3"), "1.2")
+})
+
+test_that("imputation_rules() applies the 1/3 rule for both dosing timings", {
+  labels <- c("No. obs.", "Mean", "SD", "Median", "Max", "Geom_mean")
+  predose <- vapply(
+    labels, \(l) imputation_rules("1.2", l, 0.9, FALSE, "1/3"), character(1)
+  )
+  postdose <- vapply(
+    labels, \(l) imputation_rules("1.2", l, 0.9, TRUE, "1/3"), character(1)
+  )
+  # pre-dose and post-dose currently keep the same set of statistics
+  expect_identical(predose, postdose)
+  expect_identical(unname(predose[c("Mean", "SD")]), c("ND", "ND"))
 })
 
 test_that("imputation_rules() applies the 1/2 rule", {
-  expect_identical(imputation_rules("1.2", "Mean", 0.6, "1/2"), "ND")
-  expect_identical(imputation_rules("1.2", "Median", 0.6, "1/2"), "ND")
-  expect_identical(imputation_rules("1.2", "Max", 0.6, "1/2"), "1.2")
-  expect_identical(imputation_rules("1.2", "Mean", 0.5, "1/2"), "1.2")
+  expect_identical(imputation_rules("1.2", "Mean", 0.6, TRUE, "1/2"), "ND")
+  expect_identical(imputation_rules("1.2", "Median", 0.6, TRUE, "1/2"), "ND")
+  expect_identical(imputation_rules("1.2", "Max", 0.6, TRUE, "1/2"), "1.2")
+  expect_identical(imputation_rules("1.2", "Mean", 0.5, TRUE, "1/2"), "1.2")
 })
 
 test_that("imputation_rules() marks a missing geometric mean as NE", {
-  expect_identical(imputation_rules(NA, "Geom_mean", 0.1, "1/3"), "NE")
-  expect_identical(imputation_rules("NA", "Geom_mean", 0.1, "1/3"), "NE")
+  expect_identical(imputation_rules(NA, "Geom_mean", 0.1, TRUE, "1/3"), "NE")
+  expect_identical(imputation_rules("NA", "Geom_mean", 0.1, TRUE, "1/3"), "NE")
 })
 
 test_that("imputation_rules() returns the value when the rule cannot apply", {
-  expect_identical(imputation_rules("1.2", "Mean", NA, "1/3"), "1.2")
-  expect_identical(imputation_rules("1.2", "Mean", 0.9, NULL), "1.2")
+  expect_identical(imputation_rules("1.2", "Mean", NA, TRUE, "1/3"), "1.2")
+  expect_identical(imputation_rules("1.2", "Mean", 0.9, TRUE, NULL), "1.2")
 })
