@@ -1,5 +1,7 @@
 # crane 0.3.3.9007
 
+* `tbl_with_pools()` no longer strips spanning headers set by the inner `.tbl_fun`, so pooling `tbl_baseline_chg()` keeps the treatment-arm headers. (#297)
+
 * `annotate_riskdf()` now builds the "Numbers at Risk" table at the plot's x-axis breaks, so custom ticks set with `ggplot2::scale_x_continuous(breaks = ...)` are reflected in the table. (#278)
 
 * `theme_gtsummary_roche()` now frames the flextable column labels with an outer border only, removing the internal borders between header rows and the inconsistent missing right border. (#272)

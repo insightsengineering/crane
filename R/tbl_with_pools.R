@@ -263,13 +263,15 @@ tbl_with_pools <- function(
     return(tbl_list[[1]])
   }
 
-  # Merge all tables together seamlessly, stripping default spanning headers
+  # Merge all tables together seamlessly. `tab_spanner = NA` already suppresses
+  # the default per-table spanners tbl_merge would add, while preserving any
+  # spanning header the inner `.tbl_fun` set itself (e.g. the treatment-arm
+  # header from `tbl_baseline_chg()`).
   merged_tbl <- gtsummary::tbl_merge(
     tbls = tbl_list,
     tab_spanner = rep(NA_character_, length(tbl_list)),
     quiet = TRUE # <-- Suppresses the row mismatch message (expected)
-  ) |>
-    gtsummary::modify_spanning_header(gtsummary::everything() ~ NA_character_)
+  )
 
   attr(merged_tbl, "by") <- levels(factor(data[[by]]))
 
