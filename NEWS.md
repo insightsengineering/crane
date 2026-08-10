@@ -1,6 +1,10 @@
 # crane 0.3.3.9008
 
-* `geom_mean()` returns `NA_real_` instead of `NaN` when all values are missing. (#293)
+* Renamed `imputation_rules()` to `pk_imputation_rules()` to make its PK scope explicit. It applies BLQ display rules to PK summary statistics based on the BLQ ratio and dosing timing. (#293)
+
+* PK summary helpers (`cv()`, `geom_cv()`, `geom_mean()`, `fmt_3sig()`, `fmt_pct()`, `pk_imputation_rules()`) now validate their inputs and raise informative errors. (#293)
+
+* `geom_mean()` returns `NA_real_` instead of `NaN` when all concentrations are missing. (#293)
 
 * `fmt_3sig()` and `fmt_pct()` are now vectorized and return `NA_character_` for `NA` or non-finite input. (#293)
 

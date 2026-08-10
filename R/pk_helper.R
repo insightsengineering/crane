@@ -11,6 +11,8 @@
 #'
 #' @export
 cv <- function(x) {
+  check_not_missing(x)
+  check_numeric(x)
   (100 * stats::sd(x, na.rm = TRUE) / mean(x, na.rm = TRUE))
 }
 
@@ -27,6 +29,8 @@ cv <- function(x) {
 #'
 #' @export
 geom_cv <- function(x) {
+  check_not_missing(x)
+  check_numeric(x)
   (sqrt(exp(stats::sd(log(x[x > 0]), na.rm = TRUE)^2) - 1)) * 100
 }
 
@@ -45,6 +49,9 @@ geom_cv <- function(x) {
 #'
 #' @export
 geom_mean <- function(x, na.rm = TRUE) {
+  check_not_missing(x)
+  check_numeric(x)
+  check_scalar_logical(na.rm)
   if (na.rm) {
     x <- x[!is.na(x)]
   }
@@ -73,6 +80,8 @@ geom_mean <- function(x, na.rm = TRUE) {
 #'
 #' @export
 fmt_3sig <- function(x) {
+  check_not_missing(x)
+  check_numeric(x, allow_empty = TRUE)
   out <- rep(NA_character_, length(x))
   ok <- !is.na(x) & is.finite(x)
   out[ok] <- gsub(
@@ -99,21 +108,23 @@ fmt_3sig <- function(x) {
 #'
 #' @export
 fmt_pct <- function(x) {
+  check_not_missing(x)
+  check_numeric(x, allow_empty = TRUE)
   out <- rep(NA_character_, length(x))
   ok <- !is.na(x) & is.finite(x)
   out[ok] <- sprintf("%.1f", x[ok])
   out
 }
 
-#' Apply BLQ Imputation Rules
+#' Apply PK BLQ Imputation Rules
 #'
 #' @description `r lifecycle::badge("stable")`
 #'
-#' Applies BLQ (Below Limit of Quantification) imputation rules to a statistic
-#' based on the proportion of BLQ observations and dosing timing. When too many
-#' observations are BLQ, summary statistics that cannot be meaningfully reported
-#' are replaced by `"ND"` (not determined), and a geometric mean that could not
-#' be computed is replaced by `"NE"` (not estimable).
+#' Applies BLQ (Below Limit of Quantification) imputation rules to a PK summary
+#' statistic based on the proportion of BLQ observations and dosing timing. When
+#' too many observations are BLQ, summary statistics that cannot be meaningfully
+#' reported are replaced by `"ND"` (not determined), and a geometric mean that
+#' could not be computed is replaced by `"NE"` (not estimable).
 #'
 #' @param stat_val (`character(1)`)\cr formatted statistic value.
 #' @param label (`character(1)`)\cr label identifying the statistic type (e.g. `"Median"`, `"Max"`).
@@ -127,15 +138,20 @@ fmt_pct <- function(x) {
 #'   or `"NE"` (not estimable).
 #'
 #' @examples
-#' imputation_rules("1.23", "Mean", blq_ratio = 0.5, postdose = TRUE, rule = "1/3")
+#' pk_imputation_rules("1.23", "Mean", blq_ratio = 0.5, postdose = TRUE, rule = "1/3")
 #'
 #' @export
-imputation_rules <- function(stat_val, label, blq_ratio, postdose, rule = "1/3") {
+pk_imputation_rules <- function(stat_val, label, blq_ratio, postdose, rule = "1/3") {
+  check_not_missing(label)
+  check_not_missing(blq_ratio)
+  check_not_missing(postdose)
+  check_string(label)
+  check_scalar_logical(postdose)
   if (is.null(rule) || is.na(blq_ratio)) {
     return(stat_val)
   }
-  force(label)
-  force(postdose)
+  check_scalar_range(blq_ratio, range = c(0, 1), include_bounds = c(TRUE, TRUE))
+  check_string(rule)
 
   # statistics that remain reportable once the BLQ threshold is exceeded.
   # the 1/3 rule keeps separate sets for pre-dose and post-dose timepoints
