@@ -7,7 +7,7 @@ test_that("cv() handles NA and degenerate input", {
   expect_equal(cv(c(1, 2, NA, 3)), cv(c(1, 2, 3)))
   # sd of a single value is NA -> cv is NA
   expect_true(is.na(cv(5)))
-  expect_true(is.na(cv(c(NA_real_, NA_real_))))
+  expect_true(is.na(cv(c(NA, NA))))
 })
 
 test_that("geom_mean() computes the geometric mean of positive values", {
