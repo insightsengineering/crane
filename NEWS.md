@@ -1,6 +1,6 @@
 # crane 0.3.3.9007
 
-* `annotate_lineplot_df()` and `annotate_pkc_df()` gain a `font_size` argument to control the summary table font size, matching `annotate_riskdf()`. The `text_size` argument of `annotate_pkc_df()` is soft-deprecated in favour of `font_size`. (#295)
+* `annotate_lineplot_df()` and `annotate_pkc_df()` gain a `font_size` argument to control the summary table font size, matching `annotate_riskdf()`. The `text_size` argument of `annotate_pkc_df()` is soft-deprecated in favor of `font_size`. (#295)
 
 * `annotate_riskdf()` now builds the "Numbers at Risk" table at the plot's x-axis breaks, so custom ticks set with `ggplot2::scale_x_continuous(breaks = ...)` are reflected in the table. (#278)
 
