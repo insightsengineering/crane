@@ -6,7 +6,7 @@
 # ---
 # repo: insightsengineering/standalone
 # file: standalone-forcats.R
-# last-updated: 2025-07-25
+# last-updated: 2026-06-30
 # license: https://unlicense.org
 # imports:
 # ---
@@ -16,6 +16,12 @@
 # of programming.
 #
 # ## Changelog
+# 2026-06-30
+#   - `fct_collapse()` no longer relies on the base R `%||%` operator, which is
+#     only available in R >= 4.4.
+#   - `fct_reorder()` partitions values with a single `split()` call instead of
+#     scanning the full vector once per level (large speed/memory improvement
+#     for factors with many levels).
 # 2025-07-25
 #   - add `fct_reorder()` function.
 # 2025-06-24
@@ -147,7 +153,8 @@ fct_collapse <- function(f, ..., other_level = NULL) {
   if (!inherits(f, "factor")) f <- factor(f)
 
   dots <- rlang::list2(...)
-  old <- unlist(dots, use.names = FALSE) %||% character()
+  old <- unlist(dots, use.names = FALSE)
+  if (is.null(old)) old <- character()
   new <- rep(names(dots), lengths(dots))
 
   # collapse/re-value factor levels using new names
@@ -165,9 +172,13 @@ fct_reorder <- function(.f, .x, .fun = stats::median, ..., .na_rm = NULL, .defau
 
   lvls <- levels(.f)
 
+  # Partition `.x` by level in a single pass (O(n)) instead of re-scanning the
+  # whole vector once per level (O(n * nlevels)).
+  groups <- split(.x, .f)
+
   # Compute summary statistic per level
   summary_vals <- vapply(lvls, function(lvl) {
-    vals <- .x[.f == lvl]
+    vals <- groups[[lvl]]
     if (isTRUE(.na_rm)) {
       vals <- vals[!is.na(vals)]
     }

@@ -49,7 +49,7 @@
       tbl_survfit_times(data = cards::ADTTE, by = everything(), times = 30)
     Condition
       Error in `tbl_survfit_times()`:
-      ! The `by` argument must be length 1 or empty.
+      ! The `by` argument must be a vector of length 1 or empty.
 
 ---
 
