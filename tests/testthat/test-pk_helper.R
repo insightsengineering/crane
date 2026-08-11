@@ -97,9 +97,14 @@ test_that("pk_imputation_rules() applies the 1/2 rule", {
   expect_identical(pk_imputation_rules("1.2", "Mean", 0.5, TRUE, "1/2"), "1.2")
 })
 
-test_that("pk_imputation_rules() marks a missing geometric mean as NE", {
-  expect_identical(pk_imputation_rules(NA, "Geom_mean", 0.1, TRUE, "1/3"), "NE")
+test_that("pk_imputation_rules() marks a missing statistic as NE", {
+  # variability statistics are not estimable with a single observation
+  expect_identical(pk_imputation_rules(NA, "SD", 0, TRUE, "1/3"), "NE")
+  expect_identical(pk_imputation_rules(NA, "CV% Mean", 0, TRUE, "1/3"), "NE")
   expect_identical(pk_imputation_rules("NA", "Geom_mean", 0.1, TRUE, "1/3"), "NE")
+  # counts are always available, so they are never NE (value passes through)
+  expect_identical(pk_imputation_rules("5", "No. obs.", 0, TRUE, "1/3"), "5")
+  expect_identical(pk_imputation_rules(NA, "No. obs.", 0, TRUE, "1/3"), NA_character_)
 })
 
 test_that("pk_imputation_rules() returns the value when the rule cannot apply", {

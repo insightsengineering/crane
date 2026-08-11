@@ -1,6 +1,6 @@
 # crane 0.3.3.9008
 
-* Renamed `imputation_rules()` to `pk_imputation_rules()` to make its PK scope explicit. It applies BLQ display rules to PK summary statistics based on the BLQ ratio and dosing timing. (#293)
+* Renamed `imputation_rules()` to `pk_imputation_rules()` to make its PK scope explicit. It applies BLQ display rules to PK summary statistics based on the BLQ ratio and dosing timing, and now marks any missing statistic (e.g. standard deviation or CV% when `n = 1`) as `"NE"` (not estimable). (#293)
 
 * Renamed `d_pkparam()` to `pk_param_metadata()` and `h_pkparam_sort()` to `pk_param_sort()`, dropping the `d_`/`h_` prefixes. `pk_param_sort()` now warns about parameter codes missing from the reference and keeps their rows instead of dropping them silently. (#293)
 
