@@ -6,7 +6,7 @@
 # ---
 # repo: insightsengineering/standalone
 # file: standalone-tibble.R
-# last-updated: 2024-05-07
+# last-updated: 2026-06-30
 # license: https://unlicense.org
 # imports: [dplyr]
 # ---
@@ -16,6 +16,10 @@
 # of programming.
 #
 # ## Changelog
+# 2026-06-30
+#   - `enframe()` now handles `NULL` input and `name = NULL` (value-only output).
+#   - `rownames_to_column()` resets to default integer row names, matching
+#     `tibble::rownames_to_column()`.
 #
 # nocov start
 # styler: off
@@ -26,10 +30,14 @@ deframe <- function(x) {
 }
 
 enframe <- function(x, name = "name", value = "value") {
-  if (!is.null(names(x))) {
+  if (is.null(x)) x <- logical()
+
+  if (is.null(name)) {
+    # value-only tibble; ignore any names on `x`
+    lst <- list(unname(x)) |> stats::setNames(value)
+  } else if (!is.null(names(x))) {
     lst <- list(names(x), unname(x)) |> stats::setNames(c(name, value))
-  }
-  else {
+  } else {
     lst <- list(seq_along(x), unname(x)) |> stats::setNames(c(name, value))
   }
   dplyr::tibble(!!!lst)
@@ -41,7 +49,10 @@ remove_rownames <- function(.data) {
 }
 
 rownames_to_column <- function(.data, var = "rowname") {
-  .data[[var]] <- rownames(.data)
+  col <- rownames(.data)
+  # reset to default integer row names, matching tibble::rownames_to_column()
+  rownames(.data) <- NULL
+  .data[[var]] <- col
 
   dplyr::relocate(.data, dplyr::all_of(var), .before = 1L)
 }
