@@ -1,14 +1,18 @@
-#' Generate PK reference dataset
+#' @rdname pk_helpers
 #'
-#'
-#'
-#' @return A `data.frame` of PK parameters.
+#' @details
+#' `pk_param_metadata()` returns the reference table mapping PK parameter codes
+#' (`PARAMCD`) to their label (`PARAM`), display label (`TLG_DISPLAY`), matrix,
+#' and display order (`TLG_ORDER`). `pk_param_sort()` uses this reference to set
+#' the `PARAM` (and `TLG_DISPLAY`) factor levels of a PK data frame so tables and
+#' listings follow the conventional PK parameter order.
 #'
 #' @examples
-#' pk_reference_dataset <- d_pkparam()
+#' pk_reference <- pk_param_metadata()
+#' head(pk_reference)
 #'
 #' @export
-d_pkparam <- function() {
+pk_param_metadata <- function() {
   pk_dataset <- as.data.frame(matrix(
     c(
       "TMAX", "Time of CMAX Observation", "Tmax", "Plasma/Blood/Serum", "1",
@@ -412,58 +416,73 @@ d_pkparam <- function() {
     ),
     ncol = 5,
     byrow = TRUE
-  ))
+  ), stringsAsFactors = FALSE)
   colnames(pk_dataset) <- c("PARAMCD", "PARAM", "TLG_DISPLAY", "MATRIX", "TLG_ORDER")
+  pk_dataset$TLG_ORDER <- as.integer(pk_dataset$TLG_ORDER)
   pk_dataset
 }
 
 
-#' Sort pharmacokinetic data by `PARAM` variable
-#'
-#'
+#' @rdname pk_helpers
 #'
 #' @param pk_data (`data.frame`)\cr pharmacokinetic data frame.
-#' @param key_var (`string`)\cr key variable used to merge pk_data and metadata created by [crane::d_pkparam()].
-#'
-#' @return A pharmacokinetic `data.frame` sorted by a `PARAM` variable.
+#' @param key_var (`string`)\cr column in `pk_data` holding the PK parameter code,
+#'   merged against the reference from [pk_param_metadata()]. Default is `"PARAMCD"`.
 #'
 #' @examples
 #' \dontrun{
 #' adam <- syntheticadam::get_data()
-#' adpp <- adam$adpp
-#' pk_ordered_data <- h_pkparam_sort(adpp)
+#' pk_ordered_data <- pk_param_sort(adam$adpp)
 #' }
+#'
 #' @export
-h_pkparam_sort <- function(pk_data, key_var = "PARAMCD") {
+pk_param_sort <- function(pk_data, key_var = "PARAMCD") {
   set_cli_abort_call()
+  check_not_missing(pk_data)
   check_class(pk_data, "data.frame")
+  check_string(key_var)
   if (!key_var %in% names(pk_data)) {
     cli::cli_abort(
       "Column {.val {key_var}} not found in {.arg pk_data}.",
       call = get_cli_abort_call()
     )
   }
+
+  # mirror the key column into PARAMCD so the reference always merges on PARAMCD
   pk_data$PARAMCD <- pk_data[[key_var]]
+  reference <- pk_param_metadata()
 
-  ordered_pk_data <- d_pkparam()
+  # warn about codes with no reference entry; a left join keeps their rows
+  # (with NA order) rather than silently dropping them like the base merge did.
+  unknown <- setdiff(unique(as.character(pk_data$PARAMCD)), reference$PARAMCD)
+  if (length(unknown) > 0) {
+    cli::cli_warn(
+      "{length(unknown)} PK parameter code{?s} in {.arg pk_data} {?is/are} not in
+       the reference and will sort last: {.val {unknown}}."
+    )
+  }
 
-  # Add the numeric values from ordered_pk_data to pk_data
-  joined_data <- merge(pk_data, ordered_pk_data, by = "PARAMCD", suffixes = c("", ".y"))
+  # enrich pk_data with the reference display columns it does not already have
+  # (typically TLG_DISPLAY, MATRIX, TLG_ORDER), keeping pk_data's own columns.
+  add_cols <- c("PARAMCD", setdiff(names(reference), names(pk_data)))
+  joined_data <- pk_data |>
+    dplyr::left_join(reference[add_cols], by = "PARAMCD")
 
-  joined_data <- joined_data[, -grep(".*.y$", colnames(joined_data))]
-
-  joined_data$TLG_ORDER <- as.numeric(joined_data$TLG_ORDER)
-
-  # Then order PARAM based on this column
-  joined_data$PARAM <- factor(joined_data$PARAM,
-    levels = unique(joined_data$PARAM[order(joined_data$TLG_ORDER)]),
-    ordered = TRUE
-  )
-
-  joined_data$TLG_DISPLAY <- factor(joined_data$TLG_DISPLAY,
-    levels = unique(joined_data$TLG_DISPLAY[order(joined_data$TLG_ORDER)]),
-    ordered = TRUE
-  )
+  # order PARAM (and TLG_DISPLAY when present) by the reference display order
+  ordered_levels <- function(x) unique(x[order(joined_data$TLG_ORDER)])
+  joined_data <- joined_data |>
+    dplyr::mutate(
+      PARAM = factor(.data$PARAM, levels = ordered_levels(.data$PARAM), ordered = TRUE)
+    )
+  if ("TLG_DISPLAY" %in% names(joined_data)) {
+    joined_data <- joined_data |>
+      dplyr::mutate(
+        TLG_DISPLAY = factor(
+          .data$TLG_DISPLAY,
+          levels = ordered_levels(.data$TLG_DISPLAY), ordered = TRUE
+        )
+      )
+  }
 
   joined_data
 }

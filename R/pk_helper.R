@@ -12,6 +12,8 @@
 #' * `fmt_3sig()` -- format numbers to 3 significant figures.
 #' * `fmt_pct()` -- format numbers to a single decimal place.
 #' * `pk_imputation_rules()` -- apply BLQ display rules to a formatted statistic.
+#' * `pk_param_metadata()` -- reference table of PK parameter codes and labels.
+#' * `pk_param_sort()` -- order a PK data frame by the conventional parameter order.
 #'
 #' @param x (`numeric`)\cr numeric vector.
 #' @param na.rm (`logical(1)`)\cr whether to remove `NA` values. Default is `TRUE`.
@@ -33,6 +35,9 @@
 #'
 #' `pk_imputation_rules()` returns a `character` string: the original
 #' `stat_val`, `"ND"` (not determined), or `"NE"` (not estimable).
+#'
+#' `pk_param_metadata()` returns a `data.frame` of PK parameters. `pk_param_sort()`
+#' returns `pk_data` with ordered `PARAM` (and `TLG_DISPLAY`) factors.
 #'
 #' @name pk_helpers
 NULL

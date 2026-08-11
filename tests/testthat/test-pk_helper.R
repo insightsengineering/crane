@@ -119,3 +119,65 @@ test_that("exported PK helpers validate their inputs", {
   expect_error(pk_imputation_rules("1.2", "Mean", 0.5, "yes"), "logical")
   expect_error(pk_imputation_rules("1.2", "Mean", 1.5, TRUE), "interval")
 })
+
+test_that("pk_param_metadata() returns the reference table", {
+  ref <- pk_param_metadata()
+  expect_s3_class(ref, "data.frame")
+  expect_identical(
+    names(ref),
+    c("PARAMCD", "PARAM", "TLG_DISPLAY", "MATRIX", "TLG_ORDER")
+  )
+  expect_type(ref$TLG_ORDER, "integer")
+  # codes are unique and the display order is a complete 1..n sequence
+  expect_false(anyDuplicated(ref$PARAMCD) > 0)
+  expect_identical(sort(ref$TLG_ORDER), seq_len(nrow(ref)))
+})
+
+test_that("pk_param_sort() orders PARAM by the reference display order", {
+  pk_data <- data.frame(
+    PARAMCD = c("AUCIFO", "CMAX", "TMAX"),
+    PARAM = c("AUC Infinity Obs", "Max Conc", "Time of CMAX Observation"),
+    AVAL = 1:3,
+    stringsAsFactors = FALSE
+  )
+  out <- pk_param_sort(pk_data)
+
+  expect_s3_class(out$PARAM, "ordered")
+  # reference order is Tmax (1) < Cmax (2) < AUCinf obs (4)
+  expect_identical(
+    levels(out$PARAM),
+    c("Time of CMAX Observation", "Max Conc", "AUC Infinity Obs")
+  )
+  # enriches with the reference display columns, keeps original columns
+  expect_true(all(c("TLG_DISPLAY", "MATRIX", "AVAL") %in% names(out)))
+  expect_s3_class(out$TLG_DISPLAY, "ordered")
+})
+
+test_that("pk_param_sort() supports a custom key_var", {
+  pk_data <- data.frame(
+    MYCODE = c("CMAX", "TMAX"),
+    PARAM = c("Max Conc", "Time of CMAX Observation"),
+    stringsAsFactors = FALSE
+  )
+  out <- pk_param_sort(pk_data, key_var = "MYCODE")
+  expect_identical(levels(out$PARAM), c("Time of CMAX Observation", "Max Conc"))
+})
+
+test_that("pk_param_sort() warns about unmapped codes and keeps their rows", {
+  pk_data <- data.frame(
+    PARAMCD = c("CMAX", "FOO"),
+    PARAM = c("Max Conc", "Bogus"),
+    stringsAsFactors = FALSE
+  )
+  expect_warning(out <- pk_param_sort(pk_data), "not in")
+  # left join keeps unmatched rows rather than dropping them
+  expect_identical(nrow(out), 2L)
+})
+
+test_that("pk_param_sort() validates its inputs", {
+  expect_error(pk_param_sort(list(a = 1)), "data.frame")
+  expect_error(
+    pk_param_sort(data.frame(PARAM = "x"), key_var = "MISSING"),
+    "not found"
+  )
+})
