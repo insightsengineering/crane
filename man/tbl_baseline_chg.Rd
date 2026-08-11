@@ -126,6 +126,12 @@ tbl_strata(
   .combine_with = "tbl_stack",
   .combine_args = list(group_header = NULL, quiet = TRUE)
 ) |>
-  tbl_split_by_rows(variable_level = ends_with("lbl"))
+  tbl_split_by_rows(variable_level = ends_with("lbl")) |>
+  # caption each page with its parameter and hide the split column
+  modify_split_caption(spl_col = "tbl_id1_lbl")
 \dontshow{\}) # examplesIf}
+}
+\seealso{
+\code{\link[=modify_split_caption]{modify_split_caption()}} to caption each page of a split table and
+hide the redundant split column.
 }
