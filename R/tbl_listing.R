@@ -22,6 +22,8 @@
 #'   string to use for blank values. Defaults to `NA`. It should not be changed.
 #'
 #' @name tbl_listing
+#' @seealso [modify_split_caption()] to label each page of a split table and
+#'   hide the redundant split column.
 #' @note
 #' Common pre-processing steps for the data frame that may be common:
 #'  * Unique values - this should be enforced in pre-processing by users.
@@ -88,6 +90,12 @@
 #' out <- list_lst |>
 #'   remove_duplicate_keys(keys = c("trt", "stage"))
 #' out[[2]]
+#'
+#' # Example 8 --------------------------------
+#' # Label each split page and hide the redundant split column
+#' by_stage <- tbl_listing(trial_data, split_by_rows = list(variable_level = "stage")) |>
+#'   modify_split_caption(spl_col = "stage", pattern = "Stage: {spl_level}")
+#' by_stage[[1]]
 NULL
 
 #' @export
