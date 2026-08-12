@@ -226,8 +226,10 @@ test_that("tbl_mmrm baseline statistics are configurable", {
     arm = "ARMCD",
     visit = "AVISIT",
     baseline_aval = "FEV1",
-    baseline_statistic = c("{N_nonmiss}", "{mean} ({sd})", "{median}", "{min} - {max}"),
-    baseline_digits = c(0, 2, 2, 2, 2, 2)
+    baseline_args = list(
+      statistic = ~ c("{N_nonmiss}", "{mean} ({sd})", "{median}", "{min} - {max}"),
+      digits = ~ c(0, 2, 2, 2, 2, 2)
+    )
   )
 
   baseline_labels <- tbl$tbls[[1]]$table_body$label

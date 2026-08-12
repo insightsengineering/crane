@@ -2,7 +2,7 @@
 
 * `get_mmrm_results()` gains a `weights` argument (default `"equal"`) passed to `emmeans::emmeans()`, so proportionally weighted LS Means can be requested with `weights = "proportional"`. (#299)
 
-* `tbl_mmrm()` gains `baseline_statistic` and `baseline_digits` arguments to configure the baseline section statistics, which were previously locked to `n` and `Mean (SE)`. (#299)
+* `tbl_mmrm()` gains a `baseline_args` argument, forwarded to the baseline `tbl_roche_summary()` call, to configure the baseline section statistics (previously locked to `n` and `Mean (SE)`). (#299)
 
 * Added `modify_split_caption()` to subtitle each page of a split `{gtsummary}` table (e.g. from `tbl_listing()`, `tbl_baseline_chg()`, or `tbl_shift()`) from its split level via a glue `pattern` (default `"Parameter: {spl_level}"`) and hide the now-redundant split column. (#282)
 

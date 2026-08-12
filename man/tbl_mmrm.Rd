@@ -20,8 +20,7 @@ tbl_mmrm(
   visit,
   baseline_aval = NULL,
   digits = c(2, 3, 4),
-  baseline_statistic = c("{N_nonmiss}", "{mean} ({se})"),
-  baseline_digits = c(0, digits[1], digits[2])
+  baseline_args = list()
 )
 }
 \arguments{
@@ -67,14 +66,12 @@ Unused if \code{base_df} is not provided or does not contain any rows.}
 A numeric vector of length 3 specifying the number of decimal places for: 1) Estimates/CIs, 2) Standard
 Errors, and 3) P-values. Default is \code{c(2, 3, 4)}.}
 
-\item{baseline_statistic}{(\code{character})\cr
-The \code{\link[gtsummary:tbl_summary]{gtsummary::tbl_summary()}} statistic specifications for the baseline section, passed to
-\code{\link[=tbl_roche_summary]{tbl_roche_summary()}}. Default is \code{c("{N_nonmiss}", "{mean} ({se})")}, i.e. n and Mean (SE). For example,
-use \code{c("{N_nonmiss}", "{mean} ({sd})", "{median}", "{min} - {max}")} for n, Mean (SD), Median and Min - Max.}
-
-\item{baseline_digits}{(\code{numeric})\cr
-The number of decimal places for each \code{baseline_statistic}, in the same order. Default is
-\code{c(0, digits[1], digits[2])}.}
+\item{baseline_args}{(named \code{list})\cr
+Arguments forwarded to the baseline \code{\link[=tbl_roche_summary]{tbl_roche_summary()}} call, letting you configure the baseline
+section (\code{statistic}, \code{digits}, \code{type}, \code{sort}, ...). Defaults to n and Mean (SE); only the elements you
+supply are overridden. For example,
+\code{baseline_args = list(statistic = ~ c("{N_nonmiss}", "{mean} ({sd})", "{median}", "{min} - {max}"))}
+shows n, Mean (SD), Median and Min - Max.}
 }
 \value{
 A \code{data.frame} containing the estimated marginal means (adjusted means)

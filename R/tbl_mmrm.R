@@ -176,13 +176,12 @@ get_mmrm_results <- function(fit_mmrm, arm, visit, conf_level = 0.95,
 #' @param digits (`numeric`)\cr
 #'   A numeric vector of length 3 specifying the number of decimal places for: 1) Estimates/CIs, 2) Standard
 #'    Errors, and 3) P-values. Default is `c(2, 3, 4)`.
-#' @param baseline_statistic (`character`)\cr
-#'   The [gtsummary::tbl_summary()] statistic specifications for the baseline section, passed to
-#'   [tbl_roche_summary()]. Default is `c("{N_nonmiss}", "{mean} ({se})")`, i.e. n and Mean (SE). For example,
-#'   use `c("{N_nonmiss}", "{mean} ({sd})", "{median}", "{min} - {max}")` for n, Mean (SD), Median and Min - Max.
-#' @param baseline_digits (`numeric`)\cr
-#'   The number of decimal places for each `baseline_statistic`, in the same order. Default is
-#'   `c(0, digits[1], digits[2])`.
+#' @param baseline_args (named `list`)\cr
+#'   Arguments forwarded to the baseline [tbl_roche_summary()] call, letting you configure the baseline
+#'   section (`statistic`, `digits`, `type`, `sort`, ...). Defaults to n and Mean (SE); only the elements you
+#'   supply are overridden. For example,
+#'   `baseline_args = list(statistic = ~ c("{N_nonmiss}", "{mean} ({sd})", "{median}", "{min} - {max}"))`
+#'   shows n, Mean (SD), Median and Min - Max.
 #'
 #' @return `tbl_mmrm` returns a 'gtsummary' table object.
 #'
@@ -196,12 +195,23 @@ get_mmrm_results <- function(fit_mmrm, arm, visit, conf_level = 0.95,
 #' @rdname tbl_mmrm
 #' @export
 tbl_mmrm <- function(mmrm_df, base_df = NULL, arm, visit, baseline_aval = NULL, digits = c(2, 3, 4),
-                     baseline_statistic = c("{N_nonmiss}", "{mean} ({se})"),
-                     baseline_digits = c(0, digits[1], digits[2])) {
+                     baseline_args = list()) {
   check_not_missing(mmrm_df)
   check_not_missing(arm)
   check_not_missing(visit)
   check_not_missing(digits)
+  check_class(baseline_args, "list", allow_empty = TRUE)
+
+  # Baseline summary defaults (n and Mean (SE)); users override any of these via
+  # `baseline_args`, which is forwarded to the baseline `tbl_roche_summary()` call.
+  baseline_args <- utils::modifyList(
+    list(
+      type = ~"continuous2",
+      statistic = ~ c("{N_nonmiss}", "{mean} ({se})"),
+      digits = ~ c(0, digits[1], digits[2])
+    ),
+    baseline_args
+  )
   cards::process_selectors(
     mmrm_df,
     arm = {{ arm }}, visit = {{ visit }}
@@ -231,17 +241,14 @@ tbl_mmrm <- function(mmrm_df, base_df = NULL, arm, visit, baseline_aval = NULL, 
         strata = any_of(visit), # or visit, depending on your column name
         .combine_with = "tbl_stack",
         .header = "{strata}",
-        .tbl_fun = ~ .x |>
+        .tbl_fun = ~ rlang::inject(
           tbl_roche_summary(
+            .x,
             by = any_of(arm), # or arm, matching the column containing your header
             include = all_of(baseline_aval), # Replace with the actual column name of the score (e.g., AVAL or BASE)
-            # continuous2 allows us to return multiple rows of stats for one variable
-            type = list(all_of(baseline_aval) ~ "continuous2"),
-            # Specify the exact stats you want
-            statistic = list(all_of(baseline_aval) ~ baseline_statistic),
-            # Decimal places, one per requested statistic
-            digits = list(all_of(baseline_aval) ~ baseline_digits)
-          ) |>
+            !!!baseline_args
+          )
+        ) |>
           modify_table_body(
             ~ .x |>
               dplyr::mutate(
