@@ -183,3 +183,7 @@ filter(adlb, PARAMCD \%in\% "CHOLES") |>
   modify_spanning_header(all_stat_cols() ~ "Worst Post-baseline NCI-CTCAE Grade")
 \dontshow{\}) # examplesIf}
 }
+\seealso{
+\code{\link[=modify_split_caption]{modify_split_caption()}} to caption each page of a split table and
+hide the redundant split column.
+}
