@@ -1,5 +1,9 @@
 # crane 0.3.3.9010
 
+* `get_mmrm_results()` gains a `weights` argument (default `"equal"`) passed to `emmeans::emmeans()`, so proportionally weighted LS Means can be requested with `weights = "proportional"`. (#299)
+
+* `tbl_mmrm()` gains `baseline_statistic` and `baseline_digits` arguments to configure the baseline section statistics, which were previously locked to `n` and `Mean (SE)`. (#299)
+
 * Added `modify_split_caption()` to subtitle each page of a split `{gtsummary}` table (e.g. from `tbl_listing()`, `tbl_baseline_chg()`, or `tbl_shift()`) from its split level via a glue `pattern` (default `"Parameter: {spl_level}"`) and hide the now-redundant split column. (#282)
 
 * `annotate_riskdf()` now builds the "Numbers at Risk" table at the plot's x-axis breaks, so custom ticks set with `ggplot2::scale_x_continuous(breaks = ...)` are reflected in the table. (#278)

@@ -11,6 +11,9 @@
 #' @param conf_level (`numeric`)\cr
 #'   The confidence level to use when calculating confidence intervals for the adjusted means and differences.
 #'   Default is 0.95 for 95% confidence intervals.
+#' @param weights (`string`)\cr
+#'   The weighting scheme passed to [emmeans::emmeans()] when averaging the adjusted means over the levels of
+#'   the model factors. Default is `"equal"`. Use `"proportional"` to weight by the observed group sizes.
 #' @param mmrm_df (`data.frame`)\cr
 #'   A tidy data frame containing the MMRM results. This should include
 #'   columns for the visit, arm, adjusted means, differences, confidence intervals, and
@@ -65,7 +68,8 @@ NULL
 #'
 #' @rdname tbl_mmrm
 #' @export
-get_mmrm_results <- function(fit_mmrm, arm, visit, conf_level = 0.95) {
+get_mmrm_results <- function(fit_mmrm, arm, visit, conf_level = 0.95,
+                             weights = c("equal", "proportional", "outer", "cells", "flat")) {
   check_installed("emmeans")
   check_not_missing(fit_mmrm)
   check_not_missing(arm)
@@ -74,6 +78,7 @@ get_mmrm_results <- function(fit_mmrm, arm, visit, conf_level = 0.95) {
   check_string(arm)
   check_string(visit)
   check_class(fit_mmrm, "mmrm_fit")
+  weights <- rlang::arg_match(weights)
 
   # NEW: Explicitly extract complete cases to perfectly match the model's dataset.
   # This guarantees emmeans calculates LS Means on the exact correct covariate averages.
@@ -93,7 +98,7 @@ get_mmrm_results <- function(fit_mmrm, arm, visit, conf_level = 0.95) {
     fit_mmrm,
     data = model_data, # NEW: Pass our bulletproof complete cases
     specs = c(arm, visit),
-    weights = "equal"
+    weights = weights
   )
 
   # Get n from the emmeans grid and rename the weight column to n
@@ -171,6 +176,13 @@ get_mmrm_results <- function(fit_mmrm, arm, visit, conf_level = 0.95) {
 #' @param digits (`numeric`)\cr
 #'   A numeric vector of length 3 specifying the number of decimal places for: 1) Estimates/CIs, 2) Standard
 #'    Errors, and 3) P-values. Default is `c(2, 3, 4)`.
+#' @param baseline_statistic (`character`)\cr
+#'   The [gtsummary::tbl_summary()] statistic specifications for the baseline section, passed to
+#'   [tbl_roche_summary()]. Default is `c("{N_nonmiss}", "{mean} ({se})")`, i.e. n and Mean (SE). For example,
+#'   use `c("{N_nonmiss}", "{mean} ({sd})", "{median}", "{min} - {max}")` for n, Mean (SD), Median and Min - Max.
+#' @param baseline_digits (`numeric`)\cr
+#'   The number of decimal places for each `baseline_statistic`, in the same order. Default is
+#'   `c(0, digits[1], digits[2])`.
 #'
 #' @return `tbl_mmrm` returns a 'gtsummary' table object.
 #'
@@ -183,7 +195,9 @@ get_mmrm_results <- function(fit_mmrm, arm, visit, conf_level = 0.95) {
 #'
 #' @rdname tbl_mmrm
 #' @export
-tbl_mmrm <- function(mmrm_df, base_df = NULL, arm, visit, baseline_aval = NULL, digits = c(2, 3, 4)) {
+tbl_mmrm <- function(mmrm_df, base_df = NULL, arm, visit, baseline_aval = NULL, digits = c(2, 3, 4),
+                     baseline_statistic = c("{N_nonmiss}", "{mean} ({se})"),
+                     baseline_digits = c(0, digits[1], digits[2])) {
   check_not_missing(mmrm_df)
   check_not_missing(arm)
   check_not_missing(visit)
@@ -224,9 +238,9 @@ tbl_mmrm <- function(mmrm_df, base_df = NULL, arm, visit, baseline_aval = NULL, 
             # continuous2 allows us to return multiple rows of stats for one variable
             type = list(all_of(baseline_aval) ~ "continuous2"),
             # Specify the exact stats you want
-            statistic = list(all_of(baseline_aval) ~ c("{N_nonmiss}", "{mean} ({se})")),
-            # Map digits parameter directly: 0 for N, digits[1] for Mean, digits[2] for SE
-            digits = list(all_of(baseline_aval) ~ c(0, digits[1], digits[2]))
+            statistic = list(all_of(baseline_aval) ~ baseline_statistic),
+            # Decimal places, one per requested statistic
+            digits = list(all_of(baseline_aval) ~ baseline_digits)
           ) |>
           modify_table_body(
             ~ .x |>

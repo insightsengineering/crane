@@ -198,3 +198,40 @@ test_that("tbl_mmrm handles base_df = NULL gracefully without baseline stacking"
   # (If base_df was processed, 'BASE_VAL' or 'Mean (SE)' for baseline would exist)
   expect_false(any(tbl_body$variable == "BASE_VAL"))
 })
+
+
+# ------------------------------------------------------------------------------
+# 6. TEST CONFIGURABLE ARGUMENTS
+# ------------------------------------------------------------------------------
+test_that("get_mmrm_results passes `weights` through to emmeans", {
+  res_equal <- get_mmrm_results(fit_mmrm, arm = "ARMCD", visit = "AVISIT")
+  res_prop <- get_mmrm_results(fit_mmrm, arm = "ARMCD", visit = "AVISIT", weights = "proportional")
+
+  # Default is "equal", so it must match the explicit "equal" call
+  expect_equal(res_equal, get_mmrm_results(fit_mmrm, arm = "ARMCD", visit = "AVISIT", weights = "equal"))
+
+  # "proportional" weighting yields different adjusted means than "equal"
+  expect_false(isTRUE(all.equal(res_equal$estimate_est, res_prop$estimate_est)))
+
+  # Invalid weighting schemes are rejected
+  expect_error(get_mmrm_results(fit_mmrm, arm = "ARMCD", visit = "AVISIT", weights = "nonsense"))
+})
+
+test_that("tbl_mmrm baseline statistics are configurable", {
+  mmrm_res <- get_mmrm_results(fit_mmrm, arm = "ARMCD", visit = "AVISIT")
+
+  tbl <- tbl_mmrm(
+    mmrm_df = mmrm_res,
+    base_df = base_df,
+    arm = "ARMCD",
+    visit = "AVISIT",
+    baseline_aval = "FEV1",
+    baseline_statistic = c("{N_nonmiss}", "{mean} ({sd})", "{median}", "{min} - {max}"),
+    baseline_digits = c(0, 2, 2, 2, 2, 2)
+  )
+
+  baseline_labels <- tbl$tbls[[1]]$table_body$label
+  expect_true(all(c("n", "Mean (SD)", "Median", "Min - Max") %in% baseline_labels))
+  # The default "Mean (SE)" row must not appear when other statistics are requested
+  expect_false("Mean (SE)" %in% baseline_labels)
+})
