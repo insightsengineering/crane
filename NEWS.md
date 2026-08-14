@@ -1,4 +1,6 @@
-# crane 0.3.3.9007
+# crane 0.3.3.9010
+
+* Added `modify_split_caption()` to subtitle each page of a split `{gtsummary}` table (e.g. from `tbl_listing()`, `tbl_baseline_chg()`, or `tbl_shift()`) from its split level via a glue `pattern` (default `"Parameter: {spl_level}"`) and hide the now-redundant split column. (#282)
 
 * `tbl_with_pools()` no longer strips spanning headers set by the inner `.tbl_fun`, so pooling `tbl_baseline_chg()` keeps the treatment-arm headers. (#297)
 

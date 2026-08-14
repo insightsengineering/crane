@@ -140,6 +140,8 @@
 #'   modify_spanning_header(all_stat_cols() ~ "Worst Post-baseline NCI-CTCAE Grade")
 NULL
 
+#' @seealso [modify_split_caption()] to caption each page of a split table and
+#'   hide the redundant split column.
 #' @rdname tbl_shift
 #' @export
 tbl_shift <- function(data,

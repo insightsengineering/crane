@@ -116,5 +116,15 @@ list_lst[[2]]
 out <- list_lst |>
   remove_duplicate_keys(keys = c("trt", "stage"))
 out[[2]]
+
+# Example 8 --------------------------------
+# Label each split page and hide the redundant split column
+by_stage <- tbl_listing(trial_data, split_by_rows = list(variable_level = "stage")) |>
+  modify_split_caption(spl_col = "stage", pattern = "Stage: {spl_level}")
+by_stage[[1]]
 \dontshow{\}) # examplesIf}
+}
+\seealso{
+\code{\link[=modify_split_caption]{modify_split_caption()}} to label each page of a split table and
+hide the redundant split column.
 }
