@@ -39,8 +39,6 @@ reference:
     contents:
       - gg_pkc_lineplot
       - annotate_pkc_df
-      - d_pkparam
-      - h_pkparam_sort
 
   - title: "Pharmacokinetic Helpers"
     contents:
@@ -49,7 +47,9 @@ reference:
       - geom_mean
       - fmt_3sig
       - fmt_pct
-      - imputation_rules
+      - pk_imputation_rules
+      - pk_param_metadata
+      - pk_param_sort
 
   - title: "Kaplan-Meier Plot"
     contents:

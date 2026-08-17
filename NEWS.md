@@ -2,6 +2,18 @@
 
 * Added `modify_split_caption()` to subtitle each page of a split `{gtsummary}` table (e.g. from `tbl_listing()`, `tbl_baseline_chg()`, or `tbl_shift()`) from its split level via a glue `pattern` (default `"Parameter: {spl_level}"`) and hide the now-redundant split column. (#282)
 
+* Renamed `imputation_rules()` to `pk_imputation_rules()` to make its PK scope explicit. It applies BLQ display rules to PK summary statistics based on the BLQ ratio and dosing timing, and now marks any missing statistic (e.g. standard deviation or CV% when `n = 1`) as `"NE"` (not estimable). (#293)
+
+* Renamed `d_pkparam()` to `pk_param_metadata()` and `h_pkparam_sort()` to `pk_param_sort()`, dropping the `d_`/`h_` prefixes. `pk_param_sort()` now warns about parameter codes missing from the reference and keeps their rows instead of dropping them silently. (#293)
+
+* PK summary helpers (`cv()`, `geom_cv()`, `geom_mean()`, `fmt_3sig()`, `fmt_pct()`, `pk_imputation_rules()`) now validate their inputs and raise informative errors. (#293)
+
+* `geom_mean()` returns `NA_real_` instead of `NaN` when all concentrations are missing. (#293)
+
+* `fmt_3sig()` and `fmt_pct()` are now vectorized and return `NA_character_` for `NA` or non-finite input. (#293)
+
+# crane 0.3.3.9007
+
 * `annotate_riskdf()` now builds the "Numbers at Risk" table at the plot's x-axis breaks, so custom ticks set with `ggplot2::scale_x_continuous(breaks = ...)` are reflected in the table. (#278)
 
 * `theme_gtsummary_roche()` now frames the flextable column labels with an outer border only, removing the internal borders between header rows and the inconsistent missing right border. (#272)
