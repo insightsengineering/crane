@@ -509,7 +509,10 @@ test_that("tbl_with_pools() keeps spanning headers set by the inner .tbl_fun (#2
     .tbl_fun = span_fun
   )
 
-  spanners <- tbl$table_styling$spanning_header
-  spanners <- spanners$spanning_header[!is.na(spanners$spanning_header)]
+  # Assert on the RENDERED spanners, not the raw spanning_header table. tbl_merge
+  # appends trailing NA rows that gtsummary resolves last-wins, so the raw table
+  # can still contain the inner values while the rendered table shows none. The
+  # gt spanners are the ground truth for what the user sees.
+  spanners <- as_gt(tbl)[["_spanners"]][["spanner_label"]]
   expect_true(all(c("Drug A", "Drug B", "Drug C", "Drugs A + B") %in% spanners))
 })
