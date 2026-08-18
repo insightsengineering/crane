@@ -19,7 +19,7 @@ The annotations are added using the cowplot package for flexible placement."><me
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3.9011</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3.9012</span>
       </span>
     </div>
 
@@ -78,6 +78,7 @@ The annotations are added using the <code>cowplot</code> package for flexible pl
 <span>  group <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  summary_stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"mean"</span>, <span class="st">"sd"</span><span class="op">)</span>,</span>
 <span>  digits <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  font_size <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  rel_height_plot <span class="op">=</span> <span class="fl">0.75</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -113,6 +114,11 @@ Optional specification for the number of decimal places for the summary statisti
 Can be a single integer (e.g., <code>2</code>), a vector of integers matching the statistics
 (e.g., <code>c(0, 2, 2)</code>), or a <code>gtsummary</code> style formula. Defaults to <code>NULL</code>
 (uses <code>gtsummary</code> default auto-formatting).</p></dd>
+
+
+<dt id="arg-font-size">font_size<a class="anchor" aria-label="anchor" href="#arg-font-size"></a></dt>
+<dd><p>(<code>numeric</code>)<br>
+Base font size for the summary table text. Defaults to <code>10</code>.</p></dd>
 
 
 <dt id="arg-rel-height-plot">rel_height_plot<a class="anchor" aria-label="anchor" href="#arg-rel-height-plot"></a></dt>
