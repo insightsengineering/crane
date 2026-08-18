@@ -135,3 +135,21 @@ test_that("annotate_lineplot_df formats numeric digits correctly", {
   # Check 'sd' has a decimal point followed by EXACTLY 2 digits (e.g., "0.71")
   expect_true(grepl("\\.[0-9]{2}$", val_sd))
 })
+
+test_that("annotate_lineplot_df forwards font_size to df2gg_aligned", {
+  captured <- NULL
+  mock_df2gg <- function(df, ..., text_size, label_size) {
+    captured <<- list(text_size = text_size, label_size = label_size)
+    df
+  }
+
+  testthat::with_mocked_bindings(
+    {
+      annotate_lineplot_df(gg_plt = p_valid, data = mock_adlb, font_size = 14)
+    },
+    df2gg_aligned = mock_df2gg
+  )
+
+  expect_equal(captured$label_size, 14)
+  expect_equal(captured$text_size, 14 / ggplot2::.pt)
+})

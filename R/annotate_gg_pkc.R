@@ -19,8 +19,10 @@
 #'   Can be a single integer (e.g., `2`), a vector of integers matching the statistics
 #'   (e.g., `c(0, 2, 2)`), or a `gtsummary` style formula. Defaults to `NULL`
 #'   (uses `gtsummary` default auto-formatting).
-#' @param text_size (`numeric`)\cr
-#'   The font size for the table text. Defaults to `3.5`.
+#' @param font_size (`numeric`)\cr
+#'   Base font size for the summary table text. Defaults to `10`.
+#' @param text_size `r lifecycle::badge("deprecated")`\cr
+#'   Use `font_size` instead.
 #' @param rel_height_plot (`numeric`)\cr
 #'   Relative height of the plot vs the table. Defaults to `0.75`.
 #' @returns A ggplot2 object: a plot with a table at the bottom.
@@ -61,6 +63,13 @@
 #'   summary_stats = c("n", "median", "iqr"),
 #'   digits = c(0, 2, 2)
 #' )
+#'
+#' # Annotate with a larger summary table font
+#' annotate_pkc_df(
+#'   data = df_pk,
+#'   gg_plt = p_pk,
+#'   font_size = 12
+#' )
 #' @export
 annotate_pkc_df <- function(gg_plt,
                             data,
@@ -69,8 +78,18 @@ annotate_pkc_df <- function(gg_plt,
                             group = NULL,
                             summary_stats = c("n", "mean", "sd"),
                             digits = NULL,
-                            text_size = 3.5,
+                            font_size = 10,
+                            text_size = lifecycle::deprecated(),
                             rel_height_plot = 0.75) {
+  if (lifecycle::is_present(text_size)) {
+    lifecycle::deprecate_soft(
+      "0.3.4",
+      "crane::annotate_pkc_df(text_size)",
+      "crane::annotate_pkc_df(font_size)"
+    )
+    font_size <- text_size * ggplot2::.pt
+  }
+
   # 1. Input Validation---------------------------------------------------------
   if (!inherits(gg_plt, "crane_gg_pkc")) {
     cli::cli_warn(c(
@@ -181,6 +200,7 @@ annotate_pkc_df <- function(gg_plt,
     show_xaxis = FALSE,
     type = "PK",
     y_labels = pk_y_labels,
+    text_size = font_size / ggplot2::.pt,
     rel_height_plot = rel_height_plot
   )
 
