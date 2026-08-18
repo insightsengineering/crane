@@ -150,7 +150,10 @@ tbl_listing <- function(data,
 #' @rdname tbl_listing
 remove_duplicate_keys <- function(x, keys = NULL, value = NA) {
   if (is.list(x) && inherits(x[[1]], "gtsummary")) {
-    return(map(x, remove_duplicate_keys, keys = {{ keys }}, value = value))
+    # Assign back in place so the list keeps its class and attributes (e.g. a
+    # `tbl_split` stays a `tbl_split`); `map()` alone would drop them.
+    x[] <- map(x, remove_duplicate_keys, keys = {{ keys }}, value = value)
+    return(x)
   }
 
   # Checks -----------------------------------
