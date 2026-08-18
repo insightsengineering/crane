@@ -1,5 +1,11 @@
 # crane 0.3.3.9011
 
+* Added `tbl_proportion()` to summarize a binary or multinomial variable as proportions with confidence intervals (estimate and CI on separate rows), with a selectable CI `method` and `conf.level`. (#303)
+
+* Added `add_proportion_difference()` to append the difference in rates, its confidence interval, and a p-value (`"chisq"`, `"fisher"`, or `"cmh"`), with stratified (Cochran-Mantel-Haenszel) support via `strata`. The `correct` flag controls the continuity correction on the difference interval and `test_correct` (default `FALSE`) the Yates correction on the chi-squared p-value. (#303)
+
+* Added `add_proportion_odds_ratio()` to append an odds ratio, with stratified (Cochran-Mantel-Haenszel) support via `strata`. (#303)
+
 * Added `modify_split_caption()` to subtitle each page of a split `{gtsummary}` table (e.g. from `tbl_listing()`, `tbl_baseline_chg()`, or `tbl_shift()`) from its split level via a glue `pattern` (default `"Parameter: {spl_level}"`) and hide the now-redundant split column. (#282)
 
 * Renamed `imputation_rules()` to `pk_imputation_rules()` to make its PK scope explicit. It applies BLQ display rules to PK summary statistics based on the BLQ ratio and dosing timing, and now marks any missing statistic (e.g. standard deviation or CV% when `n = 1`) as `"NE"` (not estimable). (#293)
