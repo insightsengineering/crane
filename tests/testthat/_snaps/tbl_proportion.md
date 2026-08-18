@@ -18,7 +18,7 @@
       3           Unstratified Analysis         <NA>         <NA>         <NA>
       4 Difference in Response rate (%)         <NA>         11.7         25.0
       5  95% CI (Wald, with correction)         <NA> (-7.0, 30.4)  (6.2, 43.8)
-      6      p-value (Chi-Squared Test)         <NA>       0.2533       0.0097
+      6      p-value (Chi-Squared Test)         <NA>       0.1827       0.0056
 
 # informative errors are raised
 

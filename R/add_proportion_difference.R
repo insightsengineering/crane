@@ -31,7 +31,13 @@
 #' @param conf.level (`scalar`)\cr
 #'   confidence level. Default `0.95`.
 #' @param correct (`flag`)\cr
-#'   continuity correction for the difference CI and the test. Default `TRUE`.
+#'   continuity correction for the difference confidence interval (the
+#'   "Wald, with correction" interval from [stats::prop.test()]). Default
+#'   `TRUE`.
+#' @param test_correct (`flag`)\cr
+#'   Yates continuity correction for the chi-squared test p-value. Default
+#'   `FALSE`, matching the NEST 1.0 catalog (RSPT01). Has no effect on the
+#'   Fisher or CMH tests.
 #' @param header,diff_label,pvalue_label,ci_label (`string`)\cr
 #'   row labels. `header` defaults to `"Unstratified Analysis"` /
 #'   `"Stratified Analysis"`; `pvalue_label` and `ci_label` are derived from
@@ -60,6 +66,7 @@ add_proportion_difference <- function(x,
                                       strata = NULL,
                                       conf.level = 0.95,
                                       correct = TRUE,
+                                      test_correct = FALSE,
                                       header = NULL,
                                       diff_label = "Difference in Response rate (%)",
                                       pvalue_label = NULL,
@@ -72,6 +79,8 @@ add_proportion_difference <- function(x,
   check_class(estimate_fun, "function")
   check_class(pvalue_fun, "function")
   check_string(diff_label)
+  check_scalar_logical(correct)
+  check_scalar_logical(test_correct)
   test <- arg_match(test)
   if (!is.null(strata)) test <- "cmh"
 
@@ -92,7 +101,8 @@ add_proportion_difference <- function(x,
       .proportion_diff_one(
         data = meta$data, variable = meta$variable, by = meta$by,
         value = meta$value, reference = reference, level = lv,
-        strata = strata, test = test, conf.level = conf.level, correct = correct
+        strata = strata, test = test, conf.level = conf.level,
+        correct = correct, test_correct = test_correct
       )
     }
   )
@@ -240,7 +250,7 @@ add_proportion_difference <- function(x,
 # stats::prop.test / mantelhaen.test so the CI matches the "Wald, with
 # correction" convention without re-implementing interval math.
 .proportion_diff_one <- function(data, variable, by, value, reference, level,
-                                 strata, test, conf.level, correct) {
+                                 strata, test, conf.level, correct, test_correct) {
   sub <- data[data[[by]] %in% c(reference, level), , drop = FALSE]
   sub$.success <- sub[[variable]] == value
   sub[[by]] <- factor(sub[[by]], levels = c(level, reference)) # level first
@@ -252,7 +262,7 @@ add_proportion_difference <- function(x,
     pt <- stats::prop.test(tab, conf.level = conf.level, correct = correct)
     est <- unname(pt$estimate[1] - pt$estimate[2]) * 100
     pval <- switch(test,
-      chisq = stats::chisq.test(tab, correct = correct)$p.value,
+      chisq = stats::chisq.test(tab, correct = test_correct)$p.value,
       fisher = stats::fisher.test(tab)$p.value,
       pt$p.value
     )

@@ -2,7 +2,7 @@
 
 * Added `tbl_proportion()` to summarize a binary or multinomial variable as proportions with confidence intervals (estimate and CI on separate rows), with a selectable CI `method` and `conf.level`. (#303)
 
-* Added `add_proportion_difference()` to append the difference in rates, its confidence interval, and a p-value (`"chisq"`, `"fisher"`, or `"cmh"`), with stratified (Cochran-Mantel-Haenszel) support via `strata`. (#303)
+* Added `add_proportion_difference()` to append the difference in rates, its confidence interval, and a p-value (`"chisq"`, `"fisher"`, or `"cmh"`), with stratified (Cochran-Mantel-Haenszel) support via `strata`. The `correct` flag controls the continuity correction on the difference interval and `test_correct` (default `FALSE`) the Yates correction on the chi-squared p-value. (#303)
 
 * Added `add_proportion_odds_ratio()` to append an odds ratio, with stratified (Cochran-Mantel-Haenszel) support via `strata`. (#303)
 

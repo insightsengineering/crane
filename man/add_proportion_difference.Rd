@@ -13,6 +13,7 @@ add_proportion_difference(
   strata = NULL,
   conf.level = 0.95,
   correct = TRUE,
+  test_correct = FALSE,
   header = NULL,
   diff_label = "Difference in Response rate (\%)",
   pvalue_label = NULL,
@@ -50,7 +51,14 @@ the default header becomes \code{"Stratified Analysis"}. Default \code{NULL}.}
 confidence level. Default \code{0.95}.}
 
 \item{correct}{(\code{flag})\cr
-continuity correction for the difference CI and the test. Default \code{TRUE}.}
+continuity correction for the difference confidence interval (the
+"Wald, with correction" interval from \code{\link[stats:prop.test]{stats::prop.test()}}). Default
+\code{TRUE}.}
+
+\item{test_correct}{(\code{flag})\cr
+Yates continuity correction for the chi-squared test p-value. Default
+\code{FALSE}, matching the NEST 1.0 catalog (RSPT01). Has no effect on the
+Fisher or CMH tests.}
 
 \item{header, diff_label, pvalue_label, ci_label}{(\code{string})\cr
 row labels. \code{header} defaults to \code{"Unstratified Analysis"} /
