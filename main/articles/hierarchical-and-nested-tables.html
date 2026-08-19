@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3.9012</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3.9013</span>
       </span>
     </div>
 
@@ -1897,8 +1897,13 @@ example, consider the following table:</p>
 <span>  overall_row <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>AESEV <span class="op">=</span> <span class="st">"Highest Severity"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Denominator set by <span style="color: #0000BB;">"TRTA"</span> column in `denominator` data</span></span>
-<span><span class="co">#&gt; frame.</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Denominator set by <span style="color: #0000BB;">"TRTA"</span> column in `denominator` data frame.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Because <span style="color: #0000BB;">"AESEV"</span> in the `by` argument is not present in the `denominator`,</span></span>
+<span><span class="co">#&gt;   rows of `data` were removed while calculating rates.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> Subjects with multiple <span style="color: #0000BB;">"AESEV"</span> values will only be counted once, in the last</span></span>
+<span><span class="co">#&gt;   level after sorting.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">•</span> See cards::ard_stack_hierarchical() (`?cards::ard_stack_hierarchical()`) for</span></span>
+<span><span class="co">#&gt;   details.</span></span></code></pre></div>
 <div id="rookxgzuhz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>#rookxgzuhz table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
