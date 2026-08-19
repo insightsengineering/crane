@@ -20,7 +20,8 @@ tbl_mmrm(
   visit,
   baseline_aval = NULL,
   digits = c(2, 3, 4),
-  baseline_args = list()
+  baseline_args = list(),
+  postbaseline_args = list()
 )
 }
 \arguments{
@@ -72,6 +73,22 @@ section (\code{statistic}, \code{digits}, \code{type}, \code{sort}, ...). Defaul
 supply are overridden. For example,
 \code{baseline_args = list(statistic = ~ c("{N_nonmiss}", "{mean} ({sd})", "{median}", "{min} - {max}"))}
 shows n, Mean (SD), Median and Min - Max.}
+
+\item{postbaseline_args}{(named \code{list})\cr
+Configures the post-baseline (MMRM) section. Supported elements:
+\itemize{
+\item \code{stats} (\code{character}) - which statistics to show and in which order. Defaults to
+\code{c("n", "estimate_est", "lower_cl_est", "estimate_contr", "lower_cl_contr", "p_value")}.
+The log-scale statistics \code{"geom_mean_ratio"} and \code{"geom_mean_ratio_ci"} are also available
+(meaningful only for a log-transformed response); add them to \code{stats} to show them.
+\item \code{label} (named \code{list}) - row-label overrides, keyed by statistic id, e.g.
+\code{label = list(p_value = "p")}.
+\item \code{stat_fns} (named \code{list}) - formatting-function overrides, keyed by statistic id. Each
+function receives the row-group \code{data} and returns \verb{list(my_stat = <string>)}.
+Only the elements you supply are overridden; the rest keep their defaults. For example,
+\code{postbaseline_args = list(stats = c("n", "estimate_est", "geom_mean_ratio", "geom_mean_ratio_ci"))}
+appends the geometric mean ratio and its CI.
+}}
 }
 \value{
 A \code{data.frame} containing the estimated marginal means (adjusted means)
@@ -113,6 +130,15 @@ tbl_mmrm(
   mmrm_results,
   fv_dt |> dplyr::mutate(AVISIT = "Baseline"),
   arm = "ARMCD", visit = "AVISIT", baseline_aval = "FEV1"
+)
+
+# Append the geometric mean ratio and its CI (for a log-transformed response)
+tbl_mmrm(
+  mmrm_results,
+  arm = "ARMCD", visit = "AVISIT",
+  postbaseline_args = list(
+    stats = c("n", "estimate_est", "geom_mean_ratio", "geom_mean_ratio_ci")
+  )
 )
 \dontshow{\}) # examplesIf}
 }
