@@ -12,6 +12,7 @@ annotate_lineplot_df(
   group = NULL,
   summary_stats = c("n", "mean", "sd"),
   digits = NULL,
+  font_size = 10,
   rel_height_plot = 0.75
 )
 }
@@ -34,6 +35,9 @@ Optional specification for the number of decimal places for the summary statisti
 Can be a single integer (e.g., \code{2}), a vector of integers matching the statistics
 (e.g., \code{c(0, 2, 2)}), or a \code{gtsummary} style formula. Defaults to \code{NULL}
 (uses \code{gtsummary} default auto-formatting).}
+
+\item{font_size}{(\code{numeric})\cr
+Base font size for the summary table text. Defaults to \code{10}.}
 
 \item{rel_height_plot}{(\code{numeric})\cr
 Relative height of the plot vs the table. Defaults to \code{0.75}.}

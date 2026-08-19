@@ -1,10 +1,12 @@
-# crane 0.3.3.9011
+# crane 0.3.3.9012
 
 * `get_mmrm_results()` gains a `weights` argument (default `"equal"`) passed to `emmeans::emmeans()`, so proportionally weighted LS Means can be requested with `weights = "proportional"`. Check `?emmeans::emmeans()` for other `weights` options. (#299)
 
 * `tbl_mmrm()` gains a `baseline_args` argument, forwarded to the baseline `tbl_roche_summary()` call, to configure the baseline section statistics (previously locked to `n` and `Mean (SE)`). (#299)
 
 * Added `modify_split_caption()` to subtitle each page of a split `{gtsummary}` table (e.g. from `tbl_listing()`, `tbl_baseline_chg()`, or `tbl_shift()`) from its split level via a glue `pattern` (default `"Parameter: {spl_level}"`) and hide the now-redundant split column. (#282)
+
+* `annotate_lineplot_df()` and `annotate_pkc_df()` gain a `font_size` argument to control the summary table font size, matching `annotate_riskdf()`. The `text_size` argument of `annotate_pkc_df()` is soft-deprecated in favor of `font_size`. (#295)
 
 * Renamed `imputation_rules()` to `pk_imputation_rules()` to make its PK scope explicit. It applies BLQ display rules to PK summary statistics based on the BLQ ratio and dosing timing, and now marks any missing statistic (e.g. standard deviation or CV% when `n = 1`) as `"NE"` (not estimable). (#293)
 
