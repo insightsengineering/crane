@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0.97455729696723" branch-rate="0" lines-covered="4788" lines-valid="4913" branches-covered="0" branches-valid="0" complexity="0" version="3.6.5" timestamp="2026-08-19 21:08:36.837973">
+<coverage line-rate="0.974562474562475" branch-rate="0" lines-covered="4789" lines-valid="4914" branches-covered="0" branches-valid="0" complexity="0" version="3.6.5" timestamp="2026-08-19 21:19:26.495313">
   <sources>
     <source>/__w/crane/crane/crane</source>
   </sources>
   <packages>
-    <package name="crane" line-rate="0.97455729696723" branch-rate="0" complexity="0">
+    <package name="crane" line-rate="0.974562474562475" branch-rate="0" complexity="0">
       <classes>
         <class name="add_blank_rows.R" filename="R/add_blank_rows.R" line-rate="1" branch-rate="0" complexity="0">
           <methods>
@@ -8501,28 +8501,30 @@
           <methods>
             <method name="tbl_null_report" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
-                <line number="14" hits="3" branch="false"/>
-                <line number="17" hits="3" branch="false"/>
-                <line number="20" hits="2" branch="false"/>
-                <line number="21" hits="2" branch="false"/>
-                <line number="24" hits="2" branch="false"/>
-                <line number="25" hits="2" branch="false"/>
-                <line number="26" hits="2" branch="false"/>
-                <line number="27" hits="2" branch="false"/>
-                <line number="29" hits="2" branch="false"/>
+                <line number="14" hits="4" branch="false"/>
+                <line number="17" hits="4" branch="false"/>
+                <line number="23" hits="3" branch="false"/>
+                <line number="24" hits="3" branch="false"/>
+                <line number="25" hits="3" branch="false"/>
+                <line number="28" hits="3" branch="false"/>
+                <line number="29" hits="3" branch="false"/>
+                <line number="30" hits="3" branch="false"/>
+                <line number="31" hits="3" branch="false"/>
+                <line number="33" hits="3" branch="false"/>
               </lines>
             </method>
           </methods>
           <lines>
-            <line number="14" hits="3" branch="false"/>
-            <line number="17" hits="3" branch="false"/>
-            <line number="20" hits="2" branch="false"/>
-            <line number="21" hits="2" branch="false"/>
-            <line number="24" hits="2" branch="false"/>
-            <line number="25" hits="2" branch="false"/>
-            <line number="26" hits="2" branch="false"/>
-            <line number="27" hits="2" branch="false"/>
-            <line number="29" hits="2" branch="false"/>
+            <line number="14" hits="4" branch="false"/>
+            <line number="17" hits="4" branch="false"/>
+            <line number="23" hits="3" branch="false"/>
+            <line number="24" hits="3" branch="false"/>
+            <line number="25" hits="3" branch="false"/>
+            <line number="28" hits="3" branch="false"/>
+            <line number="29" hits="3" branch="false"/>
+            <line number="30" hits="3" branch="false"/>
+            <line number="31" hits="3" branch="false"/>
+            <line number="33" hits="3" branch="false"/>
           </lines>
         </class>
         <class name="tbl_rmpt.R" filename="R/tbl_rmpt.R" line-rate="0.923566878980892" branch-rate="0" complexity="0">
