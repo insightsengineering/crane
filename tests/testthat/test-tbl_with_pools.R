@@ -486,3 +486,33 @@ test_that("tbl_with_pools() + add_grade_column() pipeline does not duplicate row
   # custom_info is extracted from the first sub-table
   expect_true(!is.null(merged_tbl$tbls[[1]]$custom_info))
 })
+
+test_that("tbl_with_pools() keeps spanning headers set by the inner .tbl_fun (#297)", {
+  df <- data.frame(
+    USUBJID = as.character(1:30),
+    TRTA = rep(c("Drug A", "Drug B", "Drug C"), each = 10),
+    AGE = rep(c(50, 60, 70), each = 10),
+    stringsAsFactors = FALSE
+  )
+
+  # inner function that carries the arm name in a spanning header, like tbl_baseline_chg()
+  span_fun <- function(data, by, ...) {
+    tbl_summary(data, by = all_of(by), include = AGE) |>
+      modify_spanning_header(all_stat_cols() ~ "{level}")
+  }
+
+  tbl <- tbl_with_pools(
+    data = df,
+    pools = list("Drugs A + B" = c("Drug A", "Drug B")),
+    by = "TRTA",
+    keep_original = TRUE,
+    .tbl_fun = span_fun
+  )
+
+  # Assert on the RENDERED spanners, not the raw spanning_header table. tbl_merge
+  # appends trailing NA rows that gtsummary resolves last-wins, so the raw table
+  # can still contain the inner values while the rendered table shows none. The
+  # gt spanners are the ground truth for what the user sees.
+  spanners <- as_gt(tbl)[["_spanners"]][["spanner_label"]]
+  expect_true(all(c("Drug A", "Drug B", "Drug C", "Drugs A + B") %in% spanners))
+})
