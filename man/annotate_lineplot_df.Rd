@@ -28,7 +28,8 @@ Optional column names as strings. If \code{NULL} (default), the function
 automatically extracts these from the \code{gg_plt} mapping.}
 
 \item{summary_stats}{(\code{character})\cr
-Vector of statistics to include. Defaults to \code{c("n", "mean", "sd")}.}
+Vector of statistics to include. One or more of \code{"n"}, \code{"mean"}, \code{"sd"},
+\code{"se"}, \code{"median"}, and \code{"iqr"}. Defaults to \code{c("n", "mean", "sd")}.}
 
 \item{digits}{(\code{numeric}, \code{list}, or \code{formula})\cr
 Optional specification for the number of decimal places for the summary statistics.

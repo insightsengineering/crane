@@ -13,7 +13,8 @@
 #'   Optional column names as strings. If `NULL` (default), the function
 #'   automatically extracts these from the `gg_plt` mapping.
 #' @param summary_stats (`character`)\cr
-#'   Vector of statistics to include. Defaults to `c("n", "mean", "sd")`.
+#'   Vector of statistics to include. One or more of `"n"`, `"mean"`, `"sd"`,
+#'   `"se"`, `"median"`, and `"iqr"`. Defaults to `c("n", "mean", "sd")`.
 #' @param digits (`numeric`, `list`, or `formula`)\cr
 #'   Optional specification for the number of decimal places for the summary statistics.
 #'   Can be a single integer (e.g., `2`), a vector of integers matching the statistics
@@ -90,6 +91,7 @@ annotate_lineplot_df <- function(gg_plt,
     "n" = "{N_nonmiss}",
     "mean" = "{mean}",
     "sd" = "{sd}",
+    "se" = "{se}",
     "median" = "{median}",
     "iqr" = "{p25}, {p75}"
   )
@@ -98,6 +100,7 @@ annotate_lineplot_df <- function(gg_plt,
     "n" = "n",
     "mean" = "Mean",
     "sd" = "SD",
+    "se" = "SE",
     "median" = "Median",
     "iqr" = "IQR"
   )
@@ -151,7 +154,7 @@ annotate_lineplot_df <- function(gg_plt,
     dplyr::select(-remove)
 
   raw_labels <- as.character(formatted_df[[1]])
-  is_stat <- trimws(raw_labels) %in% c("n", "Mean", "SD", "Median", "IQR")
+  is_stat <- trimws(raw_labels) %in% c("n", "Mean", "SD", "SE", "Median", "IQR")
 
   # Apply Plotmath styling (bold for headers, indent for stats)
   y_labels <- parse(text = ifelse(

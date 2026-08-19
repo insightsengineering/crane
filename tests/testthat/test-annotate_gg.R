@@ -136,6 +136,34 @@ test_that("annotate_lineplot_df formats numeric digits correctly", {
   expect_true(grepl("\\.[0-9]{2}$", val_sd))
 })
 
+test_that("annotate_lineplot_df computes se and matches sd / sqrt(n)", {
+  mock_df2gg <- function(df, ...) df
+
+  res_df <- testthat::with_mocked_bindings(
+    {
+      annotate_lineplot_df(
+        gg_plt = p_valid,
+        data = mock_adlb,
+        summary_stats = c("n", "mean", "se"),
+        digits = c(0, 4, 4)
+      )
+    },
+    df2gg_aligned = mock_df2gg
+  )
+
+  expect_s3_class(res_df, "data.frame")
+
+  # SE row is present and labelled
+  expect_true(any(grepl("SE$", trimws(res_df$Group))))
+
+  # Verify Visit '0' SE equals sd / sqrt(n) for the first treatment group
+  x <- mock_adlb$AVAL[mock_adlb$AVISIT == 0 & mock_adlb$ARM == "Trt A"]
+  expected_se <- stats::sd(x) / sqrt(length(x))
+  val_se <- trimws(res_df[grepl("SE$", trimws(res_df$Group)), "0"][1])
+
+  expect_equal(as.numeric(val_se), expected_se, tolerance = 1e-3)
+})
+
 test_that("annotate_lineplot_df forwards font_size to df2gg_aligned", {
   captured <- NULL
   mock_df2gg <- function(df, ..., text_size, label_size) {
