@@ -1,8 +1,10 @@
-# crane 0.3.3.9011
+# crane 0.3.3.9012
 
 * `remove_duplicate_keys()` now keeps the `tbl_split` class and attributes when applied to a split table, instead of returning a plain list. (#301)
 
 * Added `modify_split_caption()` to subtitle each page of a split `{gtsummary}` table (e.g. from `tbl_listing()`, `tbl_baseline_chg()`, or `tbl_shift()`) from its split level via a glue `pattern` (default `"Parameter: {spl_level}"`) and hide the now-redundant split column. (#282)
+
+* `annotate_lineplot_df()` and `annotate_pkc_df()` gain a `font_size` argument to control the summary table font size, matching `annotate_riskdf()`. The `text_size` argument of `annotate_pkc_df()` is soft-deprecated in favor of `font_size`. (#295)
 
 * Renamed `imputation_rules()` to `pk_imputation_rules()` to make its PK scope explicit. It applies BLQ display rules to PK summary statistics based on the BLQ ratio and dosing timing, and now marks any missing statistic (e.g. standard deviation or CV% when `n = 1`) as `"NE"` (not estimable). (#293)
 

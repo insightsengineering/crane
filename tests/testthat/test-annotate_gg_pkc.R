@@ -201,3 +201,54 @@ test_that("annotate_pkc_df formats numeric digits correctly", {
   # Check 'sd' has a decimal point followed by EXACTLY 2 digits (e.g., "12.34")
   expect_true(grepl("\\.[0-9]{2}$", val_sd))
 })
+
+test_that("annotate_pkc_df forwards font_size to df2gg_aligned", {
+  df_pk <- data.frame(
+    time = rep(c(0, 1, 2), each = 4),
+    conc = runif(12, 10, 100),
+    arm = rep(c("Cohort A", "Cohort B"), times = 6)
+  )
+  p <- gg_pkc_lineplot(
+    data = df_pk, time_var = time, analyte_var = conc, group = arm, log_y = FALSE
+  )
+
+  captured <- NULL
+  mock_df2gg <- function(df, ..., text_size) {
+    captured <<- text_size
+    df
+  }
+
+  testthat::with_mocked_bindings(
+    annotate_pkc_df(gg_plt = p, data = df_pk, font_size = 14),
+    df2gg_aligned = mock_df2gg
+  )
+
+  expect_equal(captured, 14 / ggplot2::.pt)
+})
+
+test_that("annotate_pkc_df soft-deprecates text_size but keeps behaviour", {
+  df_pk <- data.frame(
+    time = rep(c(0, 1, 2), each = 4),
+    conc = runif(12, 10, 100),
+    arm = rep(c("Cohort A", "Cohort B"), times = 6)
+  )
+  p <- gg_pkc_lineplot(
+    data = df_pk, time_var = time, analyte_var = conc, group = arm, log_y = FALSE
+  )
+
+  captured <- NULL
+  mock_df2gg <- function(df, ..., text_size) {
+    captured <<- text_size
+    df
+  }
+
+  # text_size is passed through unchanged (round-trips via font_size)
+  lifecycle::expect_deprecated(
+    testthat::with_mocked_bindings(
+      annotate_pkc_df(gg_plt = p, data = df_pk, text_size = 5),
+      df2gg_aligned = mock_df2gg
+    )
+  )
+
+  expect_equal(captured, 5)
+})
