@@ -77,19 +77,15 @@ annotate_lineplot_df <- function(gg_plt,
     ))
   }
 
-  # Custom continuous statistics for the confidence interval, built from
-  # `conf_level`. They are picked up by name when referenced in the `{conf.low}`
-  # / `{conf.high}` glue of the `statistic` argument below.
-  .ci_alpha <- (1 + conf_level) / 2
+  # Confidence interval bounds for the table, delegated to the same helper that
+  # draws the error bars in `gg_lineplot()` so the table can never disagree with
+  # the plotted interval. They are picked up by name when referenced in the
+  # `{conf.low}` / `{conf.high}` glue of the `statistic` argument below.
   conf.low <- function(x) {
-    x <- stats::na.omit(x)
-    n <- length(x)
-    mean(x) - stats::qt(.ci_alpha, df = max(1, n - 1)) * stats::sd(x) / sqrt(n)
+    .calc_stats(x, stat = "mean", variability = "ci", conf_level = conf_level)$ymin
   }
   conf.high <- function(x) {
-    x <- stats::na.omit(x)
-    n <- length(x)
-    mean(x) + stats::qt(.ci_alpha, df = max(1, n - 1)) * stats::sd(x) / sqrt(n)
+    .calc_stats(x, stat = "mean", variability = "ci", conf_level = conf_level)$ymax
   }
 
   # Auto-extract variable names from the ggplot mapping if not explicitly provided
