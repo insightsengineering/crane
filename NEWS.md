@@ -1,4 +1,6 @@
-# crane 0.3.3.9012
+# crane 0.3.3.9014
+
+* `tbl_null_report()` now centers its message, so with no body content it reads as a "no data" panel spanning the table instead of text hugging the left edge. (#305)
 
 * `annotate_lineplot_df()` gains `"se"` as a `summary_stats` option, reporting the standard error (`sd / sqrt(n)`) in the summary table below the plot. (#307)
 
