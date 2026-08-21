@@ -263,17 +263,66 @@ tbl_with_pools <- function(
     return(tbl_list[[1]])
   }
 
-  # Merge all tables together seamlessly, stripping default spanning headers
+  # Merge all tables together seamlessly. `tab_spanner = NA` suppresses the
+  # default per-table spanners tbl_merge would add ("**Table 1**", ...).
   merged_tbl <- gtsummary::tbl_merge(
     tbls = tbl_list,
     tab_spanner = rep(NA_character_, length(tbl_list)),
     quiet = TRUE # <-- Suppresses the row mismatch message (expected)
-  ) |>
-    gtsummary::modify_spanning_header(gtsummary::everything() ~ NA_character_)
+  )
+
+  # tbl_merge appends trailing NA spanning-header rows for every stat column, and
+  # gtsummary resolves duplicate rows last-wins, so any spanning header the inner
+  # `.tbl_fun` set itself (e.g. the treatment-arm header from tbl_baseline_chg())
+  # is overwritten by NA and never renders. Re-apply the inner spanners after the
+  # merge so they win, mapping each sub-table's column X to the merged column X_i.
+  merged_tbl <- .reapply_inner_spanners(merged_tbl, tbl_list)
 
   attr(merged_tbl, "by") <- levels(factor(data[[by]]))
 
   class(merged_tbl) <- c("tbl_with_pools", class(merged_tbl))
 
+  merged_tbl
+}
+
+#' Re-apply inner spanning headers onto a merged pooled table
+#'
+#' @description
+#' Restores the spanning headers set by the inner `.tbl_fun` after
+#' `gtsummary::tbl_merge()`. The merge appends trailing `NA` spanning-header
+#' rows for every stat column; because gtsummary resolves duplicate rows
+#' last-wins, those `NA`s overwrite the inner spanners. This walks each merged
+#' sub-table, resolves its own spanning headers (last-wins, non-`NA`), and
+#' re-applies them to the corresponding merged column (sub-table `i`'s column
+#' `X` becomes `X_i` in the merge).
+#'
+#' @param merged_tbl (`gtsummary`)\cr the merged table from `tbl_merge()`.
+#' @param tbl_list (`list`)\cr the sub-tables that were merged, in merge order.
+#'
+#' @returns The `merged_tbl` with inner spanning headers restored.
+#'
+#' @keywords internal
+#' @noRd
+.reapply_inner_spanners <- function(merged_tbl, tbl_list) {
+  for (i in seq_along(tbl_list)) {
+    sh <- tbl_list[[i]]$table_styling$spanning_header
+    if (is.null(sh) || nrow(sh) == 0) {
+      next
+    }
+    # Resolve the sub-table's own spanners the way gtsummary does (last-wins per
+    # column), then keep only the columns that actually carry a spanner.
+    sh <- sh[!duplicated(sh$column, fromLast = TRUE), ]
+    sh <- sh[!is.na(sh$spanning_header), c("column", "spanning_header")]
+    if (nrow(sh) == 0) {
+      next
+    }
+    for (r in seq_len(nrow(sh))) {
+      merged_col <- paste0(sh$column[r], "_", i)
+      merged_tbl <- gtsummary::modify_spanning_header(
+        merged_tbl,
+        gtsummary::all_of(merged_col) ~ sh$spanning_header[r]
+      )
+    }
+  }
   merged_tbl
 }

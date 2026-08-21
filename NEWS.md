@@ -1,4 +1,6 @@
-# crane 0.3.3.9012
+# crane 0.3.3.9014
+
+* `tbl_null_report()` now centers its message, so with no body content it reads as a "no data" panel spanning the table instead of text hugging the left edge. (#305)
 
 * `tbl_null_report()` now centers its message, so with no body content it reads as a "no data" panel spanning the table instead of text hugging the left edge.
 
@@ -18,8 +20,6 @@
 
 * `fmt_3sig()` and `fmt_pct()` are now vectorized and return `NA_character_` for `NA` or non-finite input. (#293)
 
-# crane 0.3.3.9007
-
 * `annotate_riskdf()` now builds the "Numbers at Risk" table at the plot's x-axis breaks, so custom ticks set with `ggplot2::scale_x_continuous(breaks = ...)` are reflected in the table. (#278)
 
 * `theme_gtsummary_roche()` now frames the flextable column labels with an outer border only, removing the internal borders between header rows and the inconsistent missing right border. (#272)
@@ -31,6 +31,9 @@
 * `tbl_hierarchical_incidence_rate()` now supports `add_overall()` to append an unstratified column pooling all treatment arms, consistent with the other `add_overall()` methods in the package (`last = FALSE` and a glue `col_label` by default). (#264)
 
 * `tbl_hierarchical_incidence_rate()` now renders spanning headers for treatment arm columns, customizable via the new `spanning_label` glue argument (e.g. `"{level} (N = {n})"`). (#264)
+
+* `tbl_with_pools()` no longer strips spanning headers set by the inner `.tbl_fun`, so pooling `tbl_baseline_chg()` keeps the treatment-arm headers. (#297)
+
 
 # crane 0.3.2
 
