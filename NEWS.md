@@ -1,10 +1,12 @@
-# crane 0.3.3.9014
+# crane 0.3.3.9015
 
 * `tbl_null_report()` now centers its message, so with no body content it reads as a "no data" panel spanning the table instead of text hugging the left edge. (#305)
 
-* `tbl_null_report()` now centers its message, so with no body content it reads as a "no data" panel spanning the table instead of text hugging the left edge.
-
 * `remove_duplicate_keys()` now keeps the `tbl_split` class and attributes when applied to a split table, instead of returning a plain list. (#301)
+
+* `annotate_lineplot_df()` gains `"se"` and `"ci"` as `summary_stats` options, reporting the standard error and the confidence interval of the mean (at a new `conf_level` argument) in the summary table below the plot. (#307)
+
+* `gg_lineplot()` gains a `show_n` argument to append group sizes to the legend (e.g. `"Placebo (N=42)"`) and a `jitter` argument to horizontally separate overlapping groups while keeping points, lines, and error bars aligned. (#307)
 
 * Added `modify_split_caption()` to subtitle each page of a split `{gtsummary}` table (e.g. from `tbl_listing()`, `tbl_baseline_chg()`, or `tbl_shift()`) from its split level via a glue `pattern` (default `"Parameter: {spl_level}"`) and hide the now-redundant split column. (#282)
 
