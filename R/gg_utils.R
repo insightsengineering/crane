@@ -535,6 +535,10 @@ gg_varname_extraction <- function(mapping_quo) {
 #'   Measure of variability (`"sd"`, `"se"`, `"ci"`, `"iqr"`, or `"none"`).
 #' @param conf_level (`numeric`)\cr
 #'   Confidence level for `"ci"` (default `0.95`).
+#' @param position (`Position` or `character`)\cr
+#'   Position adjustment, either a string (e.g., `"dodge"`) or a
+#'   formal ggplot2 object (e.g., `ggplot2::position_dodge(width = 0.4)`).
+#'   Defaults to `ggplot2::position_identity()`.
 #'
 #' @return A modified `ggplot2` object with an added error bar layer.
 #'
@@ -556,7 +560,8 @@ gg_varname_extraction <- function(mapping_quo) {
 gg_add_stats <- function(gg_plt,
                          stat = c("mean", "median"),
                          variability = c("sd", "se", "ci", "iqr", "none"),
-                         conf_level = 0.95) {
+                         conf_level = 0.95,
+                         position = ggplot2::position_identity()) {
   stat <- match.arg(stat)
   variability <- match.arg(variability)
 
@@ -571,6 +576,7 @@ gg_add_stats <- function(gg_plt,
     ),
     geom = "errorbar",
     width = 0.45,
-    na.rm = TRUE
+    na.rm = TRUE,
+    position = position
   )
 }

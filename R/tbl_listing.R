@@ -22,6 +22,8 @@
 #'   string to use for blank values. Defaults to `NA`. It should not be changed.
 #'
 #' @name tbl_listing
+#' @seealso [modify_split_caption()] to label each page of a split table and
+#'   hide the redundant split column.
 #' @note
 #' Common pre-processing steps for the data frame that may be common:
 #'  * Unique values - this should be enforced in pre-processing by users.
@@ -34,7 +36,7 @@
 #'    parameters used in [gtsummary::tbl_split_by_rows()]. See example 4.
 #'  * Split by columns - you can split the data frame by columns by using `split_by_columns` parameter. Use the same
 #'    parameters from [gtsummary::tbl_split_by_rows()]. See example 5.
-#'
+#' @returns A table listing of class "tbl_listing".
 #' @examplesIf crane:::is_pkg_installed("labelled")
 #' # Load the trial dataset
 #' trial_data <- trial |>
@@ -88,6 +90,12 @@
 #' out <- list_lst |>
 #'   remove_duplicate_keys(keys = c("trt", "stage"))
 #' out[[2]]
+#'
+#' # Example 8 --------------------------------
+#' # Label each split page and hide the redundant split column
+#' by_stage <- tbl_listing(trial_data, split_by_rows = list(variable_level = "stage")) |>
+#'   modify_split_caption(spl_col = "stage", pattern = "Stage: {spl_level}")
+#' by_stage[[1]]
 NULL
 
 #' @export

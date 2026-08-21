@@ -8,7 +8,8 @@ gg_add_stats(
   gg_plt,
   stat = c("mean", "median"),
   variability = c("sd", "se", "ci", "iqr", "none"),
-  conf_level = 0.95
+  conf_level = 0.95,
+  position = ggplot2::position_identity()
 )
 }
 \arguments{
@@ -23,6 +24,11 @@ Measure of variability (\code{"sd"}, \code{"se"}, \code{"ci"}, \code{"iqr"}, or 
 
 \item{conf_level}{(\code{numeric})\cr
 Confidence level for \code{"ci"} (default \code{0.95}).}
+
+\item{position}{(\code{Position} or \code{character})\cr
+Position adjustment, either a string (e.g., \code{"dodge"}) or a
+formal ggplot2 object (e.g., \code{ggplot2::position_dodge(width = 0.4)}).
+Defaults to \code{ggplot2::position_identity()}.}
 }
 \value{
 A modified \code{ggplot2} object with an added error bar layer.

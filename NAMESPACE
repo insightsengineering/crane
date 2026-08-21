@@ -2,6 +2,7 @@
 
 S3method(add_difference_row,tbl_survfit_times)
 S3method(add_overall,tbl_baseline_chg)
+S3method(add_overall,tbl_hierarchical_incidence_rate)
 S3method(add_overall,tbl_hierarchical_rate_and_count)
 S3method(add_overall,tbl_hierarchical_rate_by_grade)
 S3method(add_overall,tbl_rmpt)
@@ -12,6 +13,7 @@ export("%>%")
 export(add_blank_rows)
 export(add_difference_row)
 export(add_forest)
+export(add_grade_column)
 export(add_hierarchical_count_row)
 export(add_overall)
 export(adjust_stat_columns_wrap)
@@ -21,10 +23,15 @@ export(annotate_pkc_df)
 export(annotate_riskdf)
 export(annotate_surv_med)
 export(ard_tabulate_abnormal_by_baseline)
+export(cv)
 export(df_add_poolings)
 export(filter_hierarchical)
+export(fmt_3sig)
+export(fmt_pct)
 export(g_lineplot)
 export(g_lineplot_table)
+export(geom_cv)
+export(geom_mean)
 export(get_cox_pairwise_df)
 export(get_mmrm_results)
 export(gg_km)
@@ -36,7 +43,11 @@ export(label_roche_percent)
 export(label_roche_pvalue)
 export(label_roche_ratio)
 export(modify_header_rm_md)
+export(modify_split_caption)
 export(modify_zero_recode)
+export(pk_imputation_rules)
+export(pk_param_metadata)
+export(pk_param_sort)
 export(preprocess_lineplot_data)
 export(process_survfit)
 export(remove_duplicate_keys)
@@ -69,33 +80,43 @@ import(glue)
 import(rlang)
 importFrom(broom,tidy)
 importFrom(cards,ard_tabulate_value)
-importFrom(cowplot,draw_plot)
-importFrom(cowplot,ggdraw)
-importFrom(cowplot,plot_grid)
-importFrom(dplyr,"%>%")
-importFrom(dplyr,across)
-importFrom(dplyr,all_of)
-importFrom(dplyr,any_of)
-importFrom(dplyr,contains)
-importFrom(dplyr,ends_with)
-importFrom(dplyr,everything)
-importFrom(dplyr,last_col)
-importFrom(dplyr,matches)
-importFrom(dplyr,mutate)
-importFrom(dplyr,num_range)
-importFrom(dplyr,starts_with)
-importFrom(dplyr,where)
-importFrom(gtsummary,add_difference_row)
-importFrom(gtsummary,add_overall)
-importFrom(gtsummary,filter_hierarchical)
-importFrom(gtsummary,sort_hierarchical)
+importFrom(cowplot,
+  draw_plot,
+  ggdraw,
+  plot_grid
+)
+importFrom(dplyr,
+  "%>%",
+  across,
+  all_of,
+  any_of,
+  contains,
+  ends_with,
+  everything,
+  last_col,
+  matches,
+  mutate,
+  num_range,
+  starts_with,
+  where
+)
+importFrom(gtsummary,
+  add_difference_row,
+  add_overall,
+  filter_hierarchical,
+  sort_hierarchical
+)
 importFrom(labeling,extended)
 importFrom(rlang,.data)
 importFrom(scales,label_comma)
-importFrom(stats,median)
-importFrom(stats,pchisq)
-importFrom(survival,Surv)
-importFrom(survival,coxph)
-importFrom(survival,survdiff)
+importFrom(stats,
+  median,
+  pchisq
+)
+importFrom(survival,
+  Surv,
+  coxph,
+  survdiff
+)
 importFrom(tidyr,pivot_wider)
 importFrom(utils,tail)

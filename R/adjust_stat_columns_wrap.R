@@ -16,8 +16,14 @@
 #'   Defaults to `"protect"`.
 #'
 #' @return A modified `gtsummary` object.
-#'
 #' @export
+#' @examples
+#' tbl <- gtsummary::tbl_summary(
+#'   trial,
+#'   by = trt,
+#'   include = c(age, grade)
+#' )
+#' adjust_stat_columns_wrap(tbl, "protect")
 adjust_stat_columns_wrap <- function(tbl, mode = c("protect", "unprotect")) {
   # Robustly match the argument (defaults to "protect" if not provided)
   mode <- rlang::arg_match(mode)

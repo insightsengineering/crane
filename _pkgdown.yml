@@ -40,6 +40,17 @@ reference:
       - gg_pkc_lineplot
       - annotate_pkc_df
 
+  - title: "Pharmacokinetic Helpers"
+    contents:
+      - cv
+      - geom_cv
+      - geom_mean
+      - fmt_3sig
+      - fmt_pct
+      - pk_imputation_rules
+      - pk_param_metadata
+      - pk_param_sort
+
   - title: "Kaplan-Meier Plot"
     contents:
       - process_survfit
@@ -79,6 +90,7 @@ reference:
       - theme_gtsummary_roche
       - modify_header_rm_md
       - modify_zero_recode
+      - modify_split_caption
       - add_blank_rows
       - label_roche
       - reverse_ci

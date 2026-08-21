@@ -1,4 +1,37 @@
-# crane 0.3.1.9039
+# crane 0.3.3.9014
+
+* `tbl_null_report()` now centers its message, so with no body content it reads as a "no data" panel spanning the table instead of text hugging the left edge. (#305)
+
+* Added `modify_split_caption()` to subtitle each page of a split `{gtsummary}` table (e.g. from `tbl_listing()`, `tbl_baseline_chg()`, or `tbl_shift()`) from its split level via a glue `pattern` (default `"Parameter: {spl_level}"`) and hide the now-redundant split column. (#282)
+
+* `annotate_lineplot_df()` and `annotate_pkc_df()` gain a `font_size` argument to control the summary table font size, matching `annotate_riskdf()`. The `text_size` argument of `annotate_pkc_df()` is soft-deprecated in favor of `font_size`. (#295)
+
+* Renamed `imputation_rules()` to `pk_imputation_rules()` to make its PK scope explicit. It applies BLQ display rules to PK summary statistics based on the BLQ ratio and dosing timing, and now marks any missing statistic (e.g. standard deviation or CV% when `n = 1`) as `"NE"` (not estimable). (#293)
+
+* Renamed `d_pkparam()` to `pk_param_metadata()` and `h_pkparam_sort()` to `pk_param_sort()`, dropping the `d_`/`h_` prefixes. `pk_param_sort()` now warns about parameter codes missing from the reference and keeps their rows instead of dropping them silently. (#293)
+
+* PK summary helpers (`cv()`, `geom_cv()`, `geom_mean()`, `fmt_3sig()`, `fmt_pct()`, `pk_imputation_rules()`) now validate their inputs and raise informative errors. (#293)
+
+* `geom_mean()` returns `NA_real_` instead of `NaN` when all concentrations are missing. (#293)
+
+* `fmt_3sig()` and `fmt_pct()` are now vectorized and return `NA_character_` for `NA` or non-finite input. (#293)
+
+* `annotate_riskdf()` now builds the "Numbers at Risk" table at the plot's x-axis breaks, so custom ticks set with `ggplot2::scale_x_continuous(breaks = ...)` are reflected in the table. (#278)
+
+* `theme_gtsummary_roche()` now frames the flextable column labels with an outer border only, removing the internal borders between header rows and the inconsistent missing right border. (#272)
+
+* Fixed minor typo in the DESCRIPTION file.
+
+* `tbl_hierarchical_incidence_rate()` gains an `overall_row` argument to control whether the overall summary row is included. (#264)
+
+* `tbl_hierarchical_incidence_rate()` now supports `add_overall()` to append an unstratified column pooling all treatment arms, consistent with the other `add_overall()` methods in the package (`last = FALSE` and a glue `col_label` by default). (#264)
+
+* `tbl_hierarchical_incidence_rate()` now renders spanning headers for treatment arm columns, customizable via the new `spanning_label` glue argument (e.g. `"{level} (N = {n})"`). (#264)
+
+* `tbl_with_pools()` no longer strips spanning headers set by the inner `.tbl_fun`, so pooling `tbl_baseline_chg()` keeps the treatment-arm headers. (#297)
+
+
+# crane 0.3.2
 
 ## New Functions and Functionality
 
@@ -23,14 +56,26 @@
 
 * `g_lineplot()`, `g_lineplot_table()`, and `preprocess_lineplot_data()` were deprecated. (#184)
 
-*  Added `tbl_coxph()` which computes the pairwise cox proportional hazards test and returns a gtsummary object (#159)
+* Added `tbl_coxph()` to render pairwise Cox proportional hazards results as a gtsummary table. (#159)
 
 * Added `tbl_hierarchical_incidence_rate()` which computes the incidence rate of adverse events (#211)
 
 * Added `adjust_stat_columns_wrap()` which keep the presentation of statistics in one row (#219)
 
-* `get_cox_pairwise_df` now allows for different methods to compute p-value (#191) and to handle ties (#193)
- 
+* `get_cox_pairwise_df()` now allows for different methods to compute p-value (#191) and to handle ties (#193).
+
+* `tbl_coxph()` now accepts a data.frame created by `get_cox_pairwise_df()` as input. (#207)
+
+* Added `add_grade_column()` to inject a grade-label column into `tbl_hierarchical_rate_by_grade()` output. Decoupled from the table builder to prevent Cartesian join explosion in `tbl_merge()`. (#226)
+
+* `get_cox_pairwise_df()` now fully supports `strata()` terms in survival formulas (#256).
+
+* The `"likelihood-ratio"` test now intelligently switches between `survival::survreg()` (for unstratified models) and `survival::coxph()` (for stratified models) (#256).
+
+* Stripped package namespace prefixes (e.g., `survival::`) from survival formulas to prevent evaluation errors (#256).
+
+* Added `...` support in `get_cox_pairwise_df()` for `conf.int` (e.g., to adjust CI level) and `robust = TRUE` (for robust standard errors).
+
 ### Other Updates
 
 * `tbl_hierarchical_rate_and_count()` now emits zero-rows for unobserved factor levels in the first hierarchical variable. (#233)
@@ -65,6 +110,12 @@ all events (#217)
 * Adjusted `modify_zero_recode()` to account for strings comprising regular and non-breaking spaces (#230)
 
 * `tbl_roche_subgroups()` now shows `n`, `Events`, and `Median` per arm when `time_to_event` is specified. The total column shows `Total Events` instead of `Total n`. (#235)
+
+* Skip tests if suggested packages are missing (Failing test due to missing suggested package #252, @llrs-roche)
+
+* The default `"log-rank"` test now uses `survival::survdiff()` instead of `coin`, aligning output more closely with SAS and `rtables`
+
+* `tbl_survfit_quantiles()` now indicates censored observation in min/max values with `*` (#192)
 
 # crane 0.3.1
 

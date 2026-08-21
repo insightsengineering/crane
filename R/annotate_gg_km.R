@@ -46,15 +46,16 @@
 #' @seealso [gg_km()], [process_survfit()], and [get_cox_pairwise_df()] for
 #'   related functionalities.
 #'
-#' @examples
+#' @examplesIf requireNamespace("survival", quietly = TRUE)
 #' # Preparing the Kaplan-Meier Plot
-#' use_lung <- survival::lung
+#' library(survival)
+#' use_lung <- lung
 #' use_lung$arm <- factor(sample(c("A", "B", "C"), nrow(use_lung), replace = TRUE))
 #' use_lung$status <- use_lung$status - 1 # Convert status to 0/1
 #' use_lung <- na.omit(use_lung)
 #'
-#' formula <- survival::Surv(time, status) ~ arm
-#' fit_kmg01 <- survival::survfit(formula, use_lung)
+#' formula <- Surv(time, status) ~ arm
+#' fit_kmg01 <- survfit(formula, use_lung)
 #' surv_plot_data <- process_survfit(fit_kmg01)
 #'
 #' plt_kmg01 <- gg_km(surv_plot_data)
@@ -67,6 +68,12 @@ NULL
 #'   **Note:** For this specific function, `gg_plt` must be a pure `ggplot2`
 #'   object (not a combined `cowplot` object) because it requires exact X-axis
 #'   extraction.
+#'
+#' @details
+#' `annotate_riskdf()` reuses the plot's x-axis breaks, so custom ticks set with
+#' `ggplot2::scale_x_continuous(breaks = ...)` are reflected in the "Numbers at
+#' Risk" table. When the plot has no usable numeric breaks, the breaks are
+#' computed automatically.
 #'
 #' @return The function `annotate_riskdf` returns a `cowplot` object combining
 #'   the KM plot and the 'Numbers at Risk' table.
@@ -121,8 +128,19 @@ annotate_riskdf <- function(gg_plt,
   eargs <- utils::modifyList(default_eargs, list(...))
 
   # 2. Extract Data and Timepoints----------------------------------------------
+  # Use the plot's resolved x-axis breaks so the risk table lines up with the
+  # ticks the user set (e.g. via `scale_x_continuous(breaks = ...)`). A discrete
+  # x-axis has no time coordinates to align the risk table to, so error early
+  # with a clear message rather than failing further downstream.
   data <- broom::tidy(fit_km)
-  xticks <- h_xticks(data = data)
+  xticks <- .get_plot_xticks(gg_plt)
+  if (is.null(xticks)) {
+    rlang::abort(c(
+      "`gg_plt` must have a continuous (numeric) x-axis.",
+      "i" = "The risk table is aligned to survival times, which require numeric x-axis breaks.",
+      "x" = "A discrete or categorical x-axis was detected."
+    ))
+  }
   annot_tbl <- summary(fit_km, times = xticks, extend = TRUE)
 
   # 3. Format Strata Levels-----------------------------------------------------

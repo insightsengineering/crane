@@ -4,21 +4,31 @@
 \alias{.get_single_comp_table}
 \title{Build Single Comparison Table for Cox PH}
 \usage{
-.get_single_comp_table(data_subset)
+.get_single_comp_table(data_subset, pval_label = NULL)
 }
 \arguments{
 \item{data_subset}{(\code{data.frame})\cr
-A pre-processed data frame containing the formatted statistics
-(\code{pval_formatted}, \code{hr_formatted}, \code{ci_formatted}) for exactly one
-treatment comparison.}
+A pre-processed data frame containing the formatted statistics for exactly
+one treatment comparison.}
+
+\item{pval_label}{(\code{character} or \code{NULL})\cr
+The dynamic string to use for the p-value label (e.g., "p-value (Log-rank)")}
 }
 \value{
 A \code{gtsummary} object containing the stacked summary statistics.
 }
 \description{
 Internal helper function to build a formatted \code{gtsummary} table for a single
-comparison arm. It extracts the pre-formatted p-value, hazard ratio, and
-confidence interval from the subsetted data and stacks them into rows for the
-final display.
+comparison arm. It conditionally extracts available statistics from the
+subsetted data and stacks them into rows for the final display.
+}
+\examples{
+tbl <- tibble::tibble(
+  comparison_label = "A-B",
+  hr_formatted = "5.21",
+  ci_formatted = "0.25-0.35",
+  pval_formatted = 0.005
+)
+crane:::.get_single_comp_table(tbl, pval_label = "p-val")
 }
 \keyword{internal}

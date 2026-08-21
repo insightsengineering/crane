@@ -12,7 +12,8 @@ annotate_pkc_df(
   group = NULL,
   summary_stats = c("n", "mean", "sd"),
   digits = NULL,
-  text_size = 3.5,
+  font_size = 10,
+  text_size = lifecycle::deprecated(),
   rel_height_plot = 0.75
 )
 }
@@ -36,11 +37,17 @@ Can be a single integer (e.g., \code{2}), a vector of integers matching the stat
 (e.g., \code{c(0, 2, 2)}), or a \code{gtsummary} style formula. Defaults to \code{NULL}
 (uses \code{gtsummary} default auto-formatting).}
 
-\item{text_size}{(\code{numeric})\cr
-The font size for the table text. Defaults to \code{3.5}.}
+\item{font_size}{(\code{numeric})\cr
+Base font size for the summary table text. Defaults to \code{10}.}
+
+\item{text_size}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}\cr
+Use \code{font_size} instead.}
 
 \item{rel_height_plot}{(\code{numeric})\cr
 Relative height of the plot vs the table. Defaults to \code{0.75}.}
+}
+\value{
+A ggplot2 object: a plot with a table at the bottom.
 }
 \description{
 These functions provide capabilities to annotate Pharmacokinetics plot
@@ -82,6 +89,13 @@ annotate_pkc_df(
   group = "Dose_Group",
   summary_stats = c("n", "median", "iqr"),
   digits = c(0, 2, 2)
+)
+
+# Annotate with a larger summary table font
+annotate_pkc_df(
+  data = df_pk,
+  gg_plt = p_pk,
+  font_size = 12
 )
 }
 \seealso{

@@ -2,6 +2,7 @@ skip_if_pkg_not_installed(c("survival", "withr"))
 
 test_that("tbl_survfit_quantiles() works", {
   withr::local_options(list(width = 120))
+
   # Using the default value of the `y` argument
   expect_silent(
     tbl <-
@@ -12,16 +13,27 @@ test_that("tbl_survfit_quantiles() works", {
   )
   expect_snapshot(as.data.frame(tbl))
 
-  # Specifying the `y` argument
+  # Specifying the `y` argument as a character string
   expect_silent(
-    tbl <-
+    tbl_str <-
       tbl_survfit_quantiles(
         data = gtsummary::trial,
         by = "trt",
         y = "survival::Surv(ttdeath, death)"
       )
   )
-  expect_snapshot(as.data.frame(tbl))
+  expect_snapshot(as.data.frame(tbl_str))
+
+  # Specifying the `y` argument as an unquoted expression
+  expect_silent(
+    tbl_expr <-
+      tbl_survfit_quantiles(
+        data = gtsummary::trial,
+        by = "trt",
+        y = survival::Surv(ttdeath, death)
+      )
+  )
+  expect_snapshot(as.data.frame(tbl_expr))
 
   # works for unstratified models
   expect_silent(
@@ -48,6 +60,26 @@ test_that("tbl_survfit_quantiles() works", {
       dplyr::filter(variable == "prob") |>
       dplyr::select(-fmt_fun)
   )
+})
+
+test_that("tbl_survfit_quantiles() censoring asterisks logic", {
+  tbl <- tbl_survfit_quantiles(
+    data = cards::ADTTE,
+    by = "TRTA"
+  )
+
+  # 1. ARD check: Ensure 'min' and 'max' stats are strictly numeric and do not contain '*'
+  ard_minmax <- tbl$cards$tbl_survfit_quantiles |>
+    dplyr::filter(stat_name %in% c("min", "max"))
+
+  expect_false(any(grepl("\\*", as.character(unlist(ard_minmax$stat)))))
+  expect_true(all(vapply(ard_minmax$stat, is.numeric, FUN.VALUE = logical(1))))
+
+  # 2. Table check: Ensure '*' is printed in the Range row of the final table body
+  range_row <- tbl$table_body |> dplyr::filter(label == "Range")
+
+  # ADTTE has censored maximums, so we expect at least one '*' to be rendered in the table columns
+  expect_true(any(grepl("\\*", unlist(range_row))))
 })
 
 test_that("tbl_survfit_quantiles(by) messaging", {

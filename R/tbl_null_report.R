@@ -4,7 +4,7 @@
 #'
 #' @param label (`string`)\cr label to display in the header of the null report. It defaults to
 #'   "No observations met the reporting criteria for this output."
-#'
+#' @returns A gtsummary object of class tbl_null_report.
 #' @examples
 #' tbl_null_report(label = "No data available for the selected criteria.")
 #'
@@ -17,8 +17,12 @@ tbl_null_report <- function(label = "No observations met the reporting criteria 
   check_string(label)
 
   # Create empty gtsummary object ----------------------------------------------
+  # Center the label: with no body content the message spans the whole table, so
+  # centering reads as an intentional "no data" panel rather than text hugging
+  # the left edge.
   x <- gtsummary::as_gtsummary(data.frame(label = character())) |>
-    gtsummary::modify_header(label = label)
+    gtsummary::modify_header(label = label) |>
+    gtsummary::modify_column_alignment(columns = label, align = "center")
 
   # add class and attributes ---------------------------------------------------
   x <- structure(

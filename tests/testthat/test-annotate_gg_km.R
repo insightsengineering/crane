@@ -54,6 +54,45 @@ test_that("annotate_riskdf() handles all branches and inputs", {
   )
 })
 
+test_that("annotate_riskdf() uses the plot's custom x-axis breaks (#278)", {
+  my_breaks <- c(0, 100, 200, 300, 400, 500, 600, 700, 800)
+  p_breaks <- p_base + scale_x_continuous(breaks = my_breaks)
+
+  # the helper reads the resolved breaks back from the plot
+  expect_identical(
+    as.numeric(.get_plot_xticks(p_breaks)),
+    as.numeric(my_breaks)
+  )
+
+  # the risk table is built at those same times (one column per break)
+  annot_tbl <- summary(fit_strat, times = .get_plot_xticks(p_breaks), extend = TRUE)
+  expect_setequal(unique(annot_tbl$time), my_breaks)
+
+  expect_no_error(annotate_riskdf(p_breaks, fit_strat))
+})
+
+test_that(".get_plot_xticks() returns NULL on a discrete x-axis", {
+  # a discrete x-axis returns character values, not numeric breaks
+  p_disc <- ggplot(use_lung, aes(x = arm, y = status)) +
+    geom_col()
+  expect_null(.get_plot_xticks(p_disc))
+
+  # numeric-looking factor levels ("1", "2", "3") must also be treated as
+  # discrete, not mistaken for numeric breaks
+  use_lung$grp <- factor(sample(c("1", "2", "3"), nrow(use_lung), replace = TRUE))
+  p_num_lvls <- ggplot(use_lung, aes(x = grp, y = status)) +
+    geom_col()
+  expect_null(.get_plot_xticks(p_num_lvls))
+})
+
+test_that("annotate_riskdf() errors early on a discrete x-axis", {
+  # a KM axis is always continuous time; a categorical axis has no coordinates
+  # to align the risk table to, so it errors with an informative message
+  p_disc <- ggplot(use_lung, aes(x = arm, y = status)) +
+    geom_col()
+  expect_snapshot(annotate_riskdf(p_disc, fit_strat), error = TRUE)
+})
+
 # ------------------------------------------------------------------------------
 # 3. TESTS FOR annotate_surv_med()
 # ------------------------------------------------------------------------------

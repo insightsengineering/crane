@@ -1,3 +1,4 @@
+skip_if_pkg_not_installed("survival")
 # pre-processing the km fit
 anl <- cards::ADTTE |>
   dplyr::mutate(is_event = CNSR == 0)
@@ -9,7 +10,7 @@ anl[[by]] <- factor(anl[[by]], levels = c(
 ))
 group_sym <- rlang::sym(by)
 model_formula <- rlang::new_formula(
-  lhs = rlang::expr(survival::Surv(AVAL, is_event)),
+  lhs = rlang::expr(Surv(AVAL, is_event)),
   rhs = rlang::expr(!!group_sym)
 )
 fit_kmg01 <- survival::survfit(model_formula, anl)
@@ -47,6 +48,7 @@ test_that("gg_km() works and handles annotations correctly", {
 
 test_that("plotlist attribute is preserved through annotate_* stacking", {
   surv_plot_data <- process_survfit(fit_kmg01)
+  skip_if_not_installed("coin")
   suppressWarnings(
     coxph_tbl <- get_cox_pairwise_df(model_formula, data = anl, arm = by)
   )

@@ -1,6 +1,6 @@
 Package: crane
 Title: Supplements the 'gtsummary' Package for Pharmaceutical Reporting
-Version: 0.3.1.9039
+Version: 0.3.3.9014
 Authors@R: c(
     person("Daniel D.", "Sjoberg", , "danield.sjoberg@gmail.com", role = "aut",
            comment = c(ORCID = "0000-0003-0862-2018", note = "Original creator of the package")),
@@ -16,6 +16,8 @@ Authors@R: c(
            comment = c(ORCID = "0000-0001-7566-2787")),
     person("Jan", "Szczypiński", , "jan.szczypinski@external.roche.com", role = "aut",
            comment = c(ORCID = "0000-0002-5682-5840")),
+    person("Lluís", "Revilla Sancho", , "lluis.revilla_sancho@roche.com", role = "ctb",
+           comment = c(ORCID = "0000-0001-9747-2570")),
     person("F. Hoffmann-La Roche AG", role = c("cph", "fnd"))
   )
 Description: Tables summarizing clinical trial results are often complex
@@ -28,12 +30,12 @@ URL: https://github.com/insightsengineering/crane,
     https://insightsengineering.github.io/crane/
 BugReports: https://github.com/insightsengineering/crane/issues
 Depends: 
-    gtsummary (>= 2.5.0),
+    gtsummary (>= 2.5.1),
     R (>= 4.2)
 Imports:
     broom (>= 1.0.8),
-    cards (>= 0.7.0),
-    cardx (>= 0.3.0),
+    cards (>= 0.8.1.9001),
+    cardx (>= 0.3.3),
     cli (>= 3.6.4),
     cowplot (>= 1.2.0),
     dplyr (>= 1.2.0),
@@ -44,7 +46,6 @@ Imports:
     labeling,
     lifecycle,
     rlang (>= 1.1.5),
-    scales,
     scales (>= 1.3.0),
     survival (>= 3.6-4),
     tibble,
@@ -56,22 +57,22 @@ Suggests:
     labelled,
     magick,
     mmrm,
+    officer,
     parameters,
     pharmaverseadam,
     testthat (>= 3.0.0),
     tidyselect,
     withr (>= 3.0.1),
+    xml2,
     yaml
-Remotes:
-    ddsjoberg/gtsummary@main,
-    insightsengineering/cards@main,
-    insightsengineering/cardx@main
+Remotes: 
+    pharmaverse/cards
 Config/Needs/check: hms
 Config/Needs/website: rmarkdown, yaml
+Config/roxygen2/version: 8.1.0
 Config/testthat/edition: 3
 Config/testthat/parallel: true
 Encoding: UTF-8
 Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 8.0.0
