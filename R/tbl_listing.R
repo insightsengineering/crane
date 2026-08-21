@@ -146,11 +146,22 @@ tbl_listing <- function(data,
   x
 }
 
+#' @details
+#' `remove_duplicate_keys()` blanks out repeated values in the given key columns
+#' of a `tbl_listing`, so a key label is printed only on its first row within a
+#' run of identical values. This declutters listings where a key (e.g. subject
+#' or treatment) spans many consecutive rows. When applied to a split table (a
+#' list of `tbl_listing` objects) it is mapped over each element while keeping
+#' the list's class and attributes.
+#'
 #' @export
 #' @rdname tbl_listing
 remove_duplicate_keys <- function(x, keys = NULL, value = NA) {
   if (is.list(x) && inherits(x[[1]], "gtsummary")) {
-    return(map(x, remove_duplicate_keys, keys = {{ keys }}, value = value))
+    # Assign back in place so the list keeps its class and attributes (e.g. a
+    # `tbl_split` stays a `tbl_split`); `map()` alone would drop them.
+    x[] <- map(x, remove_duplicate_keys, keys = {{ keys }}, value = value)
+    return(x)
   }
 
   # Checks -----------------------------------
