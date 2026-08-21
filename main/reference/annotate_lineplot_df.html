@@ -19,7 +19,7 @@ The annotations are added using the cowplot package for flexible placement."><me
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3.9014</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3.9015</span>
       </span>
     </div>
 
@@ -77,6 +77,7 @@ The annotations are added using the <code>cowplot</code> package for flexible pl
 <span>  y <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  group <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  summary_stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"mean"</span>, <span class="st">"sd"</span><span class="op">)</span>,</span>
+<span>  conf_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
 <span>  digits <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  font_size <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  rel_height_plot <span class="op">=</span> <span class="fl">0.75</span></span>
@@ -105,7 +106,14 @@ automatically extracts these from the <code>gg_plt</code> mapping.</p></dd>
 
 <dt id="arg-summary-stats">summary_stats<a class="anchor" aria-label="anchor" href="#arg-summary-stats"></a></dt>
 <dd><p>(<code>character</code>)<br>
-Vector of statistics to include. Defaults to <code>c("n", "mean", "sd")</code>.</p></dd>
+Vector of statistics to include. One or more of <code>"n"</code>, <code>"mean"</code>, <code>"sd"</code>,
+<code>"se"</code>, <code>"ci"</code>, <code>"median"</code>, and <code>"iqr"</code>. Defaults to <code>c("n", "mean", "sd")</code>.
+<code>"ci"</code> reports the confidence interval of the mean at <code>conf_level</code>.</p></dd>
+
+
+<dt id="arg-conf-level">conf_level<a class="anchor" aria-label="anchor" href="#arg-conf-level"></a></dt>
+<dd><p>(<code>numeric</code>)<br>
+Confidence level for the <code>"ci"</code> statistic. Defaults to <code>0.95</code>.</p></dd>
 
 
 <dt id="arg-digits">digits<a class="anchor" aria-label="anchor" href="#arg-digits"></a></dt>
