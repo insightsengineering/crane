@@ -46,9 +46,16 @@
       flextable::padding(padding.bottom = 0, part = "all")
       
       $user_added3[[8]]
-      flextable::line_spacing(space = 1, part = "all")
+      flextable::padding(padding.left = 0, part = "all")
       
       $user_added3[[9]]
+      flextable::padding(padding.right = 0, part = "all")
+      
+      $user_added3[[10]]
+      flextable::line_spacing(space = 1, part = "all")
+      
+      $user_added3[[11]]
       flextable::set_table_properties(layout = "autofit")
       
       
+
