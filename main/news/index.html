@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3.9015</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3.9016</span>
       </span>
     </div>
 
@@ -61,8 +61,9 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.3.3.9015" id="crane-0339015">crane 0.3.3.9015<a class="anchor" aria-label="anchor" href="#crane-0339015"></a></h2>
+<h2 class="page-header" data-toc-text="0.3.3.9016" id="crane-0339016">crane 0.3.3.9016<a class="anchor" aria-label="anchor" href="#crane-0339016"></a></h2>
 <ul><li><p><code><a href="../reference/tbl_null_report.html">tbl_null_report()</a></code> now centers its message, so with no body content it reads as a “no data” panel spanning the table instead of text hugging the left edge. (<a href="https://github.com/insightsengineering/crane/issues/305" class="external-link">#305</a>)</p></li>
+<li><p><code><a href="../reference/tbl_listing.html">remove_duplicate_keys()</a></code> now keeps the <code>tbl_split</code> class and attributes when applied to a split table, instead of returning a plain list. (<a href="https://github.com/insightsengineering/crane/issues/301" class="external-link">#301</a>)</p></li>
 <li><p><code><a href="../reference/annotate_lineplot_df.html">annotate_lineplot_df()</a></code> gains <code>"se"</code> and <code>"ci"</code> as <code>summary_stats</code> options, reporting the standard error and the confidence interval of the mean (at a new <code>conf_level</code> argument) in the summary table below the plot. (<a href="https://github.com/insightsengineering/crane/issues/307" class="external-link">#307</a>)</p></li>
 <li><p><code><a href="../reference/gg_lineplot.html">gg_lineplot()</a></code> gains a <code>show_n</code> argument to append group sizes to the legend (e.g. <code>"Placebo (N=42)"</code>) and a <code>jitter</code> argument to horizontally separate overlapping groups while keeping points, lines, and error bars aligned. (<a href="https://github.com/insightsengineering/crane/issues/307" class="external-link">#307</a>)</p></li>
 <li><p>Added <code><a href="../reference/modify_split_caption.html">modify_split_caption()</a></code> to subtitle each page of a split <a href="https://github.com/ddsjoberg/gtsummary" class="external-link">gtsummary</a> table (e.g. from <code><a href="../reference/tbl_listing.html">tbl_listing()</a></code>, <code><a href="../reference/tbl_baseline_chg.html">tbl_baseline_chg()</a></code>, or <code><a href="../reference/tbl_shift.html">tbl_shift()</a></code>) from its split level via a glue <code>pattern</code> (default <code>"Parameter: {spl_level}"</code>) and hide the now-redundant split column. (<a href="https://github.com/insightsengineering/crane/issues/282" class="external-link">#282</a>)</p></li>

@@ -19,7 +19,7 @@ by rows or columns. They are described in the note section."><meta property="og:
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3.9015</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3.9016</span>
       </span>
     </div>
 
@@ -115,6 +115,15 @@ string to use for blank values. Defaults to <code>NA</code>. It should not be ch
     <div id="value">
     <h2>Value</h2>
     <p>A table listing of class "tbl_listing".</p>
+    </div>
+    <div id="details">
+    <h2>Details</h2>
+    <p><code>remove_duplicate_keys()</code> blanks out repeated values in the given key columns
+of a <code>tbl_listing</code>, so a key label is printed only on its first row within a
+run of identical values. This reduces visual clutter in listings where a key (e.g. subject
+or treatment) spans many consecutive rows. When applied to a split table (a
+list of <code>tbl_listing</code> objects) it is mapped over each element while keeping
+the list's class and attributes.</p>
     </div>
     <div id="note">
     <h2>Note</h2>
