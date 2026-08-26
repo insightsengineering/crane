@@ -48,7 +48,7 @@ by rows or columns. They are described in the note section.
 \details{
 \code{remove_duplicate_keys()} blanks out repeated values in the given key columns
 of a \code{tbl_listing}, so a key label is printed only on its first row within a
-run of identical values. This declutters listings where a key (e.g. subject
+run of identical values. This reduces visual clutter in listings where a key (e.g. subject
 or treatment) spans many consecutive rows. When applied to a split table (a
 list of \code{tbl_listing} objects) it is mapped over each element while keeping
 the list's class and attributes.
