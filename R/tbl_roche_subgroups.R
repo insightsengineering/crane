@@ -230,8 +230,14 @@ tbl_roche_subgroups <- function(data, rsp, by, subgroups, .tbl_fun, time_to_even
     # Align variable name so tbl_ard_wide_summary treats them as one row
     ard_events$variable <- tte_var
 
-    ard_combined <- dplyr::bind_rows(ard_tte, ard_events) |>
-      dplyr::filter(.data$stat_name %in% c("N", "n", "median"))
+    # Both ARDs emit an "N" row; keep N/median from the time-to-event ARD and
+    # only the event count from the response ARD so each stat_name is unique.
+    # gtsummary (>= 2.6.0) collapses duplicate stat_name rows into a list column
+    # otherwise, which renders as literal `list("5")` strings.
+    ard_combined <- dplyr::bind_rows(
+      dplyr::filter(ard_tte, .data$stat_name %in% c("N", "median")),
+      dplyr::filter(ard_events, .data$stat_name == "n")
+    )
 
     out <- ard_combined |>
       gtsummary::tbl_ard_wide_summary(
