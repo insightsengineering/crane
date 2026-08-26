@@ -1,4 +1,4 @@
-# crane 0.3.3.9015
+# crane 0.3.3.9016
 
 * `tbl_null_report()` now centers its message, so with no body content it reads as a "no data" panel spanning the table instead of text hugging the left edge. (#305)
 
