@@ -11,6 +11,9 @@
 #' @param conf_level (`numeric`)\cr
 #'   The confidence level to use when calculating confidence intervals for the adjusted means and differences.
 #'   Default is 0.95 for 95% confidence intervals.
+#' @param weights (`string`)\cr
+#'   The weighting scheme passed to [emmeans::emmeans()] when averaging the adjusted means over the levels of
+#'   the model factors. Default is `"equal"`. Use `"proportional"` to weight by the observed group sizes.
 #' @param mmrm_df (`data.frame`)\cr
 #'   A tidy data frame containing the MMRM results. This should include
 #'   columns for the visit, arm, adjusted means, differences, confidence intervals, and
@@ -65,7 +68,8 @@ NULL
 #'
 #' @rdname tbl_mmrm
 #' @export
-get_mmrm_results <- function(fit_mmrm, arm, visit, conf_level = 0.95) {
+get_mmrm_results <- function(fit_mmrm, arm, visit, conf_level = 0.95,
+                             weights = c("equal", "proportional", "outer", "cells", "flat")) {
   check_installed("emmeans")
   check_not_missing(fit_mmrm)
   check_not_missing(arm)
@@ -74,6 +78,7 @@ get_mmrm_results <- function(fit_mmrm, arm, visit, conf_level = 0.95) {
   check_string(arm)
   check_string(visit)
   check_class(fit_mmrm, "mmrm_fit")
+  weights <- rlang::arg_match(weights)
 
   # NEW: Explicitly extract complete cases to perfectly match the model's dataset.
   # This guarantees emmeans calculates LS Means on the exact correct covariate averages.
@@ -93,7 +98,7 @@ get_mmrm_results <- function(fit_mmrm, arm, visit, conf_level = 0.95) {
     fit_mmrm,
     data = model_data, # NEW: Pass our bulletproof complete cases
     specs = c(arm, visit),
-    weights = "equal"
+    weights = weights
   )
 
   # Get n from the emmeans grid and rename the weight column to n
@@ -171,6 +176,25 @@ get_mmrm_results <- function(fit_mmrm, arm, visit, conf_level = 0.95) {
 #' @param digits (`numeric`)\cr
 #'   A numeric vector of length 3 specifying the number of decimal places for: 1) Estimates/CIs, 2) Standard
 #'    Errors, and 3) P-values. Default is `c(2, 3, 4)`.
+#' @param baseline_args (named `list`)\cr
+#'   Arguments forwarded to the baseline [tbl_roche_summary()] call, letting you configure the baseline
+#'   section (`statistic`, `digits`, `type`, `sort`, ...). Defaults to n and Mean (SE); only the elements you
+#'   supply are overridden. For example,
+#'   `baseline_args = list(statistic = ~ c("{N_nonmiss}", "{mean} ({sd})", "{median}", "{min} - {max}"))`
+#'   shows n, Mean (SD), Median and Min - Max.
+#' @param postbaseline_args (named `list`)\cr
+#'   Configures the post-baseline (MMRM) section. Supported elements:
+#'   * `stats` (`character`) - which statistics to show and in which order. Defaults to
+#'     `c("n", "estimate_est", "lower_cl_est", "estimate_contr", "lower_cl_contr", "p_value")`.
+#'     The log-scale statistics `"geom_mean_ratio"` and `"geom_mean_ratio_ci"` are also available
+#'     (meaningful only for a log-transformed response); add them to `stats` to show them.
+#'   * `label` (named `list`) - row-label overrides, keyed by statistic id, e.g.
+#'     `label = list(p_value = "p")`.
+#'   * `stat_fns` (named `list`) - formatting-function overrides, keyed by statistic id. Each
+#'     function receives the row-group `data` and returns `list(my_stat = <string>)`.
+#'   Only the elements you supply are overridden; the rest keep their defaults. For example,
+#'   `postbaseline_args = list(stats = c("n", "estimate_est", "geom_mean_ratio", "geom_mean_ratio_ci"))`
+#'   appends the geometric mean ratio and its CI.
 #'
 #' @return `tbl_mmrm` returns a 'gtsummary' table object.
 #'
@@ -181,13 +205,44 @@ get_mmrm_results <- function(fit_mmrm, arm, visit, conf_level = 0.95) {
 #'   arm = "ARMCD", visit = "AVISIT", baseline_aval = "FEV1"
 #' )
 #'
+#' # Append the geometric mean ratio and its CI (for a log-transformed response)
+#' tbl_mmrm(
+#'   mmrm_results,
+#'   arm = "ARMCD", visit = "AVISIT",
+#'   postbaseline_args = list(
+#'     stats = c("n", "estimate_est", "geom_mean_ratio", "geom_mean_ratio_ci")
+#'   )
+#' )
+#'
 #' @rdname tbl_mmrm
 #' @export
-tbl_mmrm <- function(mmrm_df, base_df = NULL, arm, visit, baseline_aval = NULL, digits = c(2, 3, 4)) {
+tbl_mmrm <- function(mmrm_df, base_df = NULL, arm, visit, baseline_aval = NULL, digits = c(2, 3, 4),
+                     baseline_args = list(), postbaseline_args = list()) {
   check_not_missing(mmrm_df)
   check_not_missing(arm)
   check_not_missing(visit)
   check_not_missing(digits)
+  check_class(baseline_args, "list", allow_empty = TRUE)
+  check_class(postbaseline_args, "list", allow_empty = TRUE)
+
+  # Baseline summary defaults (n and Mean (SE)); users override any of these via
+  # `baseline_args`, which is forwarded to the baseline `tbl_roche_summary()` call.
+  baseline_args <- utils::modifyList(
+    list(
+      type = ~"continuous2",
+      statistic = ~ c("{N_nonmiss}", "{mean} ({se})"),
+      digits = ~ c(0, digits[1], digits[2])
+    ),
+    baseline_args
+  )
+
+  # Post-baseline defaults. `stats` selects which statistics show and in which
+  # order; `label` and `stat_fns` are named (by carrier column) overrides merged
+  # over the built-in registry below. Defaults reproduce the historic output.
+  postbaseline_args <- utils::modifyList(
+    list(stats = .mmrm_default_stats, label = list(), stat_fns = list()),
+    postbaseline_args
+  )
   cards::process_selectors(
     mmrm_df,
     arm = {{ arm }}, visit = {{ visit }}
@@ -217,17 +272,14 @@ tbl_mmrm <- function(mmrm_df, base_df = NULL, arm, visit, baseline_aval = NULL, 
         strata = any_of(visit), # or visit, depending on your column name
         .combine_with = "tbl_stack",
         .header = "{strata}",
-        .tbl_fun = ~ .x |>
+        .tbl_fun = ~ rlang::inject(
           tbl_roche_summary(
+            .x,
             by = any_of(arm), # or arm, matching the column containing your header
             include = all_of(baseline_aval), # Replace with the actual column name of the score (e.g., AVAL or BASE)
-            # continuous2 allows us to return multiple rows of stats for one variable
-            type = list(all_of(baseline_aval) ~ "continuous2"),
-            # Specify the exact stats you want
-            statistic = list(all_of(baseline_aval) ~ c("{N_nonmiss}", "{mean} ({se})")),
-            # Map digits parameter directly: 0 for N, digits[1] for Mean, digits[2] for SE
-            digits = list(all_of(baseline_aval) ~ c(0, digits[1], digits[2]))
-          ) |>
+            !!!baseline_args
+          )
+        ) |>
           modify_table_body(
             ~ .x |>
               dplyr::mutate(
@@ -249,6 +301,17 @@ tbl_mmrm <- function(mmrm_df, base_df = NULL, arm, visit, baseline_aval = NULL, 
   }
 
   # 4. Build Post-Baseline MMRM Table
+  # Resolve the statistics registry: which stats, their carrier columns, labels
+  # and formatting functions. `stats` filters and orders; `stat_fns`/`label`
+  # override the defaults from `.mmrm_stat_registry()`.
+  reg <- .mmrm_resolve_stats(
+    stats = postbaseline_args$stats,
+    label = postbaseline_args$label,
+    stat_fns = postbaseline_args$stat_fns,
+    digits = digits,
+    ci_pct_str = ci_pct_str
+  )
+
   gts_mmrm <- mmrm_df |>
     gtsummary::tbl_strata(
       strata = all_of(visit),
@@ -257,33 +320,17 @@ tbl_mmrm <- function(mmrm_df, base_df = NULL, arm, visit, baseline_aval = NULL, 
       .tbl_fun = ~ .x |>
         tbl_custom_summary(
           by = all_of(arm),
-          include = c(n, estimate_est, lower_cl_est, estimate_contr, lower_cl_contr, p_value),
+          include = all_of(reg$columns),
           # MANDATORY: This stops the variable labels from repeating across two lines!
           type = list(everything() ~ "continuous"),
-          # We wrap the outside functions so they can accept `digits` dynamically
-          stat_fns = list(
-            n ~ function(data, ...) .get_n(data),
-            estimate_est ~ function(data, ...) .get_adj_mean_se(data, digits),
-            lower_cl_est ~ function(data, ...) .get_adj_mean_ci(data, digits),
-            estimate_contr ~ function(data, ...) .get_diff_se(data, digits),
-            lower_cl_contr ~ function(data, ...) .get_diff_ci(data, digits),
-            p_value ~ function(data, ...) .get_pval(data, digits)
-          ),
+          stat_fns = reg$stat_fns,
           statistic = ~"{my_stat}",
           missing = "no"
         ) |>
         modify_table_body(
           ~ .x |>
             dplyr::mutate(
-              label = dplyr::case_when(
-                variable == "n" ~ "n",
-                variable == "estimate_est" ~ "Adjusted Mean (SE)",
-                variable == "lower_cl_est" ~ sprintf("%s CI for Adjusted Mean", ci_pct_str),
-                variable == "estimate_contr" ~ "Difference in Adjusted Means (SE)",
-                variable == "lower_cl_contr" ~ sprintf("%s CI for Difference in Adjusted Means", ci_pct_str),
-                variable == "p_value" ~ "P-value",
-                TRUE ~ label
-              )
+              label = dplyr::coalesce(reg$labels[.data$variable], .data$label)
             )
         ) |>
         modify_footnote(everything() ~ NA) |>
@@ -306,6 +353,114 @@ tbl_mmrm <- function(mmrm_df, base_df = NULL, arm, visit, baseline_aval = NULL, 
     )
 
   final_table
+}
+
+# --- Post-baseline statistics registry ------------------------------------
+
+# Statistics shown by default, in display order. Users pick a subset (and order)
+# through `postbaseline_args$stats`.
+.mmrm_default_stats <- c(
+  "n", "estimate_est", "lower_cl_est",
+  "estimate_contr", "lower_cl_contr", "p_value"
+)
+
+# Registry of every post-baseline statistic tbl_mmrm() can render. Each entry is
+# keyed by a stat id (what the user selects in `stats`) and carries:
+#   column - the mmrm_df column that carries the row in tbl_custom_summary().
+#            Must be unique across the selected stats and hold non-missing values
+#            for the arms that should display a value (contrast stats are NA on
+#            the reference arm, which renders blank - same as the difference rows).
+#   label  - default row label (CI labels are built from the confidence level).
+#   fn     - stat_fn passed to tbl_custom_summary(); reads any mmrm_df column from
+#            the row-group `data` and returns list(my_stat = <formatted string>).
+# The geometric mean stats are off by default; select them via `stats`.
+.mmrm_stat_registry <- function(digits, ci_pct_str) {
+  list(
+    n = list(
+      column = "n",
+      label = "n",
+      fn = function(data, ...) .get_n(data)
+    ),
+    estimate_est = list(
+      column = "estimate_est",
+      label = "Adjusted Mean (SE)",
+      fn = function(data, ...) .get_adj_mean_se(data, digits)
+    ),
+    lower_cl_est = list(
+      column = "lower_cl_est",
+      label = sprintf("%s CI for Adjusted Mean", ci_pct_str),
+      fn = function(data, ...) .get_adj_mean_ci(data, digits)
+    ),
+    estimate_contr = list(
+      column = "estimate_contr",
+      label = "Difference in Adjusted Means (SE)",
+      fn = function(data, ...) .get_diff_se(data, digits)
+    ),
+    lower_cl_contr = list(
+      column = "lower_cl_contr",
+      label = sprintf("%s CI for Difference in Adjusted Means", ci_pct_str),
+      fn = function(data, ...) .get_diff_ci(data, digits)
+    ),
+    p_value = list(
+      column = "p_value",
+      label = "P-value",
+      fn = function(data, ...) .get_pval(data, digits)
+    ),
+    # Derived, log-scale stats (off by default). Computed from the contrast
+    # estimates, so they only make sense for log-transformed responses.
+    geom_mean_ratio = list(
+      column = "relative_reduc",
+      label = "Geometric Mean Ratio",
+      fn = function(data, ...) .get_geom_mean_ratio(data, digits)
+    ),
+    geom_mean_ratio_ci = list(
+      column = "t_stat",
+      label = sprintf("%s CI for Geometric Mean Ratio", ci_pct_str),
+      fn = function(data, ...) .get_geom_mean_ratio_ci(data, digits)
+    )
+  )
+}
+
+# Resolve the user's post-baseline selection into the pieces tbl_custom_summary()
+# needs: carrier columns (ordered), stat_fns (named by column) and labels (named
+# by column). `label`/`stat_fns` overrides are keyed by stat id.
+.mmrm_resolve_stats <- function(stats, label, stat_fns, digits, ci_pct_str) {
+  registry <- .mmrm_stat_registry(digits, ci_pct_str)
+
+  unknown <- setdiff(stats, names(registry))
+  if (length(unknown) > 0) {
+    cli::cli_abort(
+      c(
+        "Unknown {.arg stats} value{?s} in {.arg postbaseline_args}: {.val {unknown}}.",
+        i = "Available statistics are {.val {names(registry)}}."
+      ),
+      call = get_cli_abort_call()
+    )
+  }
+
+  selected <- registry[stats] # subset keeps the user-supplied order
+
+  for (id in intersect(names(label), names(selected))) {
+    selected[[id]]$label <- label[[id]]
+  }
+  for (id in intersect(names(stat_fns), names(selected))) {
+    selected[[id]]$fn <- stat_fns[[id]]
+  }
+
+  columns <- vapply(selected, `[[`, character(1), "column")
+  if (anyDuplicated(columns) > 0) {
+    dup <- unique(columns[duplicated(columns)])
+    cli::cli_abort(
+      "Selected {.arg stats} map to the same carrier column ({.val {dup}}); pick at most one per column.",
+      call = get_cli_abort_call()
+    )
+  }
+
+  labels <- vapply(selected, `[[`, character(1), "label")
+  names(labels) <- columns
+  stat_fns_out <- stats::setNames(lapply(selected, `[[`, "fn"), columns)
+
+  list(columns = unname(columns), stat_fns = stat_fns_out, labels = labels)
 }
 
 # --- Internal Helper Functions ---
@@ -426,6 +581,29 @@ se <- function(x, na.rm = TRUE) { # nolint
     } else {
       sprintf(paste0("%.", digits[3], "f"), pval)
     }
+  }
+  list(my_stat = val)
+}
+
+# Geometric mean ratio = exp(difference in adjusted means on the log scale).
+# Only meaningful when the MMRM was fit on a log-transformed response.
+.get_geom_mean_ratio <- function(data, digits, ...) {
+  val <- if (nrow(data) == 0 || isTRUE(is.na(data$estimate_contr[1]))) {
+    ""
+  } else {
+    sprintf(paste0("%.", digits[1], "f"), exp(data$estimate_contr[1]))
+  }
+  list(my_stat = val)
+}
+
+.get_geom_mean_ratio_ci <- function(data, digits, ...) {
+  val <- if (nrow(data) == 0 || isTRUE(is.na(data$lower_cl_contr[1]))) {
+    ""
+  } else {
+    sprintf(
+      paste0("(%.", digits[1], "f, %.", digits[1], "f)"),
+      exp(data$lower_cl_contr[1]), exp(data$upper_cl_contr[1])
+    )
   }
   list(my_stat = val)
 }

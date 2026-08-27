@@ -2,6 +2,12 @@
 
 * `tbl_null_report()` now centers its message, so with no body content it reads as a "no data" panel spanning the table instead of text hugging the left edge. (#305)
 
+* `get_mmrm_results()` gains a `weights` argument (default `"equal"`) passed to `emmeans::emmeans()`, so proportionally weighted LS Means can be requested with `weights = "proportional"`. Check `?emmeans::emmeans()` for other `weights` options. (#299)
+
+* `tbl_mmrm()` gains a `baseline_args` argument, forwarded to the baseline `tbl_roche_summary()` call, to configure the baseline section statistics (previously locked to `n` and `Mean (SE)`). (#299)
+
+* `tbl_mmrm()` gains a `postbaseline_args` argument to select, reorder, relabel and reformat the post-baseline statistics (previously locked to n, adjusted means, differences and p-value). Built-in `"geom_mean_ratio"` and `"geom_mean_ratio_ci"` statistics are available for log-transformed responses. (#299)
+
 * `remove_duplicate_keys()` now keeps the `tbl_split` class and attributes when applied to a split table, instead of returning a plain list. (#301)
 
 * `annotate_lineplot_df()` gains `"se"` and `"ci"` as `summary_stats` options, reporting the standard error and the confidence interval of the mean (at a new `conf_level` argument) in the summary table below the plot. (#307)
