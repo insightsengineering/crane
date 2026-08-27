@@ -1,7 +1,5 @@
 # crane 0.3.3.9015
 
-* `theme_gtsummary_roche()` now zeros the left and right cell padding for `flextable` output (it already zeroed top and bottom), removing the ~0.19" of unused horizontal space flextable adds to every column. (#309)
-
 * `annotate_lineplot_df()` gains `"se"` and `"ci"` as `summary_stats` options, reporting the standard error and the confidence interval of the mean (at a new `conf_level` argument) in the summary table below the plot. (#307)
 
 * `gg_lineplot()` gains a `show_n` argument to append group sizes to the legend (e.g. `"Placebo (N=42)"`) and a `jitter` argument to horizontally separate overlapping groups while keeping points, lines, and error bars aligned. (#307)

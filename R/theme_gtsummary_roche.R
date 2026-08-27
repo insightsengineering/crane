@@ -107,11 +107,6 @@ theme_gtsummary_roche <- function(font_size = NULL,
           rlang::expr(flextable::font(fontname = "Arial", part = "all")),
           rlang::expr(flextable::padding(padding.top = 0, part = "all")),
           rlang::expr(flextable::padding(padding.bottom = 0, part = "all")),
-          # zero the left/right padding too (flextable defaults to 5pt each): the
-          # extra ~0.19" per column otherwise pads every width, floating centered
-          # cells and widening empty columns.
-          rlang::expr(flextable::padding(padding.left = 0, part = "all")),
-          rlang::expr(flextable::padding(padding.right = 0, part = "all")),
           rlang::expr(flextable::line_spacing(space = 1, part = "all")),
           rlang::expr(flextable::set_table_properties(layout = "autofit"))
         )
