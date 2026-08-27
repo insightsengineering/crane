@@ -19,7 +19,7 @@ following the style of the MMRM template. It combines baseline summary statistic
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3.9016</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3.9017</span>
       </span>
     </div>
 
@@ -70,7 +70,13 @@ following the style of the MMRM template. It combines baseline summary statistic
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_mmrm_results</span><span class="op">(</span><span class="va">fit_mmrm</span>, <span class="va">arm</span>, <span class="va">visit</span>, conf_level <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">get_mmrm_results</span><span class="op">(</span></span>
+<span>  <span class="va">fit_mmrm</span>,</span>
+<span>  <span class="va">arm</span>,</span>
+<span>  <span class="va">visit</span>,</span>
+<span>  conf_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
+<span>  weights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"equal"</span>, <span class="st">"proportional"</span>, <span class="st">"outer"</span>, <span class="st">"cells"</span>, <span class="st">"flat"</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">tbl_mmrm</span><span class="op">(</span></span>
 <span>  <span class="va">mmrm_df</span>,</span>
@@ -78,7 +84,9 @@ following the style of the MMRM template. It combines baseline summary statistic
 <span>  <span class="va">arm</span>,</span>
 <span>  <span class="va">visit</span>,</span>
 <span>  baseline_aval <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span></span>
+<span>  digits <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">4</span><span class="op">)</span>,</span>
+<span>  baseline_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  postbaseline_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -111,6 +119,12 @@ The confidence level to use when calculating confidence intervals for the adjust
 Default is 0.95 for 95% confidence intervals.</p></dd>
 
 
+<dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
+<dd><p>(<code>string</code>)<br>
+The weighting scheme passed to <code><a href="https://rvlenth.github.io/emmeans/reference/emmeans.html" class="external-link">emmeans::emmeans()</a></code> when averaging the adjusted means over the levels of
+the model factors. Default is <code>"equal"</code>. Use <code>"proportional"</code> to weight by the observed group sizes.</p></dd>
+
+
 <dt id="arg-mmrm-df">mmrm_df<a class="anchor" aria-label="anchor" href="#arg-mmrm-df"></a></dt>
 <dd><p>(<code>data.frame</code>)<br>
 A tidy data frame containing the MMRM results. This should include
@@ -138,6 +152,31 @@ Unused if <code>base_df</code> is not provided or does not contain any rows.</p>
 <dd><p>(<code>numeric</code>)<br>
 A numeric vector of length 3 specifying the number of decimal places for: 1) Estimates/CIs, 2) Standard
 Errors, and 3) P-values. Default is <code>c(2, 3, 4)</code>.</p></dd>
+
+
+<dt id="arg-baseline-args">baseline_args<a class="anchor" aria-label="anchor" href="#arg-baseline-args"></a></dt>
+<dd><p>(named <code>list</code>)<br>
+Arguments forwarded to the baseline <code><a href="tbl_roche_summary.html">tbl_roche_summary()</a></code> call, letting you configure the baseline
+section (<code>statistic</code>, <code>digits</code>, <code>type</code>, <code>sort</code>, ...). Defaults to n and Mean (SE); only the elements you
+supply are overridden. For example,
+<code>baseline_args = list(statistic = ~ c("{N_nonmiss}", "{mean} ({sd})", "{median}", "{min} - {max}"))</code>
+shows n, Mean (SD), Median and Min - Max.</p></dd>
+
+
+<dt id="arg-postbaseline-args">postbaseline_args<a class="anchor" aria-label="anchor" href="#arg-postbaseline-args"></a></dt>
+<dd><p>(named <code>list</code>)<br>
+Configures the post-baseline (MMRM) section. Supported elements:</p><ul><li><p><code>stats</code> (<code>character</code>) - which statistics to show and in which order. Defaults to
+<code>c("n", "estimate_est", "lower_cl_est", "estimate_contr", "lower_cl_contr", "p_value")</code>.
+The log-scale statistics <code>"geom_mean_ratio"</code> and <code>"geom_mean_ratio_ci"</code> are also available
+(meaningful only for a log-transformed response); add them to <code>stats</code> to show them.</p></li>
+<li><p><code>label</code> (named <code>list</code>) - row-label overrides, keyed by statistic id, e.g.
+<code>label = list(p_value = "p")</code>.</p></li>
+<li><p><code>stat_fns</code> (named <code>list</code>) - formatting-function overrides, keyed by statistic id. Each
+function receives the row-group <code>data</code> and returns <code>list(my_stat = &lt;string&gt;)</code>.
+Only the elements you supply are overridden; the rest keep their defaults. For example,
+<code>postbaseline_args = list(stats = c("n", "estimate_est", "geom_mean_ratio", "geom_mean_ratio_ci"))</code>
+appends the geometric mean ratio and its CI.</p></li>
+</ul></dd>
 
 </dl></div>
     <div id="value">
@@ -181,6 +220,15 @@ formatted table using <code>tbl_mmrm()</code>.</p>
 <span class="r-in"><span>  <span class="va">mmrm_results</span>,</span></span>
 <span class="r-in"><span>  <span class="va">fv_dt</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>AVISIT <span class="op">=</span> <span class="st">"Baseline"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  arm <span class="op">=</span> <span class="st">"ARMCD"</span>, visit <span class="op">=</span> <span class="st">"AVISIT"</span>, baseline_aval <span class="op">=</span> <span class="st">"FEV1"</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Append the geometric mean ratio and its CI (for a log-transformed response)</span></span></span>
+<span class="r-in"><span><span class="fu">tbl_mmrm</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">mmrm_results</span>,</span></span>
+<span class="r-in"><span>  arm <span class="op">=</span> <span class="st">"ARMCD"</span>, visit <span class="op">=</span> <span class="st">"AVISIT"</span>,</span></span>
+<span class="r-in"><span>  postbaseline_args <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>    stats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"n"</span>, <span class="st">"estimate_est"</span>, <span class="st">"geom_mean_ratio"</span>, <span class="st">"geom_mean_ratio_ci"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>

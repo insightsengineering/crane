@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3.9016</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.3.9017</span>
       </span>
     </div>
 
@@ -61,8 +61,11 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.3.3.9016" id="crane-0339016">crane 0.3.3.9016<a class="anchor" aria-label="anchor" href="#crane-0339016"></a></h2>
+<h2 class="page-header" data-toc-text="0.3.3.9017" id="crane-0339017">crane 0.3.3.9017<a class="anchor" aria-label="anchor" href="#crane-0339017"></a></h2>
 <ul><li><p><code><a href="../reference/tbl_null_report.html">tbl_null_report()</a></code> now centers its message, so with no body content it reads as a “no data” panel spanning the table instead of text hugging the left edge. (<a href="https://github.com/insightsengineering/crane/issues/305" class="external-link">#305</a>)</p></li>
+<li><p><code><a href="../reference/tbl_mmrm.html">get_mmrm_results()</a></code> gains a <code>weights</code> argument (default <code>"equal"</code>) passed to <code><a href="https://rvlenth.github.io/emmeans/reference/emmeans.html" class="external-link">emmeans::emmeans()</a></code>, so proportionally weighted LS Means can be requested with <code>weights = "proportional"</code>. Check <code>?emmeans::emmeans()</code> for other <code>weights</code> options. (<a href="https://github.com/insightsengineering/crane/issues/299" class="external-link">#299</a>)</p></li>
+<li><p><code><a href="../reference/tbl_mmrm.html">tbl_mmrm()</a></code> gains a <code>baseline_args</code> argument, forwarded to the baseline <code><a href="../reference/tbl_roche_summary.html">tbl_roche_summary()</a></code> call, to configure the baseline section statistics (previously locked to <code>n</code> and <code>Mean (SE)</code>). (<a href="https://github.com/insightsengineering/crane/issues/299" class="external-link">#299</a>)</p></li>
+<li><p><code><a href="../reference/tbl_mmrm.html">tbl_mmrm()</a></code> gains a <code>postbaseline_args</code> argument to select, reorder, relabel and reformat the post-baseline statistics (previously locked to n, adjusted means, differences and p-value). Built-in <code>"geom_mean_ratio"</code> and <code>"geom_mean_ratio_ci"</code> statistics are available for log-transformed responses. (<a href="https://github.com/insightsengineering/crane/issues/299" class="external-link">#299</a>)</p></li>
 <li><p><code><a href="../reference/tbl_listing.html">remove_duplicate_keys()</a></code> now keeps the <code>tbl_split</code> class and attributes when applied to a split table, instead of returning a plain list. (<a href="https://github.com/insightsengineering/crane/issues/301" class="external-link">#301</a>)</p></li>
 <li><p><code><a href="../reference/annotate_lineplot_df.html">annotate_lineplot_df()</a></code> gains <code>"se"</code> and <code>"ci"</code> as <code>summary_stats</code> options, reporting the standard error and the confidence interval of the mean (at a new <code>conf_level</code> argument) in the summary table below the plot. (<a href="https://github.com/insightsengineering/crane/issues/307" class="external-link">#307</a>)</p></li>
 <li><p><code><a href="../reference/gg_lineplot.html">gg_lineplot()</a></code> gains a <code>show_n</code> argument to append group sizes to the legend (e.g. <code>"Placebo (N=42)"</code>) and a <code>jitter</code> argument to horizontally separate overlapping groups while keeping points, lines, and error bars aligned. (<a href="https://github.com/insightsengineering/crane/issues/307" class="external-link">#307</a>)</p></li>
