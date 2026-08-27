@@ -91,6 +91,12 @@ with additional summary tables, including median survival times, numbers at
 risk, and cox proportional hazards results. The annotations are added using
 the \code{cowplot} package for flexible placement.
 }
+\details{
+\code{annotate_riskdf()} reuses the plot's x-axis breaks, so custom ticks set with
+\code{ggplot2::scale_x_continuous(breaks = ...)} are reflected in the "Numbers at
+Risk" table. When the plot has no usable numeric breaks, the breaks are
+computed automatically.
+}
 \section{Functions}{
 \itemize{
 \item \code{annotate_riskdf()}: The function \code{annotate_riskdf} adds a "Numbers

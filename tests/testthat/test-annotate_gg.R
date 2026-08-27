@@ -135,3 +135,102 @@ test_that("annotate_lineplot_df formats numeric digits correctly", {
   # Check 'sd' has a decimal point followed by EXACTLY 2 digits (e.g., "0.71")
   expect_true(grepl("\\.[0-9]{2}$", val_sd))
 })
+
+test_that("annotate_lineplot_df computes se and matches sd / sqrt(n)", {
+  mock_df2gg <- function(df, ...) df
+
+  res_df <- testthat::with_mocked_bindings(
+    {
+      annotate_lineplot_df(
+        gg_plt = p_valid,
+        data = mock_adlb,
+        summary_stats = c("n", "mean", "se"),
+        digits = c(0, 4, 4)
+      )
+    },
+    df2gg_aligned = mock_df2gg
+  )
+
+  expect_s3_class(res_df, "data.frame")
+
+  # SE row is present and labelled
+  expect_true(any(grepl("SE$", trimws(res_df$Group))))
+
+  # Verify Visit '0' SE equals sd / sqrt(n) for the first treatment group
+  x <- mock_adlb$AVAL[mock_adlb$AVISIT == 0 & mock_adlb$ARM == "Trt A"]
+  expected_se <- stats::sd(x) / sqrt(length(x))
+  val_se <- trimws(res_df[grepl("SE$", trimws(res_df$Group)), "0"][1])
+
+  expect_equal(as.numeric(val_se), expected_se, tolerance = 1e-3)
+})
+
+test_that("annotate_lineplot_df computes ci and matches a t-based interval", {
+  mock_df2gg <- function(df, ...) df
+
+  res_df <- testthat::with_mocked_bindings(
+    {
+      annotate_lineplot_df(
+        gg_plt = p_valid,
+        data = mock_adlb,
+        summary_stats = c("n", "mean", "ci"),
+        conf_level = 0.95
+      )
+    },
+    df2gg_aligned = mock_df2gg
+  )
+
+  expect_s3_class(res_df, "data.frame")
+
+  # The CI row is labelled with the confidence level
+  expect_true(any(grepl("95% CI", trimws(res_df$Group))))
+
+  # Verify Visit '0' CI equals the t interval for the first treatment group
+  x <- mock_adlb$AVAL[mock_adlb$AVISIT == 0 & mock_adlb$ARM == "Trt A"]
+  n <- length(x)
+  err <- stats::qt(0.975, df = n - 1) * stats::sd(x) / sqrt(n)
+  expected <- c(mean(x) - err, mean(x) + err)
+
+  val_ci <- res_df[grepl("95% CI$", trimws(res_df$Group)), "0"][1]
+  # gtsummary separates the bounds with a non-breaking space; strip all
+  # non-numeric characters (except the separator and sign) before parsing
+  nums <- regmatches(val_ci, gregexpr("-?[0-9.]+", val_ci))[[1]]
+  got <- as.numeric(nums)
+
+  expect_equal(got, expected, tolerance = 1e-2)
+})
+
+test_that("annotate_lineplot_df ci label follows conf_level", {
+  mock_df2gg <- function(df, ...) df
+
+  res_df <- testthat::with_mocked_bindings(
+    {
+      annotate_lineplot_df(
+        gg_plt = p_valid,
+        data = mock_adlb,
+        summary_stats = c("mean", "ci"),
+        conf_level = 0.90
+      )
+    },
+    df2gg_aligned = mock_df2gg
+  )
+
+  expect_true(any(grepl("90% CI", trimws(res_df$Group))))
+})
+
+test_that("annotate_lineplot_df forwards font_size to df2gg_aligned", {
+  captured <- NULL
+  mock_df2gg <- function(df, ..., text_size, label_size) {
+    captured <<- list(text_size = text_size, label_size = label_size)
+    df
+  }
+
+  testthat::with_mocked_bindings(
+    {
+      annotate_lineplot_df(gg_plt = p_valid, data = mock_adlb, font_size = 14)
+    },
+    df2gg_aligned = mock_df2gg
+  )
+
+  expect_equal(captured$label_size, 14)
+  expect_equal(captured$text_size, 14 / ggplot2::.pt)
+})

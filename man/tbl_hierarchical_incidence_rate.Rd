@@ -2,6 +2,7 @@
 % Please edit documentation in R/tbl_hierarchical_incidence_rate.R
 \name{tbl_hierarchical_incidence_rate}
 \alias{tbl_hierarchical_incidence_rate}
+\alias{add_overall.tbl_hierarchical_incidence_rate}
 \title{Hierarchical Exposure-Adjusted Incidence Rates}
 \usage{
 tbl_hierarchical_incidence_rate(
@@ -19,7 +20,16 @@ tbl_hierarchical_incidence_rate(
   conf.level = 0.95,
   conf.type = "normal",
   digits = 2,
+  overall_row = TRUE,
+  spanning_label = "{level}  \\n(N = {n})",
   label = NULL
+)
+
+\method{add_overall}{tbl_hierarchical_incidence_rate}(
+  x,
+  last = FALSE,
+  col_label = "All Participants  \\n(N = {style_roche_number(N)})",
+  ...
 )
 }
 \arguments{
@@ -79,10 +89,35 @@ Confidence interval type. Default is \code{"normal"}. Passed directly to
 An integer specifying the number of decimal places to round the incidence
 estimates, confidence intervals, and person-years to. Defaults to \code{2}.}
 
+\item{overall_row}{(\code{logical(1)})\cr
+Whether to include an overall summary row aggregating across all
+hierarchical levels. Default is \code{TRUE}. The overall row label can be
+customized via \code{label = list("..ard_hierarchical_overall.." = "Custom Label")}.}
+
+\item{spanning_label}{(\code{string})\cr
+A \link[glue:glue]{glue}-style template for the per-arm spanning headers when
+\code{by} is supplied. Available substitutions are \code{{level}} (the arm level) and
+\code{{n}} (the arm participant count). Default is \code{"{level}  \\\\n(N = {n})"},
+matching the column-header convention used elsewhere in the package.}
+
 \item{label}{(\code{\link[gtsummary:syntax]{formula-list-selector}})\cr
 used to override default labels in hierarchical table, e.g. \code{list(AESOC = "System Organ Class")}.
 The default for each variable is the column label attribute, \code{attr(., 'label')}.
 If no label has been set, the column name is used.}
+
+\item{x}{(\code{tbl_hierarchical_incidence_rate})\cr
+A table created with \code{\link[=tbl_hierarchical_incidence_rate]{tbl_hierarchical_incidence_rate()}}.}
+
+\item{last}{(\code{logical(1)})\cr
+When \code{add_overall()} is used, whether to place the overall columns after
+(\code{TRUE}) or before (\code{FALSE}) the stratified columns. Default is \code{FALSE}.}
+
+\item{col_label}{(\code{string})\cr
+A \link[glue:glue]{glue}-style template for the overall spanning header added by
+\code{add_overall()}. Resolved against the column header context (e.g. \code{{N}},
+\code{{n}}). Default is \code{"All Participants  \\\\n(N = {style_roche_number(N)})"}.}
+
+\item{...}{These dots are for future extensions and must be empty.}
 }
 \value{
 a gtsummary table of class \code{"tbl_hierarchical_incidence_rate"}.
@@ -133,6 +168,54 @@ tbl_hierarchical_incidence_rate(
     AEDECOD = "MedDRA Preferred Term",
     "..ard_hierarchical_overall.." = "All Adverse Events"
   )
+)
+
+# Custom overall row label
+tbl_hierarchical_incidence_rate(
+  data = adae,
+  denominator = adsl,
+  variables = c(AESOC, AEDECOD),
+  by = ARM,
+  start_date = TRTSDT,
+  end_date = TRTEDT,
+  event_date = AESTDTC,
+  label = list("..ard_hierarchical_overall.." = "Any Adverse Event")
+)
+
+# Without the overall row
+tbl_hierarchical_incidence_rate(
+  data = adae,
+  denominator = adsl,
+  variables = c(AESOC, AEDECOD),
+  by = ARM,
+  start_date = TRTSDT,
+  end_date = TRTEDT,
+  event_date = AESTDTC,
+  overall_row = FALSE
+)
+
+# Add an unstratified "Overall" column pooling all treatment arms
+tbl_hierarchical_incidence_rate(
+  data = adae,
+  denominator = adsl,
+  variables = c(AESOC, AEDECOD),
+  by = ARM,
+  start_date = TRTSDT,
+  end_date = TRTEDT,
+  event_date = AESTDTC
+) |>
+  add_overall()
+
+# Customize the per-arm spanning headers with a glue template
+tbl_hierarchical_incidence_rate(
+  data = adae,
+  denominator = adsl,
+  variables = c(AESOC, AEDECOD),
+  by = ARM,
+  start_date = TRTSDT,
+  end_date = TRTEDT,
+  event_date = AESTDTC,
+  spanning_label = "{level} (N = {n})"
 )
 
 }

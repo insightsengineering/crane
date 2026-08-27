@@ -102,3 +102,16 @@ test_that("remove_duplicate_keys() works with unique and duplicated values", {
 
   expect_snapshot(w_duplicated_keys$table_body[seq(4), ]) # trt has duplicates, marker does not
 })
+
+test_that("remove_duplicate_keys() keeps the tbl_split class on a split table", {
+  # Regression test for #301: the list branch used to return a bare list, so a
+  # tbl_split lost its class and attributes.
+  split <- tbl_listing(tld, split_by_rows = list(row_numbers = c(2, 3)))
+  out <- remove_duplicate_keys(split, keys = trt)
+
+  expect_s3_class(out, "tbl_split")
+  expect_identical(class(out), class(split))
+  expect_identical(attributes(out), attributes(split))
+  # each page is still a listing and the de-duplication ran
+  expect_s3_class(out[[1]], "tbl_listing")
+})

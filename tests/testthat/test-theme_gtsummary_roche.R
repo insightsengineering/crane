@@ -119,8 +119,73 @@ test_that("theme pre-conversion modifies header not to be bold and border only 0
   # check no bold syntax in header
   expect_true(all(!grepl(tbl$header$dataset[1, -1], pattern = "\\*")))
 
-  # check border width is 0.5
-  expect_true(all(tbl$header$styles$cells$border.width.bottom$data == 0.5))
+  # Column labels are framed with an outer border only (width 0.5), so the
+  # outer edges carry the border while inner edges between header rows are 0.
+  n_hdr <- nrow(tbl$header$dataset)
+  bottom <- tbl$header$styles$cells$border.width.bottom$data
+  top <- tbl$header$styles$cells$border.width.top$data
+  expect_true(all(top[1, ] == 0.5)) # top of the block
+  expect_true(all(bottom[n_hdr, ] == 0.5)) # bottom of the block
+  if (n_hdr > 1) {
+    expect_true(all(bottom[-n_hdr, ] == 0)) # no internal horizontal borders
+    # The internal border must also be style "none": a width-0 solid border is
+    # still written as a visible single line in docx (regression with spanners).
+    style_bottom <- tbl$header$styles$cells$border.style.bottom$data
+    expect_true(all(style_bottom[-n_hdr, ] == "none"))
+  }
+})
+
+test_that("theme draws no internal horizontal line between spanner and column labels in docx", {
+  skip_if_not_installed("officer")
+  skip_if_not_installed("flextable")
+  # xml2 is an indirect dependency of officer/flextable, so it is always
+  # available whenever this test runs; guard anyway for clarity.
+  skip_if_not_installed("xml2")
+
+  tbl <- with_gtsummary_theme(
+    x = theme_gtsummary_roche(),
+    {
+      t1 <- gtsummary::trial |> gtsummary::tbl_summary(by = trt, include = age)
+      t2 <- gtsummary::trial |> gtsummary::tbl_summary(by = trt, include = grade)
+      gtsummary::tbl_merge(
+        list(t1, t2),
+        tab_spanner = c("**Group A**", "**Group B**"),
+        quiet = TRUE
+      ) |>
+        gtsummary::as_flex_table()
+    }
+  )
+
+  f <- withr::local_tempfile(fileext = ".docx")
+  flextable::save_as_docx(tbl, path = f)
+  d <- withr::local_tempdir()
+  utils::unzip(f, exdir = d)
+
+  doc <- xml2::read_xml(file.path(d, "word", "document.xml"))
+  ns <- xml2::xml_ns(doc)
+  rows <- xml2::xml_find_all(doc, ".//w:tr", ns)
+
+  # Locate the spanner row and the column-label row by their text content.
+  row_text <- xml2::xml_text(rows)
+  spanner <- rows[[which(grepl("Group A", row_text))[1]]]
+  labels <- rows[[which(grepl("Characteristic", row_text))[1]]]
+
+  # Border style of the first cell on a given side, via XPath.
+  border_val <- function(row, side) {
+    node <- xml2::xml_find_first(
+      row,
+      sprintf(".//w:tc[1]//w:tcBorders/w:%s", side),
+      ns
+    )
+    if (inherits(node, "xml_missing")) NA_character_ else xml2::xml_attr(node, "val")
+  }
+
+  # No line between the spanner row and the column-label row.
+  expect_identical(border_val(spanner, "bottom"), "none")
+  expect_identical(border_val(labels, "top"), "none")
+  # Outer frame of the header block is kept.
+  expect_identical(border_val(spanner, "top"), "single")
+  expect_identical(border_val(labels, "bottom"), "single")
 })
 
 test_that("theme pre-conversion protects stat columns with non-breaking spaces", {

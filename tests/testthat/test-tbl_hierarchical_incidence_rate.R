@@ -206,3 +206,192 @@ test_that("tbl_hierarchical_incidence_rate fails safely on bad inputs", {
     )
   )
 })
+
+test_that("overall_row = FALSE omits the overall summary row", {
+  tbl_with <- tbl_hierarchical_incidence_rate(
+    data = adae_test,
+    denominator = adsl_test,
+    variables = c(AESOC, AEDECOD),
+    by = ARM,
+    start_date = TRTSDT,
+    end_date = TRTEDT,
+    event_date = AESTDTC,
+    overall_row = TRUE
+  )
+
+  tbl_without <- tbl_hierarchical_incidence_rate(
+    data = adae_test,
+    denominator = adsl_test,
+    variables = c(AESOC, AEDECOD),
+    by = ARM,
+    start_date = TRTSDT,
+    end_date = TRTEDT,
+    event_date = AESTDTC,
+    overall_row = FALSE
+  )
+
+  # table without overall row should have fewer rows
+  expect_lt(
+    nrow(tbl_without$table_body),
+    nrow(tbl_with$table_body)
+  )
+
+  # "All Adverse Events" label should not appear
+  expect_false(
+    "All Adverse Events" %in% tbl_without$table_body$label
+  )
+})
+
+test_that("spanning headers are applied for treatment arms", {
+  tbl <- tbl_hierarchical_incidence_rate(
+    data = adae_test,
+    denominator = adsl_test,
+    variables = c(AESOC, AEDECOD),
+    by = ARM,
+    start_date = TRTSDT,
+    end_date = TRTEDT,
+    event_date = AESTDTC
+  )
+
+  spanners <- tbl$table_styling$spanning_header
+  expect_gt(nrow(spanners), 0L)
+
+  # each arm should appear in the spanning headers
+  expect_true(any(grepl("Pbo", spanners$spanning_header)))
+  expect_true(any(grepl("Trt", spanners$spanning_header)))
+
+  # default uses the package convention "{level}  \n(N = {n})"
+  expect_true(any(grepl("\\(N = [0-9]+\\)", spanners$spanning_header)))
+})
+
+test_that("spanning_label glue template customizes treatment arm headers", {
+  tbl <- tbl_hierarchical_incidence_rate(
+    data = adae_test,
+    denominator = adsl_test,
+    variables = c(AESOC, AEDECOD),
+    by = ARM,
+    start_date = TRTSDT,
+    end_date = TRTEDT,
+    event_date = AESTDTC,
+    spanning_label = "{level} / n={n}"
+  )
+
+  spanners <- tbl$table_styling$spanning_header
+  # custom format should appear instead of the default parenthesized form
+  expect_true(any(grepl("/ n=[0-9]+", spanners$spanning_header)))
+  expect_false(any(grepl("\\(N = [0-9]+\\)", spanners$spanning_header)))
+})
+
+test_that("add_overall appends overall columns", {
+  tbl <- tbl_hierarchical_incidence_rate(
+    data = adae_test,
+    denominator = adsl_test,
+    variables = c(AESOC, AEDECOD),
+    by = ARM,
+    start_date = TRTSDT,
+    end_date = TRTEDT,
+    event_date = AESTDTC
+  )
+
+  n_cols_before <- length(grep("^stat_", names(tbl$table_body)))
+
+  expect_no_error(
+    tbl_overall <- tbl |> add_overall()
+  )
+
+  n_cols_after <- length(grep("^stat_", names(tbl_overall$table_body)))
+
+  # add_overall should add 5 new stat columns (count + 4 rate stats)
+  expect_equal(n_cols_after, n_cols_before + 5L)
+
+  # overall columns should exist
+  expect_true(any(grepl("^stat_0_", names(tbl_overall$table_body))))
+
+  # spanning header should contain the default overall label
+  spanners <- tbl_overall$table_styling$spanning_header
+  expect_true(any(grepl("All Participants", spanners$spanning_header)))
+})
+
+test_that("add_overall accepts a custom col_label", {
+  tbl <- tbl_hierarchical_incidence_rate(
+    data = adae_test,
+    denominator = adsl_test,
+    variables = c(AESOC, AEDECOD),
+    by = ARM,
+    start_date = TRTSDT,
+    end_date = TRTEDT,
+    event_date = AESTDTC
+  )
+
+  tbl_overall <- tbl |> add_overall(col_label = "Overall (N = {N})")
+
+  spanners <- tbl_overall$table_styling$spanning_header
+  expect_true(any(grepl("Overall \\(N = ", spanners$spanning_header)))
+})
+
+test_that("add_overall with last = TRUE places overall columns at the end", {
+  tbl <- tbl_hierarchical_incidence_rate(
+    data = adae_test,
+    denominator = adsl_test,
+    variables = c(AESOC, AEDECOD),
+    by = ARM,
+    start_date = TRTSDT,
+    end_date = TRTEDT,
+    event_date = AESTDTC
+  )
+
+  expect_no_error(
+    tbl_last <- tbl |> add_overall(last = TRUE)
+  )
+
+  stat_cols <- grep("^stat_", names(tbl_last$table_body), value = TRUE)
+  overall_cols <- grep("^stat_0_", stat_cols, value = TRUE)
+
+  # overall columns should be at the end
+  overall_positions <- match(overall_cols, stat_cols)
+  expect_true(all(overall_positions > (length(stat_cols) - length(overall_cols))))
+})
+
+test_that("add_overall on table without by returns unaltered", {
+  tbl_no_by <- tbl_hierarchical_incidence_rate(
+    data = adae_test,
+    denominator = adsl_test,
+    variables = c(AESOC, AEDECOD),
+    by = NULL,
+    start_date = TRTSDT,
+    end_date = TRTEDT,
+    event_date = AESTDTC
+  )
+
+  expect_message(
+    tbl_result <- tbl_no_by |> add_overall(),
+    "Original table was not stratified"
+  )
+
+  # table should be unchanged
+  expect_equal(
+    names(tbl_result$table_body),
+    names(tbl_no_by$table_body)
+  )
+})
+
+test_that("gather_ard works after add_overall", {
+  tbl <- tbl_hierarchical_incidence_rate(
+    data = adae_test,
+    denominator = adsl_test,
+    variables = c(AESOC, AEDECOD),
+    by = ARM,
+    start_date = TRTSDT,
+    end_date = TRTEDT,
+    event_date = AESTDTC
+  )
+
+  ard_before <- gtsummary::gather_ard(tbl)
+  n_before <- length(ard_before)
+
+  tbl_with_overall <- tbl |> add_overall()
+  ard_after <- gtsummary::gather_ard(tbl_with_overall)
+
+  # gather_ard should return more elements after add_overall
+  expect_gt(length(ard_after), n_before)
+})

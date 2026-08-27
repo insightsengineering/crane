@@ -22,6 +22,8 @@
 #'   string to use for blank values. Defaults to `NA`. It should not be changed.
 #'
 #' @name tbl_listing
+#' @seealso [modify_split_caption()] to label each page of a split table and
+#'   hide the redundant split column.
 #' @note
 #' Common pre-processing steps for the data frame that may be common:
 #'  * Unique values - this should be enforced in pre-processing by users.
@@ -88,6 +90,12 @@
 #' out <- list_lst |>
 #'   remove_duplicate_keys(keys = c("trt", "stage"))
 #' out[[2]]
+#'
+#' # Example 8 --------------------------------
+#' # Label each split page and hide the redundant split column
+#' by_stage <- tbl_listing(trial_data, split_by_rows = list(variable_level = "stage")) |>
+#'   modify_split_caption(spl_col = "stage", pattern = "Stage: {spl_level}")
+#' by_stage[[1]]
 NULL
 
 #' @export
@@ -138,11 +146,22 @@ tbl_listing <- function(data,
   x
 }
 
+#' @details
+#' `remove_duplicate_keys()` blanks out repeated values in the given key columns
+#' of a `tbl_listing`, so a key label is printed only on its first row within a
+#' run of identical values. This reduces visual clutter in listings where a key (e.g. subject
+#' or treatment) spans many consecutive rows. When applied to a split table (a
+#' list of `tbl_listing` objects) it is mapped over each element while keeping
+#' the list's class and attributes.
+#'
 #' @export
 #' @rdname tbl_listing
 remove_duplicate_keys <- function(x, keys = NULL, value = NA) {
   if (is.list(x) && inherits(x[[1]], "gtsummary")) {
-    return(map(x, remove_duplicate_keys, keys = {{ keys }}, value = value))
+    # Assign back in place so the list keeps its class and attributes (e.g. a
+    # `tbl_split` stays a `tbl_split`); `map()` alone would drop them.
+    x[] <- map(x, remove_duplicate_keys, keys = {{ keys }}, value = value)
+    return(x)
   }
 
   # Checks -----------------------------------

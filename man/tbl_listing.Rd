@@ -45,6 +45,14 @@ This function creates a listing from a data frame. Common uses
 rely on few pre-processing steps, such as ensuring unique values in key columns or split
 by rows or columns. They are described in the note section.
 }
+\details{
+\code{remove_duplicate_keys()} blanks out repeated values in the given key columns
+of a \code{tbl_listing}, so a key label is printed only on its first row within a
+run of identical values. This reduces visual clutter in listings where a key (e.g. subject
+or treatment) spans many consecutive rows. When applied to a split table (a
+list of \code{tbl_listing} objects) it is mapped over each element while keeping
+the list's class and attributes.
+}
 \note{
 Common pre-processing steps for the data frame that may be common:
 \itemize{
@@ -116,5 +124,15 @@ list_lst[[2]]
 out <- list_lst |>
   remove_duplicate_keys(keys = c("trt", "stage"))
 out[[2]]
+
+# Example 8 --------------------------------
+# Label each split page and hide the redundant split column
+by_stage <- tbl_listing(trial_data, split_by_rows = list(variable_level = "stage")) |>
+  modify_split_caption(spl_col = "stage", pattern = "Stage: {spl_level}")
+by_stage[[1]]
 \dontshow{\}) # examplesIf}
+}
+\seealso{
+\code{\link[=modify_split_caption]{modify_split_caption()}} to label each page of a split table and
+hide the redundant split column.
 }

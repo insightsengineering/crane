@@ -8,19 +8,31 @@
       2          Median                  NE                             36.0                            33.0
       3          95% CI            (NE, NE)                     (24.0, 46.0)                    (27.0, 48.0)
       4 25% and 75%-ile            70.0, NE                       14.0, 58.0                      19.0, 80.0
-      5           Range        1.0 to 198.0                     1.0 to 189.0                    1.0 to 190.0
+      5           Range       1.0 to 198.0*                    1.0 to 189.0*                   1.0 to 190.0*
 
 ---
 
     Code
-      as.data.frame(tbl)
+      as.data.frame(tbl_str)
     Output
                         Drug A  \n(N = 98) Drug B  \n(N = 102)
       1   Time to event               <NA>                <NA>
       2          Median               23.5                21.2
       3          95% CI         (20.9, NE)          (18.0, NE)
       4 25% and 75%-ile           17.4, NE            14.5, NE
-      5           Range        3.5 to 24.0         5.3 to 24.0
+      5           Range       3.5 to 24.0*        5.3 to 24.0*
+
+---
+
+    Code
+      as.data.frame(tbl_expr)
+    Output
+                        Drug A  \n(N = 98) Drug B  \n(N = 102)
+      1   Time to event               <NA>                <NA>
+      2          Median               23.5                21.2
+      3          95% CI         (20.9, NE)          (18.0, NE)
+      4 25% and 75%-ile           17.4, NE            14.5, NE
+      5           Range       3.5 to 24.0*        5.3 to 24.0*
 
 ---
 
@@ -32,7 +44,7 @@
       2          Median                 51.0
       3          90% CI         (46.0, 68.0)
       4 25% and 75%-ile             22.0, NE
-      5           Range         1.0 to 198.0
+      5           Range        1.0 to 198.0*
 
 # tbl_survfit_quantiles(by) messaging
 
@@ -60,7 +72,7 @@
       2          Median                  NA                           36.000                          33.000
       3          95% CI            (NA, NA)                 (24.000, 46.000)                (27.000, 48.000)
       4 25% and 75%-ile          70.000, NA                   14.000, 58.000                  19.000, 80.000
-      5           Range    1.000 to 198.000                 1.000 to 189.000                1.000 to 190.000
+      5           Range   1.000 to 198.000*                1.000 to 189.000*               1.000 to 190.000*
 
 # add_overall.tbl_survfit_quantiles() works
 
@@ -72,5 +84,5 @@
       2          Median                  NE                             36.0                            33.0                        51.0
       3          95% CI            (NE, NE)                     (24.0, 46.0)                    (27.0, 48.0)                (43.0, 70.0)
       4 25% and 75%-ile            70.0, NE                       14.0, 58.0                      19.0, 80.0                    22.0, NE
-      5           Range        1.0 to 198.0                     1.0 to 189.0                    1.0 to 190.0                1.0 to 198.0
+      5           Range       1.0 to 198.0*                    1.0 to 189.0*                   1.0 to 190.0*               1.0 to 198.0*
 

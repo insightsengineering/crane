@@ -11,7 +11,9 @@ gg_lineplot(
   group = NULL,
   stat = c("mean", "median"),
   variability = c("ci", "sd", "se", "iqr", "none"),
-  conf_level = 0.95
+  conf_level = 0.95,
+  show_n = FALSE,
+  jitter = 0
 )
 }
 \arguments{
@@ -36,6 +38,15 @@ Default is \code{"ci"}.}
 
 \item{conf_level}{(\code{numeric})\cr
 Confidence level for error bars when \code{variability = "ci"} (default: \code{0.95}).}
+
+\item{show_n}{(\code{flag})\cr
+When \code{TRUE}, append the group size to each legend key (e.g.
+\code{"Placebo (N=42)"}). Only applies when \code{group} is supplied. Default \code{FALSE}.}
+
+\item{jitter}{(\code{numeric})\cr
+Horizontal jitter width applied to points, lines and error bars together
+so they stay aligned. \code{0} (default) disables jittering and uses dodging
+only. A small value such as \code{0.1} helps separate overlapping groups.}
 }
 \value{
 A \code{ggplot} object of class \code{crane_gg_line}.
@@ -87,6 +98,16 @@ gg_lineplot(
     linetype = "dashed",
     color = "gray50"
   )
+
+# 4. Show group sizes in the legend and jitter overlapping groups
+gg_lineplot(
+  data = mock_adlb,
+  x = AVISIT,
+  y = AVAL,
+  group = ARM,
+  show_n = TRUE,
+  jitter = 0.1
+)
 }
 \seealso{
 \code{\link[=annotate_lineplot_df]{annotate_lineplot_df()}} for related functionalities.
