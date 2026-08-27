@@ -79,6 +79,7 @@ import(ggplot2)
 import(glue)
 import(rlang)
 importFrom(broom,tidy)
+importFrom(broom.helpers,tidy_parameters)
 importFrom(cards,ard_tabulate_value)
 importFrom(cowplot,
   draw_plot,

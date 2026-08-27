@@ -1,5 +1,7 @@
 # crane 0.3.3.9017
 
+* `broom.helpers` is moved from `Suggests` to `Imports`, and `broom.helpers::tidy_parameters` is now imported. (#312)
+
 * `tbl_null_report()` now centers its message, so with no body content it reads as a "no data" panel spanning the table instead of text hugging the left edge. (#305)
 
 * `get_mmrm_results()` gains a `weights` argument (default `"equal"`) passed to `emmeans::emmeans()`, so proportionally weighted LS Means can be requested with `weights = "proportional"`. Check `?emmeans::emmeans()` for other `weights` options. (#299)
