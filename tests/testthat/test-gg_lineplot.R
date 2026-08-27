@@ -149,6 +149,53 @@ test_that("gg_lineplot converts character y to numeric automatically", {
   expect_s3_class(p_factor, "crane_gg_line")
 })
 
+test_that("gg_lineplot show_n appends group sizes to the legend", {
+  p <- gg_lineplot(
+    data = mock_adlb, x = AVISIT, y = AVAL, group = ARM,
+    stat = "mean", variability = "ci", show_n = TRUE
+  )
+
+  labels <- ggplot2::ggplot_build(p)$plot$scales$get_scales("colour")$get_labels()
+
+  # Treatment B has 30 rows, Treatment A has 20 (one visit removed above)
+  expect_true(any(grepl("Treatment A \\(N=20\\)", labels)))
+  expect_true(any(grepl("Treatment B \\(N=30\\)", labels)))
+})
+
+test_that("gg_lineplot show_n warns when no group is supplied", {
+  expect_warning(
+    gg_lineplot(
+      data = mock_adlb, x = AVISIT, y = AVAL,
+      stat = "mean", variability = "ci", show_n = TRUE
+    ),
+    regexp = "no effect when"
+  )
+})
+
+test_that("gg_lineplot jitter keeps points and error bars aligned", {
+  p <- gg_lineplot(
+    data = mock_adlb, x = AVISIT, y = AVAL, group = ARM,
+    stat = "mean", variability = "ci", jitter = 0.1
+  )
+  built <- ggplot2::ggplot_build(p)
+
+  # First layer is the points, last is the error bars; a shared seeded
+  # position must give them identical x coordinates
+  point_x <- sort(unique(round(built$data[[1]]$x, 4)))
+  ebar_x <- sort(unique(round(built$data[[length(built$data)]]$x, 4)))
+  expect_equal(point_x, ebar_x)
+})
+
+test_that("gg_lineplot validates jitter", {
+  expect_error(
+    gg_lineplot(
+      data = mock_adlb, x = AVISIT, y = AVAL, group = ARM,
+      variability = "ci", jitter = -1
+    ),
+    regexp = "must be a non-negative number"
+  )
+})
+
 test_that("gg_lineplot informs users about numeric vs categorical x-axis", {
   # 1. Numeric x-axis hits the final `else` branch (encourages using factor)
   expect_message(

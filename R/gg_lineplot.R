@@ -19,6 +19,13 @@
 #'   Default is `"ci"`.
 #' @param conf_level (`numeric`)\cr
 #'   Confidence level for error bars when `variability = "ci"` (default: `0.95`).
+#' @param show_n (`flag`)\cr
+#'   When `TRUE`, append the group size to each legend key (e.g.
+#'   `"Placebo (N=42)"`). Only applies when `group` is supplied. Default `FALSE`.
+#' @param jitter (`numeric`)\cr
+#'   Horizontal jitter width applied to points, lines and error bars together
+#'   so they stay aligned. `0` (default) disables jittering and uses dodging
+#'   only. A small value such as `0.1` helps separate overlapping groups.
 #'
 #' @return A `ggplot` object of class `crane_gg_line`.
 #'
@@ -66,6 +73,16 @@
 #'     linetype = "dashed",
 #'     color = "gray50"
 #'   )
+#'
+#' # 4. Show group sizes in the legend and jitter overlapping groups
+#' gg_lineplot(
+#'   data = mock_adlb,
+#'   x = AVISIT,
+#'   y = AVAL,
+#'   group = ARM,
+#'   show_n = TRUE,
+#'   jitter = 0.1
+#' )
 #' @export
 gg_lineplot <- function(data,
                         x,
@@ -73,10 +90,17 @@ gg_lineplot <- function(data,
                         group = NULL,
                         stat = c("mean", "median"),
                         variability = c("ci", "sd", "se", "iqr", "none"),
-                        conf_level = 0.95) {
+                        conf_level = 0.95,
+                        show_n = FALSE,
+                        jitter = 0) {
   # 1. Argument Matching and Validation
   stat <- match.arg(stat)
   variability <- match.arg(variability)
+  check_scalar_logical(show_n)
+  check_scalar(jitter)
+  if (!is.numeric(jitter) || jitter < 0) {
+    cli::cli_abort("{.arg jitter} must be a non-negative number.")
+  }
 
   # Prevent mathematically invalid combinations
   if (stat == "mean" && variability == "iqr") {
@@ -137,7 +161,19 @@ gg_lineplot <- function(data,
       dplyr::left_join(data, by = x)
   }
 
-  pd <- ggplot2::position_dodge(width = 0.4)
+  # A single shared position object keeps the points, connecting lines and
+  # error bars aligned. When `jitter > 0` a fixed seed makes every layer apply
+  # the same horizontal jitter, so they never drift apart.
+  pd <- if (jitter > 0) {
+    ggplot2::position_jitterdodge(
+      jitter.width = jitter,
+      jitter.height = 0,
+      dodge.width = 0.4,
+      seed = 123
+    )
+  } else {
+    ggplot2::position_dodge(width = 0.4)
+  }
 
   # 3. Build Plot: Use clean aes() mapping so gg_varname_extraction succeeds
   if (length(group) > 0) {
@@ -201,6 +237,23 @@ gg_lineplot <- function(data,
   # Dynamically label the legends to overwrite the ugly ".data[[group]]" default
   if (length(group) > 0) {
     p <- p + ggplot2::labs(color = group, linetype = group, shape = group)
+
+    # Optionally append the group size to each legend key, e.g. "Placebo (N=42)"
+    if (show_n) {
+      grp_n <- table(data[[group]])
+      grp_labels <- stats::setNames(
+        paste0(names(grp_n), " (N=", as.integer(grp_n), ")"),
+        names(grp_n)
+      )
+      p <- p +
+        ggplot2::scale_color_discrete(labels = grp_labels) +
+        ggplot2::scale_shape_discrete(labels = grp_labels) +
+        ggplot2::scale_linetype_discrete(labels = grp_labels)
+    }
+  } else if (show_n) {
+    cli::cli_warn(
+      "{.arg show_n} has no effect when {.arg group} is not supplied."
+    )
   }
 
 

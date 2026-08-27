@@ -45,6 +45,14 @@ This function creates a listing from a data frame. Common uses
 rely on few pre-processing steps, such as ensuring unique values in key columns or split
 by rows or columns. They are described in the note section.
 }
+\details{
+\code{remove_duplicate_keys()} blanks out repeated values in the given key columns
+of a \code{tbl_listing}, so a key label is printed only on its first row within a
+run of identical values. This reduces visual clutter in listings where a key (e.g. subject
+or treatment) spans many consecutive rows. When applied to a split table (a
+list of \code{tbl_listing} objects) it is mapped over each element while keeping
+the list's class and attributes.
+}
 \note{
 Common pre-processing steps for the data frame that may be common:
 \itemize{
