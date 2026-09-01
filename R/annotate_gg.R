@@ -14,10 +14,15 @@
 #'   automatically extracts these from the `gg_plt` mapping.
 #' @param summary_stats (`character`)\cr
 #'   Vector of statistics to include. One or more of `"n"`, `"mean"`, `"sd"`,
-#'   `"se"`, `"ci"`, `"median"`, and `"iqr"`. Defaults to `c("n", "mean", "sd")`.
-#'   `"ci"` reports the confidence interval of the mean at `conf_level`.
+#'   `"se"`, `"mean_se"`, `"ci"`, `"median"`, and `"iqr"`. Defaults to
+#'   `c("n", "mean", "sd")`. `"se"` reports the standard error on its own, while
+#'   `"mean_se"` reports the mean +/- 1 standard error interval (matching the
+#'   error bars drawn by `gg_lineplot(variability = "se")`). `"ci"` reports the
+#'   confidence interval of the mean at `conf_level`.
 #' @param conf_level (`numeric`)\cr
 #'   Confidence level for the `"ci"` statistic. Defaults to `0.95`.
+#' @param se_label (`string`)\cr
+#'   Row label for the `"mean_se"` statistic. Defaults to `"Mean -/+ 1xSE"`.
 #' @param digits (`numeric`, `list`, or `formula`)\cr
 #'   Optional specification for the number of decimal places for the summary statistics.
 #'   Can be a single integer (e.g., `2`), a vector of integers matching the statistics
@@ -60,6 +65,14 @@
 #'   digits = c(0, 2, 2)
 #' )
 #'
+#' # 5. Report the mean +/- 1 SE interval with a custom label
+#' annotate_lineplot_df(
+#'   gg_plt = p_base,
+#'   data = mock_adlb,
+#'   summary_stats = c("n", "mean", "mean_se"),
+#'   se_label = "Mean +/- SE"
+#' )
+#'
 #' @export
 annotate_lineplot_df <- function(gg_plt,
                                  data,
@@ -68,6 +81,7 @@ annotate_lineplot_df <- function(gg_plt,
                                  group = NULL,
                                  summary_stats = c("n", "mean", "sd"),
                                  conf_level = 0.95,
+                                 se_label = "Mean -/+ 1xSE",
                                  digits = NULL,
                                  font_size = 10,
                                  rel_height_plot = 0.75) {
@@ -86,6 +100,17 @@ annotate_lineplot_df <- function(gg_plt,
   }
   conf.high <- function(x) {
     .calc_stats(x, stat = "mean", variability = "ci", conf_level = conf_level)$ymax
+  }
+
+  # Mean +/- 1 SE bounds for the table, delegated to the same helper that draws
+  # the error bars in `gg_lineplot(variability = "se")` so the reported interval
+  # always matches the plot. Picked up by name in the `{se.low}` / `{se.high}`
+  # glue of the `"mean_se"` statistic below.
+  se.low <- function(x) {
+    .calc_stats(x, stat = "mean", variability = "se", conf_level = conf_level)$ymin
+  }
+  se.high <- function(x) {
+    .calc_stats(x, stat = "mean", variability = "se", conf_level = conf_level)$ymax
   }
 
   # Auto-extract variable names from the ggplot mapping if not explicitly provided
@@ -107,6 +132,7 @@ annotate_lineplot_df <- function(gg_plt,
     "mean" = "{mean}",
     "sd" = "{sd}",
     "se" = "{se}",
+    "mean_se" = "{se.low}, {se.high}",
     "ci" = "{conf.low}, {conf.high}",
     "median" = "{median}",
     "iqr" = "{p25}, {p75}"
@@ -118,6 +144,7 @@ annotate_lineplot_df <- function(gg_plt,
     "mean" = "Mean",
     "sd" = "SD",
     "se" = "SE",
+    "mean_se" = se_label,
     "ci" = ci_label,
     "median" = "Median",
     "iqr" = "IQR"

@@ -217,6 +217,56 @@ test_that("annotate_lineplot_df ci label follows conf_level", {
   expect_true(any(grepl("90% CI", trimws(res_df$Group))))
 })
 
+test_that("annotate_lineplot_df mean_se reports the mean +/- 1 SE interval", {
+  mock_df2gg <- function(df, ...) df
+
+  res_df <- testthat::with_mocked_bindings(
+    {
+      annotate_lineplot_df(
+        gg_plt = p_valid,
+        data = mock_adlb,
+        summary_stats = c("n", "mean", "mean_se")
+      )
+    },
+    df2gg_aligned = mock_df2gg
+  )
+
+  expect_s3_class(res_df, "data.frame")
+
+  # The mean_se row carries the default label
+  expect_true(any(grepl("Mean -/\\+ 1xSE", trimws(res_df$Group))))
+
+  # Verify Visit '0' interval equals mean +/- se for the first treatment group
+  x <- mock_adlb$AVAL[mock_adlb$AVISIT == 0 & mock_adlb$ARM == "Trt A"]
+  se <- stats::sd(x) / sqrt(length(x))
+  expected <- c(mean(x) - se, mean(x) + se)
+
+  val_se <- res_df[grepl("1xSE$", trimws(res_df$Group)), "0"][1]
+  # gtsummary separates the bounds with a non-breaking space; extract the numbers
+  nums <- regmatches(val_se, gregexpr("-?[0-9.]+", val_se))[[1]]
+  got <- as.numeric(nums)
+
+  expect_equal(got, expected, tolerance = 1e-2)
+})
+
+test_that("annotate_lineplot_df mean_se label is configurable via se_label", {
+  mock_df2gg <- function(df, ...) df
+
+  res_df <- testthat::with_mocked_bindings(
+    {
+      annotate_lineplot_df(
+        gg_plt = p_valid,
+        data = mock_adlb,
+        summary_stats = c("mean", "mean_se"),
+        se_label = "Mean +/- SE"
+      )
+    },
+    df2gg_aligned = mock_df2gg
+  )
+
+  expect_true(any(grepl("Mean \\+/- SE", trimws(res_df$Group))))
+})
+
 test_that("annotate_lineplot_df forwards font_size to df2gg_aligned", {
   captured <- NULL
   mock_df2gg <- function(df, ..., text_size, label_size) {

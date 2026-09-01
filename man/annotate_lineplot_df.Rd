@@ -12,6 +12,7 @@ annotate_lineplot_df(
   group = NULL,
   summary_stats = c("n", "mean", "sd"),
   conf_level = 0.95,
+  se_label = "Mean -/+ 1xSE",
   digits = NULL,
   font_size = 10,
   rel_height_plot = 0.75
@@ -30,11 +31,17 @@ automatically extracts these from the \code{gg_plt} mapping.}
 
 \item{summary_stats}{(\code{character})\cr
 Vector of statistics to include. One or more of \code{"n"}, \code{"mean"}, \code{"sd"},
-\code{"se"}, \code{"ci"}, \code{"median"}, and \code{"iqr"}. Defaults to \code{c("n", "mean", "sd")}.
-\code{"ci"} reports the confidence interval of the mean at \code{conf_level}.}
+\code{"se"}, \code{"mean_se"}, \code{"ci"}, \code{"median"}, and \code{"iqr"}. Defaults to
+\code{c("n", "mean", "sd")}. \code{"se"} reports the standard error on its own, while
+\code{"mean_se"} reports the mean +/- 1 standard error interval (matching the
+error bars drawn by \code{gg_lineplot(variability = "se")}). \code{"ci"} reports the
+confidence interval of the mean at \code{conf_level}.}
 
 \item{conf_level}{(\code{numeric})\cr
 Confidence level for the \code{"ci"} statistic. Defaults to \code{0.95}.}
+
+\item{se_label}{(\code{string})\cr
+Row label for the \code{"mean_se"} statistic. Defaults to \code{"Mean -/+ 1xSE"}.}
 
 \item{digits}{(\code{numeric}, \code{list}, or \code{formula})\cr
 Optional specification for the number of decimal places for the summary statistics.
@@ -82,6 +89,14 @@ annotate_lineplot_df(
   data = mock_adlb,
   summary_stats = c("n", "median", "iqr"),
   digits = c(0, 2, 2)
+)
+
+# 5. Report the mean +/- 1 SE interval with a custom label
+annotate_lineplot_df(
+  gg_plt = p_base,
+  data = mock_adlb,
+  summary_stats = c("n", "mean", "mean_se"),
+  se_label = "Mean +/- SE"
 )
 
 }
