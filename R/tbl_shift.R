@@ -238,16 +238,11 @@ tbl_shift <- function(data,
           if (strata_location == "new_column") {
             tbl <- tbl |>
               gtsummary::remove_row_type(type = "header") |>
-              gtsummary::modify_table_body(
-                ~ .x |>
-                  mutate(
-                    .before = "label",
-                    label0 = ifelse(dplyr::row_number() == 1L, .env$stratum, NA_character_)
-                  )
-              ) |>
-              gtsummary::modify_column_alignment(columns = c("label", "label0"), align = "left") |>
-              gtsummary::modify_indent(columns = label, indent = 0L) |>
-              gtsummary::modify_header(label0 = strata_var_label, label = variable_var_label)
+              add_label_column(
+                value = ifelse(dplyr::row_number() == 1L, .env$stratum, NA_character_),
+                header = strata_var_label,
+                label_header = variable_var_label
+              )
           }
           # If not new column, update column header
           else if (strata_location == "header") {

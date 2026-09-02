@@ -1,5 +1,7 @@
 # crane 0.3.3.9017
 
+* Added `add_label_column()` to split a `{gtsummary}` table's row labels into a new left label column (`label0`) and the existing `label` column, computing the new column from an expression evaluated in the table body. This is the `strata_location = "new_column"` layout of `tbl_shift()` exposed as a standalone step for nested count and shift tables. (#314)
+
 * `tbl_null_report()` now centers its message, so with no body content it reads as a "no data" panel spanning the table instead of text hugging the left edge. (#305)
 
 * `get_mmrm_results()` gains a `weights` argument (default `"equal"`) passed to `emmeans::emmeans()`, so proportionally weighted LS Means can be requested with `weights = "proportional"`. Check `?emmeans::emmeans()` for other `weights` options. (#299)
