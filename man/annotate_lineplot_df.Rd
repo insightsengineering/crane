@@ -11,7 +11,9 @@ annotate_lineplot_df(
   y = NULL,
   group = NULL,
   summary_stats = c("n", "mean", "sd"),
+  conf_level = 0.95,
   digits = NULL,
+  font_size = 10,
   rel_height_plot = 0.75
 )
 }
@@ -27,13 +29,21 @@ Optional column names as strings. If \code{NULL} (default), the function
 automatically extracts these from the \code{gg_plt} mapping.}
 
 \item{summary_stats}{(\code{character})\cr
-Vector of statistics to include. Defaults to \code{c("n", "mean", "sd")}.}
+Vector of statistics to include. One or more of \code{"n"}, \code{"mean"}, \code{"sd"},
+\code{"se"}, \code{"ci"}, \code{"median"}, and \code{"iqr"}. Defaults to \code{c("n", "mean", "sd")}.
+\code{"ci"} reports the confidence interval of the mean at \code{conf_level}.}
+
+\item{conf_level}{(\code{numeric})\cr
+Confidence level for the \code{"ci"} statistic. Defaults to \code{0.95}.}
 
 \item{digits}{(\code{numeric}, \code{list}, or \code{formula})\cr
 Optional specification for the number of decimal places for the summary statistics.
 Can be a single integer (e.g., \code{2}), a vector of integers matching the statistics
 (e.g., \code{c(0, 2, 2)}), or a \code{gtsummary} style formula. Defaults to \code{NULL}
 (uses \code{gtsummary} default auto-formatting).}
+
+\item{font_size}{(\code{numeric})\cr
+Base font size for the summary table text. Defaults to \code{10}.}
 
 \item{rel_height_plot}{(\code{numeric})\cr
 Relative height of the plot vs the table. Defaults to \code{0.75}.}

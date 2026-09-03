@@ -1,4 +1,18 @@
-# crane 0.3.3.9011
+# crane 0.3.3.9017
+
+* `tbl_null_report()` now centers its message, so with no body content it reads as a "no data" panel spanning the table instead of text hugging the left edge. (#305)
+
+* `get_mmrm_results()` gains a `weights` argument (default `"equal"`) passed to `emmeans::emmeans()`, so proportionally weighted LS Means can be requested with `weights = "proportional"`. Check `?emmeans::emmeans()` for other `weights` options. (#299)
+
+* `tbl_mmrm()` gains a `baseline_args` argument, forwarded to the baseline `tbl_roche_summary()` call, to configure the baseline section statistics (previously locked to `n` and `Mean (SE)`). (#299)
+
+* `tbl_mmrm()` gains a `postbaseline_args` argument to select, reorder, relabel and reformat the post-baseline statistics (previously locked to n, adjusted means, differences and p-value). Built-in `"geom_mean_ratio"` and `"geom_mean_ratio_ci"` statistics are available for log-transformed responses. (#299)
+
+* `remove_duplicate_keys()` now keeps the `tbl_split` class and attributes when applied to a split table, instead of returning a plain list. (#301)
+
+* `annotate_lineplot_df()` gains `"se"` and `"ci"` as `summary_stats` options, reporting the standard error and the confidence interval of the mean (at a new `conf_level` argument) in the summary table below the plot. (#307)
+
+* `gg_lineplot()` gains a `show_n` argument to append group sizes to the legend (e.g. `"Placebo (N=42)"`) and a `jitter` argument to horizontally separate overlapping groups while keeping points, lines, and error bars aligned. (#307)
 
 * Added `tbl_proportion()` to summarize a binary or multinomial variable as proportions with confidence intervals (estimate and CI on separate rows), with a selectable CI `method` and `conf.level`. (#303)
 
@@ -7,6 +21,8 @@
 * Added `add_proportion_odds_ratio()` to append an odds ratio, with stratified (Cochran-Mantel-Haenszel) support via `strata`. (#303)
 
 * Added `modify_split_caption()` to subtitle each page of a split `{gtsummary}` table (e.g. from `tbl_listing()`, `tbl_baseline_chg()`, or `tbl_shift()`) from its split level via a glue `pattern` (default `"Parameter: {spl_level}"`) and hide the now-redundant split column. (#282)
+
+* `annotate_lineplot_df()` and `annotate_pkc_df()` gain a `font_size` argument to control the summary table font size, matching `annotate_riskdf()`. The `text_size` argument of `annotate_pkc_df()` is soft-deprecated in favor of `font_size`. (#295)
 
 * Renamed `imputation_rules()` to `pk_imputation_rules()` to make its PK scope explicit. It applies BLQ display rules to PK summary statistics based on the BLQ ratio and dosing timing, and now marks any missing statistic (e.g. standard deviation or CV% when `n = 1`) as `"NE"` (not estimable). (#293)
 
@@ -17,8 +33,6 @@
 * `geom_mean()` returns `NA_real_` instead of `NaN` when all concentrations are missing. (#293)
 
 * `fmt_3sig()` and `fmt_pct()` are now vectorized and return `NA_character_` for `NA` or non-finite input. (#293)
-
-# crane 0.3.3.9007
 
 * `annotate_riskdf()` now builds the "Numbers at Risk" table at the plot's x-axis breaks, so custom ticks set with `ggplot2::scale_x_continuous(breaks = ...)` are reflected in the table. (#278)
 
@@ -31,6 +45,9 @@
 * `tbl_hierarchical_incidence_rate()` now supports `add_overall()` to append an unstratified column pooling all treatment arms, consistent with the other `add_overall()` methods in the package (`last = FALSE` and a glue `col_label` by default). (#264)
 
 * `tbl_hierarchical_incidence_rate()` now renders spanning headers for treatment arm columns, customizable via the new `spanning_label` glue argument (e.g. `"{level} (N = {n})"`). (#264)
+
+* `tbl_with_pools()` no longer strips spanning headers set by the inner `.tbl_fun`, so pooling `tbl_baseline_chg()` keeps the treatment-arm headers. (#297)
+
 
 # crane 0.3.2
 
