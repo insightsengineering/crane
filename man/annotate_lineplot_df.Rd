@@ -12,6 +12,8 @@ annotate_lineplot_df(
   group = NULL,
   summary_stats = c("n", "mean", "sd"),
   conf_level = 0.95,
+  labels = NULL,
+  blank_timepoints = NULL,
   digits = NULL,
   font_size = 10,
   rel_height_plot = 0.75
@@ -30,11 +32,28 @@ automatically extracts these from the \code{gg_plt} mapping.}
 
 \item{summary_stats}{(\code{character})\cr
 Vector of statistics to include. One or more of \code{"n"}, \code{"mean"}, \code{"sd"},
-\code{"se"}, \code{"ci"}, \code{"median"}, and \code{"iqr"}. Defaults to \code{c("n", "mean", "sd")}.
-\code{"ci"} reports the confidence interval of the mean at \code{conf_level}.}
+\code{"se"}, \code{"mean_se"}, \code{"ci"}, \code{"median"}, and \code{"iqr"}. Defaults to
+\code{c("n", "mean", "sd")}. \code{"se"} reports the standard error on its own, while
+\code{"mean_se"} reports the mean +/- 1 standard error interval (matching the
+error bars drawn by \code{gg_lineplot(variability = "se")}, labelled
+\code{"Mean -/+ 1xSE"}). \code{"ci"} reports the confidence interval of the mean at
+\code{conf_level}.}
 
 \item{conf_level}{(\code{numeric})\cr
 Confidence level for the \code{"ci"} statistic. Defaults to \code{0.95}.}
+
+\item{labels}{(\code{character} or \code{NULL})\cr
+Optional named vector overriding the default row labels, keyed by statistic
+name (\code{"n"}, \code{"mean"}, \code{"sd"}, \code{"se"}, \code{"mean_se"}, \code{"ci"}, \code{"median"},
+\code{"iqr"}). For example, \code{labels = c(mean = "LS mean")} on an MMRM plot, or
+\code{labels = c(mean_se = "Mean +/- SE")} to relabel the SE interval. Defaults
+to \code{NULL} (built-in labels).}
+
+\item{blank_timepoints}{(\code{character} or \code{NULL})\cr
+Optional vector of timepoint (x-axis level) labels at which the continuous
+statistics are blanked, while the count (\code{"n"}) is kept. Useful for a
+constant change-from-baseline visit in an MMRM plot, where the mean/SD/CI
+are \code{0} by construction and carry no information. Defaults to \code{NULL}.}
 
 \item{digits}{(\code{numeric}, \code{list}, or \code{formula})\cr
 Optional specification for the number of decimal places for the summary statistics.
@@ -82,6 +101,23 @@ annotate_lineplot_df(
   data = mock_adlb,
   summary_stats = c("n", "median", "iqr"),
   digits = c(0, 2, 2)
+)
+
+# 5. Report the mean +/- 1 SE interval, relabelled via `labels`
+annotate_lineplot_df(
+  gg_plt = p_base,
+  data = mock_adlb,
+  summary_stats = c("n", "mean", "mean_se"),
+  labels = c(mean_se = "Mean +/- SE")
+)
+
+# 6. Rename a statistic and blank a constant baseline column (e.g. MMRM)
+annotate_lineplot_df(
+  gg_plt = p_base,
+  data = mock_adlb,
+  summary_stats = c("n", "mean", "sd"),
+  labels = c(mean = "LS mean"),
+  blank_timepoints = "0"
 )
 
 }

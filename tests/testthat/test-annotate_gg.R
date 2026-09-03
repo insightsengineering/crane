@@ -217,6 +217,134 @@ test_that("annotate_lineplot_df ci label follows conf_level", {
   expect_true(any(grepl("90% CI", trimws(res_df$Group))))
 })
 
+test_that("annotate_lineplot_df mean_se reports the mean +/- 1 SE interval", {
+  mock_df2gg <- function(df, ...) df
+
+  res_df <- testthat::with_mocked_bindings(
+    {
+      annotate_lineplot_df(
+        gg_plt = p_valid,
+        data = mock_adlb,
+        summary_stats = c("n", "mean", "mean_se")
+      )
+    },
+    df2gg_aligned = mock_df2gg
+  )
+
+  expect_s3_class(res_df, "data.frame")
+
+  # The mean_se row carries the default label
+  expect_true(any(grepl("Mean -/\\+ 1xSE", trimws(res_df$Group))))
+
+  # Verify Visit '0' interval equals mean +/- se for the first treatment group
+  x <- mock_adlb$AVAL[mock_adlb$AVISIT == 0 & mock_adlb$ARM == "Trt A"]
+  se <- stats::sd(x) / sqrt(length(x))
+  expected <- c(mean(x) - se, mean(x) + se)
+
+  val_se <- res_df[grepl("1xSE$", trimws(res_df$Group)), "0"][1]
+  # gtsummary separates the bounds with a non-breaking space; extract the numbers
+  nums <- regmatches(val_se, gregexpr("-?[0-9.]+", val_se))[[1]]
+  got <- as.numeric(nums)
+
+  expect_equal(got, expected, tolerance = 1e-2)
+})
+
+test_that("annotate_lineplot_df mean_se label is configurable via labels", {
+  mock_df2gg <- function(df, ...) df
+
+  res_df <- testthat::with_mocked_bindings(
+    {
+      annotate_lineplot_df(
+        gg_plt = p_valid,
+        data = mock_adlb,
+        summary_stats = c("mean", "mean_se"),
+        labels = c(mean_se = "Mean +/- SE")
+      )
+    },
+    df2gg_aligned = mock_df2gg
+  )
+
+  expect_true(any(grepl("Mean \\+/- SE", trimws(res_df$Group))))
+})
+
+test_that("annotate_lineplot_df renames statistics via labels", {
+  mock_df2gg <- function(df, ...) df
+
+  res_df <- testthat::with_mocked_bindings(
+    {
+      annotate_lineplot_df(
+        gg_plt = p_valid,
+        data = mock_adlb,
+        summary_stats = c("n", "mean", "sd"),
+        labels = c(mean = "LS mean")
+      )
+    },
+    df2gg_aligned = mock_df2gg
+  )
+
+  labels_seen <- trimws(res_df$Group)
+  expect_true(any(labels_seen == "LS mean"))
+  expect_false(any(labels_seen == "Mean"))
+  # Untouched labels remain
+  expect_true(any(labels_seen == "SD"))
+})
+
+test_that("annotate_lineplot_df rejects invalid labels", {
+  expect_error(
+    annotate_lineplot_df(gg_plt = p_valid, data = mock_adlb, labels = "LS mean"),
+    regexp = "must be a named vector"
+  )
+  expect_error(
+    annotate_lineplot_df(gg_plt = p_valid, data = mock_adlb, labels = c(foo = "Bar")),
+    regexp = "Unknown statistic"
+  )
+})
+
+test_that("annotate_lineplot_df blanks continuous stats at blank_timepoints", {
+  mock_df2gg <- function(df, ...) df
+
+  res_df <- testthat::with_mocked_bindings(
+    {
+      annotate_lineplot_df(
+        gg_plt = p_valid,
+        data = mock_adlb,
+        summary_stats = c("n", "mean", "sd"),
+        blank_timepoints = "0"
+      )
+    },
+    df2gg_aligned = mock_df2gg
+  )
+
+  labels_seen <- trimws(res_df$Group)
+  # The baseline column ("0") is blank for continuous stats but keeps n
+  mean_rows <- which(labels_seen == "Mean")
+  sd_rows <- which(labels_seen == "SD")
+  n_rows <- which(labels_seen == "n")
+
+  expect_true(all(res_df[["0"]][mean_rows] == ""))
+  expect_true(all(res_df[["0"]][sd_rows] == ""))
+  expect_true(all(res_df[["0"]][n_rows] != ""))
+
+  # Other timepoints are unaffected
+  expect_true(all(res_df[["4"]][mean_rows] != ""))
+})
+
+test_that("annotate_lineplot_df warns on unknown blank_timepoints", {
+  mock_df2gg <- function(df, ...) df
+
+  expect_warning(
+    testthat::with_mocked_bindings(
+      annotate_lineplot_df(
+        gg_plt = p_valid,
+        data = mock_adlb,
+        blank_timepoints = "NoSuchVisit"
+      ),
+      df2gg_aligned = mock_df2gg
+    ),
+    regexp = "not found"
+  )
+})
+
 test_that("annotate_lineplot_df forwards font_size to df2gg_aligned", {
   captured <- NULL
   mock_df2gg <- function(df, ..., text_size, label_size) {

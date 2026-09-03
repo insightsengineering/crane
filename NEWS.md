@@ -1,4 +1,4 @@
-# crane 0.3.3.9017
+# crane 0.3.3.9019
 
 * `tbl_null_report()` now centers its message, so with no body content it reads as a "no data" panel spanning the table instead of text hugging the left edge. (#305)
 
@@ -11,6 +11,10 @@
 * `remove_duplicate_keys()` now keeps the `tbl_split` class and attributes when applied to a split table, instead of returning a plain list. (#301)
 
 * `annotate_lineplot_df()` gains `"se"` and `"ci"` as `summary_stats` options, reporting the standard error and the confidence interval of the mean (at a new `conf_level` argument) in the summary table below the plot. (#307)
+
+* `annotate_lineplot_df()` gains a `"mean_se"` `summary_stats` option reporting the mean +/- 1 standard error interval (labelled `"Mean -/+ 1xSE"`), matching the error bars drawn by `gg_lineplot(variability = "se")`. (#307)
+
+* `annotate_lineplot_df()` gains a `labels` argument to rename statistic rows (e.g. `labels = c(mean = "LS mean")` for an MMRM plot) and a `blank_timepoints` argument to blank the continuous statistics at fixed timepoints while keeping `n` (e.g. a constant change-from-baseline visit where the mean/SD/CI are `0` by construction). (#307)
 
 * `gg_lineplot()` gains a `show_n` argument to append group sizes to the legend (e.g. `"Placebo (N=42)"`) and a `jitter` argument to horizontally separate overlapping groups while keeping points, lines, and error bars aligned. (#307)
 
