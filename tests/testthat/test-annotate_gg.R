@@ -267,6 +267,84 @@ test_that("annotate_lineplot_df mean_se label is configurable via se_label", {
   expect_true(any(grepl("Mean \\+/- SE", trimws(res_df$Group))))
 })
 
+test_that("annotate_lineplot_df renames statistics via labels", {
+  mock_df2gg <- function(df, ...) df
+
+  res_df <- testthat::with_mocked_bindings(
+    {
+      annotate_lineplot_df(
+        gg_plt = p_valid,
+        data = mock_adlb,
+        summary_stats = c("n", "mean", "sd"),
+        labels = c(mean = "LS mean")
+      )
+    },
+    df2gg_aligned = mock_df2gg
+  )
+
+  labels_seen <- trimws(res_df$Group)
+  expect_true(any(labels_seen == "LS mean"))
+  expect_false(any(labels_seen == "Mean"))
+  # Untouched labels remain
+  expect_true(any(labels_seen == "SD"))
+})
+
+test_that("annotate_lineplot_df rejects invalid labels", {
+  expect_error(
+    annotate_lineplot_df(gg_plt = p_valid, data = mock_adlb, labels = "LS mean"),
+    regexp = "must be a named vector"
+  )
+  expect_error(
+    annotate_lineplot_df(gg_plt = p_valid, data = mock_adlb, labels = c(foo = "Bar")),
+    regexp = "Unknown statistic"
+  )
+})
+
+test_that("annotate_lineplot_df blanks continuous stats at blank_timepoints", {
+  mock_df2gg <- function(df, ...) df
+
+  res_df <- testthat::with_mocked_bindings(
+    {
+      annotate_lineplot_df(
+        gg_plt = p_valid,
+        data = mock_adlb,
+        summary_stats = c("n", "mean", "sd"),
+        blank_timepoints = "0"
+      )
+    },
+    df2gg_aligned = mock_df2gg
+  )
+
+  labels_seen <- trimws(res_df$Group)
+  # The baseline column ("0") is blank for continuous stats but keeps n
+  mean_rows <- which(labels_seen == "Mean")
+  sd_rows <- which(labels_seen == "SD")
+  n_rows <- which(labels_seen == "n")
+
+  expect_true(all(res_df[["0"]][mean_rows] == ""))
+  expect_true(all(res_df[["0"]][sd_rows] == ""))
+  expect_true(all(res_df[["0"]][n_rows] != ""))
+
+  # Other timepoints are unaffected
+  expect_true(all(res_df[["4"]][mean_rows] != ""))
+})
+
+test_that("annotate_lineplot_df warns on unknown blank_timepoints", {
+  mock_df2gg <- function(df, ...) df
+
+  expect_warning(
+    testthat::with_mocked_bindings(
+      annotate_lineplot_df(
+        gg_plt = p_valid,
+        data = mock_adlb,
+        blank_timepoints = "NoSuchVisit"
+      ),
+      df2gg_aligned = mock_df2gg
+    ),
+    regexp = "not found"
+  )
+})
+
 test_that("annotate_lineplot_df forwards font_size to df2gg_aligned", {
   captured <- NULL
   mock_df2gg <- function(df, ..., text_size, label_size) {

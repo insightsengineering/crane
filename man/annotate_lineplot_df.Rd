@@ -13,6 +13,8 @@ annotate_lineplot_df(
   summary_stats = c("n", "mean", "sd"),
   conf_level = 0.95,
   se_label = "Mean -/+ 1xSE",
+  labels = NULL,
+  blank_timepoints = NULL,
   digits = NULL,
   font_size = 10,
   rel_height_plot = 0.75
@@ -42,6 +44,18 @@ Confidence level for the \code{"ci"} statistic. Defaults to \code{0.95}.}
 
 \item{se_label}{(\code{string})\cr
 Row label for the \code{"mean_se"} statistic. Defaults to \code{"Mean -/+ 1xSE"}.}
+
+\item{labels}{(\code{character} or \code{NULL})\cr
+Optional named vector overriding the default row labels, keyed by statistic
+name (\code{"n"}, \code{"mean"}, \code{"sd"}, \code{"se"}, \code{"mean_se"}, \code{"ci"}, \code{"median"},
+\code{"iqr"}). For example, \code{labels = c(mean = "LS mean")} on an MMRM plot.
+Defaults to \code{NULL} (built-in labels).}
+
+\item{blank_timepoints}{(\code{character} or \code{NULL})\cr
+Optional vector of timepoint (x-axis level) labels at which the continuous
+statistics are blanked, while the count (\code{"n"}) is kept. Useful for a
+constant change-from-baseline visit in an MMRM plot, where the mean/SD/CI
+are \code{0} by construction and carry no information. Defaults to \code{NULL}.}
 
 \item{digits}{(\code{numeric}, \code{list}, or \code{formula})\cr
 Optional specification for the number of decimal places for the summary statistics.
@@ -97,6 +111,15 @@ annotate_lineplot_df(
   data = mock_adlb,
   summary_stats = c("n", "mean", "mean_se"),
   se_label = "Mean +/- SE"
+)
+
+# 6. Rename a statistic and blank a constant baseline column (e.g. MMRM)
+annotate_lineplot_df(
+  gg_plt = p_base,
+  data = mock_adlb,
+  summary_stats = c("n", "mean", "sd"),
+  labels = c(mean = "LS mean"),
+  blank_timepoints = "0"
 )
 
 }

@@ -23,6 +23,16 @@
 #'   Confidence level for the `"ci"` statistic. Defaults to `0.95`.
 #' @param se_label (`string`)\cr
 #'   Row label for the `"mean_se"` statistic. Defaults to `"Mean -/+ 1xSE"`.
+#' @param labels (`character` or `NULL`)\cr
+#'   Optional named vector overriding the default row labels, keyed by statistic
+#'   name (`"n"`, `"mean"`, `"sd"`, `"se"`, `"mean_se"`, `"ci"`, `"median"`,
+#'   `"iqr"`). For example, `labels = c(mean = "LS mean")` on an MMRM plot.
+#'   Defaults to `NULL` (built-in labels).
+#' @param blank_timepoints (`character` or `NULL`)\cr
+#'   Optional vector of timepoint (x-axis level) labels at which the continuous
+#'   statistics are blanked, while the count (`"n"`) is kept. Useful for a
+#'   constant change-from-baseline visit in an MMRM plot, where the mean/SD/CI
+#'   are `0` by construction and carry no information. Defaults to `NULL`.
 #' @param digits (`numeric`, `list`, or `formula`)\cr
 #'   Optional specification for the number of decimal places for the summary statistics.
 #'   Can be a single integer (e.g., `2`), a vector of integers matching the statistics
@@ -73,6 +83,15 @@
 #'   se_label = "Mean +/- SE"
 #' )
 #'
+#' # 6. Rename a statistic and blank a constant baseline column (e.g. MMRM)
+#' annotate_lineplot_df(
+#'   gg_plt = p_base,
+#'   data = mock_adlb,
+#'   summary_stats = c("n", "mean", "sd"),
+#'   labels = c(mean = "LS mean"),
+#'   blank_timepoints = "0"
+#' )
+#'
 #' @export
 annotate_lineplot_df <- function(gg_plt,
                                  data,
@@ -82,6 +101,8 @@ annotate_lineplot_df <- function(gg_plt,
                                  summary_stats = c("n", "mean", "sd"),
                                  conf_level = 0.95,
                                  se_label = "Mean -/+ 1xSE",
+                                 labels = NULL,
+                                 blank_timepoints = NULL,
                                  digits = NULL,
                                  font_size = 10,
                                  rel_height_plot = 0.75) {
@@ -150,6 +171,22 @@ annotate_lineplot_df <- function(gg_plt,
     "iqr" = "IQR"
   )
 
+  # Override any default row labels with user-supplied ones, e.g.
+  # `labels = c(mean = "LS mean")` for an MMRM plot.
+  if (!is.null(labels)) {
+    if (is.null(names(labels)) || any(names(labels) == "")) {
+      cli::cli_abort("{.arg labels} must be a named vector, e.g. {.code c(mean = \"LS mean\")}.")
+    }
+    unknown <- setdiff(names(labels), names(stat_labels))
+    if (length(unknown) > 0) {
+      cli::cli_abort(c(
+        "Unknown statistic{?s} in {.arg labels}: {.val {unknown}}.",
+        "i" = "Valid names are {.val {names(stat_labels)}}."
+      ))
+    }
+    stat_labels[names(labels)] <- labels
+  }
+
   summary_stats <- match.arg(
     summary_stats,
     choices = names(stat_syntax),
@@ -200,6 +237,25 @@ annotate_lineplot_df <- function(gg_plt,
 
   raw_labels <- as.character(formatted_df[[1]])
   is_stat <- trimws(raw_labels) %in% trimws(gts_stat_labels)
+
+  # Blank the continuous statistics at fixed timepoints (e.g. a constant-zero
+  # change-from-baseline visit in an MMRM plot), where a "0.00" mean/SD/CI is an
+  # artifact of the constant rather than a real estimate. The count ("n") is a
+  # genuine value and is kept.
+  if (!is.null(blank_timepoints)) {
+    missing_tp <- setdiff(blank_timepoints, names(formatted_df))
+    if (length(missing_tp) > 0) {
+      cli::cli_warn(c(
+        "!" = "Timepoint{?s} in {.arg blank_timepoints} not found: {.val {missing_tp}}.",
+        "i" = "Available timepoint columns are {.val {setdiff(names(formatted_df), c(names(formatted_df)[1], 'Group'))}}."
+      ))
+    }
+    n_label <- trimws(stat_labels[["n"]])
+    blank_rows <- is_stat & trimws(raw_labels) != n_label
+    for (tp in intersect(blank_timepoints, names(formatted_df))) {
+      formatted_df[blank_rows, tp] <- ""
+    }
+  }
 
   # Apply Plotmath styling (bold for headers, indent for stats)
   y_labels <- parse(text = ifelse(
