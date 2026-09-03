@@ -17,17 +17,17 @@
 #'   `"se"`, `"mean_se"`, `"ci"`, `"median"`, and `"iqr"`. Defaults to
 #'   `c("n", "mean", "sd")`. `"se"` reports the standard error on its own, while
 #'   `"mean_se"` reports the mean +/- 1 standard error interval (matching the
-#'   error bars drawn by `gg_lineplot(variability = "se")`). `"ci"` reports the
-#'   confidence interval of the mean at `conf_level`.
+#'   error bars drawn by `gg_lineplot(variability = "se")`, labelled
+#'   `"Mean -/+ 1xSE"`). `"ci"` reports the confidence interval of the mean at
+#'   `conf_level`.
 #' @param conf_level (`numeric`)\cr
 #'   Confidence level for the `"ci"` statistic. Defaults to `0.95`.
-#' @param se_label (`string`)\cr
-#'   Row label for the `"mean_se"` statistic. Defaults to `"Mean -/+ 1xSE"`.
 #' @param labels (`character` or `NULL`)\cr
 #'   Optional named vector overriding the default row labels, keyed by statistic
 #'   name (`"n"`, `"mean"`, `"sd"`, `"se"`, `"mean_se"`, `"ci"`, `"median"`,
-#'   `"iqr"`). For example, `labels = c(mean = "LS mean")` on an MMRM plot.
-#'   Defaults to `NULL` (built-in labels).
+#'   `"iqr"`). For example, `labels = c(mean = "LS mean")` on an MMRM plot, or
+#'   `labels = c(mean_se = "Mean +/- SE")` to relabel the SE interval. Defaults
+#'   to `NULL` (built-in labels).
 #' @param blank_timepoints (`character` or `NULL`)\cr
 #'   Optional vector of timepoint (x-axis level) labels at which the continuous
 #'   statistics are blanked, while the count (`"n"`) is kept. Useful for a
@@ -75,12 +75,12 @@
 #'   digits = c(0, 2, 2)
 #' )
 #'
-#' # 5. Report the mean +/- 1 SE interval with a custom label
+#' # 5. Report the mean +/- 1 SE interval, relabelled via `labels`
 #' annotate_lineplot_df(
 #'   gg_plt = p_base,
 #'   data = mock_adlb,
 #'   summary_stats = c("n", "mean", "mean_se"),
-#'   se_label = "Mean +/- SE"
+#'   labels = c(mean_se = "Mean +/- SE")
 #' )
 #'
 #' # 6. Rename a statistic and blank a constant baseline column (e.g. MMRM)
@@ -100,7 +100,6 @@ annotate_lineplot_df <- function(gg_plt,
                                  group = NULL,
                                  summary_stats = c("n", "mean", "sd"),
                                  conf_level = 0.95,
-                                 se_label = "Mean -/+ 1xSE",
                                  labels = NULL,
                                  blank_timepoints = NULL,
                                  digits = NULL,
@@ -165,7 +164,7 @@ annotate_lineplot_df <- function(gg_plt,
     "mean" = "Mean",
     "sd" = "SD",
     "se" = "SE",
-    "mean_se" = se_label,
+    "mean_se" = "Mean -/+ 1xSE",
     "ci" = ci_label,
     "median" = "Median",
     "iqr" = "IQR"

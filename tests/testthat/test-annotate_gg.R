@@ -249,7 +249,7 @@ test_that("annotate_lineplot_df mean_se reports the mean +/- 1 SE interval", {
   expect_equal(got, expected, tolerance = 1e-2)
 })
 
-test_that("annotate_lineplot_df mean_se label is configurable via se_label", {
+test_that("annotate_lineplot_df mean_se label is configurable via labels", {
   mock_df2gg <- function(df, ...) df
 
   res_df <- testthat::with_mocked_bindings(
@@ -258,7 +258,7 @@ test_that("annotate_lineplot_df mean_se label is configurable via se_label", {
         gg_plt = p_valid,
         data = mock_adlb,
         summary_stats = c("mean", "mean_se"),
-        se_label = "Mean +/- SE"
+        labels = c(mean_se = "Mean +/- SE")
       )
     },
     df2gg_aligned = mock_df2gg

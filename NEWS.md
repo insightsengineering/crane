@@ -12,7 +12,7 @@
 
 * `annotate_lineplot_df()` gains `"se"` and `"ci"` as `summary_stats` options, reporting the standard error and the confidence interval of the mean (at a new `conf_level` argument) in the summary table below the plot. (#307)
 
-* `annotate_lineplot_df()` gains a `"mean_se"` `summary_stats` option reporting the mean +/- 1 standard error interval, matching the error bars drawn by `gg_lineplot(variability = "se")`. Its row label defaults to `"Mean -/+ 1xSE"` and is configurable via the new `se_label` argument. (#307)
+* `annotate_lineplot_df()` gains a `"mean_se"` `summary_stats` option reporting the mean +/- 1 standard error interval (labelled `"Mean -/+ 1xSE"`), matching the error bars drawn by `gg_lineplot(variability = "se")`. (#307)
 
 * `annotate_lineplot_df()` gains a `labels` argument to rename statistic rows (e.g. `labels = c(mean = "LS mean")` for an MMRM plot) and a `blank_timepoints` argument to blank the continuous statistics at fixed timepoints while keeping `n` (e.g. a constant change-from-baseline visit where the mean/SD/CI are `0` by construction). (#307)
 
