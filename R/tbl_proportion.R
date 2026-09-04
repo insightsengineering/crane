@@ -45,7 +45,7 @@
 #'   level values to labels; unmapped levels use the level value itself.
 #' @param ci_label (`string`)\cr
 #'   label of the confidence-interval row. Default is built from `conf.level`
-#'   and `method`, e.g. `"95% CI (Wald, with correction)"`.
+#'   and `method`, e.g. `"95% CI (Wald, with continuity correction)"`.
 #' @param estimate_fun (`function`)\cr
 #'   formatter applied to the CI bounds. Default
 #'   `label_roche_number(digits = 1, scale = 100)`.
@@ -250,15 +250,15 @@ tbl_proportion <- function(data,
 .default_ci_label <- function(conf.level, method) {
   pct <- style_roche_number(conf.level, scale = 100)
   method_lab <- switch(method,
-    waldcc = "Wald, with correction",
+    waldcc = "Wald, with continuity correction",
     wald = "Wald",
     `clopper-pearson` = "Clopper-Pearson",
     wilson = "Wilson",
-    wilsoncc = "Wilson, with correction",
+    wilsoncc = "Wilson, with continuity correction",
     `agresti-coull` = "Agresti-Coull",
     jeffreys = "Jeffreys",
     strat_wilson = "stratified Wilson",
-    strat_wilsoncc = "stratified Wilson, with correction",
+    strat_wilsoncc = "stratified Wilson, with continuity correction",
     method
   )
   glue("{pct}% CI ({method_lab})")

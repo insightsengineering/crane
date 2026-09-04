@@ -18,7 +18,7 @@
 
 * `gg_lineplot()` gains a `show_n` argument to append group sizes to the legend (e.g. `"Placebo (N=42)"`) and a `jitter` argument to horizontally separate overlapping groups while keeping points, lines, and error bars aligned. (#307)
 
-* Added `tbl_proportion()` to summarize a binary or multinomial variable as proportions with confidence intervals (estimate and CI on separate rows), with a selectable CI `method` and `conf.level`. (#303)
+* Added `tbl_proportion()` to summarize a binary or multinomial variable as proportions with confidence intervals (estimate and CI on separate rows), with a selectable CI `method` and `conf.level`. The CI row label can be overridden with `ci_label`; the default for the continuity-corrected methods now reads "with continuity correction". (#303)
 
 * Added `add_proportion_difference()` to append the difference in rates, its confidence interval, and a p-value (`"chisq"`, `"fisher"`, or `"cmh"`), with stratified (Cochran-Mantel-Haenszel) support via `strata`. The `correct` flag controls the continuity correction on the difference interval and `test_correct` (default `FALSE`) the Yates correction on the chi-squared p-value. (#303)
 

@@ -56,7 +56,7 @@ level values to labels; unmapped levels use the level value itself.}
 
 \item{ci_label}{(\code{string})\cr
 label of the confidence-interval row. Default is built from \code{conf.level}
-and \code{method}, e.g. \code{"95\% CI (Wald, with correction)"}.}
+and \code{method}, e.g. \code{"95\% CI (Wald, with continuity correction)"}.}
 
 \item{estimate_fun}{(\code{function})\cr
 formatter applied to the CI bounds. Default

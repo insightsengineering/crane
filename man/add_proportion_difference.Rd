@@ -52,8 +52,8 @@ confidence level. Default \code{0.95}.}
 
 \item{correct}{(\code{flag})\cr
 continuity correction for the difference confidence interval (the
-"Wald, with correction" interval from \code{\link[stats:prop.test]{stats::prop.test()}}). Default
-\code{TRUE}.}
+"Wald, with continuity correction" interval from \code{\link[stats:prop.test]{stats::prop.test()}}).
+Default \code{TRUE}.}
 
 \item{test_correct}{(\code{flag})\cr
 Yates continuity correction for the chi-squared test p-value. Default

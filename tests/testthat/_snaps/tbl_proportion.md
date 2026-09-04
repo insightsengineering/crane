@@ -3,22 +3,22 @@
     Code
       as.data.frame(tbl)
     Output
-                        Characteristic      Placebo          Low         High
-      1                     Responders   18 (30.0%)   25 (41.7%)   33 (55.0%)
-      2 95% CI (Wald, with correction) (17.6, 42.4) (28.4, 55.0) (41.6, 68.4)
+                                   Characteristic      Placebo          Low         High
+      1                                Responders   18 (30.0%)   25 (41.7%)   33 (55.0%)
+      2 95% CI (Wald, with continuity correction) (17.6, 42.4) (28.4, 55.0) (41.6, 68.4)
 
 # add_proportion_difference() adds the comparison block
 
     Code
       as.data.frame(tbl)
     Output
-                         Characteristic      Placebo          Low         High
-      1                      Responders   18 (30.0%)   25 (41.7%)   33 (55.0%)
-      2  95% CI (Wald, with correction) (17.6, 42.4) (28.4, 55.0) (41.6, 68.4)
-      3           Unstratified Analysis         <NA>         <NA>         <NA>
-      4 Difference in Response rate (%)         <NA>         11.7         25.0
-      5  95% CI (Wald, with correction)         <NA> (-7.0, 30.4)  (6.2, 43.8)
-      6      p-value (Chi-Squared Test)         <NA>       0.1827       0.0056
+                                   Characteristic      Placebo          Low         High
+      1                                Responders   18 (30.0%)   25 (41.7%)   33 (55.0%)
+      2 95% CI (Wald, with continuity correction) (17.6, 42.4) (28.4, 55.0) (41.6, 68.4)
+      3                     Unstratified Analysis         <NA>         <NA>         <NA>
+      4           Difference in Response rate (%)         <NA>         11.7         25.0
+      5 95% CI (Wald, with continuity correction)         <NA> (-7.0, 30.4)  (6.2, 43.8)
+      6                p-value (Chi-Squared Test)         <NA>       0.1827       0.0056
 
 # informative errors are raised
 

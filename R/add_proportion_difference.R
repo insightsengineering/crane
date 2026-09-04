@@ -32,8 +32,8 @@
 #'   confidence level. Default `0.95`.
 #' @param correct (`flag`)\cr
 #'   continuity correction for the difference confidence interval (the
-#'   "Wald, with correction" interval from [stats::prop.test()]). Default
-#'   `TRUE`.
+#'   "Wald, with continuity correction" interval from [stats::prop.test()]).
+#'   Default `TRUE`.
 #' @param test_correct (`flag`)\cr
 #'   Yates continuity correction for the chi-squared test p-value. Default
 #'   `FALSE`, matching the NEST 1.0 catalog (RSPT01). Has no effect on the
@@ -90,7 +90,7 @@ add_proportion_difference <- function(x,
 
   header <- header %||% if (is.null(strata)) "Unstratified Analysis" else "Stratified Analysis"
   ci_label <- ci_label %||%
-    glue("{style_roche_number(conf.level, scale = 100)}% CI ({if (correct) 'Wald, with correction' else 'Wald'})")
+    glue("{style_roche_number(conf.level, scale = 100)}% CI ({if (correct) 'Wald, with continuity correction' else 'Wald'})")
   pvalue_label <- pvalue_label %||% .default_test_label(test)
 
   # per-level statistics -------------------------------------------------------
