@@ -1,4 +1,4 @@
-# crane 0.3.3.9018
+# crane 0.3.3.9019
 
 * Added `add_label_column()` to split a `{gtsummary}` table's row labels into a new left label column (`label0`) and the existing `label` column, computing the new column from an expression evaluated in the table body. This is the `strata_location = "new_column"` layout of `tbl_shift()` exposed as a standalone step for nested count and shift tables. (#314)
 
