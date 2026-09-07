@@ -18,6 +18,12 @@
 
 * `gg_lineplot()` gains a `show_n` argument to append group sizes to the legend (e.g. `"Placebo (N=42)"`) and a `jitter` argument to horizontally separate overlapping groups while keeping points, lines, and error bars aligned. (#307)
 
+* Added `tbl_proportion()` to summarize a binary or multinomial variable as proportions with confidence intervals (estimate and CI on separate rows), with a selectable CI `method` and `conf.level`. The CI row label can be overridden with `ci_label`; the default for the continuity-corrected methods now reads "with continuity correction". (#303)
+
+* Added `add_proportion_difference()` to append the difference in rates, its confidence interval, and a p-value (`"chisq"`, `"fisher"`, or `"cmh"`), with stratified (Cochran-Mantel-Haenszel) support via `strata`. The `correct` flag controls the continuity correction on the difference interval and `test_correct` (default `FALSE`) the Yates correction on the chi-squared p-value. (#303)
+
+* Added `add_proportion_odds_ratio()` to append an odds ratio, with stratified (Cochran-Mantel-Haenszel) support via `strata`. (#303)
+
 * Added `modify_split_caption()` to subtitle each page of a split `{gtsummary}` table (e.g. from `tbl_listing()`, `tbl_baseline_chg()`, or `tbl_shift()`) from its split level via a glue `pattern` (default `"Parameter: {spl_level}"`) and hide the now-redundant split column. (#282)
 
 * `annotate_lineplot_df()` and `annotate_pkc_df()` gain a `font_size` argument to control the summary table font size, matching `annotate_riskdf()`. The `text_size` argument of `annotate_pkc_df()` is soft-deprecated in favor of `font_size`. (#295)
