@@ -198,3 +198,149 @@ test_that("tbl_mmrm handles base_df = NULL gracefully without baseline stacking"
   # (If base_df was processed, 'BASE_VAL' or 'Mean (SE)' for baseline would exist)
   expect_false(any(tbl_body$variable == "BASE_VAL"))
 })
+
+
+# ------------------------------------------------------------------------------
+# 6. TEST CONFIGURABLE ARGUMENTS
+# ------------------------------------------------------------------------------
+test_that("get_mmrm_results passes `weights` through to emmeans", {
+  res_equal <- get_mmrm_results(fit_mmrm, arm = "ARMCD", visit = "AVISIT")
+  res_prop <- get_mmrm_results(fit_mmrm, arm = "ARMCD", visit = "AVISIT", weights = "proportional")
+
+  # Default is "equal", so it must match the explicit "equal" call
+  expect_equal(res_equal, get_mmrm_results(fit_mmrm, arm = "ARMCD", visit = "AVISIT", weights = "equal"))
+
+  # "proportional" weighting yields different adjusted means than "equal"
+  expect_false(isTRUE(all.equal(res_equal$estimate_est, res_prop$estimate_est)))
+
+  # Invalid weighting schemes are rejected
+  expect_error(get_mmrm_results(fit_mmrm, arm = "ARMCD", visit = "AVISIT", weights = "nonsense"))
+})
+
+test_that("tbl_mmrm baseline statistics are configurable", {
+  mmrm_res <- get_mmrm_results(fit_mmrm, arm = "ARMCD", visit = "AVISIT")
+
+  tbl <- tbl_mmrm(
+    mmrm_df = mmrm_res,
+    base_df = base_df,
+    arm = "ARMCD",
+    visit = "AVISIT",
+    baseline_aval = "FEV1",
+    baseline_args = list(
+      statistic = ~ c("{N_nonmiss}", "{mean} ({sd})", "{median}", "{min} - {max}"),
+      digits = ~ c(0, 2, 2, 2, 2, 2)
+    )
+  )
+
+  baseline_labels <- tbl$tbls[[1]]$table_body$label
+  expect_true(all(c("n", "Mean (SD)", "Median", "Min - Max") %in% baseline_labels))
+  # The default "Mean (SE)" row must not appear when other statistics are requested
+  expect_false("Mean (SE)" %in% baseline_labels)
+})
+
+test_that("tbl_mmrm post-baseline default output is unchanged by postbaseline_args = list()", {
+  mmrm_res <- get_mmrm_results(fit_mmrm, arm = "ARMCD", visit = "AVISIT")
+
+  tbl_default <- tbl_mmrm(mmrm_res, arm = "ARMCD", visit = "AVISIT")
+  tbl_explicit <- tbl_mmrm(mmrm_res, arm = "ARMCD", visit = "AVISIT", postbaseline_args = list())
+
+  expect_equal(as.data.frame(tbl_default), as.data.frame(tbl_explicit))
+
+  # The historic statistics and labels are all present
+  labels <- as.data.frame(tbl_default)[[2]]
+  expect_true(all(c(
+    "n", "Adjusted Mean (SE)", "Difference in Adjusted Means (SE)", "P-value"
+  ) %in% labels))
+})
+
+test_that("tbl_mmrm post-baseline statistics can be selected and reordered", {
+  mmrm_res <- get_mmrm_results(fit_mmrm, arm = "ARMCD", visit = "AVISIT")
+
+  tbl <- tbl_mmrm(
+    mmrm_res,
+    arm = "ARMCD", visit = "AVISIT",
+    postbaseline_args = list(stats = c("p_value", "n"))
+  )
+  body <- tbl$tbls[[1]]$table_body
+
+  expect_setequal(unique(body$variable), c("p_value", "n"))
+  # Requested order is respected: p_value row precedes n row
+  expect_lt(which(body$variable == "p_value")[1], which(body$variable == "n")[1])
+})
+
+test_that("tbl_mmrm exposes built-in geometric mean ratio statistics", {
+  mmrm_res <- get_mmrm_results(fit_mmrm, arm = "ARMCD", visit = "AVISIT")
+
+  tbl <- tbl_mmrm(
+    mmrm_res,
+    arm = "ARMCD", visit = "AVISIT",
+    postbaseline_args = list(
+      stats = c("n", "estimate_contr", "geom_mean_ratio", "geom_mean_ratio_ci")
+    )
+  )
+  df <- as.data.frame(tbl)
+  labels <- df[[2]]
+  expect_true("Geometric Mean Ratio" %in% labels)
+  expect_true(any(grepl("CI for Geometric Mean Ratio", labels)))
+
+  # The ratio equals exp(difference in adjusted means): find a non-reference
+  # arm/visit cell and check the formatted value matches exp(estimate_contr).
+  contr_row <- mmrm_res[!is.na(mmrm_res$estimate_contr), ][1, ]
+  expected <- sprintf("%.2f", exp(contr_row$estimate_contr))
+  gmr_vals <- unlist(df[labels == "Geometric Mean Ratio", -(1:2)], use.names = FALSE)
+  expect_true(expected %in% gmr_vals)
+})
+
+test_that("tbl_mmrm post-baseline labels and stat_fns are overridable", {
+  mmrm_res <- get_mmrm_results(fit_mmrm, arm = "ARMCD", visit = "AVISIT")
+
+  tbl <- tbl_mmrm(
+    mmrm_res,
+    arm = "ARMCD", visit = "AVISIT",
+    postbaseline_args = list(
+      stats = c("n", "p_value"),
+      label = list(p_value = "p"),
+      stat_fns = list(n = function(data, ...) list(my_stat = paste0("N=", data$n[1])))
+    )
+  )
+  df <- as.data.frame(tbl)
+  labels <- df[[2]]
+
+  expect_true("p" %in% labels)
+  expect_false("P-value" %in% labels)
+  # Custom n formatter applied
+  n_vals <- unlist(df[labels == "n", -(1:2)], use.names = FALSE)
+  expect_true(any(grepl("^N=", n_vals)))
+})
+
+test_that("tbl_mmrm rejects unknown post-baseline statistics", {
+  mmrm_res <- get_mmrm_results(fit_mmrm, arm = "ARMCD", visit = "AVISIT")
+
+  expect_error(
+    tbl_mmrm(
+      mmrm_res,
+      arm = "ARMCD", visit = "AVISIT",
+      postbaseline_args = list(stats = "not_a_stat")
+    ),
+    "Unknown"
+  )
+})
+
+test_that(".get_geom_mean_ratio helpers handle empty and NA data", {
+  empty_data <- data.frame(estimate_contr = numeric(0), lower_cl_contr = numeric(0))
+  na_data <- data.frame(
+    estimate_contr = NA_real_, lower_cl_contr = NA_real_, upper_cl_contr = NA_real_
+  )
+
+  expect_equal(.get_geom_mean_ratio(empty_data, digits = c(2, 3, 4))$my_stat, "")
+  expect_equal(.get_geom_mean_ratio(na_data, digits = c(2, 3, 4))$my_stat, "")
+  expect_equal(.get_geom_mean_ratio_ci(empty_data, digits = c(2, 3, 4))$my_stat, "")
+  expect_equal(.get_geom_mean_ratio_ci(na_data, digits = c(2, 3, 4))$my_stat, "")
+
+  # Non-missing values are exponentiated
+  ok_data <- data.frame(
+    estimate_contr = log(1.5), lower_cl_contr = log(1.1), upper_cl_contr = log(2.0)
+  )
+  expect_equal(.get_geom_mean_ratio(ok_data, digits = c(2, 3, 4))$my_stat, "1.50")
+  expect_equal(.get_geom_mean_ratio_ci(ok_data, digits = c(2, 3, 4))$my_stat, "(1.10, 2.00)")
+})

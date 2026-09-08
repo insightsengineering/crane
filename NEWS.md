@@ -1,12 +1,28 @@
-# crane 0.3.3.9016
+# crane 0.3.3.9020
+
+* Added `add_label_column()` to split a `{gtsummary}` table's row labels into a new left label column (`label0`) and the existing `label` column, computing the new column from an expression evaluated in the table body. This is the `strata_location = "new_column"` layout of `tbl_shift()` exposed as a standalone step for nested count and shift tables. (#314)
+
+# crane 0.3.3.9017
 
 * `tbl_null_report()` now centers its message, so with no body content it reads as a "no data" panel spanning the table instead of text hugging the left edge. (#305)
+
+* `get_mmrm_results()` gains a `weights` argument (default `"equal"`) passed to `emmeans::emmeans()`, so proportionally weighted LS Means can be requested with `weights = "proportional"`. Check `?emmeans::emmeans()` for other `weights` options. (#299)
+
+* `tbl_mmrm()` gains a `baseline_args` argument, forwarded to the baseline `tbl_roche_summary()` call, to configure the baseline section statistics (previously locked to `n` and `Mean (SE)`). (#299)
+
+* `tbl_mmrm()` gains a `postbaseline_args` argument to select, reorder, relabel and reformat the post-baseline statistics (previously locked to n, adjusted means, differences and p-value). Built-in `"geom_mean_ratio"` and `"geom_mean_ratio_ci"` statistics are available for log-transformed responses. (#299)
 
 * `remove_duplicate_keys()` now keeps the `tbl_split` class and attributes when applied to a split table, instead of returning a plain list. (#301)
 
 * `annotate_lineplot_df()` gains `"se"` and `"ci"` as `summary_stats` options, reporting the standard error and the confidence interval of the mean (at a new `conf_level` argument) in the summary table below the plot. (#307)
 
 * `gg_lineplot()` gains a `show_n` argument to append group sizes to the legend (e.g. `"Placebo (N=42)"`) and a `jitter` argument to horizontally separate overlapping groups while keeping points, lines, and error bars aligned. (#307)
+
+* Added `tbl_proportion()` to summarize a binary or multinomial variable as proportions with confidence intervals (estimate and CI on separate rows), with a selectable CI `method` and `conf.level`. The CI row label can be overridden with `ci_label`; the default for the continuity-corrected methods now reads "with continuity correction". (#303)
+
+* Added `add_proportion_difference()` to append the difference in rates, its confidence interval, and a p-value (`"chisq"`, `"fisher"`, or `"cmh"`), with stratified (Cochran-Mantel-Haenszel) support via `strata`. The `correct` flag controls the continuity correction on the difference interval and `test_correct` (default `FALSE`) the Yates correction on the chi-squared p-value. (#303)
+
+* Added `add_proportion_odds_ratio()` to append an odds ratio, with stratified (Cochran-Mantel-Haenszel) support via `strata`. (#303)
 
 * Added `modify_split_caption()` to subtitle each page of a split `{gtsummary}` table (e.g. from `tbl_listing()`, `tbl_baseline_chg()`, or `tbl_shift()`) from its split level via a glue `pattern` (default `"Parameter: {spl_level}"`) and hide the now-redundant split column. (#282)
 

@@ -5,7 +5,13 @@
 \alias{get_mmrm_results}
 \title{Get and display MMRM Results in a Formatted Table}
 \usage{
-get_mmrm_results(fit_mmrm, arm, visit, conf_level = 0.95)
+get_mmrm_results(
+  fit_mmrm,
+  arm,
+  visit,
+  conf_level = 0.95,
+  weights = c("equal", "proportional", "outer", "cells", "flat")
+)
 
 tbl_mmrm(
   mmrm_df,
@@ -13,7 +19,9 @@ tbl_mmrm(
   arm,
   visit,
   baseline_aval = NULL,
-  digits = c(2, 3, 4)
+  digits = c(2, 3, 4),
+  baseline_args = list(),
+  postbaseline_args = list()
 )
 }
 \arguments{
@@ -33,6 +41,10 @@ This will be used to stratify the results in rows.}
 \item{conf_level}{(\code{numeric})\cr
 The confidence level to use when calculating confidence intervals for the adjusted means and differences.
 Default is 0.95 for 95\% confidence intervals.}
+
+\item{weights}{(\code{string})\cr
+The weighting scheme passed to \code{\link[emmeans:emmeans]{emmeans::emmeans()}} when averaging the adjusted means over the levels of
+the model factors. Default is \code{"equal"}. Use \code{"proportional"} to weight by the observed group sizes.}
 
 \item{mmrm_df}{(\code{data.frame})\cr
 A tidy data frame containing the MMRM results. This should include
@@ -54,6 +66,29 @@ Unused if \code{base_df} is not provided or does not contain any rows.}
 \item{digits}{(\code{numeric})\cr
 A numeric vector of length 3 specifying the number of decimal places for: 1) Estimates/CIs, 2) Standard
 Errors, and 3) P-values. Default is \code{c(2, 3, 4)}.}
+
+\item{baseline_args}{(named \code{list})\cr
+Arguments forwarded to the baseline \code{\link[=tbl_roche_summary]{tbl_roche_summary()}} call, letting you configure the baseline
+section (\code{statistic}, \code{digits}, \code{type}, \code{sort}, ...). Defaults to n and Mean (SE); only the elements you
+supply are overridden. For example,
+\code{baseline_args = list(statistic = ~ c("{N_nonmiss}", "{mean} ({sd})", "{median}", "{min} - {max}"))}
+shows n, Mean (SD), Median and Min - Max.}
+
+\item{postbaseline_args}{(named \code{list})\cr
+Configures the post-baseline (MMRM) section. Supported elements:
+\itemize{
+\item \code{stats} (\code{character}) - which statistics to show and in which order. Defaults to
+\code{c("n", "estimate_est", "lower_cl_est", "estimate_contr", "lower_cl_contr", "p_value")}.
+The log-scale statistics \code{"geom_mean_ratio"} and \code{"geom_mean_ratio_ci"} are also available
+(meaningful only for a log-transformed response); add them to \code{stats} to show them.
+\item \code{label} (named \code{list}) - row-label overrides, keyed by statistic id, e.g.
+\code{label = list(p_value = "p")}.
+\item \code{stat_fns} (named \code{list}) - formatting-function overrides, keyed by statistic id. Each
+function receives the row-group \code{data} and returns \verb{list(my_stat = <string>)}.
+Only the elements you supply are overridden; the rest keep their defaults. For example,
+\code{postbaseline_args = list(stats = c("n", "estimate_est", "geom_mean_ratio", "geom_mean_ratio_ci"))}
+appends the geometric mean ratio and its CI.
+}}
 }
 \value{
 A \code{data.frame} containing the estimated marginal means (adjusted means)
@@ -95,6 +130,15 @@ tbl_mmrm(
   mmrm_results,
   fv_dt |> dplyr::mutate(AVISIT = "Baseline"),
   arm = "ARMCD", visit = "AVISIT", baseline_aval = "FEV1"
+)
+
+# Append the geometric mean ratio and its CI (for a log-transformed response)
+tbl_mmrm(
+  mmrm_results,
+  arm = "ARMCD", visit = "AVISIT",
+  postbaseline_args = list(
+    stats = c("n", "estimate_est", "geom_mean_ratio", "geom_mean_ratio_ci")
+  )
 )
 \dontshow{\}) # examplesIf}
 }
