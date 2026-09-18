@@ -2,65 +2,36 @@
 #
 
 # Default sizes for various elements in the forest plot
-.get_default_forest_sizes <- function(table_engine) {
-  if (table_engine == "gt") {
-    out <- list(
-      # Lines & Strokes
-      line_axis = 8,
-      line_ref = 6,
-      errorbar_size = 8,
-      stroke = 5,
-      tick_width = 6,
+.get_default_forest_sizes <- function() {
+  list(
+    # Lines & Strokes (Standard ggplot sizes)
+    line_axis = 0.5,
+    line_ref = 0.4,
+    errorbar_size = 0.6,
+    stroke = 0.8,
+    tick_width = 0.4,
 
-      # Ticks (Large units for high-res HTML)
-      tick_short = unit(0.7, "cm"),
-      tick_mid = unit(1.3, "cm"),
-      tick_long = unit(2.5, "cm"),
+    # Ticks (Standard units)
+    tick_short = unit(0.1, "cm"),
+    tick_mid = unit(0.15, "cm"),
+    tick_long = unit(0.2, "cm"),
 
-      # Text
-      text_size = 120,
-      text_margin = 60,
+    # Text
+    text_size = 9, # Standard point size
+    text_margin = 3,
 
-      # Dots (Scale factor for p-values)
-      dot_max = 120,
-      dot_base = 40,
+    # Dots
+    dot_max = 6, # Max dot size (e.g. 6pt)
+    dot_base = 2, # Default dot size if p-value missing
 
-      # x-axis plot margins
-      axis_plot_margins = margin(t = 0, r = 5, b = 25, l = 5, unit = "pt")
-    )
-  } else {
-    out <- list(
-      # Lines & Strokes (Standard ggplot sizes)
-      line_axis = 0.5,
-      line_ref = 0.4,
-      errorbar_size = 0.6,
-      stroke = 0.8,
-      tick_width = 0.4,
-
-      # Ticks (Standard units)
-      tick_short = unit(0.1, "cm"),
-      tick_mid = unit(0.15, "cm"),
-      tick_long = unit(0.2, "cm"),
-
-      # Text
-      text_size = 9, # Standard point size
-      text_margin = 3,
-
-      # Dots
-      dot_max = 6, # Max dot size (e.g. 6pt)
-      dot_base = 2, # Default dot size if p-value missing
-
-      # x-axis plot margins
-      axis_plot_margins = margin(t = 0, r = 5, b = 3, l = 5, unit = "pt")
-    )
-  }
-  out
+    # x-axis plot margins
+    axis_plot_margins = margin(t = 0, r = 5, b = 3, l = 5, unit = "pt")
+  )
 }
 
 
-# The headers are stored in x$table_styling$header
-# We look for columns that are NOT the label column, and get their 'spanning_header'
-.determine_ggplot_header <- function(tbl, header_spaces, table_engine) {
+# Pulls the two treatment labels from the spanning headers, NULL if not found.
+.determine_ggplot_header <- function(tbl) {
   raw_headers <- tbl$table_styling$spanning_header |>
     dplyr::filter(.data$column != "label", !is.na(.data$spanning_header)) |>
     dplyr::filter(grepl(.data$column, pattern = "stat")) |>
@@ -79,37 +50,36 @@
     clean_headers <- clean_headers[1:2]
   }
 
-  left_text <- clean_headers[1]
-  right_text <- clean_headers[2]
-  header_spacer_btm <- nchar(left_text) + header_spaces - nchar("Better") + 1
-
-  # B. Build the String
   if (length(clean_headers) < 2) {
     cli::cli_warn(
       "Less than 2 spanning headers detected. The forest plot column will have an empty header."
     )
-    header_text <- ""
-  } else if (table_engine == "gt") {
-    # GT (HTML)
-    spacer <- paste0(rep("&nbsp;", header_spaces), collapse = "")
-    spacer_btm <- paste0(rep("&nbsp;", header_spacer_btm), collapse = "")
-
-    header_text <- gt::html(paste0(
-      left_text, spacer, right_text, "<br>",
-      "Better", spacer_btm, "Better"
-    ))
-  } else {
-    # FLEXTABLE (Text)
-    spacer <- paste0(rep("\u00A0", header_spaces), collapse = "")
-    spacer_btm <- paste0(rep("\u00A0", header_spacer_btm), collapse = "")
-
-    header_text <- paste0(
-      left_text, spacer, right_text, "\n",
-      "Better", spacer_btm, "Better"
-    )
+    return(NULL)
   }
 
-  header_text
+  list(left = clean_headers[1], right = clean_headers[2])
+}
+
+# Header for the forest plot column. Reuses the body plots' scale and margins so
+# the panel geometry is identical and the labels align in every output format.
+.forest_header_plot <- function(header_parts, limits, margins, sizes) {
+  # geometric midpoint of each half, i.e. the visual centre on a log axis
+  left_at <- sqrt(limits[1] * 1)
+  right_at <- sqrt(1 * limits[2])
+  text_size <- sizes$text_size / ggplot2::.pt
+
+  ggplot2::ggplot() +
+    ggplot2::annotate(
+      "text",
+      x = c(left_at, left_at, right_at, right_at),
+      y = c(0.62, 0.38, 0.62, 0.38),
+      label = c(header_parts$left, "Better", header_parts$right, "Better"),
+      hjust = 0.5, vjust = c(0, 1, 0, 1), size = text_size
+    ) +
+    ggplot2::scale_x_log10(limits = limits) +
+    ggplot2::scale_y_continuous(limits = c(0, 1), expand = c(0, 0)) +
+    ggplot2::theme_void() +
+    ggplot2::theme(plot.margin = margins)
 }
 
 # Function to generate a clean, centered X-axis
