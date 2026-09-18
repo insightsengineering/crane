@@ -11,7 +11,7 @@ add_forest(
   conf_high = starts_with("conf.high"),
   pvalue = starts_with("p.value"),
   after = starts_with("p.value"),
-  header_spaces = 20,
+  header_spaces = lifecycle::deprecated(),
   table_engine = "flextable"
 )
 }
@@ -37,10 +37,10 @@ according to p-value (smaller p-values = smaller points). \code{NULL} to turn th
 Column name after which the forest plot column will be added. Default is after
 the p-value column.}
 
-\item{header_spaces}{(\code{integer})\cr Spaces to add to the forest plot header to
-visually separate the two treatment areas (\verb{trt A\\n Better} and \verb{trt B\\nBetter}).
-It is suggested to modify manually this variable if the treatment names are long,
-with \code{add_forest(..., header_spaces = 5)} or \code{flextable::set_header_labels(ggplot = "*")}.}
+\item{header_spaces}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}\cr Previously the number
+of spacer characters used to separate the two treatment labels in the forest
+plot header. The header is now drawn on the same scale as the plots, so the
+labels are positioned geometrically and this argument has no effect.}
 
 \item{table_engine}{(\code{character})\cr
 Table rendering engine to use. Only \code{"flextable"} is supported. The \code{"gt"}

@@ -19,10 +19,10 @@
 #' @param after ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'  Column name after which the forest plot column will be added. Default is after
 #'  the p-value column.
-#' @param header_spaces (`integer`)\cr Spaces to add to the forest plot header to
-#'   visually separate the two treatment areas (`trt A\n Better` and `trt B\nBetter`).
-#'   It is suggested to modify manually this variable if the treatment names are long,
-#'   with `add_forest(..., header_spaces = 5)` or `flextable::set_header_labels(ggplot = "*")`.
+#' @param header_spaces `r lifecycle::badge("deprecated")`\cr Previously the number
+#'   of spacer characters used to separate the two treatment labels in the forest
+#'   plot header. The header is now drawn on the same scale as the plots, so the
+#'   labels are positioned geometrically and this argument has no effect.
 #' @param table_engine (`character`)\cr
 #'  Table rendering engine to use. Only `"flextable"` is supported. The `"gt"`
 #'  engine was removed in crane 0.4.0.
@@ -75,9 +75,19 @@ add_forest <- function(x,
                        conf_low = starts_with("conf.low"), conf_high = starts_with("conf.high"),
                        pvalue = starts_with("p.value"),
                        after = starts_with("p.value"),
-                       header_spaces = 20,
+                       header_spaces = lifecycle::deprecated(),
                        table_engine = "flextable") {
   set_cli_abort_call()
+  if (lifecycle::is_present(header_spaces)) {
+    lifecycle::deprecate_warn(
+      "0.4.0",
+      "crane::add_forest(header_spaces)",
+      details = paste(
+        "The forest plot header is now drawn on the same scale as the plots,",
+        "so the treatment labels are positioned geometrically."
+      )
+    )
+  }
   check_not_missing(x)
   check_not_missing(estimate)
   check_not_missing(conf_low)
@@ -91,7 +101,6 @@ add_forest <- function(x,
   check_scalar(conf_high)
   check_scalar(pvalue, allow_empty = TRUE)
   check_scalar(after)
-  check_scalar_integerish(header_spaces)
 
   # 1. SETUP DEFAULTS ----------------------------------------------------------
   if (identical(table_engine, "gt")) {
@@ -190,7 +199,7 @@ add_forest <- function(x,
   lst_ggplots_final <- c(lst_ggplots, list(p_axis))
 
   # Extract the Spanning Headers from gtsummary metadata
-  header_text <- .determine_ggplot_header(x, header_spaces)
+  header_parts <- .determine_ggplot_header(x)
 
   # 5. BUILD FINAL TABLE --------------------------------------------------------
   out <- x |>
@@ -198,16 +207,12 @@ add_forest <- function(x,
       dplyr::add_row() |>
       dplyr::mutate(ggplot = NA, .after = dplyr::all_of(after))) |>
     gtsummary::modify_footnote(gtsummary::everything() ~ NA) |>
-    gtsummary::modify_header(ggplot = header_text)
+    gtsummary::modify_header(ggplot = " ")
 
   # 6. RENDER TABLE -------------------------------------------------------------
-  # The plot column has a fixed width. Render the image to exactly that width
-  # and remove the cell's horizontal padding so the raster fills its content
-  # box instead of being forced wider than the cell (which, under Word's fixed
-  # table layout, pushes the column out and makes the table overflow the page).
-  # The plot's proportions are unchanged; only the cell geometry is matched.
+  # image is rendered at exactly the column width; cell padding is zeroed below
   ggplot_col_width <- 2.5
-  out |>
+  out <- out |>
     gtsummary::as_flex_table() |>
     flextable::mk_par(
       j = "ggplot",
@@ -221,29 +226,40 @@ add_forest <- function(x,
     ) |>
     flextable::line_spacing(space = 0.8, part = "body") |>
     flextable::line_spacing(j = "ggplot", space = 0, part = "body") |>
-    # Word ignores `<w:spacing w:line="0">` unless it also carries
-    # `w:lineRule="exact"`, which flextable cannot emit. The plot is an inline
-    # image sitting on the text baseline, so the paragraph mark's font descent
-    # reserves white space *below* every image (~1.6pt at the default 11pt) and
-    # the vertical reference line breaks between rows. Shrinking the paragraph
-    # mark collapses that descent so consecutive plots abut. HTML output is
-    # unaffected: there the cell already carries `line-height: 0`.
+    # Word ignores line = 0 without lineRule = "exact", which flextable cannot
+    # emit; shrinking the paragraph mark drops its descent so the plots abut
     flextable::fontsize(j = "ggplot", size = 1, part = "body") |>
     flextable::valign(valign = "center", part = "body") |>
     flextable::align(j = "ggplot", align = "center", part = "header") |>
     flextable::padding(padding.top = 0, part = "body") |>
     flextable::padding(padding.bottom = 7, part = "body") |>
     flextable::padding(j = "ggplot", padding.bottom = 0, part = "body") |>
-    # zero horizontal padding on the plot column so the fixed-width image fits
-    # the cell content box exactly (default 5pt L/R padding would overflow it)
+    # default 5pt L/R padding would push the fixed-width image out of its cell
     flextable::padding(j = "ggplot", padding.left = 0, padding.right = 0, part = "all") |>
     flextable::width(j = "ggplot", width = ggplot_col_width) |>
     flextable::valign(valign = "bottom", part = "body") |>
-    # A subgroup forest table declares more total column width than fits any
-    # standard page, and under a fixed layout Word renders those widths verbatim
-    # and runs off the right edge. Autofit lets Word reflow the text columns; the
-    # inline plot is a hard content minimum, so the plot column keeps its width.
+    # declared widths exceed any standard page; fixed layout would overflow it
     flextable::set_table_properties(layout = "autofit")
+
+  # header drawn on the body plots' scale, so labels sit over their own half
+  if (!is.null(header_parts)) {
+    out <- out |>
+      flextable::mk_par(
+        j = "ggplot", part = "header",
+        value = flextable::as_paragraph(
+          suppressMessages( # avoid `height` was translated to `width`. message
+            flextable::gg_chunk(
+              value = list(.forest_header_plot(header_parts, global_limits, global_margins, sizes)),
+              height = 0.35, width = ggplot_col_width
+            )
+          )
+        )
+      ) |>
+      flextable::padding(j = "ggplot", padding.left = 0, padding.right = 0, part = "header") |>
+      flextable::fontsize(j = "ggplot", size = 1, part = "header")
+  }
+
+  out
 }
 
 .is_na_or_chr <- function(x, i, estimate, conf_low, conf_high) {

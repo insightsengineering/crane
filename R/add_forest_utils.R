@@ -30,9 +30,8 @@
 }
 
 
-# The headers are stored in x$table_styling$header
-# We look for columns that are NOT the label column, and get their 'spanning_header'
-.determine_ggplot_header <- function(tbl, header_spaces) {
+# Pulls the two treatment labels from the spanning headers, NULL if not found.
+.determine_ggplot_header <- function(tbl) {
   raw_headers <- tbl$table_styling$spanning_header |>
     dplyr::filter(.data$column != "label", !is.na(.data$spanning_header)) |>
     dplyr::filter(grepl(.data$column, pattern = "stat")) |>
@@ -51,28 +50,36 @@
     clean_headers <- clean_headers[1:2]
   }
 
-  left_text <- clean_headers[1]
-  right_text <- clean_headers[2]
-  header_spacer_btm <- nchar(left_text) + header_spaces - nchar("Better") + 1
-
-  # B. Build the String
   if (length(clean_headers) < 2) {
     cli::cli_warn(
       "Less than 2 spanning headers detected. The forest plot column will have an empty header."
     )
-    header_text <- ""
-  } else {
-    # FLEXTABLE (Text)
-    spacer <- paste0(rep("\u00A0", header_spaces), collapse = "")
-    spacer_btm <- paste0(rep("\u00A0", header_spacer_btm), collapse = "")
-
-    header_text <- paste0(
-      left_text, spacer, right_text, "\n",
-      "Better", spacer_btm, "Better"
-    )
+    return(NULL)
   }
 
-  header_text
+  list(left = clean_headers[1], right = clean_headers[2])
+}
+
+# Header for the forest plot column. Reuses the body plots' scale and margins so
+# the panel geometry is identical and the labels align in every output format.
+.forest_header_plot <- function(header_parts, limits, margins, sizes) {
+  # geometric midpoint of each half, i.e. the visual centre on a log axis
+  left_at <- sqrt(limits[1] * 1)
+  right_at <- sqrt(1 * limits[2])
+  text_size <- sizes$text_size / ggplot2::.pt
+
+  ggplot2::ggplot() +
+    ggplot2::annotate(
+      "text",
+      x = c(left_at, left_at, right_at, right_at),
+      y = c(0.62, 0.38, 0.62, 0.38),
+      label = c(header_parts$left, "Better", header_parts$right, "Better"),
+      hjust = 0.5, vjust = c(0, 1, 0, 1), size = text_size
+    ) +
+    ggplot2::scale_x_log10(limits = limits) +
+    ggplot2::scale_y_continuous(limits = c(0, 1), expand = c(0, 0)) +
+    ggplot2::theme_void() +
+    ggplot2::theme(plot.margin = margins)
 }
 
 # Function to generate a clean, centered X-axis

@@ -51,18 +51,12 @@ test_that("add_forest(table_engine = 'flextable') works", {
     NA
   )
 
-  # The plot column has a fixed width and holds an image of exactly that width.
-  # The default 5pt horizontal cell padding would push the image past the column
-  # and overflow the page in docx; zeroing it makes the image fit the cell
-  # content box exactly so the table stays on the page (#270).
+  # default 5pt L/R padding would push the fixed-width image out of its cell (#270)
   gg <- which(forest_ft$col_keys == "ggplot")
   expect_identical(unique(forest_ft$body$styles$pars$padding.left$data[, gg]), 0)
   expect_identical(unique(forest_ft$body$styles$pars$padding.right$data[, gg]), 0)
 
-  # Word ignores `w:spacing w:line="0"` unless it carries `w:lineRule="exact"`,
-  # which flextable cannot emit, so the paragraph mark's font descent reserves
-  # white space under each inline plot and breaks the vertical reference line
-  # between rows. The plot column's font is shrunk to collapse that descent.
+  # shrunk font drops the paragraph mark's descent so consecutive plots abut
   expect_identical(unique(forest_ft$body$styles$text$font.size$data[, gg]), 1)
   expect_false(any(forest_ft$body$styles$text$font.size$data[, -gg] == 1))
 
@@ -96,11 +90,7 @@ test_that("add_forest handles extreme limits and character NA p-values safely", 
       p.value = NA
     )
 
-  # 3. TEST: Run add_forest
-  # We expect absolutely no errors (Issue 2 fixed) and no warnings (Issue 1 fixed).
-  # flextable renders the ggplots eagerly through gg_chunk(), so any latent
-  # geom_vline warning surfaces during add_forest() itself. The gt engine used to
-  # need a forced as_raw_html() render here; it was removed in 0.4.0 (#271).
+  # gg_chunk() renders eagerly, so latent geom_vline warnings surface here
   expect_no_error(
     expect_warning(
       out_flex <- tbl_edge_cases |> add_forest(table_engine = "flextable"),
