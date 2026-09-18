@@ -221,6 +221,14 @@ add_forest <- function(x,
     ) |>
     flextable::line_spacing(space = 0.8, part = "body") |>
     flextable::line_spacing(j = "ggplot", space = 0, part = "body") |>
+    # Word ignores `<w:spacing w:line="0">` unless it also carries
+    # `w:lineRule="exact"`, which flextable cannot emit. The plot is an inline
+    # image sitting on the text baseline, so the paragraph mark's font descent
+    # reserves white space *below* every image (~1.6pt at the default 11pt) and
+    # the vertical reference line breaks between rows. Shrinking the paragraph
+    # mark collapses that descent so consecutive plots abut. HTML output is
+    # unaffected: there the cell already carries `line-height: 0`.
+    flextable::fontsize(j = "ggplot", size = 1, part = "body") |>
     flextable::valign(valign = "center", part = "body") |>
     flextable::align(j = "ggplot", align = "center", part = "header") |>
     flextable::padding(padding.top = 0, part = "body") |>
@@ -230,7 +238,12 @@ add_forest <- function(x,
     # the cell content box exactly (default 5pt L/R padding would overflow it)
     flextable::padding(j = "ggplot", padding.left = 0, padding.right = 0, part = "all") |>
     flextable::width(j = "ggplot", width = ggplot_col_width) |>
-    flextable::valign(valign = "bottom", part = "body")
+    flextable::valign(valign = "bottom", part = "body") |>
+    # A subgroup forest table declares more total column width than fits any
+    # standard page, and under a fixed layout Word renders those widths verbatim
+    # and runs off the right edge. Autofit lets Word reflow the text columns; the
+    # inline plot is a hard content minimum, so the plot column keeps its width.
+    flextable::set_table_properties(layout = "autofit")
 }
 
 .is_na_or_chr <- function(x, i, estimate, conf_low, conf_high) {

@@ -58,6 +58,17 @@ test_that("add_forest(table_engine = 'flextable') works", {
   gg <- which(forest_ft$col_keys == "ggplot")
   expect_identical(unique(forest_ft$body$styles$pars$padding.left$data[, gg]), 0)
   expect_identical(unique(forest_ft$body$styles$pars$padding.right$data[, gg]), 0)
+
+  # Word ignores `w:spacing w:line="0"` unless it carries `w:lineRule="exact"`,
+  # which flextable cannot emit, so the paragraph mark's font descent reserves
+  # white space under each inline plot and breaks the vertical reference line
+  # between rows. The plot column's font is shrunk to collapse that descent.
+  expect_identical(unique(forest_ft$body$styles$text$font.size$data[, gg]), 1)
+  expect_false(any(forest_ft$body$styles$text$font.size$data[, -gg] == 1))
+
+  # the declared column widths exceed any standard page, and a fixed layout makes
+  # Word render them verbatim and overflow the right edge (#270)
+  expect_identical(forest_ft$properties$layout, "autofit")
 })
 
 test_that("add_forest handles extreme limits and character NA p-values safely", {

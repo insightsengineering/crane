@@ -42,7 +42,11 @@
 
 * `theme_gtsummary_roche()` now frames the flextable column labels with an outer border only, removing the internal borders between header rows and the inconsistent missing right border. (#272)
 
-* `add_forest()` now removes the horizontal padding of the forest-plot column in flextable output so the fixed-width plot fits its cell exactly and wide forest tables no longer spill off the page in docx. (#270)
+* `add_forest()` now removes the horizontal padding of the forest-plot column in flextable output, so the fixed-width plot fits its cell exactly. (#270)
+
+* `add_forest()` now returns an autofit flextable, so wide forest tables reflow to the page width in docx instead of running off the right edge. Previously the declared column widths were rendered verbatim under a fixed layout and exceeded any standard page size. (#270)
+
+* `add_forest()` now shrinks the font of the forest-plot column so the plots in consecutive rows touch and the vertical reference line stays continuous in docx output. Word ignores zero line spacing unless it is given as an exact rule, which flextable cannot emit, so the paragraph mark's font descent previously left a gap under every plot. HTML output was already correct and is unchanged. (#270)
 
 * `add_forest()` no longer supports `table_engine = "gt"`, as crane renders tables with flextable. Passing `"gt"` now errors with a deprecation message; the `table_engine` argument is retained and accepts `"flextable"` only. (#271)
 
