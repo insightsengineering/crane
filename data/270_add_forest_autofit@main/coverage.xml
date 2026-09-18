@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE coverage SYSTEM "https://raw.githubusercontent.com/cobertura/cobertura/master/cobertura/src/site/htdocs/xml/coverage-04.dtd">
-<coverage line-rate="0.974335131114004" branch-rate="0" lines-covered="5239" lines-valid="5377" branches-covered="0" branches-valid="0" complexity="0" version="3.6.5" timestamp="2026-09-18 15:26:31.439042">
+<coverage line-rate="0.974344673731177" branch-rate="0" lines-covered="5241" lines-valid="5379" branches-covered="0" branches-valid="0" complexity="0" version="3.6.5" timestamp="2026-09-18 15:56:32.246066">
   <sources>
     <source>/__w/crane/crane/crane</source>
   </sources>
   <packages>
-    <package name="crane" line-rate="0.974335131114004" branch-rate="0" complexity="0">
+    <package name="crane" line-rate="0.974344673731177" branch-rate="0" complexity="0">
       <classes>
         <class name="add_blank_rows.R" filename="R/add_blank_rows.R" line-rate="1" branch-rate="0" complexity="0">
           <methods>
@@ -630,29 +630,31 @@
                 <line number="221" hits="3" branch="false"/>
                 <line number="222" hits="3" branch="false"/>
                 <line number="223" hits="3" branch="false"/>
-                <line number="224" hits="3" branch="false"/>
-                <line number="225" hits="3" branch="false"/>
-                <line number="226" hits="3" branch="false"/>
-                <line number="227" hits="3" branch="false"/>
-                <line number="228" hits="3" branch="false"/>
                 <line number="231" hits="3" branch="false"/>
                 <line number="232" hits="3" branch="false"/>
                 <line number="233" hits="3" branch="false"/>
+                <line number="234" hits="3" branch="false"/>
+                <line number="235" hits="3" branch="false"/>
+                <line number="236" hits="3" branch="false"/>
+                <line number="239" hits="3" branch="false"/>
+                <line number="240" hits="3" branch="false"/>
+                <line number="241" hits="3" branch="false"/>
+                <line number="246" hits="3" branch="false"/>
               </lines>
             </method>
             <method name=".is_na_or_chr" signature="" line-rate="1" branch-rate="0" complexity="0">
               <lines>
-                <line number="237" hits="17" branch="false"/>
-                <line number="238" hits="17" branch="false"/>
-                <line number="239" hits="17" branch="false"/>
-                <line number="240" hits="17" branch="false"/>
-                <line number="241" hits="17" branch="false"/>
-                <line number="242" hits="17" branch="false"/>
-                <line number="243" hits="17" branch="false"/>
-                <line number="244" hits="17" branch="false"/>
-                <line number="245" hits="17" branch="false"/>
-                <line number="246" hits="17" branch="false"/>
-                <line number="247" hits="17" branch="false"/>
+                <line number="250" hits="17" branch="false"/>
+                <line number="251" hits="17" branch="false"/>
+                <line number="252" hits="17" branch="false"/>
+                <line number="253" hits="17" branch="false"/>
+                <line number="254" hits="17" branch="false"/>
+                <line number="255" hits="17" branch="false"/>
+                <line number="256" hits="17" branch="false"/>
+                <line number="257" hits="17" branch="false"/>
+                <line number="258" hits="17" branch="false"/>
+                <line number="259" hits="17" branch="false"/>
+                <line number="260" hits="17" branch="false"/>
               </lines>
             </method>
           </methods>
@@ -764,25 +766,27 @@
             <line number="221" hits="3" branch="false"/>
             <line number="222" hits="3" branch="false"/>
             <line number="223" hits="3" branch="false"/>
-            <line number="224" hits="3" branch="false"/>
-            <line number="225" hits="3" branch="false"/>
-            <line number="226" hits="3" branch="false"/>
-            <line number="227" hits="3" branch="false"/>
-            <line number="228" hits="3" branch="false"/>
             <line number="231" hits="3" branch="false"/>
             <line number="232" hits="3" branch="false"/>
             <line number="233" hits="3" branch="false"/>
-            <line number="237" hits="17" branch="false"/>
-            <line number="238" hits="17" branch="false"/>
-            <line number="239" hits="17" branch="false"/>
-            <line number="240" hits="17" branch="false"/>
-            <line number="241" hits="17" branch="false"/>
-            <line number="242" hits="17" branch="false"/>
-            <line number="243" hits="17" branch="false"/>
-            <line number="244" hits="17" branch="false"/>
-            <line number="245" hits="17" branch="false"/>
-            <line number="246" hits="17" branch="false"/>
-            <line number="247" hits="17" branch="false"/>
+            <line number="234" hits="3" branch="false"/>
+            <line number="235" hits="3" branch="false"/>
+            <line number="236" hits="3" branch="false"/>
+            <line number="239" hits="3" branch="false"/>
+            <line number="240" hits="3" branch="false"/>
+            <line number="241" hits="3" branch="false"/>
+            <line number="246" hits="3" branch="false"/>
+            <line number="250" hits="17" branch="false"/>
+            <line number="251" hits="17" branch="false"/>
+            <line number="252" hits="17" branch="false"/>
+            <line number="253" hits="17" branch="false"/>
+            <line number="254" hits="17" branch="false"/>
+            <line number="255" hits="17" branch="false"/>
+            <line number="256" hits="17" branch="false"/>
+            <line number="257" hits="17" branch="false"/>
+            <line number="258" hits="17" branch="false"/>
+            <line number="259" hits="17" branch="false"/>
+            <line number="260" hits="17" branch="false"/>
           </lines>
         </class>
         <class name="add_hierarchical_count_row.R" filename="R/add_hierarchical_count_row.R" line-rate="1" branch-rate="0" complexity="0">
