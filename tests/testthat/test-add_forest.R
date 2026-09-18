@@ -22,9 +22,14 @@ test_that("add_forest(table_engine = 'flextable') works", {
     "Less than 2 spanning headers detected."
   )
 
-  expect_warning(
+  # the "gt" engine was removed in 0.4.0, crane renders with flextable only (#271)
+  expect_error(
     add_forest(tbl, table_engine = "gt"),
-    "Less than 2 spanning headers detected."
+    class = "lifecycle_error_deprecated"
+  )
+  expect_error(
+    add_forest(tbl, table_engine = "not_an_engine"),
+    "flextable"
   )
 
   expect_error(
@@ -81,25 +86,16 @@ test_that("add_forest handles extreme limits and character NA p-values safely", 
     )
 
   # 3. TEST: Run add_forest
-  # We expect absolutely no errors (Issue 2 fixed) and no warnings (Issue 1 fixed)
-  expect_no_error(
-    expect_warning(
-      out_gt <- tbl_edge_cases |> add_forest(table_engine = "gt"),
-      "Less than 2 spanning headers detected."
-    )
-  )
-
-  expect_no_warning(
-    # gt delays rendering until print time, so we force it to render the HTML
-    # to trigger any latent ggplot geom_vline warnings.
-    suppressMessages(gt::as_raw_html(out_gt))
-  )
-
-  # Ensure it works for flextable too
+  # We expect absolutely no errors (Issue 2 fixed) and no warnings (Issue 1 fixed).
+  # flextable renders the ggplots eagerly through gg_chunk(), so any latent
+  # geom_vline warning surfaces during add_forest() itself. The gt engine used to
+  # need a forced as_raw_html() render here; it was removed in 0.4.0 (#271).
   expect_no_error(
     expect_warning(
       out_flex <- tbl_edge_cases |> add_forest(table_engine = "flextable"),
       "Less than 2 spanning headers detected."
     )
   )
+
+  expect_s3_class(out_flex, "flextable")
 })

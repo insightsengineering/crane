@@ -12,7 +12,7 @@ add_forest(
   pvalue = starts_with("p.value"),
   after = starts_with("p.value"),
   header_spaces = 20,
-  table_engine = c("flextable", "gt")
+  table_engine = "flextable"
 )
 }
 \arguments{
@@ -43,19 +43,19 @@ It is suggested to modify manually this variable if the treatment names are long
 with \code{add_forest(..., header_spaces = 5)} or \code{flextable::set_header_labels(ggplot = "*")}.}
 
 \item{table_engine}{(\code{character})\cr
-Table rendering engine to use. Default is "flextable".}
+Table rendering engine to use. Only \code{"flextable"} is supported. The \code{"gt"}
+engine was removed in crane 0.4.0.}
 }
 \value{
-a gt table or flextable object with an added forest plot column.
+a flextable object with an added forest plot column.
 }
 \description{
 This function adds a forest plot column to a gtsummary table, typically produced
 by \code{\link[=tbl_roche_subgroups]{tbl_roche_subgroups()}}. The forest plot visualizes estimates and confidence intervals
-for each subgroup in the table. The function supports rendering with either the \code{gt}
-or \code{flextable} engines, making it suitable for different outputs.
+for each subgroup in the table. The table is rendered with \code{flextable}.
 }
 \details{
-Both gt and flextable outputs could produce issues in line continuity between rows if
+The flextable output can produce issues in line continuity between rows if
 there are wrapping in the statistical cells.
 }
 \examples{
@@ -74,7 +74,7 @@ trial |>
     rows = !is.na(estimate)
   ) |>
   modify_header(estimate = "**Odds Ratio**") |>
-  add_forest(table_engine = "gt")
+  add_forest()
 
 # Realistic example ---------------------------------------------------------
 \donttest{

@@ -44,6 +44,8 @@
 
 * `add_forest()` now removes the horizontal padding of the forest-plot column in flextable output so the fixed-width plot fits its cell exactly and wide forest tables no longer spill off the page in docx. (#270)
 
+* `add_forest()` no longer supports `table_engine = "gt"`, as crane renders tables with flextable. Passing `"gt"` now errors with a deprecation message; the `table_engine` argument is retained and accepts `"flextable"` only. (#271)
+
 * Fixed minor typo in the DESCRIPTION file.
 
 * `tbl_hierarchical_incidence_rate()` gains an `overall_row` argument to control whether the overall summary row is included. (#264)

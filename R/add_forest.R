@@ -2,8 +2,7 @@
 #'
 #' This function adds a forest plot column to a gtsummary table, typically produced
 #' by [tbl_roche_subgroups()]. The forest plot visualizes estimates and confidence intervals
-#' for each subgroup in the table. The function supports rendering with either the `gt`
-#' or `flextable` engines, making it suitable for different outputs.
+#' for each subgroup in the table. The table is rendered with `flextable`.
 #'
 #' @param x (`gtsummary`)\cr
 #'   A gtsummary table with estimates and confidence intervals in the table body. Usually produced
@@ -25,13 +24,14 @@
 #'   It is suggested to modify manually this variable if the treatment names are long,
 #'   with `add_forest(..., header_spaces = 5)` or `flextable::set_header_labels(ggplot = "*")`.
 #' @param table_engine (`character`)\cr
-#'  Table rendering engine to use. Default is "flextable".
+#'  Table rendering engine to use. Only `"flextable"` is supported. The `"gt"`
+#'  engine was removed in crane 0.4.0.
 #'
 #' @details
-#' Both gt and flextable outputs could produce issues in line continuity between rows if
+#' The flextable output can produce issues in line continuity between rows if
 #' there are wrapping in the statistical cells.
 #'
-#' @return a gt table or flextable object with an added forest plot column.
+#' @return a flextable object with an added forest plot column.
 #'
 #' @examples
 #' # Simple example ------------------------------------------------------------
@@ -49,7 +49,7 @@
 #'     rows = !is.na(estimate)
 #'   ) |>
 #'   modify_header(estimate = "**Odds Ratio**") |>
-#'   add_forest(table_engine = "gt")
+#'   add_forest()
 #'
 #' # Realistic example ---------------------------------------------------------
 #' \donttest{
@@ -76,7 +76,7 @@ add_forest <- function(x,
                        pvalue = starts_with("p.value"),
                        after = starts_with("p.value"),
                        header_spaces = 20,
-                       table_engine = c("flextable", "gt")) {
+                       table_engine = "flextable") {
   set_cli_abort_call()
   check_not_missing(x)
   check_not_missing(estimate)
@@ -94,10 +94,16 @@ add_forest <- function(x,
   check_scalar_integerish(header_spaces)
 
   # 1. SETUP DEFAULTS ----------------------------------------------------------
-  # Define two sets of sizes: "Huge" for GT (HTML) and "Standard" for Flextable (Word/PPT)
-  table_engine <- arg_match(table_engine, error_call = get_cli_abort_call())
+  if (identical(table_engine, "gt")) {
+    lifecycle::deprecate_stop(
+      "0.4.0",
+      "crane::add_forest(table_engine = 'no longer accepts \"gt\"')",
+      details = "crane renders tables with flextable only. Drop the argument to use the default."
+    )
+  }
+  table_engine <- arg_match(table_engine, values = "flextable", error_call = get_cli_abort_call())
 
-  sizes <- .get_default_forest_sizes(table_engine = table_engine)
+  sizes <- .get_default_forest_sizes()
 
   # 2. DATA PREP ---------------------------------------------------------------
   # Extract only finite numbers that are ALSO <= 999.99
@@ -184,7 +190,7 @@ add_forest <- function(x,
   lst_ggplots_final <- c(lst_ggplots, list(p_axis))
 
   # Extract the Spanning Headers from gtsummary metadata
-  header_text <- .determine_ggplot_header(x, header_spaces, table_engine)
+  header_text <- .determine_ggplot_header(x, header_spaces)
 
   # 5. BUILD FINAL TABLE --------------------------------------------------------
   out <- x |>
@@ -195,61 +201,36 @@ add_forest <- function(x,
     gtsummary::modify_header(ggplot = header_text)
 
   # 6. RENDER TABLE -------------------------------------------------------------
-  if (table_engine == "gt") {
-    out <- out |>
-      gtsummary::as_gt() |>
-      gt::text_transform(
-        locations = gt::cells_body(columns = .data$ggplot),
-        fn = function(x) {
-          suppressMessages( # avoid `height` was translated to `width`. message
-            lst_ggplots_final |> gt::ggplot_image(height = gt::px(28), aspect_ratio = 8)
-          )
-        }
-      ) |>
-      gt::cols_width(ggplot ~ gt::px(250)) |>
-      gt::tab_options(
-        data_row.padding = gt::px(0),
-        table_body.hlines.style = "none",
-        table_body.vlines.style = "none"
-      ) |>
-      gt::opt_css("
-        .gt_table img { display: block; vertical-align: bottom; margin: 0 auto; }
-      ") |>
-      gt::tab_style(style = gt::cell_text(whitespace = "nowrap"), locations = gt::cells_body())
-  } else if (table_engine == "flextable") {
-    # The plot column has a fixed width. Render the image to exactly that width
-    # and remove the cell's horizontal padding so the raster fills its content
-    # box instead of being forced wider than the cell (which, under Word's fixed
-    # table layout, pushes the column out and makes the table overflow the page).
-    # The plot's proportions are unchanged; only the cell geometry is matched.
-    ggplot_col_width <- 2.5
-    out <- out |>
-      gtsummary::as_flex_table() |>
-      flextable::mk_par(
-        j = "ggplot",
-        value = flextable::as_paragraph(
-          suppressMessages( # avoid `height` was translated to `width`. message
-            flextable::gg_chunk(
-              value = lst_ggplots_final, height = 0.4, width = ggplot_col_width
-            )
+  # The plot column has a fixed width. Render the image to exactly that width
+  # and remove the cell's horizontal padding so the raster fills its content
+  # box instead of being forced wider than the cell (which, under Word's fixed
+  # table layout, pushes the column out and makes the table overflow the page).
+  # The plot's proportions are unchanged; only the cell geometry is matched.
+  ggplot_col_width <- 2.5
+  out |>
+    gtsummary::as_flex_table() |>
+    flextable::mk_par(
+      j = "ggplot",
+      value = flextable::as_paragraph(
+        suppressMessages( # avoid `height` was translated to `width`. message
+          flextable::gg_chunk(
+            value = lst_ggplots_final, height = 0.4, width = ggplot_col_width
           )
         )
-      ) |>
-      flextable::line_spacing(space = 0.8, part = "body") |>
-      flextable::line_spacing(j = "ggplot", space = 0, part = "body") |>
-      flextable::valign(valign = "center", part = "body") |>
-      flextable::align(j = "ggplot", align = "center", part = "header") |>
-      flextable::padding(padding.top = 0, part = "body") |>
-      flextable::padding(padding.bottom = 7, part = "body") |>
-      flextable::padding(j = "ggplot", padding.bottom = 0, part = "body") |>
-      # zero horizontal padding on the plot column so the fixed-width image fits
-      # the cell content box exactly (default 5pt L/R padding would overflow it)
-      flextable::padding(j = "ggplot", padding.left = 0, padding.right = 0, part = "all") |>
-      flextable::width(j = "ggplot", width = ggplot_col_width) |>
-      flextable::valign(valign = "bottom", part = "body")
-  }
-
-  out
+      )
+    ) |>
+    flextable::line_spacing(space = 0.8, part = "body") |>
+    flextable::line_spacing(j = "ggplot", space = 0, part = "body") |>
+    flextable::valign(valign = "center", part = "body") |>
+    flextable::align(j = "ggplot", align = "center", part = "header") |>
+    flextable::padding(padding.top = 0, part = "body") |>
+    flextable::padding(padding.bottom = 7, part = "body") |>
+    flextable::padding(j = "ggplot", padding.bottom = 0, part = "body") |>
+    # zero horizontal padding on the plot column so the fixed-width image fits
+    # the cell content box exactly (default 5pt L/R padding would overflow it)
+    flextable::padding(j = "ggplot", padding.left = 0, padding.right = 0, part = "all") |>
+    flextable::width(j = "ggplot", width = ggplot_col_width) |>
+    flextable::valign(valign = "bottom", part = "body")
 }
 
 .is_na_or_chr <- function(x, i, estimate, conf_low, conf_high) {
