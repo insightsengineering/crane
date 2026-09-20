@@ -59,10 +59,6 @@ test_that("add_forest(table_engine = 'flextable') works", {
   # shrunk font drops the paragraph mark's descent so consecutive plots abut
   expect_identical(unique(forest_ft$body$styles$text$font.size$data[, gg]), 1)
   expect_false(any(forest_ft$body$styles$text$font.size$data[, -gg] == 1))
-
-  # the declared column widths exceed any standard page, and a fixed layout makes
-  # Word render them verbatim and overflow the right edge (#270)
-  expect_identical(forest_ft$properties$layout, "autofit")
 })
 
 test_that("add_forest handles extreme limits and character NA p-values safely", {

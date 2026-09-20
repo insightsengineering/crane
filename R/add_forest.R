@@ -237,9 +237,7 @@ add_forest <- function(x,
     # default 5pt L/R padding would push the fixed-width image out of its cell
     flextable::padding(j = "ggplot", padding.left = 0, padding.right = 0, part = "all") |>
     flextable::width(j = "ggplot", width = ggplot_col_width) |>
-    flextable::valign(valign = "bottom", part = "body") |>
-    # declared widths exceed any standard page; fixed layout would overflow it
-    flextable::set_table_properties(layout = "autofit")
+    flextable::valign(valign = "bottom", part = "body")
 
   # header drawn on the body plots' scale, so labels sit over their own half
   if (!is.null(header_parts)) {
