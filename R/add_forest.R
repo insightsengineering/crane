@@ -243,9 +243,11 @@ add_forest <- function(x,
 
   # header drawn on the body plots' scale, so labels sit over their own half
   if (!is.null(header_parts)) {
+    # only the column-label row, so later title rows keep their own styling
+    label_row <- flextable::nrow_part(out, "header")
     out <- out |>
       flextable::mk_par(
-        j = "ggplot", part = "header",
+        i = label_row, j = "ggplot", part = "header",
         value = flextable::as_paragraph(
           suppressMessages( # avoid `height` was translated to `width`. message
             flextable::gg_chunk(
@@ -255,8 +257,11 @@ add_forest <- function(x,
           )
         )
       ) |>
-      flextable::padding(j = "ggplot", padding.left = 0, padding.right = 0, part = "header") |>
-      flextable::fontsize(j = "ggplot", size = 1, part = "header")
+      flextable::padding(
+        i = label_row, j = "ggplot",
+        padding.left = 0, padding.right = 0, part = "header"
+      ) |>
+      flextable::fontsize(i = label_row, j = "ggplot", size = 1, part = "header")
   }
 
   out
