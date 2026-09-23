@@ -1,4 +1,4 @@
-# crane 0.3.3.9020
+# crane 0.3.3.9021
 
 * `modify_split_caption()` now errors when given a table that was never split, instead of silently returning it unchanged. A plain table has no split level to build a subtitle from; the message points at `split_by_rows = list(variable_level = ...)`. Pages of a row-number split are still skipped silently, as before. (#318)
 
