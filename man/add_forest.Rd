@@ -11,8 +11,8 @@ add_forest(
   conf_high = starts_with("conf.high"),
   pvalue = starts_with("p.value"),
   after = starts_with("p.value"),
-  header_spaces = 20,
-  table_engine = c("flextable", "gt")
+  header_spaces = lifecycle::deprecated(),
+  table_engine = "flextable"
 )
 }
 \arguments{
@@ -37,25 +37,25 @@ according to p-value (smaller p-values = smaller points). \code{NULL} to turn th
 Column name after which the forest plot column will be added. Default is after
 the p-value column.}
 
-\item{header_spaces}{(\code{integer})\cr Spaces to add to the forest plot header to
-visually separate the two treatment areas (\verb{trt A\\n Better} and \verb{trt B\\nBetter}).
-It is suggested to modify manually this variable if the treatment names are long,
-with \code{add_forest(..., header_spaces = 5)} or \code{flextable::set_header_labels(ggplot = "*")}.}
+\item{header_spaces}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}\cr Previously the number
+of spacer characters used to separate the two treatment labels in the forest
+plot header. The header is now drawn on the same scale as the plots, so the
+labels are positioned geometrically and this argument has no effect.}
 
 \item{table_engine}{(\code{character})\cr
-Table rendering engine to use. Default is "flextable".}
+Table rendering engine to use. Only \code{"flextable"} is supported. The \code{"gt"}
+engine was removed in crane 0.4.0.}
 }
 \value{
-a gt table or flextable object with an added forest plot column.
+a flextable object with an added forest plot column.
 }
 \description{
 This function adds a forest plot column to a gtsummary table, typically produced
 by \code{\link[=tbl_roche_subgroups]{tbl_roche_subgroups()}}. The forest plot visualizes estimates and confidence intervals
-for each subgroup in the table. The function supports rendering with either the \code{gt}
-or \code{flextable} engines, making it suitable for different outputs.
+for each subgroup in the table. The table is rendered with \code{flextable}.
 }
 \details{
-Both gt and flextable outputs could produce issues in line continuity between rows if
+The flextable output can produce issues in line continuity between rows if
 there are wrapping in the statistical cells.
 }
 \examples{
@@ -74,7 +74,7 @@ trial |>
     rows = !is.na(estimate)
   ) |>
   modify_header(estimate = "**Odds Ratio**") |>
-  add_forest(table_engine = "gt")
+  add_forest()
 
 # Realistic example ---------------------------------------------------------
 \donttest{
