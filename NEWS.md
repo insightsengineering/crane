@@ -1,10 +1,8 @@
-# crane 0.3.3.9020
+# crane 0.4.0
 
 * `modify_split_caption()` now errors when given a table that was never split, instead of silently returning it unchanged. A plain table has no split level to build a subtitle from; the message points at `split_by_rows = list(variable_level = ...)`. Pages of a row-number split are still skipped silently, as before. (#318)
 
 * Added `add_label_column()` to split a `{gtsummary}` table's row labels into a new left label column (`label0`) and the existing `label` column, computing the new column from an expression evaluated in the table body. This is the `strata_location = "new_column"` layout of `tbl_shift()` exposed as a standalone step for nested count and shift tables. (#314)
-
-# crane 0.3.3.9017
 
 * `tbl_null_report()` now centers its message, so with no body content it reads as a "no data" panel spanning the table instead of text hugging the left edge. (#305)
 
