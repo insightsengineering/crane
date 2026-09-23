@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -89,7 +89,7 @@
       <h1 data-toc-skip>Introduction to {crane}</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/crane/blob/v0.3.2-rc2/vignettes/articles/crane.Rmd" class="external-link"><code>vignettes/articles/crane.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/insightsengineering/crane/blob/v0.4.0-rc1/vignettes/articles/crane.Rmd" class="external-link"><code>vignettes/articles/crane.Rmd</code></a></small>
       <div class="hidden name"><code>crane.Rmd</code></div>
 
     </div>
@@ -137,81 +137,81 @@ code is somewhat long, and we therefore created
 <code><a href="../reference/tbl_roche_summary.html">crane::tbl_roche_summary()</a></code>.</p>
 <p>To create the Roche standard demographics table, we simple call:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://insightsengineering.github.io/cards/latest-tag/reference/adam.html" class="external-link">ADSL</a></span> <span class="op">|&gt;</span></span>
+<code class="sourceCode R"><span><span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://pharmaverse.github.io/cards/latest-tag/reference/adam.html" class="external-link">ADSL</a></span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="../reference/tbl_roche_summary.html">tbl_roche_summary</a></span><span class="op">(</span></span>
 <span>    by <span class="op">=</span> <span class="va">ARM</span>,</span>
 <span>    include <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">AGE</span>, <span class="va">RACE</span><span class="op">)</span>,</span>
 <span>    nonmissing <span class="op">=</span> <span class="st">"always"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
 <div class="tabwid">
-<style>.cl-21ca2844{table-layout:auto;}.cl-21c1bd6c{font-family:'Arial';font-size:8pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-21c53ad2{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:0;padding-top:0;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-21c53ae6{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:0;padding-top:0;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-21c53ae7{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:0;padding-top:0;padding-left:15pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-21c574b6{background-color:transparent;vertical-align: top;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0.5pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-21c574c0{background-color:transparent;vertical-align: top;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-21c574ca{background-color:transparent;vertical-align: top;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-21c574d4{background-color:transparent;vertical-align: top;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0.5pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-21c574d5{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0.5pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-21c574de{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-21c574df{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-21c574e8{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0.5pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-21c574f2{background-color:transparent;vertical-align: top;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0.5pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-21c574f3{background-color:transparent;vertical-align: top;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-21c574fc{background-color:transparent;vertical-align: top;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-21c574fd{background-color:transparent;vertical-align: top;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0.5pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
-<table data-quarto-disable-processing="true" class="table cl-21ca2844">
+<style>.cl-012bb927{table-layout:auto;}.cl-1233c01e{font-family:'Arial';font-size:8pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-bf6912b9{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:0;padding-top:0;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-e0b8055a{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:0;padding-top:0;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d5391bbf{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:0;padding-top:0;padding-left:15pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-16d407f9{background-color:transparent;vertical-align: top;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0.5pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-a5002b6e{background-color:transparent;vertical-align: top;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-06ab485b{background-color:transparent;vertical-align: top;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d0d3c85d{background-color:transparent;vertical-align: top;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0.5pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-30f8bae4{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0.5pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-bff19710{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-97e4c92b{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-dce5b2b9{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0.5pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d6519e14{background-color:transparent;vertical-align: top;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0.5pt solid rgba(102, 102, 102, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-0c7def6f{background-color:transparent;vertical-align: top;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-28cb0b6e{background-color:transparent;vertical-align: top;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-da1b6d90{background-color:transparent;vertical-align: top;border-bottom: 0.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0.5pt solid rgba(102, 102, 102, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style>
+<table data-quarto-disable-processing="true" class="table cl-012bb927">
 <thead><tr style="overflow-wrap:break-word;">
-<th class="cl-21c574b6"><p class="cl-21c53ad2"><span class="cl-21c1bd6c"></span></p></th>
-<th class="cl-21c574c0"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">Placebo  </span><br><span class="cl-21c1bd6c">(N = 86)</span></p></th>
-<th class="cl-21c574ca"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">Xanomeline High Dose  </span><br><span class="cl-21c1bd6c">(N = 84)</span></p></th>
-<th class="cl-21c574d4"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">Xanomeline Low Dose  </span><br><span class="cl-21c1bd6c">(N = 84)</span></p></th>
+<th class="cl-16d407f9"><p class="cl-bf6912b9"><span class="cl-1233c01e"></span></p></th>
+<th class="cl-a5002b6e"><p class="cl-e0b8055a"><span class="cl-1233c01e">Placebo  </span><br><span class="cl-1233c01e">(N = 86)</span></p></th>
+<th class="cl-06ab485b"><p class="cl-e0b8055a"><span class="cl-1233c01e">Xanomeline High Dose  </span><br><span class="cl-1233c01e">(N = 84)</span></p></th>
+<th class="cl-d0d3c85d"><p class="cl-e0b8055a"><span class="cl-1233c01e">Xanomeline Low Dose  </span><br><span class="cl-1233c01e">(N = 84)</span></p></th>
 </tr></thead>
 <tbody>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-21c574d5"><p class="cl-21c53ad2"><span class="cl-21c1bd6c">Age</span></p></td>
-<td class="cl-21c574de"><p class="cl-21c53ae6"><span class="cl-21c1bd6c"></span></p></td>
-<td class="cl-21c574df"><p class="cl-21c53ae6"><span class="cl-21c1bd6c"></span></p></td>
-<td class="cl-21c574e8"><p class="cl-21c53ae6"><span class="cl-21c1bd6c"></span></p></td>
+<td class="cl-30f8bae4"><p class="cl-bf6912b9"><span class="cl-1233c01e">Age</span></p></td>
+<td class="cl-bff19710"><p class="cl-e0b8055a"><span class="cl-1233c01e"></span></p></td>
+<td class="cl-97e4c92b"><p class="cl-e0b8055a"><span class="cl-1233c01e"></span></p></td>
+<td class="cl-dce5b2b9"><p class="cl-e0b8055a"><span class="cl-1233c01e"></span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-21c574d5"><p class="cl-21c53ae7"><span class="cl-21c1bd6c">n</span></p></td>
-<td class="cl-21c574de"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">86</span></p></td>
-<td class="cl-21c574df"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">84</span></p></td>
-<td class="cl-21c574e8"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">84</span></p></td>
+<td class="cl-30f8bae4"><p class="cl-d5391bbf"><span class="cl-1233c01e">n</span></p></td>
+<td class="cl-bff19710"><p class="cl-e0b8055a"><span class="cl-1233c01e">86</span></p></td>
+<td class="cl-97e4c92b"><p class="cl-e0b8055a"><span class="cl-1233c01e">84</span></p></td>
+<td class="cl-dce5b2b9"><p class="cl-e0b8055a"><span class="cl-1233c01e">84</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-21c574d5"><p class="cl-21c53ae7"><span class="cl-21c1bd6c">Mean (SD)</span></p></td>
-<td class="cl-21c574de"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">75.2 (8.6)</span></p></td>
-<td class="cl-21c574df"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">74.4 (7.9)</span></p></td>
-<td class="cl-21c574e8"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">75.7 (8.3)</span></p></td>
+<td class="cl-30f8bae4"><p class="cl-d5391bbf"><span class="cl-1233c01e">Mean (SD)</span></p></td>
+<td class="cl-bff19710"><p class="cl-e0b8055a"><span class="cl-1233c01e">75.2 (8.6)</span></p></td>
+<td class="cl-97e4c92b"><p class="cl-e0b8055a"><span class="cl-1233c01e">74.4 (7.9)</span></p></td>
+<td class="cl-dce5b2b9"><p class="cl-e0b8055a"><span class="cl-1233c01e">75.7 (8.3)</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-21c574d5"><p class="cl-21c53ae7"><span class="cl-21c1bd6c">Median</span></p></td>
-<td class="cl-21c574de"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">76.0</span></p></td>
-<td class="cl-21c574df"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">76.0</span></p></td>
-<td class="cl-21c574e8"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">77.5</span></p></td>
+<td class="cl-30f8bae4"><p class="cl-d5391bbf"><span class="cl-1233c01e">Median</span></p></td>
+<td class="cl-bff19710"><p class="cl-e0b8055a"><span class="cl-1233c01e">76.0</span></p></td>
+<td class="cl-97e4c92b"><p class="cl-e0b8055a"><span class="cl-1233c01e">76.0</span></p></td>
+<td class="cl-dce5b2b9"><p class="cl-e0b8055a"><span class="cl-1233c01e">77.5</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-21c574d5"><p class="cl-21c53ae7"><span class="cl-21c1bd6c">Min - Max</span></p></td>
-<td class="cl-21c574de"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">52 - 89</span></p></td>
-<td class="cl-21c574df"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">56 - 88</span></p></td>
-<td class="cl-21c574e8"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">51 - 88</span></p></td>
+<td class="cl-30f8bae4"><p class="cl-d5391bbf"><span class="cl-1233c01e">Min - Max</span></p></td>
+<td class="cl-bff19710"><p class="cl-e0b8055a"><span class="cl-1233c01e">52 - 89</span></p></td>
+<td class="cl-97e4c92b"><p class="cl-e0b8055a"><span class="cl-1233c01e">56 - 88</span></p></td>
+<td class="cl-dce5b2b9"><p class="cl-e0b8055a"><span class="cl-1233c01e">51 - 88</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-21c574d5"><p class="cl-21c53ad2"><span class="cl-21c1bd6c">Race</span></p></td>
-<td class="cl-21c574de"><p class="cl-21c53ae6"><span class="cl-21c1bd6c"></span></p></td>
-<td class="cl-21c574df"><p class="cl-21c53ae6"><span class="cl-21c1bd6c"></span></p></td>
-<td class="cl-21c574e8"><p class="cl-21c53ae6"><span class="cl-21c1bd6c"></span></p></td>
+<td class="cl-30f8bae4"><p class="cl-bf6912b9"><span class="cl-1233c01e">Race</span></p></td>
+<td class="cl-bff19710"><p class="cl-e0b8055a"><span class="cl-1233c01e"></span></p></td>
+<td class="cl-97e4c92b"><p class="cl-e0b8055a"><span class="cl-1233c01e"></span></p></td>
+<td class="cl-dce5b2b9"><p class="cl-e0b8055a"><span class="cl-1233c01e"></span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-21c574d5"><p class="cl-21c53ae7"><span class="cl-21c1bd6c">n</span></p></td>
-<td class="cl-21c574de"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">86</span></p></td>
-<td class="cl-21c574df"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">84</span></p></td>
-<td class="cl-21c574e8"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">84</span></p></td>
+<td class="cl-30f8bae4"><p class="cl-d5391bbf"><span class="cl-1233c01e">n</span></p></td>
+<td class="cl-bff19710"><p class="cl-e0b8055a"><span class="cl-1233c01e">86</span></p></td>
+<td class="cl-97e4c92b"><p class="cl-e0b8055a"><span class="cl-1233c01e">84</span></p></td>
+<td class="cl-dce5b2b9"><p class="cl-e0b8055a"><span class="cl-1233c01e">84</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-21c574d5"><p class="cl-21c53ae7"><span class="cl-21c1bd6c">AMERICAN INDIAN OR ALASKA NATIVE</span></p></td>
-<td class="cl-21c574de"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">0</span></p></td>
-<td class="cl-21c574df"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">1 (1.2%)</span></p></td>
-<td class="cl-21c574e8"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">0</span></p></td>
+<td class="cl-30f8bae4"><p class="cl-d5391bbf"><span class="cl-1233c01e">AMERICAN INDIAN OR ALASKA NATIVE</span></p></td>
+<td class="cl-bff19710"><p class="cl-e0b8055a"><span class="cl-1233c01e">0</span></p></td>
+<td class="cl-97e4c92b"><p class="cl-e0b8055a"><span class="cl-1233c01e">1 (1.2%)</span></p></td>
+<td class="cl-dce5b2b9"><p class="cl-e0b8055a"><span class="cl-1233c01e">0</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-21c574d5"><p class="cl-21c53ae7"><span class="cl-21c1bd6c">BLACK OR AFRICAN AMERICAN</span></p></td>
-<td class="cl-21c574de"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">8 (9.3%)</span></p></td>
-<td class="cl-21c574df"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">9 (10.7%)</span></p></td>
-<td class="cl-21c574e8"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">6 (7.1%)</span></p></td>
+<td class="cl-30f8bae4"><p class="cl-d5391bbf"><span class="cl-1233c01e">BLACK OR AFRICAN AMERICAN</span></p></td>
+<td class="cl-bff19710"><p class="cl-e0b8055a"><span class="cl-1233c01e">8 (9.3%)</span></p></td>
+<td class="cl-97e4c92b"><p class="cl-e0b8055a"><span class="cl-1233c01e">9 (10.7%)</span></p></td>
+<td class="cl-dce5b2b9"><p class="cl-e0b8055a"><span class="cl-1233c01e">6 (7.1%)</span></p></td>
 </tr>
 <tr style="overflow-wrap:break-word;">
-<td class="cl-21c574f2"><p class="cl-21c53ae7"><span class="cl-21c1bd6c">WHITE</span></p></td>
-<td class="cl-21c574f3"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">78 (90.7%)</span></p></td>
-<td class="cl-21c574fc"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">74 (88.1%)</span></p></td>
-<td class="cl-21c574fd"><p class="cl-21c53ae6"><span class="cl-21c1bd6c">78 (92.9%)</span></p></td>
+<td class="cl-d6519e14"><p class="cl-d5391bbf"><span class="cl-1233c01e">WHITE</span></p></td>
+<td class="cl-0c7def6f"><p class="cl-e0b8055a"><span class="cl-1233c01e">78 (90.7%)</span></p></td>
+<td class="cl-28cb0b6e"><p class="cl-e0b8055a"><span class="cl-1233c01e">74 (88.1%)</span></p></td>
+<td class="cl-da1b6d90"><p class="cl-e0b8055a"><span class="cl-1233c01e">78 (92.9%)</span></p></td>
 </tr>
 </tbody>
 </table>
@@ -221,7 +221,7 @@ need the following code. As some of these steps are not the most
 straightforward, we created the <code><a href="../reference/tbl_roche_summary.html">tbl_roche_summary()</a></code>
 wrapper.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://insightsengineering.github.io/cards/latest-tag/reference/adam.html" class="external-link">ADSL</a></span> <span class="op">|&gt;</span> </span>
+<code class="sourceCode R"><span><span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://pharmaverse.github.io/cards/latest-tag/reference/adam.html" class="external-link">ADSL</a></span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_summary.html" class="external-link">tbl_summary</a></span><span class="op">(</span></span>
 <span>    by <span class="op">=</span> <span class="va">ARM</span>, </span>
 <span>    include <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">AGE</span>, <span class="va">RACE</span><span class="op">)</span>,</span>
@@ -275,7 +275,7 @@ a new function in {crane} is warranted.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
       </footer>

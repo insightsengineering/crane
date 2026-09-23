@@ -18,7 +18,7 @@ displays AE rates."><meta property="og:image" content="https://insightsengineeri
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.3.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
       </span>
     </div>
 
@@ -58,7 +58,7 @@ displays AE rates."><meta property="og:image" content="https://insightsengineeri
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Add row with counts</h1>
-    <small class="dont-index">Source: <a href="https://github.com/insightsengineering/crane/blob/v0.3.2-rc2/R/add_hierarchical_count_row.R" class="external-link"><code>R/add_hierarchical_count_row.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/insightsengineering/crane/blob/v0.4.0-rc1/R/add_hierarchical_count_row.R" class="external-link"><code>R/add_hierarchical_count_row.R</code></a></small>
     <div class="hidden name"><code>add_hierarchical_count_row.Rd</code></div>
     </div>
 
@@ -111,13 +111,13 @@ for the function is accepted. See <code><a href="https://rlang.r-lib.org/referen
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Example 1 ----------------------------------</span></span></span>
-<span class="r-in"><span><span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://insightsengineering.github.io/cards/latest-tag/reference/adam.html" class="external-link">ADAE</a></span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span><span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://pharmaverse.github.io/cards/latest-tag/reference/adam.html" class="external-link">ADAE</a></span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="co"># subset the data for a shorter example table</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html" class="external-link">slice</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://www.danieldsjoberg.com/gtsummary/reference/tbl_hierarchical.html" class="external-link">tbl_hierarchical</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    by <span class="op">=</span> <span class="st">"TRTA"</span>,</span></span>
 <span class="r-in"><span>    variables <span class="op">=</span> <span class="va">AEDECOD</span>,</span></span>
-<span class="r-in"><span>    denominator <span class="op">=</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://insightsengineering.github.io/cards/latest-tag/reference/adam.html" class="external-link">ADSL</a></span>,</span></span>
+<span class="r-in"><span>    denominator <span class="op">=</span> <span class="fu">cards</span><span class="fu">::</span><span class="va"><a href="https://pharmaverse.github.io/cards/latest-tag/reference/adam.html" class="external-link">ADSL</a></span>,</span></span>
 <span class="r-in"><span>    id <span class="op">=</span> <span class="st">"USUBJID"</span>,</span></span>
 <span class="r-in"><span>    overall_row <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span> <span class="op">|&gt;</span></span></span>
@@ -158,7 +158,7 @@ N = 84</span><span class="gt_footnote_marks" style="font-size: 75%; vertical-ali
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
       </footer></div>
