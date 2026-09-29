@@ -9,7 +9,8 @@ gg_add_stats(
   stat = c("mean", "median"),
   variability = c("sd", "se", "ci", "iqr", "none"),
   conf_level = 0.95,
-  position = ggplot2::position_identity()
+  position = ggplot2::position_identity(),
+  width = 0.45
 )
 }
 \arguments{
@@ -29,6 +30,10 @@ Confidence level for \code{"ci"} (default \code{0.95}).}
 Position adjustment, either a string (e.g., \code{"dodge"}) or a
 formal ggplot2 object (e.g., \code{ggplot2::position_dodge(width = 0.4)}).
 Defaults to \code{ggplot2::position_identity()}.}
+
+\item{width}{(\code{numeric})\cr
+Width of the horizontal caps on the error bars. Default is \code{0.45}.
+Set to \code{0} for no caps.}
 }
 \value{
 A modified \code{ggplot2} object with an added error bar layer.

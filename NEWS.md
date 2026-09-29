@@ -1,5 +1,11 @@
 # crane 0.3.3.9021
 
+* `gg_pkc_lineplot()` now adds a single x scale instead of two, so it no longer reports "Scale for x is already present" on every call with a numeric `time_var`. The `expand` setting that the discarded scale carried is now applied. (#322)
+
+* `gg_pkc_lineplot()` gains an `x_breaks` argument to set the breaks of a numeric x-axis, for time ranges too wide to label every timepoint. The default `NULL` keeps a break on every observed timepoint. (#322)
+
+* `gg_pkc_lineplot()` and `gg_lineplot()` gain an `errorbar_width` argument to set the width of the error bar caps, previously fixed at `0.45`. (#322)
+
 * `modify_split_caption()` now errors when given a table that was never split, instead of silently returning it unchanged. A plain table has no split level to build a subtitle from; the message points at `split_by_rows = list(variable_level = ...)`. Pages of a row-number split are still skipped silently, as before. (#318)
 
 * Added `add_label_column()` to split a `{gtsummary}` table's row labels into a new left label column (`label0`) and the existing `label` column, computing the new column from an expression evaluated in the table body. This is the `strata_location = "new_column"` layout of `tbl_shift()` exposed as a standalone step for nested count and shift tables. (#314)
