@@ -52,9 +52,6 @@
 
 * `tbl_with_pools()` no longer strips spanning headers set by the inner `.tbl_fun`, so pooling `tbl_baseline_chg()` keeps the treatment-arm headers. (#297)
 
-# crane 0.3.3
-
-* Fixed minor typo in the DESCRIPTION file.
 
 # crane 0.3.2
 
