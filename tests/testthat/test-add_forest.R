@@ -22,13 +22,18 @@ test_that("add_forest(table_engine = 'flextable') works", {
     "Less than 2 spanning headers detected."
   )
 
-  expect_warning(
+  # the "gt" engine was removed in 0.4.0, crane renders with flextable only (#271)
+  expect_error(
     add_forest(tbl, table_engine = "gt"),
-    "Less than 2 spanning headers detected."
+    class = "lifecycle_error_deprecated"
+  )
+  expect_error(
+    add_forest(tbl, table_engine = "not_an_engine"),
+    "flextable"
   )
 
   expect_error(
-    tbl <- trial |>
+    forest_ft <- trial |>
       tbl_roche_subgroups(
         subgroups = c("grade", "stage"),
         rsp = "response",
@@ -45,6 +50,15 @@ test_that("add_forest(table_engine = 'flextable') works", {
       ),
     NA
   )
+
+  # default 5pt L/R padding would push the fixed-width image out of its cell (#270)
+  gg <- which(forest_ft$col_keys == "ggplot")
+  expect_identical(unique(forest_ft$body$styles$pars$padding.left$data[, gg]), 0)
+  expect_identical(unique(forest_ft$body$styles$pars$padding.right$data[, gg]), 0)
+
+  # shrunk font drops the paragraph mark's descent so consecutive plots abut
+  expect_identical(unique(forest_ft$body$styles$text$font.size$data[, gg]), 1)
+  expect_false(any(forest_ft$body$styles$text$font.size$data[, -gg] == 1))
 })
 
 test_that("add_forest handles extreme limits and character NA p-values safely", {
@@ -72,26 +86,13 @@ test_that("add_forest handles extreme limits and character NA p-values safely", 
       p.value = NA
     )
 
-  # 3. TEST: Run add_forest
-  # We expect absolutely no errors (Issue 2 fixed) and no warnings (Issue 1 fixed)
-  expect_no_error(
-    expect_warning(
-      out_gt <- tbl_edge_cases |> add_forest(table_engine = "gt"),
-      "Less than 2 spanning headers detected."
-    )
-  )
-
-  expect_no_warning(
-    # gt delays rendering until print time, so we force it to render the HTML
-    # to trigger any latent ggplot geom_vline warnings.
-    suppressMessages(gt::as_raw_html(out_gt))
-  )
-
-  # Ensure it works for flextable too
+  # gg_chunk() renders eagerly, so latent geom_vline warnings surface here
   expect_no_error(
     expect_warning(
       out_flex <- tbl_edge_cases |> add_forest(table_engine = "flextable"),
       "Less than 2 spanning headers detected."
     )
   )
+
+  expect_s3_class(out_flex, "flextable")
 })
