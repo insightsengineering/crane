@@ -98,3 +98,23 @@ test_that("modify_split_caption() checks its inputs", {
     "must be a string"
   )
 })
+
+test_that("modify_split_caption() rejects a table that was never split", {
+  # a plain listing has no `variable_level`, so there is no level to build a
+  # subtitle from; it used to return the table unchanged, silently (#318)
+  expect_error(
+    modify_split_caption(tbl_listing(tld), spl_col = "trt", pattern = "Treatment: {spl_level}"),
+    "not a split table"
+  )
+})
+
+test_that("modify_split_caption() leaves row-number split pages alone", {
+  # those pages carry no `variable_level` either, but skipping them is intended,
+  # so they must not hit the error above (#318)
+  out <- tbl_listing(tld, split_by_rows = list(row_numbers = 4)) |>
+    modify_split_caption(spl_col = "trt", pattern = "Treatment: {spl_level}")
+
+  expect_null(out[[1]]$table_styling$caption)
+  expect_null(attr(out[[1]], "variable_level"))
+  expect_true(hide_flag(out[[1]], "trt"))
+})

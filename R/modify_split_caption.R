@@ -70,11 +70,14 @@ modify_split_caption <- function(x,
   check_scalar_logical(hide_spl_col)
 
   # map over a list of split tables --------------------------------------------
+  # Pages of a row-number split carry no `variable_level`, so the helper skips
+  # their subtitle silently. Only the single-table path below treats a missing
+  # level as an error, where it means the table was never split.
   if (is.list(x) && inherits(x[[1]], "gtsummary")) {
     return(
       map(
         x,
-        modify_split_caption,
+        .modify_split_caption_page,
         spl_col = spl_col,
         pattern = pattern,
         hide_spl_col = hide_spl_col
@@ -85,10 +88,26 @@ modify_split_caption <- function(x,
 
   check_class(x, "gtsummary")
 
-  # build the split subtitle from the split level ------------------------------
-  # `variable_level` is the gtsummary-native attribute set by
-  # tbl_split_by_rows(variable_level = ); row-number splits do not set it, so
-  # those pages are skipped silently.
+  if (is_empty(attr(x, "variable_level"))) {
+    cli::cli_abort(
+      c(
+        "{.arg x} is not a split table, so there is no split level to build a subtitle from.",
+        i = "Split it first, for example
+             {.code tbl_listing(split_by_rows = list(variable_level = {.val {spl_col}}))}.",
+        i = "To only hide a column, use {.fun gtsummary::modify_column_hide}."
+      ),
+      call = get_cli_abort_call()
+    )
+  }
+
+  .modify_split_caption_page(x, spl_col, pattern, hide_spl_col)
+}
+
+# Subtitle and trim one split page. `variable_level` is the gtsummary-native
+# attribute set by tbl_split_by_rows(variable_level = ); row-number splits do not
+# set it, so those pages keep their caption unchanged.
+#' @noRd
+.modify_split_caption_page <- function(x, spl_col, pattern, hide_spl_col) {
   spl_level <- attr(x, "variable_level")
   if (!is_empty(spl_level)) {
     subtitle <- as.character(glue::glue(pattern))
