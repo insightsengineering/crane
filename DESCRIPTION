@@ -1,6 +1,6 @@
 Package: crane
 Title: Supplements the 'gtsummary' Package for Pharmaceutical Reporting
-Version: 0.3.3.9021
+Version: 0.4.0
 Authors@R: c(
     person("Daniel D.", "Sjoberg", , "danield.sjoberg@gmail.com", role = "aut",
            comment = c(ORCID = "0000-0003-0862-2018", note = "Original creator of the package")),
@@ -30,11 +30,11 @@ URL: https://github.com/insightsengineering/crane,
     https://insightsengineering.github.io/crane/
 BugReports: https://github.com/insightsengineering/crane/issues
 Depends: 
-    gtsummary (>= 2.5.1),
+    gtsummary (>= 2.6.1),
     R (>= 4.2)
 Imports:
     broom (>= 1.0.8),
-    cards (>= 0.8.1.9001),
+    cards (>= 0.9.0),
     cardx (>= 0.3.3),
     cli (>= 3.6.4),
     cowplot (>= 1.2.0),
@@ -65,8 +65,6 @@ Suggests:
     withr (>= 3.0.1),
     xml2,
     yaml
-Remotes: 
-    pharmaverse/cards
 Config/Needs/check: hms
 Config/Needs/website: rmarkdown, yaml
 Config/roxygen2/version: 8.1.0
