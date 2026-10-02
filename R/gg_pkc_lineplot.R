@@ -23,6 +23,16 @@
 #'   Whether to apply log10 scale to the y-axis. Default is `TRUE`.
 #' @param lloq (`numeric` or `NULL`)\cr
 #'   Lower Limit of Quantification. Default is `NA_real_`.
+#' @param x_breaks (`numeric`, `function`, or `NULL`)\cr
+#'   Breaks for a numeric x-axis, passed to [ggplot2::scale_x_continuous()].
+#'   The default `NULL` puts a break on every observed timepoint, which is
+#'   readable over a short window but not over a long one. Supply a vector
+#'   (e.g. `seq(0, 600, by = 100)`) or a break function
+#'   (e.g. `scales::breaks_pretty()`) for wider time ranges. Ignored when
+#'   `time_var` is a factor.
+#' @param errorbar_width (`numeric`)\cr
+#'   Width of the horizontal caps on the variability error bars. Default is
+#'   `0.45`. Set to `0` for no caps. Ignored when `variability = "none"`.
 #'
 #' @returns A `ggplot` object.
 #' @seealso [annotate_pkc_df()] for related functionalities.
@@ -89,7 +99,9 @@ gg_pkc_lineplot <- function(data,
                             variability = c("sd", "se", "ci", "iqr", "none"),
                             conf_level = 0.95,
                             log_y = TRUE,
-                            lloq = NA_real_) {
+                            lloq = NA_real_,
+                            x_breaks = NULL,
+                            errorbar_width = 0.45) {
   # Match standard arguments
   stat <- match.arg(stat)
   variability <- match.arg(variability)
@@ -183,7 +195,7 @@ gg_pkc_lineplot <- function(data,
   # Add Variability (Error Bars) using our unified math engine
   if (variability != "none") {
     p <- p |>
-      gg_add_stats(stat, variability, conf_level)
+      gg_add_stats(stat, variability, conf_level, width = errorbar_width)
   }
 
   # Log Scale & LLOQ
@@ -216,15 +228,15 @@ gg_pkc_lineplot <- function(data,
 
   if (is.numeric(data[[time_var]])) {
     # Aligning plot to actual timepoints in the data frame to ensure
-    # categorical mapping scales appropriately for cowplot alignments downstream
-    new_x_scale <- ggplot2::scale_x_continuous(
-      breaks = data[[time_var]],
-      expand = ggplot2::expansion(mult = 0.05)
-    )
+    # categorical mapping scales appropriately for cowplot alignments downstream.
+    # A single scale is added: adding two would make ggplot2 drop the first one
+    # and warn on every call.
     p <- p +
-      new_x_scale +
-      ggplot2::coord_cartesian(xlim = range(data[[time_var]])) +
-      ggplot2::scale_x_continuous(breaks = sort(unique(data[[time_var]])))
+      ggplot2::scale_x_continuous(
+        breaks = x_breaks %||% sort(unique(data[[time_var]])),
+        expand = ggplot2::expansion(mult = 0.05)
+      ) +
+      ggplot2::coord_cartesian(xlim = range(data[[time_var]]))
   }
 
   class(p) <- c("crane_gg_pkc", class(p))
