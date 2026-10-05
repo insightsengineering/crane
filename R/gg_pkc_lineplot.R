@@ -139,9 +139,8 @@ gg_pkc_lineplot <- function(data,
     group = {{ group }}
   )
 
-  # change from factor to numeric
-  # time_var can be factor or numeric - factor allow for correct n of decimals
-  # in the summary table
+  # time_var can be supplied as factor or numeric; convert factor to numeric
+  # when possible, otherwise keep it as a factor for discrete plotting
   if (!is.numeric(data[[time_var]])) {
     # 1. "Test" the conversion silently to see if it results in NAs
     test_numeric <- suppressWarnings(as.numeric(as.character(data[[time_var]])))
@@ -156,15 +155,6 @@ gg_pkc_lineplot <- function(data,
         c("i" = "Categorical X-axis detected. Leaving as factor for discrete plotting.")
       )
     }
-  } else {
-    cli::cli_inform(
-      c(
-        "i" = paste0(
-          "We encourage to supply `time_var` as a factor, since it supports ",
-          "correct decimals formatting in the summary table."
-        )
-      )
-    )
   }
 
   # Ensure only single columns were selected
@@ -195,7 +185,7 @@ gg_pkc_lineplot <- function(data,
   # Add Variability (Error Bars) using our unified math engine
   if (variability != "none") {
     p <- p |>
-      gg_add_stats(stat, variability, conf_level, width = errorbar_width)
+      gg_add_stats(stat, variability, conf_level, position = pd, width = errorbar_width)
   }
 
   # Log Scale & LLOQ

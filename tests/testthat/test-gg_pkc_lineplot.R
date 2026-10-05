@@ -235,8 +235,8 @@ test_that("gg_pkc_lineplot with character time_var ", {
 })
 
 test_that("gg_pkc_lineplot informs users about numeric vs categorical time_var", {
-  # 1. Numeric time_var hits the final `else` branch (encourages using factor)
-  expect_message(
+  # 1. Numeric time_var requires no message
+  expect_no_message(
     gg_pkc_lineplot(
       data = mock_pk_df,
       time_var = ATPTN,
@@ -245,8 +245,7 @@ test_that("gg_pkc_lineplot informs users about numeric vs categorical time_var",
       stat = "mean",
       variability = "none",
       log_y = FALSE
-    ),
-    regexp = "We encourage to supply `time_var` as a factor"
+    )
   )
 
   # 2. True categorical factor hits the "Categorical X-axis detected" branch
@@ -349,4 +348,27 @@ test_that("gg_pkc_lineplot passes errorbar_width to the error bar caps", {
     p_default$layers
   )
   expect_equal(errorbar_default[[1]]$geom_params$width, 0.45)
+})
+
+test_that("gg_pkc_lineplot dodges error bars to match the line/point layers", {
+  p <- suppressMessages(gg_pkc_lineplot(
+    mock_pk_df,
+    time_var = ATPTN,
+    analyte_var = AVAL,
+    group = TRT,
+    variability = "sd",
+    log_y = FALSE
+  ))
+
+  line_position <- Filter(
+    function(x) inherits(x$geom, "GeomLine"),
+    p$layers
+  )[[1]]$position
+  errorbar_position <- Filter(
+    function(x) inherits(x$geom, "GeomErrorbar"),
+    p$layers
+  )[[1]]$position
+
+  expect_s3_class(errorbar_position, "PositionDodge")
+  expect_equal(errorbar_position$width, line_position$width)
 })

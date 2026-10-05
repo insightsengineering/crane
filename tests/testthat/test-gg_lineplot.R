@@ -215,8 +215,8 @@ test_that("gg_lineplot validates jitter", {
 })
 
 test_that("gg_lineplot informs users about numeric vs categorical x-axis", {
-  # 1. Numeric x-axis hits the final `else` branch (encourages using factor)
-  expect_message(
+  # 1. Numeric x-axis requires no message
+  expect_no_message(
     gg_lineplot(
       data = mock_adlb,
       x = AVISIT,
@@ -224,8 +224,7 @@ test_that("gg_lineplot informs users about numeric vs categorical x-axis", {
       group = ARM,
       stat = "mean",
       variability = "none"
-    ),
-    regexp = "We encourage to supply `x` as a factor"
+    )
   )
 
   # 2. True categorical factor hits the "Categorical X-axis detected" branch

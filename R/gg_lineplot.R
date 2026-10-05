@@ -125,9 +125,8 @@ gg_lineplot <- function(data,
     group = {{ group }}
   )
 
-  # change from factor to numeric
-  # x can be factor or numeric - factor allow for correct n of decimals
-  # in the summary table
+  # x can be supplied as factor or numeric; convert factor to numeric when
+  # possible, otherwise keep it as a factor for discrete plotting
   if (!is.numeric(data[[x]])) {
     # 1. "Test" the conversion silently to see if it results in NAs
     test_numeric <- suppressWarnings(as.numeric(as.character(data[[x]])))
@@ -142,15 +141,6 @@ gg_lineplot <- function(data,
         c("i" = "Categorical X-axis detected. Leaving as factor for discrete plotting.")
       )
     }
-  } else {
-    cli::cli_inform(
-      c(
-        "i" = paste0(
-          "We encourage to supply `x` as a factor, since it supports ",
-          "correct decimals formatting in the summary table."
-        )
-      )
-    )
   }
 
   # 2. Data Preprocessing
