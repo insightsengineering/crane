@@ -47,7 +47,7 @@ Whether to apply log10 scale to the y-axis. Default is \code{TRUE}.}
 Lower Limit of Quantification. Default is \code{NA_real_}.}
 
 \item{x_breaks}{(\code{numeric}, \code{function}, or \code{NULL})\cr
-Breaks for a numeric x-axis, passed to \code{\link[ggplot2:scale_continuous]{ggplot2::scale_x_continuous()}}.
+Breaks for a numeric x-axis, passed to \code{\link[ggplot2:scale_x_continuous]{ggplot2::scale_x_continuous()}}.
 The default \code{NULL} puts a break on every observed timepoint, which is
 readable over a short window but not over a long one. Supply a vector
 (e.g. \code{seq(0, 600, by = 100)}) or a break function
