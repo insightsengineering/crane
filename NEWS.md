@@ -2,6 +2,8 @@
 
 # crane 0.4.0
 
+* Added `gg_pkc_boxplot()` to plot Pharmacokinetic concentrations as box plots, with a selectable whisker method (`"percentile"`, `"tukey"`, or `"minmax"`), outlier detection, and an optional mean marker. (#322)
+
 * `gg_pkc_lineplot()` now adds a single x scale instead of two, so it no longer reports "Scale for x is already present" on every call with a numeric `time_var`. The `expand` setting that the discarded scale carried is now applied. (#322)
 
 * `gg_pkc_lineplot()` gains an `x_breaks` argument to set the breaks of a numeric x-axis, for time ranges too wide to label every timepoint. The default `NULL` keeps a break on every observed timepoint. (#322)
