@@ -15,7 +15,7 @@
 #' @param group ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   The grouping/treatment variable.
 #' @param whisker (`string`)\cr
-#'   Method used to compute the box whiskers: `"percentile"` (5th/95th
+#'   Method used to compute the box whiskers: `"percentile"` (5th and 95th
 #'   percentiles), `"tukey"` (1.5 * IQR beyond the hinges, the conventional
 #'   boxplot definition), or `"minmax"` (full data range, so no points are
 #'   flagged as outliers). Default is `"percentile"`.
@@ -126,7 +126,7 @@ gg_pkc_boxplot <- function(
 
     limits <- switch(
       whisker,
-      # 5th/95th percentiles of the data
+      # 5th and 95th percentiles of the data
       percentile = stats::quantile(
         x,
         probs = c(0.05, 0.95),
@@ -178,7 +178,7 @@ gg_pkc_boxplot <- function(
   # below (`geom_point(na.rm = TRUE)`), which otherwise overlays every raw
   # observation on top of the boxes.
   outliers <- data |>
-    dplyr::group_by(.time, .data[[group]]) |>
+    dplyr::group_by(.data$.time, .data[[group]]) |>
     dplyr::mutate(.outlier = dplyr::if_else(
       is_outlier(.data[[analyte_var]]),
       .data[[analyte_var]],

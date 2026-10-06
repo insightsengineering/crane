@@ -30,7 +30,7 @@ The concentration/analyte variable (y-axis).}
 The grouping/treatment variable.}
 
 \item{whisker}{(\code{string})\cr
-Method used to compute the box whiskers: \code{"percentile"} (5th/95th
+Method used to compute the box whiskers: \code{"percentile"} (5th and 95th
 percentiles), \code{"tukey"} (1.5 * IQR beyond the hinges, the conventional
 boxplot definition), or \code{"minmax"} (full data range, so no points are
 flagged as outliers). Default is \code{"percentile"}.}
