@@ -1,8 +1,16 @@
 # crane 0.4.0.9000
 
-# crane 0.4.0
-
 * `add_forest()` now warns once per session when `{magick}` is not installed. The forest plots are embedded with `flextable::gg_chunk()`, and `{flextable}` needs `{magick}` to read those images back when drawing the table for PDF, PNG, or SVG export; without it the forest plot column was silently left blank. Word, RTF, and HTML output are unaffected. (#270)
+
+* `add_forest()` now removes the horizontal padding of the forest-plot column in flextable output, so the fixed-width plot fits its cell exactly. (#270)
+
+* `add_forest()` now draws the forest-plot column header as a plot on the same scale as the plots themselves, so each treatment label sits over its own half of the forest instead of being positioned with spacer characters. The `header_spaces` argument is deprecated and has no effect. (#270)
+
+* `add_forest()` now shrinks the font of the forest-plot column so the plots in consecutive rows touch and the vertical reference line stays continuous in docx output. Word ignores zero line spacing unless it is given as an exact rule, which flextable cannot emit, so the paragraph mark's font descent previously left a gap under every plot. HTML output was already correct and is unchanged. (#270)
+
+* `add_forest()` no longer supports `table_engine = "gt"`, as crane renders tables with flextable. Passing `"gt"` now errors with a deprecation message; the `table_engine` argument is retained and accepts `"flextable"` only. (#271)
+
+# crane 0.4.0
 
 * `modify_split_caption()` now errors when given a table that was never split, instead of silently returning it unchanged. A plain table has no split level to build a subtitle from; the message points at `split_by_rows = list(variable_level = ...)`. Pages of a row-number split are still skipped silently, as before. (#318)
 
@@ -45,14 +53,6 @@
 * `annotate_riskdf()` now builds the "Numbers at Risk" table at the plot's x-axis breaks, so custom ticks set with `ggplot2::scale_x_continuous(breaks = ...)` are reflected in the table. (#278)
 
 * `theme_gtsummary_roche()` now frames the flextable column labels with an outer border only, removing the internal borders between header rows and the inconsistent missing right border. (#272)
-
-* `add_forest()` now removes the horizontal padding of the forest-plot column in flextable output, so the fixed-width plot fits its cell exactly. (#270)
-
-* `add_forest()` now draws the forest-plot column header as a plot on the same scale as the plots themselves, so each treatment label sits over its own half of the forest instead of being positioned with spacer characters. The `header_spaces` argument is deprecated and has no effect. (#270)
-
-* `add_forest()` now shrinks the font of the forest-plot column so the plots in consecutive rows touch and the vertical reference line stays continuous in docx output. Word ignores zero line spacing unless it is given as an exact rule, which flextable cannot emit, so the paragraph mark's font descent previously left a gap under every plot. HTML output was already correct and is unchanged. (#270)
-
-* `add_forest()` no longer supports `table_engine = "gt"`, as crane renders tables with flextable. Passing `"gt"` now errors with a deprecation message; the `table_engine` argument is retained and accepts `"flextable"` only. (#271)
 
 * Fixed minor typo in the DESCRIPTION file.
 
