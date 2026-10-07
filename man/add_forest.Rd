@@ -44,7 +44,7 @@ labels are positioned geometrically and this argument has no effect.}
 
 \item{table_engine}{(\code{character})\cr
 Table rendering engine to use. Only \code{"flextable"} is supported. The \code{"gt"}
-engine was removed in crane 0.4.0.}
+engine was removed in crane 0.4.0.9000.}
 }
 \value{
 a flextable object with an added forest plot column. The plots are
