@@ -31,7 +31,11 @@
 #' The flextable output can produce issues in line continuity between rows if
 #' there are wrapping in the statistical cells.
 #'
-#' @return a flextable object with an added forest plot column.
+#' @return a flextable object with an added forest plot column. The plots are
+#'   embedded as images, so drawing the table for PDF, PNG, or SVG export (e.g.
+#'   with `flextable::gen_grob()` or `flextable::save_as_image()`) requires the
+#'   `{magick}` package; without it the forest plot column is left blank and
+#'   `add_forest()` warns once per session.
 #'
 #' @examples
 #' # Simple example ------------------------------------------------------------
@@ -112,6 +116,7 @@ add_forest <- function(x,
   }
   table_engine <- arg_match(table_engine, values = "flextable", error_call = get_cli_abort_call())
 
+  .warn_if_no_magick()
   sizes <- .get_default_forest_sizes()
 
   # 2. DATA PREP ---------------------------------------------------------------

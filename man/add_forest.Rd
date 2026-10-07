@@ -47,7 +47,11 @@ Table rendering engine to use. Only \code{"flextable"} is supported. The \code{"
 engine was removed in crane 0.4.0.}
 }
 \value{
-a flextable object with an added forest plot column.
+a flextable object with an added forest plot column. The plots are
+embedded as images, so drawing the table for PDF, PNG, or SVG export (e.g.
+with \code{flextable::gen_grob()} or \code{flextable::save_as_image()}) requires the
+\code{{magick}} package; without it the forest plot column is left blank and
+\code{add_forest()} warns once per session.
 }
 \description{
 This function adds a forest plot column to a gtsummary table, typically produced

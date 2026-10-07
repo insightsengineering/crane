@@ -96,3 +96,12 @@ test_that("add_forest handles extreme limits and character NA p-values safely", 
 
   expect_s3_class(out_flex, "flextable")
 })
+
+test_that("add_forest() warns when {magick} is missing (#270)", {
+  # rlang otherwise emits the once-per-session warning only on the first call
+  withr::local_options(rlib_warning_verbosity = "verbose")
+
+  # flextable needs magick to draw gg_chunk() images in PDF/PNG/SVG exports
+  expect_warning(.warn_if_no_magick(installed = FALSE), "Install .*magick")
+  expect_no_warning(.warn_if_no_magick(installed = TRUE))
+})

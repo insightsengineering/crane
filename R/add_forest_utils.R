@@ -30,6 +30,22 @@
 }
 
 
+# flextable needs magick to read gg_chunk() images back when it draws the table
+# (gen_grob(), save_as_image()); without it the forest column renders blank
+.warn_if_no_magick <- function(installed = is_installed("magick")) {
+  if (!installed) {
+    cli::cli_warn(
+      c(
+        "Install {.pkg magick} to render the forest plot in PDF/PNG/SVG exports.",
+        "i" = "Without it the forest plot column is left blank in those formats. Word, RTF, and HTML output are unaffected."
+      ),
+      .frequency = "once",
+      .frequency_id = "crane_add_forest_magick"
+    )
+  }
+  invisible(installed)
+}
+
 # Pulls the two treatment labels from the spanning headers, NULL if not found.
 .determine_ggplot_header <- function(tbl) {
   raw_headers <- tbl$table_styling$spanning_header |>
