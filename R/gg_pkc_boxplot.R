@@ -15,14 +15,10 @@
 #' @param group ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   The grouping/treatment variable.
 #' @param whisker (`string`)\cr
-#'   Method used to compute the box whiskers: `"percentile"` (uses the
-#'   percentiles specified in `percentiles`), `"tukey"` (1.5 * IQR beyond the
-#'   hinges, the conventional boxplot definition), or `"minmax"` (full data
-#'   range, so no points are flagged as outliers). Default is `"percentile"`.
-#' @param percentiles (`numeric`)\cr
-#'   Two-element vector specifying the lower and upper percentiles for whiskers
-#'   when `whisker = "percentile"`. Default is `c(0.05, 0.95)` for 5% and 95%
-#'   percentiles. Ignored when `whisker` is `"tukey"` or `"minmax"`.
+#'   Method used to compute the box whiskers: `"percentile"` (5% and 95%
+#'   percentiles), `"tukey"` (1.5 * IQR beyond the hinges, the conventional
+#'   boxplot definition), or `"minmax"` (full data range, so no points are
+#'   flagged as outliers). Default is `"percentile"`.
 #' @param quantile_type (`integer`)\cr
 #'   Quantile algorithm `type` passed to [stats::quantile()]. Default is `1`.
 #' @param log_y (`logical`)\cr
@@ -63,17 +59,6 @@
 #'   show_mean = FALSE
 #' )
 #'
-#' # Custom percentile whiskers (10% and 90%)
-#' gg_pkc_boxplot(
-#'   data = df_pk,
-#'   time_var = Time_Nominal,
-#'   analyte_var = conc,
-#'   group = Dose_Group,
-#'   whisker = "percentile",
-#'   percentiles = c(0.10, 0.90),
-#'   log_y = FALSE
-#' )
-#'
 #' @export
 gg_pkc_boxplot <- function(
   data,
@@ -81,7 +66,6 @@ gg_pkc_boxplot <- function(
   analyte_var,
   group,
   whisker = c("percentile", "tukey", "minmax"),
-  percentiles = c(0.05, 0.95),
   quantile_type = 1,
   log_y = TRUE,
   show_mean = TRUE,
@@ -109,17 +93,6 @@ gg_pkc_boxplot <- function(
   check_string(time_var)
   check_string(analyte_var)
   check_string(group)
-
-  # Validate percentiles argument
-  if (!is.numeric(percentiles) || length(percentiles) != 2L || anyNA(percentiles)) {
-    cli::cli_abort("{.arg percentiles} must be a two-element numeric vector without NAs.")
-  }
-  if (percentiles[1] >= percentiles[2]) {
-    cli::cli_abort("{.arg percentiles}[1] must be less than {.arg percentiles}[2].")
-  }
-  if (any(percentiles < 0) || any(percentiles > 1)) {
-    cli::cli_abort("{.arg percentiles} must be between 0 and 1.")
-  }
 
   # A log10 y-axis cannot plot zero/negative values, so drop them up front
   # rather than letting ggplot2 silently remove them layer by layer.
@@ -162,10 +135,10 @@ gg_pkc_boxplot <- function(
     )
 
     limits <- switch(whisker,
-      # User-specified percentiles of the data
+      # 5% and 95% percentiles of the data
       percentile = stats::quantile(
         x,
-        probs = percentiles,
+        probs = c(0.05, 0.95),
         type = quantile_type,
         names = FALSE
       ),

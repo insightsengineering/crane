@@ -33,6 +33,9 @@
 #' @param errorbar_width (`numeric`)\cr
 #'   Width of the horizontal caps on the variability error bars. Default is
 #'   `0.45`. Set to `0` for no caps. Ignored when `variability = "none"`.
+#' @param dodge_width (`numeric`)\cr
+#'   Horizontal separation between groups at each timepoint. Default is `0.2`.
+#'   Increase if error bar caps are wider than the dodge width and overlap.
 #'
 #' @returns A `ggplot` object.
 #' @seealso [annotate_pkc_df()] for related functionalities.
@@ -101,7 +104,8 @@ gg_pkc_lineplot <- function(data,
                             log_y = TRUE,
                             lloq = NA_real_,
                             x_breaks = NULL,
-                            errorbar_width = 0.45) {
+                            errorbar_width = 0.45,
+                            dodge_width = 0.2) {
   # Match standard arguments
   stat <- match.arg(stat)
   variability <- match.arg(variability)
@@ -162,7 +166,7 @@ gg_pkc_lineplot <- function(data,
   check_string(analyte_var)
   check_string(group)
 
-  pd <- ggplot2::position_dodge(width = 0.2)
+  pd <- ggplot2::position_dodge(width = dodge_width)
 
   # Base Plot
   p <- ggplot2::ggplot(
