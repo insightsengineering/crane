@@ -15,10 +15,14 @@
 #' @param group ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
 #'   The grouping/treatment variable.
 #' @param whisker (`string`)\cr
-#'   Method used to compute the box whiskers: `"percentile"` (5% and 95%
-#'   percentiles), `"tukey"` (1.5 * IQR beyond the hinges, the conventional
-#'   boxplot definition), or `"minmax"` (full data range, so no points are
-#'   flagged as outliers). Default is `"percentile"`.
+#'   Method used to compute the box whiskers: `"percentile"` (uses the
+#'   percentiles specified in `percentiles`), `"tukey"` (1.5 * IQR beyond the
+#'   hinges, the conventional boxplot definition), or `"minmax"` (full data
+#'   range, so no points are flagged as outliers). Default is `"percentile"`.
+#' @param percentiles (`numeric`)\cr
+#'   Two-element vector specifying the lower and upper percentiles for whiskers
+#'   when `whisker = "percentile"`. Default is `c(0.05, 0.95)` for 5% and 95%
+#'   percentiles. Ignored when `whisker` is `"tukey"` or `"minmax"`.
 #' @param quantile_type (`integer`)\cr
 #'   Quantile algorithm `type` passed to [stats::quantile()]. Default is `1`.
 #' @param log_y (`logical`)\cr
@@ -59,6 +63,17 @@
 #'   show_mean = FALSE
 #' )
 #'
+#' # Custom percentile whiskers (10% and 90%)
+#' gg_pkc_boxplot(
+#'   data = df_pk,
+#'   time_var = Time_Nominal,
+#'   analyte_var = conc,
+#'   group = Dose_Group,
+#'   whisker = "percentile",
+#'   percentiles = c(0.10, 0.90),
+#'   log_y = FALSE
+#' )
+#'
 #' @export
 gg_pkc_boxplot <- function(
   data,
@@ -66,6 +81,7 @@ gg_pkc_boxplot <- function(
   analyte_var,
   group,
   whisker = c("percentile", "tukey", "minmax"),
+  percentiles = c(0.05, 0.95),
   quantile_type = 1,
   log_y = TRUE,
   show_mean = TRUE,
@@ -94,11 +110,30 @@ gg_pkc_boxplot <- function(
   check_string(analyte_var)
   check_string(group)
 
+  # Validate percentiles argument
+  if (!is.numeric(percentiles) || length(percentiles) != 2L || anyNA(percentiles)) {
+    cli::cli_abort("{.arg percentiles} must be a two-element numeric vector without NAs.")
+  }
+  if (percentiles[1] >= percentiles[2]) {
+    cli::cli_abort("{.arg percentiles}[1] must be less than {.arg percentiles}[2].")
+  }
+  if (any(percentiles < 0) || any(percentiles > 1)) {
+    cli::cli_abort("{.arg percentiles} must be between 0 and 1.")
+  }
+
   # A log10 y-axis cannot plot zero/negative values, so drop them up front
   # rather than letting ggplot2 silently remove them layer by layer.
   if (log_y) {
+    n_before <- nrow(data)
     data <- data |>
       dplyr::filter(!is.na(.data[[analyte_var]]), .data[[analyte_var]] > 0)
+    n_removed <- n_before - nrow(data)
+
+    if (n_removed > 0L) {
+      cli::cli_warn(
+        "Removed {n_removed} row{?s} with non-positive {.arg {analyte_var}} value{?s} for log scale."
+      )
+    }
   }
 
   # Computes the five summary values `geom = "boxplot"` expects (ymin, lower,
@@ -127,10 +162,10 @@ gg_pkc_boxplot <- function(
     )
 
     limits <- switch(whisker,
-      # 5% and 95% percentiles of the data
+      # User-specified percentiles of the data
       percentile = stats::quantile(
         x,
-        probs = c(0.05, 0.95),
+        probs = percentiles,
         type = quantile_type,
         names = FALSE
       ),
@@ -189,7 +224,7 @@ gg_pkc_boxplot <- function(
 
   # A single shared dodge width keeps the boxes, whisker caps, outlier points
   # and mean marker aligned within the same timepoint.
-  dodge <- ggplot2::position_dodge(width = 0.8)
+  dodge <- ggplot2::position_dodge(width = 1)
 
   # Base Plot: draw the box (hinges + whiskers) via `box_stats()` instead of
   # geom_boxplot()'s built-in stat, so the whisker definition can vary with
@@ -213,7 +248,7 @@ gg_pkc_boxplot <- function(
     ggplot2::stat_summary(
       fun.data = box_stats,
       geom = "errorbar",
-      width = 0.8,
+      width = 1,
       position = dodge
     ) +
     # Overlay the pre-flagged outlier values on top of the boxes; na.rm drops

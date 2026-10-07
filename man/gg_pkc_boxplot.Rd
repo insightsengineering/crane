@@ -10,6 +10,7 @@ gg_pkc_boxplot(
   analyte_var,
   group,
   whisker = c("percentile", "tukey", "minmax"),
+  percentiles = c(0.05, 0.95),
   quantile_type = 1,
   log_y = TRUE,
   show_mean = TRUE,
@@ -30,10 +31,15 @@ The concentration/analyte variable (y-axis).}
 The grouping/treatment variable.}
 
 \item{whisker}{(\code{string})\cr
-Method used to compute the box whiskers: \code{"percentile"} (5\% and 95\%
-percentiles), \code{"tukey"} (1.5 * IQR beyond the hinges, the conventional
-boxplot definition), or \code{"minmax"} (full data range, so no points are
-flagged as outliers). Default is \code{"percentile"}.}
+Method used to compute the box whiskers: \code{"percentile"} (uses the
+percentiles specified in \code{percentiles}), \code{"tukey"} (1.5 * IQR beyond the
+hinges, the conventional boxplot definition), or \code{"minmax"} (full data
+range, so no points are flagged as outliers). Default is \code{"percentile"}.}
+
+\item{percentiles}{(\code{numeric})\cr
+Two-element vector specifying the lower and upper percentiles for whiskers
+when \code{whisker = "percentile"}. Default is \code{c(0.05, 0.95)} for 5\% and 95\%
+percentiles. Ignored when \code{whisker} is \code{"tukey"} or \code{"minmax"}.}
 
 \item{quantile_type}{(\code{integer})\cr
 Quantile algorithm \code{type} passed to \code{\link[stats:quantile]{stats::quantile()}}. Default is \code{1}.}
@@ -82,6 +88,17 @@ gg_pkc_boxplot(
   whisker = "tukey",
   log_y = FALSE,
   show_mean = FALSE
+)
+
+# Custom percentile whiskers (10\% and 90\%)
+gg_pkc_boxplot(
+  data = df_pk,
+  time_var = Time_Nominal,
+  analyte_var = conc,
+  group = Dose_Group,
+  whisker = "percentile",
+  percentiles = c(0.10, 0.90),
+  log_y = FALSE
 )
 
 }
