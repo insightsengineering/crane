@@ -25,7 +25,7 @@
 #'   labels are positioned geometrically and this argument has no effect.
 #' @param table_engine (`character`)\cr
 #'  Table rendering engine to use. Only `"flextable"` is supported. The `"gt"`
-#'  engine was removed in crane 0.4.0.
+#'  engine was removed in crane 0.4.0.9000.
 #'
 #' @details
 #' The flextable output can produce issues in line continuity between rows if
@@ -84,7 +84,7 @@ add_forest <- function(x,
   set_cli_abort_call()
   if (lifecycle::is_present(header_spaces)) {
     lifecycle::deprecate_warn(
-      "0.4.0",
+      "0.4.0.9000",
       "crane::add_forest(header_spaces)",
       details = paste(
         "The forest plot header is now drawn on the same scale as the plots,",
@@ -109,7 +109,7 @@ add_forest <- function(x,
   # 1. SETUP DEFAULTS ----------------------------------------------------------
   if (identical(table_engine, "gt")) {
     lifecycle::deprecate_stop(
-      "0.4.0",
+      "0.4.0.9000",
       "crane::add_forest(table_engine = 'no longer accepts \"gt\"')",
       details = "crane renders tables with flextable only. Drop the argument to use the default."
     )
