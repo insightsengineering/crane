@@ -22,7 +22,7 @@ test_that("add_forest(table_engine = 'flextable') works", {
     "Less than 2 spanning headers detected."
   )
 
-  # the "gt" engine was removed in 0.4.0, crane renders with flextable only (#271)
+  # the "gt" engine was removed in 0.4.0.9000, crane renders with flextable only (#271)
   expect_error(
     add_forest(tbl, table_engine = "gt"),
     class = "lifecycle_error_deprecated"
