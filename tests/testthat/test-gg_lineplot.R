@@ -186,6 +186,24 @@ test_that("gg_lineplot jitter keeps points and error bars aligned", {
   expect_equal(point_x, ebar_x)
 })
 
+test_that("gg_lineplot errorbar_width sets the error bar cap width", {
+  p <- gg_lineplot(
+    data = mock_adlb, x = AVISIT, y = AVAL, group = ARM,
+    stat = "mean", variability = "ci", errorbar_width = 1.2
+  )
+  errorbar <- Filter(function(x) inherits(x$geom, "GeomErrorbar"), p$layers)
+  expect_length(errorbar, 1L)
+  expect_equal(errorbar[[1]]$geom_params$width, 1.2)
+
+  # The default is unchanged
+  p_default <- gg_lineplot(
+    data = mock_adlb, x = AVISIT, y = AVAL, group = ARM,
+    stat = "mean", variability = "ci"
+  )
+  errorbar_default <- Filter(function(x) inherits(x$geom, "GeomErrorbar"), p_default$layers)
+  expect_equal(errorbar_default[[1]]$geom_params$width, 0.45)
+})
+
 test_that("gg_lineplot validates jitter", {
   expect_error(
     gg_lineplot(
@@ -197,8 +215,8 @@ test_that("gg_lineplot validates jitter", {
 })
 
 test_that("gg_lineplot informs users about numeric vs categorical x-axis", {
-  # 1. Numeric x-axis hits the final `else` branch (encourages using factor)
-  expect_message(
+  # 1. Numeric x-axis requires no message
+  expect_no_message(
     gg_lineplot(
       data = mock_adlb,
       x = AVISIT,
@@ -206,8 +224,7 @@ test_that("gg_lineplot informs users about numeric vs categorical x-axis", {
       group = ARM,
       stat = "mean",
       variability = "none"
-    ),
-    regexp = "We encourage to supply `x` as a factor"
+    )
   )
 
   # 2. True categorical factor hits the "Categorical X-axis detected" branch

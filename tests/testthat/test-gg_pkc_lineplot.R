@@ -235,8 +235,8 @@ test_that("gg_pkc_lineplot with character time_var ", {
 })
 
 test_that("gg_pkc_lineplot informs users about numeric vs categorical time_var", {
-  # 1. Numeric time_var hits the final `else` branch (encourages using factor)
-  expect_message(
+  # 1. Numeric time_var requires no message
+  expect_no_message(
     gg_pkc_lineplot(
       data = mock_pk_df,
       time_var = ATPTN,
@@ -245,8 +245,7 @@ test_that("gg_pkc_lineplot informs users about numeric vs categorical time_var",
       stat = "mean",
       variability = "none",
       log_y = FALSE
-    ),
-    regexp = "We encourage to supply `time_var` as a factor"
+    )
   )
 
   # 2. True categorical factor hits the "Categorical X-axis detected" branch
@@ -265,4 +264,111 @@ test_that("gg_pkc_lineplot informs users about numeric vs categorical time_var",
     ),
     regexp = "Categorical X-axis detected"
   )
+})
+
+test_that("gg_pkc_lineplot adds a single x scale and honours x_breaks", {
+  # Two scale_x_continuous() calls would make ggplot2 drop the first one and
+  # emit "Scale for x is already present" on every call.
+  msgs <- capture_messages(
+    p_default <- gg_pkc_lineplot(
+      mock_pk_df,
+      time_var = ATPTN,
+      analyte_var = AVAL,
+      group = TRT,
+      log_y = FALSE
+    )
+  )
+  expect_false(any(grepl("Scale for x is already present", msgs, fixed = TRUE)))
+
+  # Only one x scale ends up registered on the plot
+  x_scales <- Filter(
+    function(s) "x" %in% s$aesthetics,
+    p_default$scales$scales
+  )
+  expect_length(x_scales, 1L)
+
+  # The default keeps a break on every observed timepoint
+  expect_equal(
+    p_default$scales$get_scales("x")$breaks,
+    sort(unique(mock_pk_df$ATPTN))
+  )
+
+  # A supplied vector wins, which is what long time ranges need
+  p_breaks <- suppressMessages(gg_pkc_lineplot(
+    mock_pk_df,
+    time_var = ATPTN,
+    analyte_var = AVAL,
+    group = TRT,
+    log_y = FALSE,
+    x_breaks = c(0, 12)
+  ))
+  expect_equal(p_breaks$scales$get_scales("x")$breaks, c(0, 12))
+
+  # A break function is accepted too
+  p_fun <- suppressMessages(gg_pkc_lineplot(
+    mock_pk_df,
+    time_var = ATPTN,
+    analyte_var = AVAL,
+    group = TRT,
+    log_y = FALSE,
+    x_breaks = scales::breaks_pretty(3)
+  ))
+  expect_true(is.function(p_fun$scales$get_scales("x")$breaks))
+})
+
+test_that("gg_pkc_lineplot passes errorbar_width to the error bar caps", {
+  p_wide <- suppressMessages(gg_pkc_lineplot(
+    mock_pk_df,
+    time_var = ATPTN,
+    analyte_var = AVAL,
+    group = TRT,
+    variability = "sd",
+    log_y = FALSE,
+    errorbar_width = 1.5
+  ))
+
+  errorbar <- Filter(
+    function(x) inherits(x$geom, "GeomErrorbar"),
+    p_wide$layers
+  )
+  expect_length(errorbar, 1L)
+  expect_equal(errorbar[[1]]$geom_params$width, 1.5)
+
+  # The default is unchanged
+  p_default <- suppressMessages(gg_pkc_lineplot(
+    mock_pk_df,
+    time_var = ATPTN,
+    analyte_var = AVAL,
+    group = TRT,
+    variability = "sd",
+    log_y = FALSE
+  ))
+  errorbar_default <- Filter(
+    function(x) inherits(x$geom, "GeomErrorbar"),
+    p_default$layers
+  )
+  expect_equal(errorbar_default[[1]]$geom_params$width, 0.45)
+})
+
+test_that("gg_pkc_lineplot dodges error bars to match the line/point layers", {
+  p <- suppressMessages(gg_pkc_lineplot(
+    mock_pk_df,
+    time_var = ATPTN,
+    analyte_var = AVAL,
+    group = TRT,
+    variability = "sd",
+    log_y = FALSE
+  ))
+
+  line_position <- Filter(
+    function(x) inherits(x$geom, "GeomLine"),
+    p$layers
+  )[[1]]$position
+  errorbar_position <- Filter(
+    function(x) inherits(x$geom, "GeomErrorbar"),
+    p$layers
+  )[[1]]$position
+
+  expect_s3_class(errorbar_position, "PositionDodge")
+  expect_equal(errorbar_position$width, line_position$width)
 })

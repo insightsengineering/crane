@@ -26,6 +26,9 @@
 #'   Horizontal jitter width applied to points, lines and error bars together
 #'   so they stay aligned. `0` (default) disables jittering and uses dodging
 #'   only. A small value such as `0.1` helps separate overlapping groups.
+#' @param errorbar_width (`numeric`)\cr
+#'   Width of the horizontal caps on the variability error bars. Default is
+#'   `0.45`. Set to `0` for no caps. Ignored when `variability = "none"`.
 #'
 #' @return A `ggplot` object of class `crane_gg_line`.
 #'
@@ -92,7 +95,8 @@ gg_lineplot <- function(data,
                         variability = c("ci", "sd", "se", "iqr", "none"),
                         conf_level = 0.95,
                         show_n = FALSE,
-                        jitter = 0) {
+                        jitter = 0,
+                        errorbar_width = 0.45) {
   # 1. Argument Matching and Validation
   stat <- match.arg(stat)
   variability <- match.arg(variability)
@@ -121,9 +125,8 @@ gg_lineplot <- function(data,
     group = {{ group }}
   )
 
-  # change from factor to numeric
-  # x can be factor or numeric - factor allow for correct n of decimals
-  # in the summary table
+  # x can be supplied as factor or numeric; convert factor to numeric when
+  # possible, otherwise keep it as a factor for discrete plotting
   if (!is.numeric(data[[x]])) {
     # 1. "Test" the conversion silently to see if it results in NAs
     test_numeric <- suppressWarnings(as.numeric(as.character(data[[x]])))
@@ -138,15 +141,6 @@ gg_lineplot <- function(data,
         c("i" = "Categorical X-axis detected. Leaving as factor for discrete plotting.")
       )
     }
-  } else {
-    cli::cli_inform(
-      c(
-        "i" = paste0(
-          "We encourage to supply `x` as a factor, since it supports ",
-          "correct decimals formatting in the summary table."
-        )
-      )
-    )
   }
 
   # 2. Data Preprocessing
@@ -219,7 +213,7 @@ gg_lineplot <- function(data,
   # 4. Add Variability Layer conditionally to avoid drawing degenerate lines
   if (variability != "none") {
     p <- p |>
-      gg_add_stats(stat, variability, conf_level, position = pd)
+      gg_add_stats(stat, variability, conf_level, position = pd, width = errorbar_width)
   }
 
   # 5. Theming

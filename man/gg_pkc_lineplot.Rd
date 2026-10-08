@@ -13,7 +13,10 @@ gg_pkc_lineplot(
   variability = c("sd", "se", "ci", "iqr", "none"),
   conf_level = 0.95,
   log_y = TRUE,
-  lloq = NA_real_
+  lloq = NA_real_,
+  x_breaks = NULL,
+  errorbar_width = 0.45,
+  dodge_width = 0.2
 )
 }
 \arguments{
@@ -43,6 +46,22 @@ Whether to apply log10 scale to the y-axis. Default is \code{TRUE}.}
 
 \item{lloq}{(\code{numeric} or \code{NULL})\cr
 Lower Limit of Quantification. Default is \code{NA_real_}.}
+
+\item{x_breaks}{(\code{numeric}, \code{function}, or \code{NULL})\cr
+Breaks for a numeric x-axis, passed to \code{\link[ggplot2:scale_x_continuous]{ggplot2::scale_x_continuous()}}.
+The default \code{NULL} puts a break on every observed timepoint, which is
+readable over a short window but not over a long one. Supply a vector
+(e.g. \code{seq(0, 600, by = 100)}) or a break function
+(e.g. \code{scales::breaks_pretty()}) for wider time ranges. Ignored when
+\code{time_var} is a factor.}
+
+\item{errorbar_width}{(\code{numeric})\cr
+Width of the horizontal caps on the variability error bars. Default is
+\code{0.45}. Set to \code{0} for no caps. Ignored when \code{variability = "none"}.}
+
+\item{dodge_width}{(\code{numeric})\cr
+Horizontal separation between groups at each timepoint. Default is \code{0.2}.
+Increase if error bar caps are wider than the dodge width and overlap.}
 }
 \value{
 A \code{ggplot} object.
