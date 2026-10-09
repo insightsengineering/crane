@@ -1,5 +1,7 @@
 # crane 0.4.0.9000
 
+* Added `simplify_ard()` to flatten the ARD of a table, including stratified, stacked and split tables, into one ARD with the strata as group columns, ready for `cards::compare_ard()`. (#issue)
+
 # crane 0.4.0
 
 * `modify_split_caption()` now errors when given a table that was never split, instead of silently returning it unchanged. A plain table has no split level to build a subtitle from; the message points at `split_by_rows = list(variable_level = ...)`. Pages of a row-number split are still skipped silently, as before. (#318)
