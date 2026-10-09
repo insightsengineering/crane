@@ -60,22 +60,61 @@ test_that("simplify_ard() numbers nested strata innermost first", {
   expect_equal(unique(ard$group3), "PARAM")
 })
 
-test_that("simplify_ard() adds a `tbl_id` group to stacks of the same statistics", {
+test_that("simplify_ard() adds a `tbl_id1` group to stacks of the same statistics", {
   tbl_f <- tbl_roche_summary(dplyr::filter(cards::ADSL, SEX == "F"), by = ARM, include = AGE)
   tbl_m <- tbl_roche_summary(dplyr::filter(cards::ADSL, SEX == "M"), by = ARM, include = AGE)
 
   ard <- simplify_ard(gtsummary::tbl_stack(list(tbl_f, tbl_m), quiet = TRUE))
-  expect_equal(unique(ard$group2), "tbl_id")
+  expect_equal(unique(ard$group2), "tbl_id1")
   expect_setequal(unlist(ard$group2_level), c("1", "2"))
 
   ard <- simplify_ard(gtsummary::tbl_stack(list(tbl_f, tbl_m), tbl_ids = c("female", "male"), quiet = TRUE))
   expect_setequal(unlist(ard$group2_level), c("female", "male"))
 
-  # different statistics on the same data do not need a `tbl_id` group
+  # different statistics on the same data do not need a `tbl_id1` group
   tbl_age <- tbl_roche_summary(cards::ADSL, by = ARM, include = AGE)
   tbl_sex <- tbl_roche_summary(cards::ADSL, by = ARM, include = SEX)
   ard <- simplify_ard(gtsummary::tbl_stack(list(tbl_age, tbl_sex), quiet = TRUE))
-  expect_false("tbl_id" %in% ard$group2)
+  expect_false("tbl_id1" %in% ard$group2)
+})
+
+test_that("simplify_ard() names nested `tbl_id` groups by level and aligns them", {
+  adsl_f <- dplyr::filter(cards::ADSL, SEX == "F")
+  adsl_m <- dplyr::filter(cards::ADSL, SEX == "M")
+  stack_age <- function(data) {
+    gtsummary::tbl_stack(
+      list(
+        tbl_roche_summary(dplyr::filter(data, AGE < 75), by = ARM, include = AGE),
+        tbl_roche_summary(dplyr::filter(data, AGE >= 75), by = ARM, include = AGE)
+      ),
+      quiet = TRUE
+    )
+  }
+
+  # inner stacks need `tbl_id1`, the outer stack `tbl_id2`
+  ard <- simplify_ard(gtsummary::tbl_stack(list(stack_age(adsl_f), stack_age(adsl_m)), quiet = TRUE))
+  expect_equal(unique(ard$group2), "tbl_id1")
+  expect_equal(unique(ard$group3), "tbl_id2")
+
+  # a stack id lands in the same column whether or not the pieces have groups
+  stack_no_by <- gtsummary::tbl_stack(
+    list(
+      tbl_roche_summary(adsl_f, include = AGE),
+      tbl_roche_summary(adsl_m, include = AGE)
+    ),
+    quiet = TRUE
+  )
+  ard <- simplify_ard(list(stack_age(cards::ADSL), stack_no_by))
+  expect_equal(unique(stats::na.omit(ard$group1)), "ARM")
+  expect_equal(unique(ard$group2), "tbl_id1")
+
+  # an outer stack id keeps its column for pieces that are not stacked themselves
+  tbl_all <- tbl_roche_summary(cards::ADSL, by = ARM, include = AGE)
+  ard <- simplify_ard(
+    gtsummary::tbl_stack(list(stack_age(adsl_f), stack_age(adsl_m), tbl_all), quiet = TRUE)
+  )
+  expect_equal(unique(stats::na.omit(ard$group2)), "tbl_id1")
+  expect_equal(unique(ard$group3), "tbl_id2")
 })
 
 test_that("simplify_ard() flattens nested ARD lists", {
@@ -120,9 +159,11 @@ test_that("simplify_ard() returns an empty ARD for tables without ARD", {
 
   expect_s3_class(ard, "card")
   expect_equal(nrow(ard), 0L)
+  expect_equal(nrow(simplify_ard(data.frame())), 0L)
 })
 
 test_that("simplify_ard() messaging", {
   expect_snapshot(simplify_ard("not a table"), error = TRUE)
+  expect_snapshot(simplify_ard(cards::as_card(cards::ADSL[1:2, 1:3], check = FALSE)), error = TRUE)
   expect_snapshot(simplify_ard(list(), .unlist = "yes"), error = TRUE)
 })

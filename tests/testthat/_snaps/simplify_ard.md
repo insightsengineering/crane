@@ -18,6 +18,16 @@
 ---
 
     Code
+      simplify_ard(cards::as_card(cards::ADSL[1:2, 1:3], check = FALSE))
+    Condition
+      Error in `simplify_ard()`:
+      ! The `x` argument contains a data frame that is not an ARD.
+      i It has no "variable", "stat_name", and "stat" columns.
+      i Data cast with `cards::as_card(check = FALSE)` is not an ARD.
+
+---
+
+    Code
       simplify_ard(list(), .unlist = "yes")
     Condition
       Error in `simplify_ard()`:
