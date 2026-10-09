@@ -105,3 +105,47 @@ test_that("add_forest() warns when {magick} is missing (#270)", {
   expect_warning(.warn_if_no_magick(installed = FALSE), "Install .*magick")
   expect_no_warning(.warn_if_no_magick(installed = TRUE))
 })
+
+test_that("add_forest(row_height, table_width) draws compact rows that fit the page (#270)", {
+  tbl_sub <- trial |>
+    tbl_roche_subgroups(
+      subgroups = c("grade", "stage"),
+      rsp = "response",
+      by = "trt",
+      ~ glm(response ~ trt, data = .x) |>
+        gtsummary::tbl_regression(show_single_row = trt, exponentiate = TRUE)
+    )
+  forest_ft <- add_forest(tbl_sub, table_width = "L8")
+  gg <- which(forest_ft$col_keys == "ggplot")
+  n <- flextable::nrow_part(forest_ft, "body")
+
+  # the table fills the L8 text width; the forest column keeps 2.5in
+  expect_equal(sum(forest_ft$body$colwidths), 11.69 - (3.30 + 3.35) / 2.54)
+  expect_equal(forest_ft$body$colwidths[[gg]], 2.5)
+  expect_identical(forest_ft$properties$layout, "fixed")
+
+  # exact rows; one merged forest cell whose picture is as tall as all rows
+  expect_identical(unique(forest_ft$body$hrule), "exact")
+  expect_equal(forest_ft$body$spans$columns[, gg], c(n, rep(0, n - 1)))
+  expect_equal(forest_ft$body$content$data[[1, gg]]$height, sum(forest_ft$body$rowheights))
+
+  # picture paragraphs take single spacing from the "header" style, not a bare w:line
+  expect_identical(unique(forest_ft$body$styles$pars$word_style$data[, gg]), "header")
+  expect_true(all(is.na(forest_ft$body$styles$pars$line_spacing$data[, gg])))
+
+  # column labels end on the same line
+  label_row <- flextable::nrow_part(forest_ft, "header")
+  expect_identical(unique(forest_ft$header$styles$cells$vertical.align$data[label_row, ]), "bottom")
+
+  # a page that is too narrow warns; a non-positive row height errors
+  expect_warning(add_forest(tbl_sub, table_width = 3), "needs")
+  expect_error(add_forest(tbl_sub, row_height = 0), "row_height")
+})
+
+test_that(".forest_page() maps page sizes to text width and font size (#270)", {
+  expect_equal(.forest_page("P8")$width, 8.27 - (3.66 + 2.11) / 2.54)
+  expect_equal(.forest_page("L6")$font_size, 6)
+  expect_equal(.forest_page(7)$width, 7)
+  expect_null(.forest_page(NULL)$width)
+  expect_error(.forest_page("A4"), "page size")
+})
