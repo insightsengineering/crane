@@ -12,7 +12,9 @@ add_forest(
   pvalue = starts_with("p.value"),
   after = starts_with("p.value"),
   header_spaces = lifecycle::deprecated(),
-  table_engine = "flextable"
+  table_engine = "flextable",
+  row_height = 0.24,
+  table_width = NULL
 )
 }
 \arguments{
@@ -45,6 +47,18 @@ labels are positioned geometrically and this argument has no effect.}
 \item{table_engine}{(\code{character})\cr
 Table rendering engine to use. Only \code{"flextable"} is supported. The \code{"gt"}
 engine was removed in crane 0.4.0.9000.}
+
+\item{row_height}{(\code{numeric})\cr
+Height of a one-line body row, in inches. Each forest plot is drawn at its
+row's exact height, so the CI lines up with the vertically centered text.
+Rows whose text wraps get one extra line height per extra line.}
+
+\item{table_width}{(\code{character} or \code{numeric}, optional)\cr
+The page the table is decorated for, as a page size code \code{"L6"} to \code{"L10"}
+(A4 landscape) or \code{"P6"} to \code{"P10"} (A4 portrait), the number being the font
+size; or the table width in inches. The table then fills the page's text
+width (9.07in landscape, 6.00in portrait) and text wrapping is predicted at
+that font size. \code{NULL} keeps the current widths (autofit).}
 }
 \value{
 a flextable object with an added forest plot column. The plots are
@@ -59,8 +73,11 @@ by \code{\link[=tbl_roche_subgroups]{tbl_roche_subgroups()}}. The forest plot vi
 for each subgroup in the table. The table is rendered with \code{flextable}.
 }
 \details{
-The flextable output can produce issues in line continuity between rows if
-there are wrapping in the statistical cells.
+Each body row gets an exact height (\code{row_height}, plus one line height per
+wrapped text line) and the forest plot is drawn at those heights as one
+picture in a merged cell, so the reference lines are continuous. If the rows
+do not fit on the page given by \code{table_width}, each row gets its own picture
+instead, because a merged cell cannot break across pages.
 }
 \examples{
 # Simple example ------------------------------------------------------------
