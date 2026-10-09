@@ -1,7 +1,7 @@
 # simplify_ard() errors on different values for the same statistic
 
     Code
-      simplify_ard(list(ard, ard_other))
+      simplify_ard(dplyr::bind_rows(ard, ard_other))
     Condition
       Error in `simplify_ard()`:
       ! The ARD has different values for the same statistic in 16 rows.

@@ -22,7 +22,7 @@
 #'   [gtsummary::gather_ard()].
 #' @param .deduplicate (scalar `logical`)\cr
 #'   whether to remove duplicated statistics. Repeated copies of a whole ARD
-#'   (e.g. from split tables) are removed with a warning. Rows shared by several
+#'   (e.g. from split tables) are removed with a message. Rows shared by several
 #'   ARDs (e.g. variable attributes repeated by `add_overall()`) are removed
 #'   silently. Default is `TRUE`.
 #' @param .unlist (scalar `logical`)\cr
@@ -147,11 +147,21 @@ simplify_ard <- function(x, .deduplicate = TRUE, .unlist = FALSE) {
 #'   one row per element, one column per stratum (outermost first), as
 #'   returned by `.parse_strata_ids()`.
 #'
-#' @returns A list of `card` objects.
+#' @returns A list of `card` objects. Elements without strata that report the
+#'   same statistic with different values are told apart by a `tbl_id` group
+#'   (the element name, or its position).
 #' @keywords internal
 #' @noRd
 .collect_stacked_ards <- function(elements, strata = NULL) {
   ards_by_element <- lapply(unname(elements), .collect_ards)
+
+  if (is.null(strata) && length(ards_by_element) > 1L && .ards_conflict(do.call(c, ards_by_element))) {
+    ids <- names(elements)
+    if (is_empty(ids) || !all(nzchar(ids)) || anyDuplicated(ids)) {
+      ids <- as.character(seq_along(elements))
+    }
+    strata <- data.frame(tbl_id = ids, stringsAsFactors = FALSE)
+  }
 
   if (!is.null(strata)) {
     # the same group number for every element, so a stratum always lands in one column
@@ -277,7 +287,7 @@ simplify_ard <- function(x, .deduplicate = TRUE, .unlist = FALSE) {
 .drop_ard_copies <- function(ards) {
   is_copy <- duplicated(map_chr(ards, rlang::hash))
   if (any(is_copy)) {
-    cli::cli_warn(c(
+    cli::cli_inform(c(
       "Removed {sum(is_copy)} repeated cop{?y/ies} of an ARD.",
       i = "Split tables, e.g. from {.fun gtsummary::tbl_split_by_rows}, carry a full copy of the ARD in every piece."
     ))
@@ -325,14 +335,8 @@ simplify_ard <- function(x, .deduplicate = TRUE, .unlist = FALSE) {
     return(ard)
   }
 
-  key_cols <- names(dplyr::select(
-    ard,
-    cards::all_ard_groups(), cards::all_ard_variables(), dplyr::any_of("context"), "stat_name"
-  ))
-  keys <- do.call(
-    mapply,
-    c(list(FUN = \(...) rlang::hash(list(...)), SIMPLIFY = TRUE, USE.NAMES = FALSE), as.list(ard[key_cols]))
-  )
+  key_cols <- .ard_key_cols(ard)
+  keys <- .ard_key_hashes(ard)
   key_values <- paste(keys, map_chr(ard$stat, rlang::hash))
 
   if (isTRUE(deduplicate)) {
@@ -359,4 +363,55 @@ simplify_ard <- function(x, .deduplicate = TRUE, .unlist = FALSE) {
   }
 
   ard
+}
+
+#' Columns identifying a statistic
+#'
+#' @param ard (`card`)\cr
+#'   an ARD.
+#'
+#' @returns Names of the group, variable, `context` and `stat_name` columns.
+#' @keywords internal
+#' @noRd
+.ard_key_cols <- function(ard) {
+  names(dplyr::select(
+    ard,
+    cards::all_ard_groups(), cards::all_ard_variables(), dplyr::any_of("context"), "stat_name"
+  ))
+}
+
+#' One hash per statistic key
+#'
+#' @param ard (`card`)\cr
+#'   an ARD.
+#'
+#' @returns A character vector, one hash per row.
+#' @keywords internal
+#' @noRd
+.ard_key_hashes <- function(ard) {
+  if (nrow(ard) == 0L) {
+    return(character())
+  }
+  do.call(
+    mapply,
+    c(list(FUN = \(...) rlang::hash(list(...)), SIMPLIFY = TRUE, USE.NAMES = FALSE), as.list(ard[.ard_key_cols(ard)]))
+  )
+}
+
+#' Whether ARDs report the same statistic with different values
+#'
+#' @param ards (`list`)\cr
+#'   list of `card` objects.
+#'
+#' @returns A scalar logical.
+#' @keywords internal
+#' @noRd
+.ards_conflict <- function(ards) {
+  if (is_empty(ards)) {
+    return(FALSE)
+  }
+  ard <- .bind_ards(ards)
+  keys <- .ard_key_hashes(ard)
+  key_values <- unique(paste(keys, map_chr(ard$stat, rlang::hash)))
+  anyDuplicated(sub(" .*$", "", key_values)) > 0L
 }

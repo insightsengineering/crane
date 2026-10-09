@@ -39,9 +39,9 @@ test_that("simplify_ard() removes the ARD copies of split tables", {
   tbl <- suppressMessages(tbl_param(adlb))
   tbl_split <- gtsummary::tbl_split_by_rows(tbl, variable_level = ends_with("lbl"))
 
-  expect_warning(ard_split <- simplify_ard(tbl_split), "repeated cop")
+  expect_message(ard_split <- simplify_ard(tbl_split), "repeated cop")
   expect_identical(ard_split, simplify_ard(tbl))
-  expect_warning(
+  expect_message(
     expect_identical(simplify_ard(lapply(tbl_split, gtsummary::gather_ard)), ard_split),
     "repeated cop"
   )
@@ -58,6 +58,24 @@ test_that("simplify_ard() numbers nested strata innermost first", {
 
   expect_equal(unique(ard$group2), "SEX")
   expect_equal(unique(ard$group3), "PARAM")
+})
+
+test_that("simplify_ard() adds a `tbl_id` group to stacks of the same statistics", {
+  tbl_f <- tbl_roche_summary(dplyr::filter(cards::ADSL, SEX == "F"), by = ARM, include = AGE)
+  tbl_m <- tbl_roche_summary(dplyr::filter(cards::ADSL, SEX == "M"), by = ARM, include = AGE)
+
+  ard <- simplify_ard(gtsummary::tbl_stack(list(tbl_f, tbl_m), quiet = TRUE))
+  expect_equal(unique(ard$group2), "tbl_id")
+  expect_setequal(unlist(ard$group2_level), c("1", "2"))
+
+  ard <- simplify_ard(gtsummary::tbl_stack(list(tbl_f, tbl_m), tbl_ids = c("female", "male"), quiet = TRUE))
+  expect_setequal(unlist(ard$group2_level), c("female", "male"))
+
+  # different statistics on the same data do not need a `tbl_id` group
+  tbl_age <- tbl_roche_summary(cards::ADSL, by = ARM, include = AGE)
+  tbl_sex <- tbl_roche_summary(cards::ADSL, by = ARM, include = SEX)
+  ard <- simplify_ard(gtsummary::tbl_stack(list(tbl_age, tbl_sex), quiet = TRUE))
+  expect_false("tbl_id" %in% ard$group2)
 })
 
 test_that("simplify_ard() flattens nested ARD lists", {
@@ -77,7 +95,7 @@ test_that("simplify_ard() errors on different values for the same statistic", {
   ard <- cards::ard_summary(cards::ADSL, variables = AGE)
   ard_other <- dplyr::mutate(ard, stat = lapply(stat, \(x) if (is.numeric(x)) x + 1 else x))
 
-  expect_snapshot(simplify_ard(list(ard, ard_other)), error = TRUE)
+  expect_snapshot(simplify_ard(dplyr::bind_rows(ard, ard_other)), error = TRUE)
 })
 
 test_that("simplify_ard(.deduplicate, .unlist) work", {
