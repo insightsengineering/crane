@@ -26,10 +26,23 @@
 #' @param table_engine (`character`)\cr
 #'  Table rendering engine to use. Only `"flextable"` is supported. The `"gt"`
 #'  engine was removed in crane 0.4.0.9000.
+#' @param row_height (`numeric`)\cr
+#'  Height of a one-line body row, in inches. Each forest plot is drawn at its
+#'  row's exact height, so the CI lines up with the vertically centered text.
+#'  Rows whose text wraps get one extra line height per extra line.
+#' @param table_width (`character` or `numeric`, optional)\cr
+#'  The page the table is decorated for, as a page size code `"L6"` to `"L10"`
+#'  (A4 landscape) or `"P6"` to `"P10"` (A4 portrait), the number being the font
+#'  size; or the table width in inches. The table then fills the page's text
+#'  width (9.07in landscape, 6.00in portrait) and text wrapping is predicted at
+#'  that font size. `NULL` keeps the current widths (autofit).
 #'
 #' @details
-#' The flextable output can produce issues in line continuity between rows if
-#' there are wrapping in the statistical cells.
+#' Each body row gets an exact height (`row_height`, plus one line height per
+#' wrapped text line) and the forest plot is drawn at those heights as one
+#' picture in a merged cell, so the reference lines are continuous. If the rows
+#' do not fit on the page given by `table_width`, each row gets its own picture
+#' instead, because a merged cell cannot break across pages.
 #'
 #' @return a flextable object with an added forest plot column. The plots are
 #'   embedded as images, so drawing the table for PDF, PNG, or SVG export (e.g.
@@ -80,7 +93,9 @@ add_forest <- function(x,
                        pvalue = starts_with("p.value"),
                        after = starts_with("p.value"),
                        header_spaces = lifecycle::deprecated(),
-                       table_engine = "flextable") {
+                       table_engine = "flextable",
+                       row_height = 0.24,
+                       table_width = NULL) {
   set_cli_abort_call()
   if (lifecycle::is_present(header_spaces)) {
     lifecycle::deprecate_warn(
@@ -105,6 +120,7 @@ add_forest <- function(x,
   check_scalar(conf_high)
   check_scalar(pvalue, allow_empty = TRUE)
   check_scalar(after)
+  check_scalar_range(row_height, range = c(0, Inf))
 
   # 1. SETUP DEFAULTS ----------------------------------------------------------
   if (identical(table_engine, "gt")) {
@@ -143,7 +159,7 @@ add_forest <- function(x,
         if (.is_na_or_chr(x, i, estimate, conf_low, conf_high)) {
           # Create an empty plot with just the reference lines
           out <- ggplot2::ggplot() +
-            ggplot2::geom_vline(xintercept = mean_estimate, linetype = "dashed", linewidth = sizes$line_ref) +
+            ggplot2::geom_vline(xintercept = mean_estimate, linetype = "dotted", linewidth = sizes$line_ref) +
             ggplot2::geom_vline(xintercept = 1, linewidth = sizes$line_ref) +
             ggplot2::geom_vline(xintercept = 0.2, linewidth = sizes$line_ref) +
             ggplot2::scale_x_log10(limits = global_limits) +
@@ -178,7 +194,7 @@ add_forest <- function(x,
             )
           ) +
           ggplot2::geom_errorbar(height = 0, linewidth = sizes$errorbar_size) +
-          ggplot2::geom_vline(xintercept = mean_estimate, linetype = "dashed", linewidth = sizes$line_ref) +
+          ggplot2::geom_vline(xintercept = mean_estimate, linetype = "dotted", linewidth = sizes$line_ref) +
           ggplot2::geom_vline(xintercept = 1, linewidth = sizes$line_ref) +
           ggplot2::geom_vline(xintercept = 0.2, linewidth = sizes$line_ref) +
           ggplot2::geom_point(size = pvalue_size_i, shape = 21, fill = "white", stroke = sizes$stroke) +
@@ -219,43 +235,92 @@ add_forest <- function(x,
   ggplot_col_width <- 2.5
   out <- out |>
     gtsummary::as_flex_table() |>
-    flextable::mk_par(
-      j = "ggplot",
-      value = flextable::as_paragraph(
-        suppressMessages( # avoid `height` was translated to `width`. message
-          flextable::gg_chunk(
-            value = lst_ggplots_final, height = 0.4, width = ggplot_col_width
-          )
-        )
-      )
-    ) |>
     flextable::line_spacing(space = 0.8, part = "body") |>
-    flextable::line_spacing(j = "ggplot", space = 0, part = "body") |>
-    # Word ignores line = 0 without lineRule = "exact", which flextable cannot
-    # emit; shrinking the paragraph mark drops its descent so the plots abut
+    .forest_picture_par(part = "body") |>
+    # a 1pt paragraph mark adds no space below the picture
     flextable::fontsize(j = "ggplot", size = 1, part = "body") |>
     flextable::valign(valign = "center", part = "body") |>
     flextable::align(j = "ggplot", align = "center", part = "header") |>
     flextable::padding(padding.top = 0, part = "body") |>
-    flextable::padding(padding.bottom = 7, part = "body") |>
-    flextable::padding(j = "ggplot", padding.bottom = 0, part = "body") |>
+    flextable::padding(padding.bottom = 0, part = "body") |>
     # default 5pt L/R padding would push the fixed-width image out of its cell
     flextable::padding(j = "ggplot", padding.left = 0, padding.right = 0, part = "all") |>
     flextable::width(j = "ggplot", width = ggplot_col_width) |>
-    flextable::valign(valign = "bottom", part = "body")
+    # picture top = row top; the text stays centered on the plot's CI line
+    flextable::valign(j = "ggplot", valign = "top", part = "body")
 
-  # header drawn on the body plots' scale, so labels sit over their own half
+  # compact rows: page-fitting widths, one exact height per body row, and every
+  # plot drawn at its row's height (the CI sits at the plot's vertical center)
+  page <- .forest_page(table_width)
+  if (!is.null(page$width)) out <- .forest_fit_widths(out, page$width, page$font_size)
+  ggplot_col_width <- unname(out$body$colwidths[out$col_keys == "ggplot"])
+  row_heights <- .forest_row_heights(out, row_height, p_axis, page$font_size)
+  n_rows <- length(row_heights)
+  if (.forest_fits_one_page(row_heights, page)) {
+    # one picture for the whole column (all rows + axis), in a merged cell: the
+    # reference lines are drawn once, so they stay solid in Word, PDF and HTML
+    column_plot <- .forest_column_plot(
+      x, estimate, conf_low, conf_high, pvalue, global_limits, mean_estimate,
+      sizes, global_margins, row_heights, p_axis
+    )
+    out <- out |>
+      flextable::merge_at(i = seq_len(n_rows), j = "ggplot", part = "body") |>
+      flextable::mk_par(
+        i = 1, j = "ggplot",
+        value = flextable::as_paragraph(
+          suppressMessages( # avoid `height` was translated to `width`. message
+            flextable::gg_chunk(value = list(column_plot), height = sum(row_heights), width = ggplot_col_width)
+          )
+        )
+      ) |>
+      # gen_grob() drops a body row whose cells are all empty: keep the axis row
+      flextable::mk_par(i = n_rows, j = 1, value = flextable::as_paragraph(" "), part = "body")
+  } else {
+    # too tall for one page (a merged cell cannot break): one picture per row
+    for (i in seq_len(n_rows)) {
+      out <- out |>
+        flextable::mk_par(
+          i = i, j = "ggplot",
+          value = flextable::as_paragraph(
+            suppressMessages( # avoid `height` was translated to `width`. message
+              flextable::gg_chunk(
+                value = lst_ggplots_final[i], height = row_heights[i], width = ggplot_col_width
+              )
+            )
+          )
+        )
+    }
+  }
+  out <- out |>
+    flextable::height(height = row_heights, part = "body") |>
+    flextable::hrule(rule = "exact", part = "body") |>
+    # HTML: flextable sizes pictures at 72 px/in (75% in a browser); fill the cell instead
+    flextable::set_table_properties(
+      layout = out$properties$layout, width = out$properties$width,
+      opts_html = list(
+        extra_class = "crane-forest",
+        extra_css = ".crane-forest img{display:block;width:100% !important;height:auto !important;}"
+      )
+    )
+
+  # header drawn on the body plots' scale, labels either side of the line at 1
   if (!is.null(header_parts)) {
     # only the column-label row, so later title rows keep their own styling
     label_row <- flextable::nrow_part(out, "header")
+    # labels drawn like the other column labels: same font size (the page's, when known)
+    header_font <- page$font_size %||% out$header$styles$text$font.size$data[label_row, 1]
+    header_plot <- .forest_header_plot(
+      header_parts, global_limits, global_margins, sizes, ggplot_col_width,
+      font_size = header_font
+    )
     out <- out |>
       flextable::mk_par(
         i = label_row, j = "ggplot", part = "header",
         value = flextable::as_paragraph(
           suppressMessages( # avoid `height` was translated to `width`. message
             flextable::gg_chunk(
-              value = list(.forest_header_plot(header_parts, global_limits, global_margins, sizes)),
-              height = 0.35, width = ggplot_col_width
+              value = list(header_plot),
+              height = attr(header_plot, "height_in"), width = ggplot_col_width
             )
           )
         )
@@ -264,8 +329,11 @@ add_forest <- function(x,
         i = label_row, j = "ggplot",
         padding.left = 0, padding.right = 0, part = "header"
       ) |>
-      flextable::fontsize(i = label_row, j = "ggplot", size = 1, part = "header")
+      flextable::fontsize(i = label_row, j = "ggplot", size = 1, part = "header") |>
+      .forest_picture_par(i = label_row, part = "header")
   }
+  # all column labels (and the forest header) end on the same line, above the header rule
+  out <- flextable::valign(out, i = flextable::nrow_part(out, "header"), valign = "bottom", part = "header")
 
   out
 }
