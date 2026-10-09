@@ -1,6 +1,6 @@
 # crane 0.4.0.9000
 
-* Added `simplify_ard()` to flatten the ARD of a table, including stratified, stacked and split tables, into one ARD with the strata as group columns, ready for `cards::compare_ard()`. (#issue)
+* Added `simplify_ard()` to flatten the ARD of a table, including stratified, stacked and split tables, into one ARD with the strata as group columns, ready for `cards::compare_ard()`. (#325)
 
 # crane 0.4.0
 
