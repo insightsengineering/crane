@@ -13,7 +13,7 @@ a table, a list of split tables, or a (nested) list of ARDs as returned by
 
 \item{.deduplicate}{(scalar \code{logical})\cr
 whether to remove duplicated statistics. Repeated copies of a whole ARD
-(e.g. from split tables) are removed with a warning. Rows shared by several
+(e.g. from split tables) are removed with a message. Rows shared by several
 ARDs (e.g. variable attributes repeated by \code{add_overall()}) are removed
 silently. Default is \code{TRUE}.}
 
@@ -23,9 +23,11 @@ whether to return the ARD with atomic columns, see
 handle list columns. Default is \code{FALSE}.}
 }
 \value{
-A \code{card} object, or a \code{card_unlisted} data frame when \code{.unlist = TRUE}.
-The same statistic (same groups, variables, \code{context} and \code{stat_name}) with
-different values in two places of the table is an error.
+A \code{card_simplified} object (a \code{card}), or a \code{card_simplified}
+\code{card_unlisted} data frame when \code{.unlist = TRUE}. Calling \code{simplify_ard()}
+on its own output returns it unchanged. The same statistic (same groups,
+variables, \code{context} and \code{stat_name}) with different values in two places
+of the table is an error.
 }
 \description{
 Flattens the Analysis Results Data (ARD) of a table into a single ARD.
@@ -34,8 +36,14 @@ Stacked and stratified tables (e.g. from \code{\link[gtsummary:tbl_strata]{gtsum
 \code{\link[gtsummary:tbl_strata_nested_stack]{gtsummary::tbl_strata_nested_stack()}}) return one ARD per stratum from
 \code{\link[gtsummary:gather_ard]{gtsummary::gather_ard()}}, with the stratum recorded only in the list names.
 \code{simplify_ard()} adds each stratum as a group column, following the
-convention of \code{\link[cards:ard_strata]{cards::ard_strata()}}: existing groups keep their numbers and
-the strata take the next ones, innermost stratum first.
+convention of \code{\link[cards:ard_strata]{cards::ard_strata()}}: the groups of the table keep their
+numbers and the strata take the numbers after the highest one, innermost
+stratum first, so a stratum lands in the same column everywhere in the table.
+
+Stacked tables without strata whose pieces report the same statistics (e.g.
+\code{\link[gtsummary:tbl_stack]{gtsummary::tbl_stack()}} of the same variables on two subsets) are told
+apart by a \code{tbl_id1} group (\code{tbl_id2} for the next level of stacking), with
+the \code{tbl_ids} of the stack, or the position of the piece, as level.
 
 Split tables (\code{\link[gtsummary:tbl_split_by_rows]{gtsummary::tbl_split_by_rows()}},
 \code{\link[gtsummary:tbl_split_by_columns]{gtsummary::tbl_split_by_columns()}}) carry a full copy of the ARD in every
@@ -49,12 +57,11 @@ Statistics are identified by their groups, variables, \code{context} and
 \code{stat_name}. \code{context} is needed for tables that report two statistics with
 the same name for the same rows, e.g. subject and event counts in
 \code{\link[=tbl_hierarchical_rate_and_count]{tbl_hierarchical_rate_and_count()}}. Pass the same keys to
-\code{\link[cards:compare_ard]{cards::compare_ard()}}:
+\code{\link[cards:compare_ard]{cards::compare_ard()}}, as column names (cards 0.9.0 does not accept a
+selection of columns there):
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{cards::compare_ard(
-  x, y,
-  keys = c(cards::all_ard_groups(), cards::all_ard_variables(), "context", "stat_name")
-)
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{keys <- names(dplyr::select(y, cards::all_ard_groups(), cards::all_ard_variables(), "context", "stat_name"))
+cards::compare_ard(x, y, keys = keys, columns = c("stat_label", "stat"))
 }\if{html}{\out{</div>}}
 }
 \examples{
@@ -81,16 +88,40 @@ tbl <- gtsummary::tbl_strata(
   gtsummary::tbl_split_by_rows(variable_level = ends_with("lbl"))
 
 # PARAM becomes group2, next to the treatment in group1
-ard <- simplify_ard(tbl)
-ard
-
-# compare with an ARD derived independently
-cards::compare_ard(
-  ard, ard,
-  keys = c(cards::all_ard_groups(), cards::all_ard_variables(), "context", "stat_name")
-) |>
-  cards::is_ard_equal()
+simplify_ard(tbl)
 
 # atomic columns, e.g. for diffdf
 simplify_ard(tbl, .unlist = TRUE)
+
+# the same statistics built with cards only, e.g. by an independent QC program
+adlb_wk2 <- dplyr::filter(adlb, AVISIT == "Week 2")
+ard_tbl <- gtsummary::tbl_strata(
+  adlb_wk2,
+  strata = PARAM,
+  .tbl_fun = ~ tbl_roche_summary(.x, by = TRTA, include = AVAL, type = AVAL ~ "continuous2"),
+  .combine_with = "tbl_stack",
+  .combine_args = list(group_header = NULL, quiet = TRUE)
+) |>
+  simplify_ard() |>
+  dplyr::filter(context == "summary")
+
+ard_qc <- cards::ard_strata(
+  adlb_wk2,
+  .strata = PARAM,
+  .f = \(df) {
+    cards::ard_summary(
+      df,
+      by = TRTA,
+      variables = AVAL,
+      statistic = ~ cards::continuous_summary_fns(c("mean", "sd", "median", "min", "max"))
+    )
+  }
+)
+
+keys <- names(dplyr::select(
+  ard_qc,
+  cards::all_ard_groups(), cards::all_ard_variables(), "context", "stat_name"
+))
+cards::compare_ard(ard_tbl, ard_qc, keys = keys, columns = c("stat_label", "stat")) |>
+  cards::is_ard_equal()
 }

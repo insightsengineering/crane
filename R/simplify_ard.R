@@ -36,22 +36,23 @@
 #'   [cards::unlist_ard_columns()]. Useful with comparison tools that do not
 #'   handle list columns. Default is `FALSE`.
 #'
-#' @returns A `card` object, or a `card_unlisted` data frame when `.unlist = TRUE`.
-#'   The same statistic (same groups, variables, `context` and `stat_name`) with
-#'   different values in two places of the table is an error.
+#' @returns A `card_simplified` object (a `card`), or a `card_simplified`
+#'   `card_unlisted` data frame when `.unlist = TRUE`. Calling `simplify_ard()`
+#'   on its own output returns it unchanged. The same statistic (same groups,
+#'   variables, `context` and `stat_name`) with different values in two places
+#'   of the table is an error.
 #'
 #' @details
 #' Statistics are identified by their groups, variables, `context` and
 #' `stat_name`. `context` is needed for tables that report two statistics with
 #' the same name for the same rows, e.g. subject and event counts in
 #' [tbl_hierarchical_rate_and_count()]. Pass the same keys to
-#' [cards::compare_ard()]:
+#' [cards::compare_ard()], as column names (cards 0.9.0 does not accept a
+#' selection of columns there):
 #'
 #' ```r
-#' cards::compare_ard(
-#'   x, y,
-#'   keys = c(cards::all_ard_groups(), cards::all_ard_variables(), "context", "stat_name")
-#' )
+#' keys <- names(dplyr::select(y, cards::all_ard_groups(), cards::all_ard_variables(), "context", "stat_name"))
+#' cards::compare_ard(x, y, keys = keys, columns = c("stat_label", "stat"))
 #' ```
 #'
 #' @examples
@@ -78,24 +79,54 @@
 #'   gtsummary::tbl_split_by_rows(variable_level = ends_with("lbl"))
 #'
 #' # PARAM becomes group2, next to the treatment in group1
-#' ard <- simplify_ard(tbl)
-#' ard
-#'
-#' # compare with an ARD derived independently
-#' cards::compare_ard(
-#'   ard, ard,
-#'   keys = c(cards::all_ard_groups(), cards::all_ard_variables(), "context", "stat_name")
-#' ) |>
-#'   cards::is_ard_equal()
+#' simplify_ard(tbl)
 #'
 #' # atomic columns, e.g. for diffdf
 #' simplify_ard(tbl, .unlist = TRUE)
+#'
+#' # the same statistics built with cards only, e.g. by an independent QC program
+#' adlb_wk2 <- dplyr::filter(adlb, AVISIT == "Week 2")
+#' ard_tbl <- gtsummary::tbl_strata(
+#'   adlb_wk2,
+#'   strata = PARAM,
+#'   .tbl_fun = ~ tbl_roche_summary(.x, by = TRTA, include = AVAL, type = AVAL ~ "continuous2"),
+#'   .combine_with = "tbl_stack",
+#'   .combine_args = list(group_header = NULL, quiet = TRUE)
+#' ) |>
+#'   simplify_ard() |>
+#'   dplyr::filter(context == "summary")
+#'
+#' ard_qc <- cards::ard_strata(
+#'   adlb_wk2,
+#'   .strata = PARAM,
+#'   .f = \(df) {
+#'     cards::ard_summary(
+#'       df,
+#'       by = TRTA,
+#'       variables = AVAL,
+#'       statistic = ~ cards::continuous_summary_fns(c("mean", "sd", "median", "min", "max"))
+#'     )
+#'   }
+#' )
+#'
+#' keys <- names(dplyr::select(
+#'   ard_qc,
+#'   cards::all_ard_groups(), cards::all_ard_variables(), "context", "stat_name"
+#' ))
+#' cards::compare_ard(ard_tbl, ard_qc, keys = keys, columns = c("stat_label", "stat")) |>
+#'   cards::is_ard_equal()
 #' @export
 simplify_ard <- function(x, .deduplicate = TRUE, .unlist = FALSE) {
   set_cli_abort_call()
   check_not_missing(x)
   check_scalar_logical(.deduplicate)
   check_scalar_logical(.unlist)
+  if (inherits(x, "card_simplified")) {
+    if (isTRUE(.unlist) && !inherits(x, "card_unlisted")) {
+      return(.as_card_simplified(cards::unlist_ard_columns(x)))
+    }
+    return(x)
+  }
   if (!is.list(x)) {
     cli::cli_abort(
       "The {.arg x} argument must be a {.cls gtsummary} table, a list of tables or a list of ARDs,
@@ -113,9 +144,21 @@ simplify_ard <- function(x, .deduplicate = TRUE, .unlist = FALSE) {
     .check_ard_duplicates(deduplicate = .deduplicate)
 
   if (isTRUE(.unlist)) {
-    return(cards::unlist_ard_columns(ard))
+    ard <- cards::unlist_ard_columns(ard)
   }
-  ard
+  .as_card_simplified(ard)
+}
+
+#' Add the `card_simplified` class
+#'
+#' @param x (`card` or `card_unlisted`)\cr
+#'   output of `simplify_ard()`.
+#'
+#' @returns `x` with class `card_simplified` first.
+#' @keywords internal
+#' @noRd
+.as_card_simplified <- function(x) {
+  structure(x, class = unique(c("card_simplified", class(x))))
 }
 
 #' Collect the ARDs of a table

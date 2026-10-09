@@ -144,14 +144,44 @@ test_that("simplify_ard(.deduplicate, .unlist) work", {
   expect_s3_class(simplify_ard(ard, .unlist = TRUE), "card_unlisted")
 })
 
-test_that("simplify_ard() output works with compare_ard()", {
-  ard <- simplify_ard(suppressMessages(tbl_param(adlb)))
-  comparison <- cards::compare_ard(
-    ard, ard,
-    keys = c(cards::all_ard_groups(), cards::all_ard_variables(), "context", "stat_name")
+test_that("simplify_ard() output matches the same ARD built with cards", {
+  adlb_wk2 <- dplyr::filter(adlb, AVISIT == "Week 2")
+  ard <- gtsummary::tbl_strata(
+    adlb_wk2,
+    strata = PARAM,
+    .tbl_fun = ~ tbl_roche_summary(.x, by = TRTA, include = AVAL, type = AVAL ~ "continuous2"),
+    .combine_with = "tbl_stack",
+    .combine_args = list(group_header = NULL, quiet = TRUE)
+  ) |>
+    suppressMessages() |>
+    simplify_ard() |>
+    dplyr::filter(context == "summary")
+  ard_qc <- cards::ard_strata(
+    adlb_wk2,
+    .strata = PARAM,
+    .f = \(df) {
+      cards::ard_summary(
+        df,
+        by = TRTA,
+        variables = AVAL,
+        statistic = ~ cards::continuous_summary_fns(c("mean", "sd", "median", "min", "max"))
+      )
+    }
   )
+  keys <- names(dplyr::select(ard_qc, cards::all_ard_groups(), cards::all_ard_variables(), "context", "stat_name"))
 
+  comparison <- cards::compare_ard(ard, ard_qc, keys = keys, columns = c("stat_label", "stat"))
   expect_true(cards::is_ard_equal(comparison))
+})
+
+test_that("simplify_ard() returns a `card_simplified` and does not simplify twice", {
+  ard <- simplify_ard(suppressMessages(tbl_param(adlb)))
+  expect_s3_class(ard, c("card_simplified", "card"))
+  expect_identical(simplify_ard(ard), ard)
+
+  ard_unlisted <- simplify_ard(ard, .unlist = TRUE)
+  expect_s3_class(ard_unlisted, c("card_simplified", "card_unlisted"))
+  expect_identical(simplify_ard(ard_unlisted, .unlist = TRUE), ard_unlisted)
 })
 
 test_that("simplify_ard() returns an empty ARD for tables without ARD", {
