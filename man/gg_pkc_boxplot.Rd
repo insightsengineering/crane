@@ -13,7 +13,8 @@ gg_pkc_boxplot(
   quantile_type = 1,
   log_y = TRUE,
   show_mean = TRUE,
-  outlier_size = 2
+  outlier_size = 2,
+  id_var = NULL
 )
 }
 \arguments{
@@ -46,9 +47,20 @@ Whether to overlay a mean marker on each box. Default is \code{TRUE}.}
 
 \item{outlier_size}{(\code{numeric})\cr
 Size of the outlier point markers. Default is \code{2}.}
+
+\item{id_var}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
+Optional subject/row identifier variable. When supplied, each outlier row
+in the \code{"ARD"} attribute uses the subject ID as \code{stat_label} (matching
+the template convention). Default is \code{NULL} (uses \code{"outlier"}).}
 }
 \value{
-A \code{ggplot} object of class \code{crane_gg_pkc_box}.
+A \code{ggplot} object of class \code{crane_gg_pkc_box} with an \code{"ARD"}
+attribute: a \code{data.frame} of summary statistics (n, mean, sd, and
+whisker-specific stat names: \code{p05}/\code{p25}/\code{p50}/\code{p75}/\code{p95} for
+\code{"percentile"}, \code{min}/\code{p25}/\code{p50}/\code{p75}/\code{max} for \code{"minmax"},
+\code{p25}/\code{p50}/\code{p75}/\code{iqr}/\code{lower_whisker}/\code{upper_whisker} for \code{"tukey"})
+plus one row per outlier point, grouped by \code{time_var} and \code{group}.
+Retrieve with \code{attr(p, "ARD")}.
 }
 \description{
 Creates a standard Pharmacokinetic (PK) concentration box plot, summarizing

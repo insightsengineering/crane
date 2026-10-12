@@ -27,8 +27,18 @@
 #'   Whether to overlay a mean marker on each box. Default is `TRUE`.
 #' @param outlier_size (`numeric`)\cr
 #'   Size of the outlier point markers. Default is `2`.
+#' @param id_var ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
+#'   Optional subject/row identifier variable. When supplied, each outlier row
+#'   in the `"ARD"` attribute uses the subject ID as `stat_label` (matching
+#'   the template convention). Default is `NULL` (uses `"outlier"`).
 #'
-#' @returns A `ggplot` object of class `crane_gg_pkc_box`.
+#' @returns A `ggplot` object of class `crane_gg_pkc_box` with an `"ARD"`
+#'   attribute: a `data.frame` of summary statistics (n, mean, sd, and
+#'   whisker-specific stat names: `p05`/`p25`/`p50`/`p75`/`p95` for
+#'   `"percentile"`, `min`/`p25`/`p50`/`p75`/`max` for `"minmax"`,
+#'   `p25`/`p50`/`p75`/`iqr`/`lower_whisker`/`upper_whisker` for `"tukey"`)
+#'   plus one row per outlier point, grouped by `time_var` and `group`.
+#'   Retrieve with `attr(p, "ARD")`.
 #' @seealso [gg_pkc_lineplot()] for related functionalities.
 #'
 #' @examples
@@ -69,7 +79,8 @@ gg_pkc_boxplot <- function(
   quantile_type = 1,
   log_y = TRUE,
   show_mean = TRUE,
-  outlier_size = 2
+  outlier_size = 2,
+  id_var = NULL
 ) {
   # Match standard arguments
   whisker <- match.arg(whisker)
@@ -84,15 +95,17 @@ gg_pkc_boxplot <- function(
   # Tidy-selection processing
   cards::process_selectors(
     data,
-    time_var = {{ time_var }},
+    time_var    = {{ time_var }},
     analyte_var = {{ analyte_var }},
-    group = {{ group }}
+    group       = {{ group }},
+    id_var      = {{ id_var }}
   )
 
   # Ensure only single columns were selected
   check_string(time_var)
   check_string(analyte_var)
   check_string(group)
+  if (length(id_var) > 0L) check_string(id_var)
 
   # A log10 y-axis cannot plot zero/negative values, so drop them up front
   # rather than letting ggplot2 silently remove them layer by layer.
@@ -221,7 +234,7 @@ gg_pkc_boxplot <- function(
     ggplot2::stat_summary(
       fun.data = box_stats,
       geom = "errorbar",
-      width = 1,
+      width = 0.75,
       position = dodge
     ) +
     # Overlay the pre-flagged outlier values on top of the boxes; na.rm drops
@@ -265,5 +278,76 @@ gg_pkc_boxplot <- function(
   }
 
   class(p) <- c("crane_gg_pkc_box", class(p))
+
+  # Build ARD: whisker-specific stat names mirror the template's if/else
+  # blocks so the ARD is self-describing (p05/p95 for percentile, min/max for
+  # minmax, lower_whisker/upper_whisker/iqr for tukey).
+  ard_stat_list <- switch(whisker,
+    percentile = list(
+      n    = \(x) sum(!is.na(x)),
+      mean = \(x) mean(x, na.rm = TRUE),
+      sd   = \(x) sd(x, na.rm = TRUE),
+      p05  = \(x) stats::quantile(x, 0.05, type = quantile_type, names = FALSE),
+      p25  = \(x) stats::quantile(x, 0.25, type = quantile_type, names = FALSE),
+      p50  = \(x) stats::quantile(x, 0.50, type = quantile_type, names = FALSE),
+      p75  = \(x) stats::quantile(x, 0.75, type = quantile_type, names = FALSE),
+      p95  = \(x) stats::quantile(x, 0.95, type = quantile_type, names = FALSE)
+    ),
+    minmax = list(
+      n    = \(x) sum(!is.na(x)),
+      mean = \(x) mean(x, na.rm = TRUE),
+      sd   = \(x) sd(x, na.rm = TRUE),
+      min  = \(x) min(x, na.rm = TRUE),
+      p25  = \(x) stats::quantile(x, 0.25, type = quantile_type, names = FALSE),
+      p50  = \(x) stats::quantile(x, 0.50, type = quantile_type, names = FALSE),
+      p75  = \(x) stats::quantile(x, 0.75, type = quantile_type, names = FALSE),
+      max  = \(x) max(x, na.rm = TRUE)
+    ),
+    tukey = list(
+      n             = \(x) sum(!is.na(x)),
+      mean          = \(x) mean(x, na.rm = TRUE),
+      sd            = \(x) sd(x, na.rm = TRUE),
+      p25           = \(x) stats::quantile(x, 0.25, type = quantile_type, names = FALSE),
+      p50           = \(x) stats::quantile(x, 0.50, type = quantile_type, names = FALSE),
+      p75           = \(x) stats::quantile(x, 0.75, type = quantile_type, names = FALSE),
+      iqr           = \(x) stats::IQR(x, type = quantile_type),
+      lower_whisker = \(x) max(
+        min(x, na.rm = TRUE),
+        stats::quantile(x, 0.25, type = quantile_type, names = FALSE) -
+          1.5 * stats::IQR(x, type = quantile_type)
+      ),
+      upper_whisker = \(x) min(
+        max(x, na.rm = TRUE),
+        stats::quantile(x, 0.75, type = quantile_type, names = FALSE) +
+          1.5 * stats::IQR(x, type = quantile_type)
+      )
+    )
+  )
+
+  ard_summary <- data |>
+    cards::ard_summary(
+      by        = dplyr::all_of(c(time_var, group)),
+      variables = dplyr::all_of(analyte_var),
+      statistic = rlang::list2(!!analyte_var := ard_stat_list)
+    ) |>
+    dplyr::mutate(context = "summary")
+
+  # Outlier rows: use id_var as stat_label when provided so each row is
+  # traceable to a subject (matching the template's USUBJID convention).
+  ard_outliers <- outliers |>
+    dplyr::filter(!is.na(.data$.outlier)) |>
+    dplyr::transmute(
+      group1       = group,
+      group1_level = as.list(as.character(.data[[group]])),
+      group2       = time_var,
+      group2_level = as.list(as.character(.data[[time_var]])),
+      variable     = analyte_var,
+      stat_name    = "outlier",
+      stat_label   = if (length(id_var) > 0L) as.character(.data[[id_var]]) else "outlier",
+      stat         = as.list(.data$.outlier),
+      context      = "outlier"
+    )
+
+  attr(p, "ARD") <- dplyr::bind_rows(ard_summary, ard_outliers)
   p
 }
