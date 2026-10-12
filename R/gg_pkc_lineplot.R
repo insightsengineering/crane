@@ -242,19 +242,19 @@ gg_pkc_lineplot <- function(data,
 
   # Build ARD with variability-specific bound names
   bound_stats <- switch(variability,
-    sd   = list(
+    sd = list(
       mean_plus_sd  = \(x) .calc_stats(x, stat, variability, conf_level)$ymax,
       mean_minus_sd = \(x) .calc_stats(x, stat, variability, conf_level)$ymin
     ),
-    se   = list(
+    se = list(
       mean_plus_se  = \(x) .calc_stats(x, stat, variability, conf_level)$ymax,
       mean_minus_se = \(x) .calc_stats(x, stat, variability, conf_level)$ymin
     ),
-    ci   = list(
+    ci = list(
       upper_ci = \(x) .calc_stats(x, stat, variability, conf_level)$ymax,
       lower_ci = \(x) .calc_stats(x, stat, variability, conf_level)$ymin
     ),
-    iqr  = list(
+    iqr = list(
       q75 = \(x) .calc_stats(x, stat, variability, conf_level)$ymax,
       q25 = \(x) .calc_stats(x, stat, variability, conf_level)$ymin
     ),

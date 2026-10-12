@@ -304,13 +304,13 @@ gg_pkc_boxplot <- function(
       max  = \(x) max(x, na.rm = TRUE)
     ),
     tukey = list(
-      n             = \(x) sum(!is.na(x)),
-      mean          = \(x) mean(x, na.rm = TRUE),
-      sd            = \(x) sd(x, na.rm = TRUE),
-      p25           = \(x) stats::quantile(x, 0.25, type = quantile_type, names = FALSE),
-      p50           = \(x) stats::quantile(x, 0.50, type = quantile_type, names = FALSE),
-      p75           = \(x) stats::quantile(x, 0.75, type = quantile_type, names = FALSE),
-      iqr           = \(x) stats::IQR(x, type = quantile_type),
+      n = \(x) sum(!is.na(x)),
+      mean = \(x) mean(x, na.rm = TRUE),
+      sd = \(x) sd(x, na.rm = TRUE),
+      p25 = \(x) stats::quantile(x, 0.25, type = quantile_type, names = FALSE),
+      p50 = \(x) stats::quantile(x, 0.50, type = quantile_type, names = FALSE),
+      p75 = \(x) stats::quantile(x, 0.75, type = quantile_type, names = FALSE),
+      iqr = \(x) stats::IQR(x, type = quantile_type),
       lower_whisker = \(x) max(
         min(x, na.rm = TRUE),
         stats::quantile(x, 0.25, type = quantile_type, names = FALSE) -
