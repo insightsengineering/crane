@@ -37,7 +37,12 @@
 #'   Horizontal separation between groups at each timepoint. Default is `0.2`.
 #'   Increase if error bar caps are wider than the dodge width and overlap.
 #'
-#' @returns A `ggplot` object.
+#' @returns A `ggplot` object of class `crane_gg_pkc` with an `"ARD"`
+#'   attribute: a `data.frame` of summary statistics (`N`, the primary `stat`,
+#'   and variability-specific bound names: `mean_plus_sd`/`mean_minus_sd` for
+#'   `"sd"`, `mean_plus_se`/`mean_minus_se` for `"se"`, `upper_ci`/`lower_ci`
+#'   for `"ci"`, `q75`/`q25` for `"iqr"`, no bounds for `"none"`) grouped by
+#'   `time_var` and `group`. Retrieve with `attr(p, "ARD")`.
 #' @seealso [annotate_pkc_df()] for related functionalities.
 #'
 #' @examples
@@ -235,5 +240,38 @@ gg_pkc_lineplot <- function(data,
 
   class(p) <- c("crane_gg_pkc", class(p))
 
+  # Build ARD with variability-specific bound names
+  bound_stats <- switch(variability,
+    sd   = list(
+      mean_plus_sd  = \(x) .calc_stats(x, stat, variability, conf_level)$ymax,
+      mean_minus_sd = \(x) .calc_stats(x, stat, variability, conf_level)$ymin
+    ),
+    se   = list(
+      mean_plus_se  = \(x) .calc_stats(x, stat, variability, conf_level)$ymax,
+      mean_minus_se = \(x) .calc_stats(x, stat, variability, conf_level)$ymin
+    ),
+    ci   = list(
+      upper_ci = \(x) .calc_stats(x, stat, variability, conf_level)$ymax,
+      lower_ci = \(x) .calc_stats(x, stat, variability, conf_level)$ymin
+    ),
+    iqr  = list(
+      q75 = \(x) .calc_stats(x, stat, variability, conf_level)$ymax,
+      q25 = \(x) .calc_stats(x, stat, variability, conf_level)$ymin
+    ),
+    none = list()
+  )
+
+  ard_stats <- c(
+    list(N = \(x) sum(!is.na(x))),
+    rlang::list2(!!stat := \(x) .calc_stats(x, stat, variability, conf_level)$y),
+    bound_stats
+  )
+
+  attr(p, "ARD") <- data |>
+    cards::ard_summary(
+      by        = dplyr::all_of(c(time_var, group)),
+      variables = dplyr::all_of(analyte_var),
+      statistic = rlang::list2(!!analyte_var := ard_stats)
+    )
   p
 }

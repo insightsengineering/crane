@@ -333,7 +333,7 @@ gg_pkc_boxplot <- function(
     dplyr::mutate(context = "summary")
 
   # Outlier rows: use id_var as stat_label when provided so each row is
-  # traceable to a subject (matching the template's USUBJID convention).
+  # traceable to a subject
   ard_outliers <- outliers |>
     dplyr::filter(!is.na(.data$.outlier)) |>
     dplyr::transmute(

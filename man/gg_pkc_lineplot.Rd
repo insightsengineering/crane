@@ -64,7 +64,12 @@ Horizontal separation between groups at each timepoint. Default is \code{0.2}.
 Increase if error bar caps are wider than the dodge width and overlap.}
 }
 \value{
-A \code{ggplot} object.
+A \code{ggplot} object of class \code{crane_gg_pkc} with an \code{"ARD"}
+attribute: a \code{data.frame} of summary statistics (\code{N}, the primary \code{stat},
+and variability-specific bound names: \code{mean_plus_sd}/\code{mean_minus_sd} for
+\code{"sd"}, \code{mean_plus_se}/\code{mean_minus_se} for \code{"se"}, \code{upper_ci}/\code{lower_ci}
+for \code{"ci"}, \code{q75}/\code{q25} for \code{"iqr"}, no bounds for \code{"none"}) grouped by
+\code{time_var} and \code{group}. Retrieve with \code{attr(p, "ARD")}.
 }
 \description{
 Creates a standard Pharmacokinetic (PK) concentration-time profile plot.
