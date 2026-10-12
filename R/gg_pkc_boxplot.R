@@ -286,7 +286,7 @@ gg_pkc_boxplot <- function(
     percentile = list(
       n    = \(x) sum(!is.na(x)),
       mean = \(x) mean(x, na.rm = TRUE),
-      sd   = \(x) sd(x, na.rm = TRUE),
+      sd   = \(x) stats::sd(x, na.rm = TRUE),
       p05  = \(x) stats::quantile(x, 0.05, type = quantile_type, names = FALSE),
       p25  = \(x) stats::quantile(x, 0.25, type = quantile_type, names = FALSE),
       p50  = \(x) stats::quantile(x, 0.50, type = quantile_type, names = FALSE),
@@ -296,7 +296,7 @@ gg_pkc_boxplot <- function(
     minmax = list(
       n    = \(x) sum(!is.na(x)),
       mean = \(x) mean(x, na.rm = TRUE),
-      sd   = \(x) sd(x, na.rm = TRUE),
+      sd   = \(x) stats::sd(x, na.rm = TRUE),
       min  = \(x) min(x, na.rm = TRUE),
       p25  = \(x) stats::quantile(x, 0.25, type = quantile_type, names = FALSE),
       p50  = \(x) stats::quantile(x, 0.50, type = quantile_type, names = FALSE),
@@ -306,7 +306,7 @@ gg_pkc_boxplot <- function(
     tukey = list(
       n = \(x) sum(!is.na(x)),
       mean = \(x) mean(x, na.rm = TRUE),
-      sd = \(x) sd(x, na.rm = TRUE),
+      sd = \(x) stats::sd(x, na.rm = TRUE),
       p25 = \(x) stats::quantile(x, 0.25, type = quantile_type, names = FALSE),
       p50 = \(x) stats::quantile(x, 0.50, type = quantile_type, names = FALSE),
       p75 = \(x) stats::quantile(x, 0.75, type = quantile_type, names = FALSE),
