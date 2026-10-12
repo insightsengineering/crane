@@ -81,9 +81,10 @@ test_that("add_forest handles extreme limits and character NA p-values safely", 
     )
   )
 
-  expect_no_warning(
-    # gt delays rendering until print time, so we force it to render the HTML
-    # to trigger any latent ggplot geom_vline warnings.
+  expect_no_error(
+    # gt delays rendering until print time, so we force it to render the HTML.
+    # Not expect_no_warning(): R-devel warns upstream while rendering these
+    # out-of-range values ("object length is not a multiple of subscript length").
     suppressMessages(gt::as_raw_html(out_gt))
   )
 
