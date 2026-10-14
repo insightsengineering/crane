@@ -539,6 +539,9 @@ gg_varname_extraction <- function(mapping_quo) {
 #'   Position adjustment, either a string (e.g., `"dodge"`) or a
 #'   formal ggplot2 object (e.g., `ggplot2::position_dodge(width = 0.4)`).
 #'   Defaults to `ggplot2::position_identity()`.
+#' @param width (`numeric`)\cr
+#'   Width of the horizontal caps on the error bars. Default is `0.45`.
+#'   Set to `0` for no caps.
 #'
 #' @return A modified `ggplot2` object with an added error bar layer.
 #'
@@ -561,7 +564,8 @@ gg_add_stats <- function(gg_plt,
                          stat = c("mean", "median"),
                          variability = c("sd", "se", "ci", "iqr", "none"),
                          conf_level = 0.95,
-                         position = ggplot2::position_identity()) {
+                         position = ggplot2::position_identity(),
+                         width = 0.45) {
   stat <- match.arg(stat)
   variability <- match.arg(variability)
 
@@ -575,7 +579,7 @@ gg_add_stats <- function(gg_plt,
       conf_level = conf_level
     ),
     geom = "errorbar",
-    width = 0.45,
+    width = width,
     na.rm = TRUE,
     position = position
   )
