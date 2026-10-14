@@ -19,7 +19,7 @@ measure of dispersion."><meta property="og:image" content="https://insightsengin
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0.9002</span>
       </span>
     </div>
 
@@ -75,7 +75,8 @@ measure of dispersion.</p>
 <span>  stat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"mean"</span>, <span class="st">"median"</span><span class="op">)</span>,</span>
 <span>  variability <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sd"</span>, <span class="st">"se"</span>, <span class="st">"ci"</span>, <span class="st">"iqr"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
 <span>  conf_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
-<span>  position <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_identity.html" class="external-link">position_identity</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  position <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_identity.html" class="external-link">position_identity</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  width <span class="op">=</span> <span class="fl">0.45</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -108,6 +109,12 @@ Confidence level for <code>"ci"</code> (default <code>0.95</code>).</p></dd>
 Position adjustment, either a string (e.g., <code>"dodge"</code>) or a
 formal ggplot2 object (e.g., <code>ggplot2::position_dodge(width = 0.4)</code>).
 Defaults to <code><a href="https://ggplot2.tidyverse.org/reference/position_identity.html" class="external-link">ggplot2::position_identity()</a></code>.</p></dd>
+
+
+<dt id="arg-width">width<a class="anchor" aria-label="anchor" href="#arg-width"></a></dt>
+<dd><p>(<code>numeric</code>)<br>
+Width of the horizontal caps on the error bars. Default is <code>0.45</code>.
+Set to <code>0</code> for no caps.</p></dd>
 
 </dl></div>
     <div id="value">

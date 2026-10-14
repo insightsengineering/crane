@@ -19,7 +19,7 @@ handling log transformations, various summary statistics, and variability measur
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0.9002</span>
       </span>
     </div>
 
@@ -79,7 +79,10 @@ handling log transformations, various summary statistics, and variability measur
 <span>  variability <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"sd"</span>, <span class="st">"se"</span>, <span class="st">"ci"</span>, <span class="st">"iqr"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
 <span>  conf_level <span class="op">=</span> <span class="fl">0.95</span>,</span>
 <span>  log_y <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  lloq <span class="op">=</span> <span class="cn">NA_real_</span></span>
+<span>  lloq <span class="op">=</span> <span class="cn">NA_real_</span>,</span>
+<span>  x_breaks <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  errorbar_width <span class="op">=</span> <span class="fl">0.45</span>,</span>
+<span>  dodge_width <span class="op">=</span> <span class="fl">0.2</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -131,10 +134,37 @@ Whether to apply log10 scale to the y-axis. Default is <code>TRUE</code>.</p></d
 <dd><p>(<code>numeric</code> or <code>NULL</code>)<br>
 Lower Limit of Quantification. Default is <code>NA_real_</code>.</p></dd>
 
+
+<dt id="arg-x-breaks">x_breaks<a class="anchor" aria-label="anchor" href="#arg-x-breaks"></a></dt>
+<dd><p>(<code>numeric</code>, <code>function</code>, or <code>NULL</code>)<br>
+Breaks for a numeric x-axis, passed to <code><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">ggplot2::scale_x_continuous()</a></code>.
+The default <code>NULL</code> puts a break on every observed timepoint, which is
+readable over a short window but not over a long one. Supply a vector
+(e.g. <code>seq(0, 600, by = 100)</code>) or a break function
+(e.g. <code><a href="https://scales.r-lib.org/reference/breaks_pretty.html" class="external-link">scales::breaks_pretty()</a></code>) for wider time ranges. Ignored when
+<code>time_var</code> is a factor.</p></dd>
+
+
+<dt id="arg-errorbar-width">errorbar_width<a class="anchor" aria-label="anchor" href="#arg-errorbar-width"></a></dt>
+<dd><p>(<code>numeric</code>)<br>
+Width of the horizontal caps on the variability error bars. Default is
+<code>0.45</code>. Set to <code>0</code> for no caps. Ignored when <code>variability = "none"</code>.</p></dd>
+
+
+<dt id="arg-dodge-width">dodge_width<a class="anchor" aria-label="anchor" href="#arg-dodge-width"></a></dt>
+<dd><p>(<code>numeric</code>)<br>
+Horizontal separation between groups at each timepoint. Default is <code>0.2</code>.
+Increase if error bar caps are wider than the dodge width and overlap.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    <p>A <code>ggplot</code> object.</p>
+    <p>A <code>ggplot</code> object of class <code>crane_gg_pkc</code> with an <code>"ARD"</code>
+attribute: a <code>data.frame</code> of summary statistics (<code>N</code>, the primary <code>stat</code>,
+and variability-specific bound names: <code>mean_plus_sd</code>/<code>mean_minus_sd</code> for
+<code>"sd"</code>, <code>mean_plus_se</code>/<code>mean_minus_se</code> for <code>"se"</code>, <code>upper_ci</code>/<code>lower_ci</code>
+for <code>"ci"</code>, <code>q75</code>/<code>q25</code> for <code>"iqr"</code>, no bounds for <code>"none"</code>) grouped by
+<code>time_var</code> and <code>group</code>. Retrieve with <code>attr(p, "ARD")</code>.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -161,10 +191,6 @@ Lower Limit of Quantification. Default is <code>NA_real_</code>.</p></dd>
 <span class="r-in"><span>  variability <span class="op">=</span> <span class="st">"sd"</span>,</span></span>
 <span class="r-in"><span>  log_y <span class="op">=</span> <span class="cn">FALSE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> We encourage to supply `time_var` as a factor, since it supports correct</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   decimals formatting in the summary table.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Scale for <span style="color: #00BB00;">x</span> is already present.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Adding another scale for <span style="color: #00BB00;">x</span>, which will replace the existing scale.</span>
 <span class="r-plt img"><img src="gg_pkc_lineplot-1.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Log Scale Example (Filter out 0s first to avoid log(0) warnings)</span></span></span>
@@ -179,10 +205,6 @@ Lower Limit of Quantification. Default is <code>NA_real_</code>.</p></dd>
 <span class="r-in"><span>    log_y <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
 <span class="r-in"><span>    lloq <span class="op">=</span> <span class="fl">2.0</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> We encourage to supply `time_var` as a factor, since it supports correct</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   decimals formatting in the summary table.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Scale for <span style="color: #00BB00;">x</span> is already present.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Adding another scale for <span style="color: #00BB00;">x</span>, which will replace the existing scale.</span>
 <span class="r-plt img"><img src="gg_pkc_lineplot-2.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Title, subtitle, axes labels and legend position customization</span></span></span>
@@ -204,10 +226,6 @@ Lower Limit of Quantification. Default is <code>NA_real_</code>.</p></dd>
 <span class="r-in"><span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span></span></span>
 <span class="r-in"><span>    legend.position <span class="op">=</span> <span class="st">"top"</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> We encourage to supply `time_var` as a factor, since it supports correct</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   decimals formatting in the summary table.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Scale for <span style="color: #00BB00;">x</span> is already present.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Adding another scale for <span style="color: #00BB00;">x</span>, which will replace the existing scale.</span>
 <span class="r-plt img"><img src="gg_pkc_lineplot-3.png" alt="" width="700" height="433"></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
