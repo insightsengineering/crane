@@ -337,10 +337,10 @@ gg_pkc_boxplot <- function(
   ard_outliers <- outliers |>
     dplyr::filter(!is.na(.data$.outlier)) |>
     dplyr::transmute(
-      group1       = group,
-      group1_level = as.list(as.character(.data[[group]])),
-      group2       = time_var,
-      group2_level = as.list(as.character(.data[[time_var]])),
+      group1       = time_var,
+      group1_level = as.list(as.character(.data[[time_var]])),
+      group2       = group,
+      group2_level = as.list(as.character(.data[[group]])),
       variable     = analyte_var,
       stat_name    = "outlier",
       stat_label   = if (length(id_var) > 0L) as.character(.data[[id_var]]) else "outlier",
