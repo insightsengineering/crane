@@ -87,7 +87,7 @@ test_that("add_forest handles extreme limits and character NA p-values safely", 
     )
 
   # gg_chunk() renders eagerly, so latent geom_vline warnings surface here
-  
+
   # 3. TEST: Run add_forest
   # We expect absolutely no errors (Issue 2 fixed) and no warnings (Issue 1 fixed)
   # Ensure it works for flextable; gt was removed
