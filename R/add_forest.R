@@ -274,7 +274,8 @@ add_forest <- function(x,
         )
       ) |>
       # gen_grob() drops a body row whose cells are all empty: keep the axis row
-      flextable::mk_par(i = n_rows, j = 1, value = flextable::as_paragraph(" "), part = "body")
+      # "\u00a0" is non-ascii accepted symbol for non-breaking space
+      flextable::mk_par(i = n_rows, j = 1, value = flextable::as_paragraph("\u00a0"), part = "body")
   } else {
     # too tall for one page (a merged cell cannot break): one picture per row
     for (i in seq_len(n_rows)) {
