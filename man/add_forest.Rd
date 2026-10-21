@@ -11,8 +11,10 @@ add_forest(
   conf_high = starts_with("conf.high"),
   pvalue = starts_with("p.value"),
   after = starts_with("p.value"),
-  header_spaces = 20,
-  table_engine = c("flextable", "gt")
+  header_spaces = lifecycle::deprecated(),
+  table_engine = "flextable",
+  row_height = 0.24,
+  table_width = NULL
 )
 }
 \arguments{
@@ -37,26 +39,45 @@ according to p-value (smaller p-values = smaller points). \code{NULL} to turn th
 Column name after which the forest plot column will be added. Default is after
 the p-value column.}
 
-\item{header_spaces}{(\code{integer})\cr Spaces to add to the forest plot header to
-visually separate the two treatment areas (\verb{trt A\\n Better} and \verb{trt B\\nBetter}).
-It is suggested to modify manually this variable if the treatment names are long,
-with \code{add_forest(..., header_spaces = 5)} or \code{flextable::set_header_labels(ggplot = "*")}.}
+\item{header_spaces}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}\cr Previously the number
+of spacer characters used to separate the two treatment labels in the forest
+plot header. The header is now drawn on the same scale as the plots, so the
+labels are positioned geometrically and this argument has no effect.}
 
 \item{table_engine}{(\code{character})\cr
-Table rendering engine to use. Default is "flextable".}
+Table rendering engine to use. Only \code{"flextable"} is supported. The \code{"gt"}
+engine was removed in crane 0.4.0.9000.}
+
+\item{row_height}{(\code{numeric})\cr
+Height of a one-line body row, in inches. Each forest plot is drawn at its
+row's exact height, so the CI lines up with the vertically centered text.
+Rows whose text wraps get one extra line height per extra line.}
+
+\item{table_width}{(\code{character} or \code{numeric}, optional)\cr
+The page the table is decorated for, as a page size code \code{"L6"} to \code{"L10"}
+(A4 landscape) or \code{"P6"} to \code{"P10"} (A4 portrait), the number being the font
+size; or the table width in inches. The table then fills the page's text
+width (9.07in landscape, 6.00in portrait) and text wrapping is predicted at
+that font size. \code{NULL} keeps the current widths (autofit).}
 }
 \value{
-a gt table or flextable object with an added forest plot column.
+a flextable object with an added forest plot column. The plots are
+embedded as images, so drawing the table for PDF, PNG, or SVG export (e.g.
+with \code{flextable::gen_grob()} or \code{flextable::save_as_image()}) requires the
+\code{{magick}} package; without it the forest plot column is left blank and
+\code{add_forest()} warns once per session.
 }
 \description{
 This function adds a forest plot column to a gtsummary table, typically produced
 by \code{\link[=tbl_roche_subgroups]{tbl_roche_subgroups()}}. The forest plot visualizes estimates and confidence intervals
-for each subgroup in the table. The function supports rendering with either the \code{gt}
-or \code{flextable} engines, making it suitable for different outputs.
+for each subgroup in the table. The table is rendered with \code{flextable}.
 }
 \details{
-Both gt and flextable outputs could produce issues in line continuity between rows if
-there are wrapping in the statistical cells.
+Each body row gets an exact height (\code{row_height}, plus one line height per
+wrapped text line) and the forest plot is drawn at those heights as one
+picture in a merged cell, so the reference lines are continuous. If the rows
+do not fit on the page given by \code{table_width}, each row gets its own picture
+instead, because a merged cell cannot break across pages.
 }
 \examples{
 # Simple example ------------------------------------------------------------
@@ -74,7 +95,7 @@ trial |>
     rows = !is.na(estimate)
   ) |>
   modify_header(estimate = "**Odds Ratio**") |>
-  add_forest(table_engine = "gt")
+  add_forest()
 
 # Realistic example ---------------------------------------------------------
 \donttest{
