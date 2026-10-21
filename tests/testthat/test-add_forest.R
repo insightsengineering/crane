@@ -90,20 +90,7 @@ test_that("add_forest handles extreme limits and character NA p-values safely", 
   
   # 3. TEST: Run add_forest
   # We expect absolutely no errors (Issue 2 fixed) and no warnings (Issue 1 fixed)
-  expect_no_error(
-    expect_warning(
-      out_gt <- tbl_edge_cases |> add_forest(table_engine = "gt"),
-      "Less than 2 spanning headers detected."
-    )
-  )
-
-  expect_no_warning(
-    # gt delays rendering until print time, so we force it to render the HTML
-    # to trigger any latent ggplot geom_vline warnings.
-    suppressMessages(gt::as_raw_html(out_gt))
-  )
-
-  # Ensure it works for flextable too
+  # Ensure it works for flextable; gt was removed
   expect_no_error(
     expect_warning(
       out_flex <- tbl_edge_cases |> add_forest(table_engine = "flextable"),
