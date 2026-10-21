@@ -313,4 +313,15 @@ test_that("gg_add_stats adds stat_summary layer to a ggplot object", {
   # Verify the stat_summary layer was successfully added (base point + stat)
   expect_equal(length(res_plot$layers), 2)
   expect_true(inherits(res_plot$layers[[2]]$stat, "StatSummary"))
+
+  # The error bar cap width defaults to 0.45 and is configurable
+  expect_equal(res_plot$layers[[2]]$geom_params$width, 0.45)
+
+  res_wide <- gg_add_stats(
+    gg_plt = p_base,
+    stat = "mean",
+    variability = "ci",
+    width = 0
+  )
+  expect_equal(res_wide$layers[[2]]$geom_params$width, 0)
 })

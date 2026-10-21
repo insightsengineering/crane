@@ -1,4 +1,4 @@
-# crane 0.4.0.9000
+# crane 0.4.0.9003
 
 * `add_forest()` gains `row_height` and `table_width` arguments. Every body row now has an exact height and the forest plot is drawn at those heights as one picture, so each CI lines up with its vertically centered row text and the reference lines are continuous in Word, PDF and HTML. `table_width` takes a citril page size (`"L6"` to `"L10"`, `"P6"` to `"P10"`) or a width in inches and fits the columns to it, so the table no longer runs past the page margin. The mean-estimate line is now dotted. (#270)
 
@@ -13,6 +13,14 @@
 * `add_forest()` no longer supports `table_engine = "gt"`, as crane renders tables with flextable. Passing `"gt"` now errors with a deprecation message; the `table_engine` argument is retained and accepts `"flextable"` only. (#271)
 
 # crane 0.4.0
+
+* Added `gg_pkc_boxplot()` to plot Pharmacokinetic concentrations as box plots, with a selectable whisker method (`"percentile"`, `"tukey"`, or `"minmax"`), outlier detection, and an optional mean marker. (#322)
+
+* `gg_pkc_lineplot()` now adds a single x scale instead of two, so it no longer reports "Scale for x is already present" on every call with a numeric `time_var`. The `expand` setting that the discarded scale carried is now applied. (#322)
+
+* `gg_pkc_lineplot()` gains an `x_breaks` argument to set the breaks of a numeric x-axis, for time ranges too wide to label every timepoint. The default `NULL` keeps a break on every observed timepoint. (#322)
+
+* `gg_pkc_lineplot()` and `gg_lineplot()` gain an `errorbar_width` argument to set the width of the error bar caps, previously fixed at `0.45`. (#322)
 
 * `modify_split_caption()` now errors when given a table that was never split, instead of silently returning it unchanged. A plain table has no split level to build a subtitle from; the message points at `split_by_rows = list(variable_level = ...)`. Pages of a row-number split are still skipped silently, as before. (#318)
 

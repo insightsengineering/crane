@@ -13,7 +13,8 @@ gg_lineplot(
   variability = c("ci", "sd", "se", "iqr", "none"),
   conf_level = 0.95,
   show_n = FALSE,
-  jitter = 0
+  jitter = 0,
+  errorbar_width = 0.45
 )
 }
 \arguments{
@@ -47,6 +48,10 @@ When \code{TRUE}, append the group size to each legend key (e.g.
 Horizontal jitter width applied to points, lines and error bars together
 so they stay aligned. \code{0} (default) disables jittering and uses dodging
 only. A small value such as \code{0.1} helps separate overlapping groups.}
+
+\item{errorbar_width}{(\code{numeric})\cr
+Width of the horizontal caps on the variability error bars. Default is
+\code{0.45}. Set to \code{0} for no caps. Ignored when \code{variability = "none"}.}
 }
 \value{
 A \code{ggplot} object of class \code{crane_gg_line}.
