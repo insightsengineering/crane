@@ -62,6 +62,7 @@ export(style_roche_number)
 export(style_roche_percent)
 export(style_roche_pvalue)
 export(style_roche_ratio)
+export(tbl_ada_summary)
 export(tbl_baseline_chg)
 export(tbl_coxph)
 export(tbl_demographics)
@@ -85,43 +86,33 @@ import(glue)
 import(rlang)
 importFrom(broom,tidy)
 importFrom(cards,ard_tabulate_value)
-importFrom(cowplot,
-  draw_plot,
-  ggdraw,
-  plot_grid
-)
-importFrom(dplyr,
-  "%>%",
-  across,
-  all_of,
-  any_of,
-  contains,
-  ends_with,
-  everything,
-  last_col,
-  matches,
-  mutate,
-  num_range,
-  starts_with,
-  where
-)
-importFrom(gtsummary,
-  add_difference_row,
-  add_overall,
-  filter_hierarchical,
-  sort_hierarchical
-)
+importFrom(cowplot,draw_plot)
+importFrom(cowplot,ggdraw)
+importFrom(cowplot,plot_grid)
+importFrom(dplyr,"%>%")
+importFrom(dplyr,across)
+importFrom(dplyr,all_of)
+importFrom(dplyr,any_of)
+importFrom(dplyr,contains)
+importFrom(dplyr,ends_with)
+importFrom(dplyr,everything)
+importFrom(dplyr,last_col)
+importFrom(dplyr,matches)
+importFrom(dplyr,mutate)
+importFrom(dplyr,num_range)
+importFrom(dplyr,starts_with)
+importFrom(dplyr,where)
+importFrom(gtsummary,add_difference_row)
+importFrom(gtsummary,add_overall)
+importFrom(gtsummary,filter_hierarchical)
+importFrom(gtsummary,sort_hierarchical)
 importFrom(labeling,extended)
 importFrom(rlang,.data)
 importFrom(scales,label_comma)
-importFrom(stats,
-  median,
-  pchisq
-)
-importFrom(survival,
-  Surv,
-  coxph,
-  survdiff
-)
+importFrom(stats,median)
+importFrom(stats,pchisq)
+importFrom(survival,Surv)
+importFrom(survival,coxph)
+importFrom(survival,survdiff)
 importFrom(tidyr,pivot_wider)
 importFrom(utils,tail)
