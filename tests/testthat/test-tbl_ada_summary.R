@@ -67,7 +67,7 @@ test_that("tbl_ada_summary() errors on missing or invalid inputs", {
       by = "TRT",
       null_postbaseline = "Nonexistent Pool"
     ),
-    regexp = "null_postbaseline.*can only contain"
+    regexp = "null_postbaseline.*labels were not found"
   )
 })
 
@@ -164,7 +164,7 @@ test_that("tbl_ada_summary() errors when null_postbaseline matches nothing", {
       by = "TRT",
       null_postbaseline = "Unknown Pool"
     ),
-    regexp = "null_postbaseline.*can only contain"
+    regexp = "null_postbaseline.*labels were not found"
   )
 })
 
