@@ -4,17 +4,18 @@
 #' ADA/NAb data. For multi-arm data, original treatment columns are retained,
 #' optional custom pooled columns are added, and a Total column is always added.
 #'
-#' @param data A data frame containing ADA variables.
+#' @param data A data frame containing ADAT variables.
 #' @param by A single treatment/grouping variable, or `NULL` for an
 #'   unstratified table.
 #' @param pools An optional named list of custom pooled columns. For example,
-#'   `list("Total Dose" = c("High Dose", "Low Dose"))`.
+#'   `list("Xanomeline Dosed" = c("High Dose", "Low Dose"))`.
 #' @param total_label Display label for the Total column.
 #' @param keep_original Whether original treatment columns are retained when
 #'   calculated columns are added.
-#' @param null_postbaseline Character vector of computed-column labels to blank
-#'   in the post-baseline section. Values must be the Total label or a custom
-#'   pool name. Use `NULL` to retain all post-baseline values.
+#' @param null_postbaseline Character vector of displayed column labels to blank
+#'   in the post-baseline section. This can include original treatment columns,
+#'   custom pooled columns, and the Total column. Use `NULL` to retain all
+#'   post-baseline values.
 #' @param baseline_header Header for the baseline section.
 #' @param postbaseline_header Header for the post-baseline section.
 #' @param baseline_label Optional named list of baseline variable labels.
@@ -24,29 +25,28 @@
 #' @return A `tbl_ada_summary` and `gtsummary` object.
 #' @export
 tbl_ada_summary <- function(
-  data,
-  by = NULL,
-  pools = NULL,
-  total_label = "All Patients",
-  keep_original = TRUE,
-  null_postbaseline = NULL,
-  baseline_header = "Baseline Prevalence of NAbs",
-  postbaseline_header = "Incidence of NAbs",
-  baseline_label = list(
-    ADABLPFL = "Baseline evaluable patients for ADA",
-    adaposbl = "Patients with a positive ADA sample at baseline",
-    nabevalbase = "Baseline evaluable patients for NAb",
-    nabposbl = "Patients with a positive NAb sample at baseline",
-    nabnegbl = "Patients with no positive NAb sample at baseline"
-  ),
-  postbaseline_label = list(
-    ADPBLPFL = "Post-baseline evaluable patients for ADA",
-    adastatpos = "Patients positive for ADA",
-    nabpbeval = "Post-baseline evaluable patients for NAb",
-    nabstatpos = "Patients positive for NAb",
-    nabstatneg = "Patients negative for NAb"
-  )
-) {
+    data,
+    by = NULL,
+    pools = NULL,
+    total_label = "All Patients",
+    keep_original = TRUE,
+    null_postbaseline = NULL,
+    baseline_header = "Baseline Prevalence of NAbs",
+    postbaseline_header = "Incidence of NAbs",
+    baseline_label = list(
+      ADABLPFL = "Baseline evaluable patients for ADA",
+      adaposbl = "Patients with a positive ADA sample at baseline",
+      nabevalbase = "Baseline evaluable patients for NAb",
+      nabposbl = "Patients with a positive NAb sample at baseline",
+      nabnegbl = "Patients with no positive NAb sample at baseline"
+    ),
+    postbaseline_label = list(
+      ADPBLPFL = "Post-baseline evaluable patients for ADA",
+      adastatpos = "Patients positive for ADA",
+      nabpbeval = "Post-baseline evaluable patients for NAb",
+      nabstatpos = "Patients positive for NAb",
+      nabstatneg = "Patients negative for NAb"
+    )) {
   set_cli_abort_call()
   check_not_missing(data)
   check_data_frame(data)
@@ -86,7 +86,7 @@ tbl_ada_summary <- function(
   }
 
   if (!is.null(pools) &&
-    (!is.list(pools) || is.null(names(pools)) || any(names(pools) == ""))) {
+      (!is.list(pools) || is.null(names(pools)) || any(names(pools) == ""))) {
     cli::cli_abort(
       "{.arg pools} must be a fully named list or {.code NULL}.",
       call = get_cli_abort_call()
@@ -107,27 +107,10 @@ tbl_ada_summary <- function(
     )
   }
 
-  computed_column_labels <- c(names(pools), total_label)
-
-  unknown_null_columns <- setdiff(
-    null_postbaseline,
-    computed_column_labels
-  )
-
-  if (length(unknown_null_columns) > 0L) {
-    cli::cli_abort(
-      c(
-        "{.arg null_postbaseline} can only contain custom pool names or the Total label.",
-        i = "Unknown label(s): {.val {unknown_null_columns}}."
-      ),
-      call = get_cli_abort_call()
-    )
-  }
-
   tbl_ada_summary_inputs <- as.list(environment())
 
-  # For multi-arm data, always add the Total column and optionally add
-  # study-specific pooled columns, such as "Total Dose".
+  # For multi-arm data, retain the original columns, add custom pooled columns
+  # when supplied, and always add the Total column.
   use_computed_columns <- length(by) == 1L &&
     dplyr::n_distinct(data[[by]], na.rm = TRUE) > 1L
 
@@ -136,11 +119,12 @@ tbl_ada_summary <- function(
     stats::setNames(list("all"), total_label)
   )
 
-  build_section <- function(include,
-                            statistic,
-                            label,
-                            section_header,
-                            indent) {
+  build_section <- function(
+      include,
+      statistic,
+      label,
+      section_header,
+      indent) {
     tbl <- if (use_computed_columns) {
       tbl_with_pools(
         data = data,
@@ -230,8 +214,9 @@ tbl_ada_summary <- function(
     )
   )
 
-  # Blank selected computed columns in the post-baseline section.
-  if (use_computed_columns && length(null_postbaseline) > 0L) {
+  # Blank selected original, pooled, or Total columns in the post-baseline
+  # section. Labels are taken from gtsummary metadata, not stat_* names.
+  if (length(null_postbaseline) > 0L) {
     stat_columns <- names(
       dplyr::select(
         tbl_postbaseline$table_body,
@@ -241,20 +226,34 @@ tbl_ada_summary <- function(
 
     header <- tbl_postbaseline$table_styling$header
 
-    columns_to_blank <- header$column[
-      header$column %in% stat_columns &
-        header$modify_stat_level %in% null_postbaseline
-    ]
+    available_labels <- unique(
+      stats::na.omit(
+        header$modify_stat_level[
+          header$column %in% stat_columns
+        ]
+      )
+    )
 
-    if (length(columns_to_blank) == 0L) {
+    unknown_null_columns <- setdiff(
+      null_postbaseline,
+      available_labels
+    )
+
+    if (length(unknown_null_columns) > 0L) {
       cli::cli_abort(
         c(
-          "No post-baseline statistic columns matched {.arg null_postbaseline}.",
-          i = "Requested label(s): {.val {null_postbaseline}}."
+          "Some {.arg null_postbaseline} labels were not found.",
+          i = "Unknown label(s): {.val {unknown_null_columns}}.",
+          i = "Available label(s): {.val {available_labels}}."
         ),
         call = get_cli_abort_call()
       )
     }
+
+    columns_to_blank <- header$column[
+      header$column %in% stat_columns &
+        header$modify_stat_level %in% null_postbaseline
+    ]
 
     tbl_postbaseline <- gtsummary::modify_table_body(
       tbl_postbaseline,
@@ -262,7 +261,7 @@ tbl_ada_summary <- function(
         .x,
         dplyr::across(
           dplyr::all_of(columns_to_blank),
-          ~NA_character_
+          ~ NA_character_
         )
       )
     )
@@ -273,7 +272,7 @@ tbl_ada_summary <- function(
     quiet = TRUE
   )
 
-  # Insert a blank row between the two sections.
+  # Add a blank row between the baseline and post-baseline sections.
   tbl <- add_blank_rows(
     tbl,
     row_numbers = nrow(tbl_baseline$table_body)
