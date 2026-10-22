@@ -25,22 +25,23 @@ tbl_ada_summary(
 )
 }
 \arguments{
-\item{data}{A data frame containing ADA variables.}
+\item{data}{A data frame containing ADAT variables.}
 
 \item{by}{A single treatment/grouping variable, or \code{NULL} for an
 unstratified table.}
 
 \item{pools}{An optional named list of custom pooled columns. For example,
-\code{list("Total Dose" = c("High Dose", "Low Dose"))}.}
+\code{list("Xanomeline Dosed" = c("High Dose", "Low Dose"))}.}
 
 \item{total_label}{Display label for the Total column.}
 
 \item{keep_original}{Whether original treatment columns are retained when
 calculated columns are added.}
 
-\item{null_postbaseline}{Character vector of computed-column labels to blank
-in the post-baseline section. Values must be the Total label or a custom
-pool name. Use \code{NULL} to retain all post-baseline values.}
+\item{null_postbaseline}{Character vector of displayed column labels to blank
+in the post-baseline section. This can include original treatment columns,
+custom pooled columns, and the Total column. Use \code{NULL} to retain all
+post-baseline values.}
 
 \item{baseline_header}{Header for the baseline section.}
 
