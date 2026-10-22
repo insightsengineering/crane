@@ -2,72 +2,72 @@
 make_adat <- function(arms = c("Drug A", "Drug B"), n_per_arm = 5) {
   n <- length(arms) * n_per_arm
   data.frame(
-    USUBJID     = paste0("S", seq_len(n)),
-    TRT         = rep(arms, each = n_per_arm),
-    ADABLPFL    = c(rep("Y", n - 2), "N", "N"),
-    adaposbl    = c(rep("Y", 3), rep("N", n - 3)),
+    USUBJID = paste0("S", seq_len(n)),
+    TRT = rep(arms, each = n_per_arm),
+    ADABLPFL = c(rep("Y", n - 2), "N", "N"),
+    adaposbl = c(rep("Y", 3), rep("N", n - 3)),
     nabevalbase = c(rep("Y", n - 1), "N"),
-    nabposbl    = c(rep("Y", 2), rep("N", n - 2)),
-    nabnegbl    = c(rep("N", 2), rep("Y", n - 2)),
-    ADPBLPFL    = c(rep("Y", n - 2), "N", "N"),
-    adastatpos  = c(rep("Y", 3), rep("N", n - 3)),
-    nabpbeval   = c(rep("Y", n - 1), "N"),
-    nabstatpos  = c(rep("Y", 2), rep("N", n - 2)),
-    nabstatneg  = c(rep("N", 2), rep("Y", n - 2)),
+    nabposbl = c(rep("Y", 2), rep("N", n - 2)),
+    nabnegbl = c(rep("N", 2), rep("Y", n - 2)),
+    ADPBLPFL = c(rep("Y", n - 2), "N", "N"),
+    adastatpos = c(rep("Y", 3), rep("N", n - 3)),
+    nabpbeval = c(rep("Y", n - 1), "N"),
+    nabstatpos = c(rep("Y", 2), rep("N", n - 2)),
+    nabstatneg = c(rep("N", 2), rep("Y", n - 2)),
     stringsAsFactors = FALSE
   )
 }
 
-adat_two_arm   <- make_adat()
-adat_one_arm   <- make_adat(arms = "Drug A")
+adat_two_arm <- make_adat()
+adat_one_arm <- make_adat(arms = "Drug A")
 adat_three_arm <- make_adat(arms = c("Drug A", "Drug B", "Drug C"))
 
 
 # --- 1. Input validation ------------------------------------------------------
 test_that("tbl_ada_summary() errors on missing or invalid inputs", {
   # data is not a data frame
-  expect_snapshot(
+  expect_error(
     tbl_ada_summary(data = list(x = 1), by = "TRT"),
-    error = TRUE
+    regexp = "must be class.*data.frame"
   )
 
   # required columns missing
-  expect_snapshot(
+  expect_error(
     tbl_ada_summary(data = data.frame(TRT = "A"), by = "TRT"),
-    error = TRUE
+    regexp = "required columns are missing"
   )
 
   # pools not a fully named list
-  expect_snapshot(
+  expect_error(
     tbl_ada_summary(adat_two_arm, by = "TRT", pools = c("bad")),
-    error = TRUE
+    regexp = "pools.*must be a fully named list"
   )
 
   # total_label duplicates a pool name
-  expect_snapshot(
+  expect_error(
     tbl_ada_summary(
       adat_two_arm,
       by = "TRT",
       pools = list("All Patients" = c("Drug A", "Drug B")),
       total_label = "All Patients"
     ),
-    error = TRUE
+    regexp = "total_label.*must not duplicate"
   )
 
   # null_postbaseline is not a character vector
-  expect_snapshot(
+  expect_error(
     tbl_ada_summary(adat_two_arm, by = "TRT", null_postbaseline = 42L),
-    error = TRUE
+    regexp = "null_postbaseline.*must be a character vector"
   )
 
   # null_postbaseline references an unknown label
-  expect_snapshot(
+  expect_error(
     tbl_ada_summary(
       adat_two_arm,
       by = "TRT",
       null_postbaseline = "Nonexistent Pool"
     ),
-    error = TRUE
+    regexp = "null_postbaseline.*can only contain"
   )
 })
 
@@ -158,18 +158,13 @@ test_that("tbl_ada_summary() blanks specified post-baseline computed columns", {
 })
 
 test_that("tbl_ada_summary() errors when null_postbaseline matches nothing", {
-  # With a single-arm dataset, use_computed_columns is FALSE — the blanking
-  # branch is skipped, so null_postbaseline has no effect and no error fires.
-  # Test the multi-arm path where the label is valid but no column is found.
-  # This is hard to trigger without internals, so verify validation catches
-  # unknown labels before reaching that branch.
-  expect_snapshot(
+  expect_error(
     tbl_ada_summary(
       adat_two_arm,
       by = "TRT",
       null_postbaseline = "Unknown Pool"
     ),
-    error = TRUE
+    regexp = "null_postbaseline.*can only contain"
   )
 })
 
@@ -179,7 +174,7 @@ test_that("tbl_ada_summary() includes both section header rows in table body", {
   tbl <- tbl_ada_summary(
     adat_two_arm,
     by = "TRT",
-    baseline_header    = "Baseline Section",
+    baseline_header = "Baseline Section",
     postbaseline_header = "Post-Baseline Section"
   )
 

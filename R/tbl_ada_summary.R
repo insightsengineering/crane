@@ -24,28 +24,29 @@
 #' @return A `tbl_ada_summary` and `gtsummary` object.
 #' @export
 tbl_ada_summary <- function(
-    data,
-    by = NULL,
-    pools = NULL,
-    total_label = "All Patients",
-    keep_original = TRUE,
-    null_postbaseline = NULL,
-    baseline_header = "Baseline Prevalence of NAbs",
-    postbaseline_header = "Incidence of NAbs",
-    baseline_label = list(
-      ADABLPFL = "Baseline evaluable patients for ADA",
-      adaposbl = "Patients with a positive ADA sample at baseline",
-      nabevalbase = "Baseline evaluable patients for NAb",
-      nabposbl = "Patients with a positive NAb sample at baseline",
-      nabnegbl = "Patients with no positive NAb sample at baseline"
-    ),
-    postbaseline_label = list(
-      ADPBLPFL = "Post-baseline evaluable patients for ADA",
-      adastatpos = "Patients positive for ADA",
-      nabpbeval = "Post-baseline evaluable patients for NAb",
-      nabstatpos = "Patients positive for NAb",
-      nabstatneg = "Patients negative for NAb"
-    )) {
+  data,
+  by = NULL,
+  pools = NULL,
+  total_label = "All Patients",
+  keep_original = TRUE,
+  null_postbaseline = NULL,
+  baseline_header = "Baseline Prevalence of NAbs",
+  postbaseline_header = "Incidence of NAbs",
+  baseline_label = list(
+    ADABLPFL = "Baseline evaluable patients for ADA",
+    adaposbl = "Patients with a positive ADA sample at baseline",
+    nabevalbase = "Baseline evaluable patients for NAb",
+    nabposbl = "Patients with a positive NAb sample at baseline",
+    nabnegbl = "Patients with no positive NAb sample at baseline"
+  ),
+  postbaseline_label = list(
+    ADPBLPFL = "Post-baseline evaluable patients for ADA",
+    adastatpos = "Patients positive for ADA",
+    nabpbeval = "Post-baseline evaluable patients for NAb",
+    nabstatpos = "Patients positive for NAb",
+    nabstatneg = "Patients negative for NAb"
+  )
+) {
   set_cli_abort_call()
   check_not_missing(data)
   check_data_frame(data)
@@ -85,7 +86,7 @@ tbl_ada_summary <- function(
   }
 
   if (!is.null(pools) &&
-      (!is.list(pools) || is.null(names(pools)) || any(names(pools) == ""))) {
+    (!is.list(pools) || is.null(names(pools)) || any(names(pools) == ""))) {
     cli::cli_abort(
       "{.arg pools} must be a fully named list or {.code NULL}.",
       call = get_cli_abort_call()
@@ -135,12 +136,11 @@ tbl_ada_summary <- function(
     stats::setNames(list("all"), total_label)
   )
 
-  build_section <- function(
-      include,
-      statistic,
-      label,
-      section_header,
-      indent) {
+  build_section <- function(include,
+                            statistic,
+                            label,
+                            section_header,
+                            indent) {
     tbl <- if (use_computed_columns) {
       tbl_with_pools(
         data = data,
@@ -262,7 +262,7 @@ tbl_ada_summary <- function(
         .x,
         dplyr::across(
           dplyr::all_of(columns_to_blank),
-          ~ NA_character_
+          ~NA_character_
         )
       )
     )
