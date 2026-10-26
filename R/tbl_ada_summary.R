@@ -1,28 +1,72 @@
-#' Create an ADA summary table
+#' Create an ADA Summary Table
 #'
+#' @description
 #' Creates baseline prevalence and post-baseline incidence sections for
 #' ADA/NAb data. For multi-arm data, original treatment columns are retained,
 #' optional custom pooled columns are added, and a Total column is always added.
 #'
-#' @param data A data frame containing ADAT variables.
-#' @param by A single treatment/grouping variable, or `NULL` for an
-#'   unstratified table.
-#' @param pools An optional named list of custom pooled columns. For example,
+#' @param data (`data.frame`)\cr
+#'   A data frame containing ADAT variables.
+#' @param by (`string` or `NULL`)\cr
+#'   A single treatment/grouping variable, or `NULL` for an unstratified table.
+#' @param pools (`list` or `NULL`)\cr
+#'   An optional named list of custom pooled columns passed to
+#'   [tbl_with_pools()]. For example,
 #'   `list("Xanomeline Dosed" = c("High Dose", "Low Dose"))`.
-#' @param total_label Display label for the Total column.
-#' @param keep_original Whether original treatment columns are retained when
-#'   calculated columns are added.
-#' @param null_postbaseline Character vector of displayed column labels to blank
-#'   in the post-baseline section. This can include original treatment columns,
-#'   custom pooled columns, and the Total column. Use `NULL` to retain all
-#'   post-baseline values.
-#' @param baseline_header Header for the baseline section.
-#' @param postbaseline_header Header for the post-baseline section.
-#' @param baseline_label Optional named list of baseline variable labels.
-#' @param postbaseline_label Optional named list of post-baseline variable
-#'   labels.
+#' @param total_label (`string`)\cr
+#'   Display label for the Total column.
+#' @param keep_original (`logical`)\cr
+#'   Whether original treatment columns are retained when calculated columns
+#'   are added.
+#' @param null_postbaseline (`character` or `NULL`)\cr
+#'   Character vector of displayed column labels to blank in the post-baseline
+#'   section. This can include original treatment columns, custom pooled
+#'   columns, and the Total column. Use `NULL` to retain all post-baseline
+#'   values.
+#' @param baseline_header (`string`)\cr
+#'   Header for the baseline section.
+#' @param postbaseline_header (`string`)\cr
+#'   Header for the post-baseline section.
+#' @param baseline_label (`list` or `NULL`)\cr
+#'   Optional named list of baseline variable labels.
+#' @param postbaseline_label (`list` or `NULL`)\cr
+#'   Optional named list of post-baseline variable labels.
+#' @param add_blank_row (`logical`)\cr
+#'   Whether to insert a blank row between the baseline and post-baseline
+#'   sections. Default is `FALSE`.
 #'
-#' @return A `tbl_ada_summary` and `gtsummary` object.
+#' @returns A `tbl_ada_summary` and `gtsummary` object.
+#'
+#' @examples
+#' # Minimal ADAT-like dataset with three arms
+#' df_adab <- data.frame(
+#'   USUBJID     = paste0("S", 1:15),
+#'   TRT01A      = rep(c("Xanomeline High Dose", "Xanomeline Low Dose", "Placebo"), each = 5),
+#'   ADABLPFL    = c(rep("Y", 13), "N", "N"),
+#'   adaposbl    = c(rep("Y", 4), rep("N", 11)),
+#'   nabevalbase = c(rep("Y", 14), "N"),
+#'   nabposbl    = c(rep("Y", 3), rep("N", 12)),
+#'   nabnegbl    = c(rep("N", 3), rep("Y", 12)),
+#'   ADPBLPFL    = c(rep("Y", 13), "N", "N"),
+#'   adastatpos  = c(rep("Y", 4), rep("N", 11)),
+#'   nabpbeval   = c(rep("Y", 14), "N"),
+#'   nabstatpos  = c(rep("Y", 3), rep("N", 12)),
+#'   nabstatneg  = c(rep("N", 3), rep("Y", 12)),
+#'   stringsAsFactors = FALSE
+#' )
+#'
+#' # Pool the two Xanomeline arms; blank post-baseline for Placebo and All Patients
+#' tbl_ada_summary(
+#'   df_adab,
+#'   by = "TRT01A",
+#'   pools = list("Xanomeline Dosed" = c("Xanomeline High Dose", "Xanomeline Low Dose")),
+#'   total_label = "All Patients",
+#'   null_postbaseline = c("Placebo", "All Patients")
+#' )
+#'
+#' # Unstratified table (no by variable)
+#' tbl_ada_summary(df_adab, by = NULL)
+#'
 #' @export
 tbl_ada_summary <- function(
   data,
@@ -46,7 +90,8 @@ tbl_ada_summary <- function(
     nabpbeval = "Post-baseline evaluable patients for NAb",
     nabstatpos = "Patients positive for NAb",
     nabstatneg = "Patients negative for NAb"
-  )
+  ),
+  add_blank_row = FALSE
 ) {
   set_cli_abort_call()
   check_not_missing(data)
@@ -120,61 +165,12 @@ tbl_ada_summary <- function(
     stats::setNames(list("all"), total_label)
   )
 
-  build_section <- function(include,
-                            statistic,
-                            label,
-                            section_header,
-                            indent) {
-    tbl <- if (use_computed_columns) {
-      tbl_with_pools(
-        data = data,
-        pools = pool_definitions,
-        by = by,
-        keep_original = keep_original,
-        .tbl_fun = tbl_roche_summary,
-        include = dplyr::all_of(include),
-        statistic = statistic,
-        label = label,
-        nonmissing = "no"
-      )
-    } else {
-      tbl_roche_summary(
-        data = data,
-        by = dplyr::any_of(by),
-        include = dplyr::all_of(include),
-        statistic = statistic,
-        label = label,
-        nonmissing = "no"
-      )
-    }
-
-    tbl <- gtsummary::modify_table_body(
-      tbl,
-      ~ tibble::add_row(
-        .x,
-        variable = "header",
-        var_label = section_header,
-        row_type = "label",
-        label = section_header,
-        .before = 1
-      )
-    )
-
-    for (variable in names(indent)) {
-      tbl <- rlang::inject(
-        gtsummary::modify_indent(
-          tbl,
-          columns = "label",
-          rows = .data$variable == !!variable,
-          indent = !!indent[[variable]]
-        )
-      )
-    }
-
-    tbl
-  }
-
-  tbl_baseline <- build_section(
+  tbl_baseline <- .tbl_ada_build_section(
+    data = data,
+    by = by,
+    use_computed_columns = use_computed_columns,
+    pool_definitions = pool_definitions,
+    keep_original = keep_original,
     include = baseline_variables,
     statistic = list(
       ADABLPFL = "{n}",
@@ -185,7 +181,7 @@ tbl_ada_summary <- function(
     ),
     label = baseline_label,
     section_header = baseline_header,
-    indent = c(
+    indent = list(
       ADABLPFL = 4L,
       adaposbl = 4L,
       nabevalbase = 4L,
@@ -194,7 +190,12 @@ tbl_ada_summary <- function(
     )
   )
 
-  tbl_postbaseline <- build_section(
+  tbl_postbaseline <- .tbl_ada_build_section(
+    data = data,
+    by = by,
+    use_computed_columns = use_computed_columns,
+    pool_definitions = pool_definitions,
+    keep_original = keep_original,
     include = postbaseline_variables,
     statistic = list(
       ADPBLPFL = "{n}",
@@ -205,7 +206,7 @@ tbl_ada_summary <- function(
     ),
     label = postbaseline_label,
     section_header = postbaseline_header,
-    indent = c(
+    indent = list(
       ADPBLPFL = 4L,
       adastatpos = 4L,
       nabpbeval = 4L,
@@ -272,11 +273,12 @@ tbl_ada_summary <- function(
     quiet = TRUE
   )
 
-  # Add a blank row between the baseline and post-baseline sections.
-  tbl <- add_blank_rows(
-    tbl,
-    row_numbers = nrow(tbl_baseline$table_body)
-  )
+  if (add_blank_row) {
+    tbl <- add_blank_rows(
+      tbl,
+      row_numbers = nrow(tbl_baseline$table_body)
+    )
+  }
 
   tbl$inputs <- tbl_ada_summary_inputs
   tbl$call_list <- list(tbl_ada_summary = match.call())
@@ -285,4 +287,63 @@ tbl_ada_summary <- function(
     tbl,
     class = c("tbl_ada_summary", class(tbl))
   )
+}
+
+.tbl_ada_build_section <- function(data,
+                                   by,
+                                   use_computed_columns,
+                                   pool_definitions,
+                                   keep_original,
+                                   include,
+                                   statistic,
+                                   label,
+                                   section_header,
+                                   indent) {
+  tbl <- if (use_computed_columns) {
+    tbl_with_pools(
+      data = data,
+      pools = pool_definitions,
+      by = by,
+      keep_original = keep_original,
+      .tbl_fun = tbl_roche_summary,
+      include = dplyr::all_of(include),
+      statistic = statistic,
+      label = label,
+      nonmissing = "no"
+    )
+  } else {
+    tbl_roche_summary(
+      data = data,
+      by = dplyr::any_of(by),
+      include = dplyr::all_of(include),
+      statistic = statistic,
+      label = label,
+      nonmissing = "no"
+    )
+  }
+
+  tbl <- gtsummary::modify_table_body(
+    tbl,
+    ~ tibble::add_row(
+      .x,
+      variable = "header",
+      var_label = section_header,
+      row_type = "label",
+      label = section_header,
+      .before = 1
+    )
+  )
+
+  for (variable in names(indent)) {
+    tbl <- rlang::inject(
+      gtsummary::modify_indent(
+        tbl,
+        columns = "label",
+        rows = .data$variable == !!variable,
+        indent = !!indent[[variable]]
+      )
+    )
+  }
+
+  tbl
 }

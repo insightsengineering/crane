@@ -20,23 +20,22 @@
       14 Patients with no positive NAb sample at baseline              <NA>              <NA>                     <NA>
       15                                                N                 2                 0                        2
       16                                                Y                 3                 5                        8
-      17                                             <NA>              <NA>              <NA>                     <NA>
-      18                                Incidence of NAbs              <NA>              <NA>                     <NA>
-      19         Post-baseline evaluable patients for ADA              <NA>              <NA>                     <NA>
-      20                                                N                 0                 2                        2
-      21                                                Y                 5                 3                        8
-      22                        Patients positive for ADA              <NA>              <NA>                     <NA>
-      23                                                N                 2                 5                        7
-      24                                                Y                 3                 0                        3
-      25         Post-baseline evaluable patients for NAb              <NA>              <NA>                     <NA>
-      26                                                N                 0                 1                        1
-      27                                                Y                 5                 4                        9
-      28                        Patients positive for NAb              <NA>              <NA>                     <NA>
-      29                                                N         3 (60.0%)          5 (100%)                8 (80.0%)
-      30                                                Y         2 (40.0%)                 0                2 (20.0%)
-      31                        Patients negative for NAb              <NA>              <NA>                     <NA>
-      32                                                N                 2                 0                        2
-      33                                                Y                 3                 5                        8
+      17                                Incidence of NAbs              <NA>              <NA>                     <NA>
+      18         Post-baseline evaluable patients for ADA              <NA>              <NA>                     <NA>
+      19                                                N                 0                 2                        2
+      20                                                Y                 5                 3                        8
+      21                        Patients positive for ADA              <NA>              <NA>                     <NA>
+      22                                                N                 2                 5                        7
+      23                                                Y                 3                 0                        3
+      24         Post-baseline evaluable patients for NAb              <NA>              <NA>                     <NA>
+      25                                                N                 0                 1                        1
+      26                                                Y                 5                 4                        9
+      27                        Patients positive for NAb              <NA>              <NA>                     <NA>
+      28                                                N         3 (60.0%)          5 (100%)                8 (80.0%)
+      29                                                Y         2 (40.0%)                 0                2 (20.0%)
+      30                        Patients negative for NAb              <NA>              <NA>                     <NA>
+      31                                                N                 2                 0                        2
+      32                                                Y                 3                 5                        8
 
 # tbl_ada_summary() snapshot: unstratified
 
@@ -60,21 +59,20 @@
       14 Patients with no positive NAb sample at baseline                <NA>
       15                                                N                   2
       16                                                Y                   8
-      17                                             <NA>                <NA>
-      18                                Incidence of NAbs                <NA>
-      19         Post-baseline evaluable patients for ADA                <NA>
-      20                                                N                   2
-      21                                                Y                   8
-      22                        Patients positive for ADA                <NA>
-      23                                                N                   7
-      24                                                Y                   3
-      25         Post-baseline evaluable patients for NAb                <NA>
-      26                                                N                   1
-      27                                                Y                   9
-      28                        Patients positive for NAb                <NA>
-      29                                                N           8 (80.0%)
-      30                                                Y           2 (20.0%)
-      31                        Patients negative for NAb                <NA>
-      32                                                N                   2
-      33                                                Y                   8
+      17                                Incidence of NAbs                <NA>
+      18         Post-baseline evaluable patients for ADA                <NA>
+      19                                                N                   2
+      20                                                Y                   8
+      21                        Patients positive for ADA                <NA>
+      22                                                N                   7
+      23                                                Y                   3
+      24         Post-baseline evaluable patients for NAb                <NA>
+      25                                                N                   1
+      26                                                Y                   9
+      27                        Patients positive for NAb                <NA>
+      28                                                N           8 (80.0%)
+      29                                                Y           2 (20.0%)
+      30                        Patients negative for NAb                <NA>
+      31                                                N                   2
+      32                                                Y                   8
 
