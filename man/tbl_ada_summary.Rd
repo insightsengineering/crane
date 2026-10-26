@@ -77,18 +77,18 @@ optional custom pooled columns are added, and a Total column is always added.
 \examples{
 # Minimal ADAT-like dataset with three arms
 df_adab <- data.frame(
-  USUBJID     = paste0("S", 1:15),
-  TRT01A      = rep(c("Xanomeline High Dose", "Xanomeline Low Dose", "Placebo"), each = 5),
-  ADABLPFL    = c(rep("Y", 13), "N", "N"),
-  adaposbl    = c(rep("Y", 4), rep("N", 11)),
+  USUBJID = paste0("S", 1:15),
+  TRT01A = rep(c("Xanomeline High Dose", "Xanomeline Low Dose", "Placebo"), each = 5),
+  ADABLPFL = c(rep("Y", 13), "N", "N"),
+  adaposbl = c(rep("Y", 4), rep("N", 11)),
   nabevalbase = c(rep("Y", 14), "N"),
-  nabposbl    = c(rep("Y", 3), rep("N", 12)),
-  nabnegbl    = c(rep("N", 3), rep("Y", 12)),
-  ADPBLPFL    = c(rep("Y", 13), "N", "N"),
-  adastatpos  = c(rep("Y", 4), rep("N", 11)),
-  nabpbeval   = c(rep("Y", 14), "N"),
-  nabstatpos  = c(rep("Y", 3), rep("N", 12)),
-  nabstatneg  = c(rep("N", 3), rep("Y", 12)),
+  nabposbl = c(rep("Y", 3), rep("N", 12)),
+  nabnegbl = c(rep("N", 3), rep("Y", 12)),
+  ADPBLPFL = c(rep("Y", 13), "N", "N"),
+  adastatpos = c(rep("Y", 4), rep("N", 11)),
+  nabpbeval = c(rep("Y", 14), "N"),
+  nabstatpos = c(rep("Y", 3), rep("N", 12)),
+  nabstatneg = c(rep("N", 3), rep("Y", 12)),
   stringsAsFactors = FALSE
 )
 
