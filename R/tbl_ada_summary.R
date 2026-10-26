@@ -39,9 +39,9 @@
 #'
 #' @examples
 #' # Minimal ADAT-like dataset with three arms
-#' df_adab <- data.frame(
+#' df <- data.frame(
 #'   USUBJID = paste0("S", 1:15),
-#'   TRT01A = rep(c("Xanomeline High Dose", "Xanomeline Low Dose", "Placebo"), each = 5),
+#'   TRT = rep(c("Drug A", "Drug B", "Placebo"), each = 5),
 #'   ADABLPFL = c(rep("Y", 13), "N", "N"),
 #'   adaposbl = c(rep("Y", 4), rep("N", 11)),
 #'   nabevalbase = c(rep("Y", 14), "N"),
@@ -55,17 +55,17 @@
 #'   stringsAsFactors = FALSE
 #' )
 #'
-#' # Pool the two Xanomeline arms; blank post-baseline for Placebo and All Patients
+#' # Pool two active arms; blank post-baseline for Placebo and All Patients
 #' tbl_ada_summary(
-#'   df_adab,
-#'   by = "TRT01A",
-#'   pools = list("Xanomeline Dosed" = c("Xanomeline High Dose", "Xanomeline Low Dose")),
+#'   df,
+#'   by = "TRT",
+#'   pools = list("Drug A+B" = c("Drug A", "Drug B")),
 #'   total_label = "All Patients",
 #'   null_postbaseline = c("Placebo", "All Patients")
 #' )
 #'
 #' # Unstratified table (no by variable)
-#' tbl_ada_summary(df_adab, by = NULL)
+#' tbl_ada_summary(df, by = NULL)
 #'
 #' @export
 tbl_ada_summary <- function(
