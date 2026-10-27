@@ -103,4 +103,5 @@ tbl_ada_summary(
 
 # Unstratified table (no by variable)
 tbl_ada_summary(df, by = NULL)
+
 }
