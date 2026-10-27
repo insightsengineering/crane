@@ -1,5 +1,7 @@
 # crane 0.4.0.9004
 
+* Added `simplify_ard()` to flatten the ARD of a table, including stratified, stacked and split tables, into one ARD with the strata as group columns, ready for `cards::compare_ard()`. (#325)
+
 # crane 0.4.0
 
 * Added `gg_pkc_boxplot()` to plot Pharmacokinetic concentrations as box plots, with a selectable whisker method (`"percentile"`, `"tukey"`, or `"minmax"`), outlier detection, and an optional mean marker. (#322)
