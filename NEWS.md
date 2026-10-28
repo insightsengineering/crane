@@ -1,5 +1,17 @@
 # crane 0.4.0.9004
 
+* `add_forest()` gains `row_height` and `table_width` arguments. Every body row now has an exact height and the forest plot is drawn at those heights as one picture, so each CI lines up with its vertically centered row text and the reference lines are continuous in Word, PDF and HTML. `table_width` takes a citril page size (`"L6"` to `"L10"`, `"P6"` to `"P10"`) or a width in inches and fits the columns to it, so the table no longer runs past the page margin. The mean-estimate line is now dotted. (#270)
+
+* `add_forest()` now warns once per session when `{magick}` is not installed. The forest plots are embedded with `flextable::gg_chunk()`, and `{flextable}` needs `{magick}` to read those images back when drawing the table for PDF, PNG, or SVG export; without it the forest plot column was silently left blank. Word, RTF, and HTML output are unaffected. (#270)
+
+* `add_forest()` now removes the horizontal padding of the forest-plot column in flextable output, so the fixed-width plot fits its cell exactly. (#270)
+
+* `add_forest()` now draws the forest-plot column header as a plot on the same scale as the plots themselves. Both treatment labels are wrapped to the same width, centered either side of the reference line at 1, and bottom-aligned with the other column labels, instead of being positioned with spacer characters. The `header_spaces` argument is deprecated and has no effect. (#270)
+
+* `add_forest()` no longer gives the forest-plot pictures a zero line spacing, which Word ignores but LibreOffice and other viewers apply, hiding the plots. The picture paragraphs now take single spacing from the Word template's "header" style instead. (#270)
+
+* `add_forest()` no longer supports `table_engine = "gt"`, as crane renders tables with flextable. Passing `"gt"` now errors with a deprecation message; the `table_engine` argument is retained and accepts `"flextable"` only. (#271)
+
 # crane 0.4.0
 
 * Added `gg_pkc_boxplot()` to plot Pharmacokinetic concentrations as box plots, with a selectable whisker method (`"percentile"`, `"tukey"`, or `"minmax"`), outlier detection, and an optional mean marker. (#322)
