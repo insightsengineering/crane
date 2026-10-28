@@ -4,6 +4,10 @@
 #' analysis. It displays adjusted means (change from baseline)
 #' along with either 95% Confidence Intervals (CI) or Standard Errors (SE) over time.
 #'
+#' The estimates are plotted with their own sign. To draw the y-axis from high to low
+#' values (e.g. for an endpoint where a decrease is an improvement), add
+#' `ggplot2::scale_y_reverse()` to the returned plot.
+#'
 #' @param mmrm_df (`data.frame`)\cr
 #'   A tidy data frame containing the MMRM results. Usually the output of [get_mmrm_results()].
 #' @param arm (`string`)\cr
@@ -29,11 +33,12 @@
 #' library(mmrm)
 #' fv_dt <- mmrm::fev_data |>
 #'   dplyr::mutate(
-#'     ARMCD = factor(ARMCD)
+#'     ARMCD = factor(ARMCD),
+#'     FEV1_CHG = FEV1 - FEV1_BL
 #'   )
-#' # Fit an MMRM model using the FEV data
+#' # Fit an MMRM model on the change from baseline in FEV1
 #' fit_mmrm <- mmrm::mmrm(
-#'   formula = FEV1 ~ RACE + SEX + ARMCD * AVISIT + us(AVISIT | USUBJID),
+#'   formula = FEV1_CHG ~ FEV1_BL + RACE + SEX + ARMCD * AVISIT + us(AVISIT | USUBJID),
 #'   data = fv_dt
 #' )
 #' mmrm_results <- get_mmrm_results(fit_mmrm, arm = "ARMCD", visit = "AVISIT", conf_level = 0.95)
@@ -49,6 +54,9 @@
 #' )
 #'
 #' print(my_plot)
+#'
+#' # Reverse the y-axis, e.g. for an endpoint where a decrease is an improvement
+#' my_plot + ggplot2::scale_y_reverse()
 #'
 #' @importFrom rlang .data
 #' @export
@@ -124,23 +132,21 @@ gg_mmrm_lineplot <- function(mmrm_df,
     )
 
   # 3. Calculate plotting bounds based on SE or CI preference
-  # Safely check if the overall post-baseline trend is negative
-  is_negative_trend <- mean(plot_df$est[plot_df$Visit != "Baseline"], na.rm = TRUE) < 0
-
+  # Estimates keep their sign, as only the endpoint tells whether lower values are better
   if (error_bar == "se") {
     plot_df <- plot_df |>
       dplyr::mutate(
-        plot_y = if (!is_negative_trend) -.data$est else .data$est,
-        ymin   = if (!is_negative_trend) -.data$est - .data$se else .data$est - .data$se,
-        ymax   = if (!is_negative_trend) -.data$est + .data$se else .data$est + .data$se
+        plot_y = .data$est,
+        ymin = .data$est - .data$se,
+        ymax = .data$est + .data$se
       )
     y_label <- "Mean (\u00B1 SE) Change from Baseline"
   } else if (error_bar == "ci") {
     plot_df <- plot_df |>
       dplyr::mutate(
-        plot_y = if (!is_negative_trend) -.data$est else .data$est,
-        ymin   = if (!is_negative_trend) -.data$ucl else .data$lcl,
-        ymax   = if (!is_negative_trend) -.data$lcl else .data$ucl
+        plot_y = .data$est,
+        ymin = .data$lcl,
+        ymax = .data$ucl
       )
     y_label <- "Mean (\u00B1 95% CI) Change from Baseline"
   }
