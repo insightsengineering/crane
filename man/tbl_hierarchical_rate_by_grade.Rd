@@ -26,7 +26,7 @@ tbl_hierarchical_rate_by_grade(
 \method{add_overall}{tbl_hierarchical_rate_by_grade}(
   x,
   last = FALSE,
-  col_label = "**Overall**  \\nN = {style_number(N)}",
+  col_label = "All Participants  \\n(N = {style_roche_number(N)})",
   statistic = NULL,
   digits = NULL,
   ...
@@ -121,7 +121,8 @@ Logical indicator to display overall column last in table.
 Default is \code{FALSE}, which will display overall column first.}
 
 \item{col_label}{(\code{string})\cr
-String indicating the column label. Default is \code{"**Overall**  \nN = {style_number(N)}"}}
+String indicating the column label for overall column.
+Default is \code{"All Participants  \\n(N = {style_roche_number(N)})"}.}
 
 \item{...}{These dots are for future extensions and must be empty.}
 }
