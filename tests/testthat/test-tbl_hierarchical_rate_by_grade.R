@@ -144,6 +144,30 @@ test_that("tbl_hierarchical_rate_by_grade() works with add_overall()", {
   )
 })
 
+test_that("tbl_hierarchical_rate_by_grade() add_overall() label does not need the Roche theme (#333)", {
+  # setup-theme.R sets theme_gtsummary_roche() for every test, remove it here
+  gtsummary::reset_gtsummary_theme()
+  withr::defer(suppressMessages(theme_gtsummary_roche()))
+
+  tbl <-
+    tbl_hierarchical_rate_by_grade(
+      ADAE_subset,
+      variables = c(AEBODSYS, AEDECOD, AETOXGR),
+      denominator = ADSL,
+      by = TRTA,
+      label = label,
+      grade_groups = grade_groups
+    ) |>
+    add_overall()
+
+  expect_equal(
+    tbl$table_styling$header |>
+      dplyr::filter(column == "stat_0") |>
+      dplyr::pull(label),
+    "All Participants  \n(N = 254)"
+  )
+})
+
 test_that("tbl_hierarchical_rate_by_grade(sort) works", {
   # default "alphanumeric" sort
   expect_no_error(

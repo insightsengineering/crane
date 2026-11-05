@@ -1,5 +1,9 @@
 # crane 0.4.0.9004
 
+* `add_overall()` on a `tbl_hierarchical_rate_by_grade()` table now labels the overall column `"All Participants  \n(N = {style_roche_number(N)})"` by default, as the other crane `add_overall()` methods do, instead of the gtsummary `"**Overall**"` default. (#333)
+
+* `add_grade_column()` now keeps the overall column label set by `add_overall()`, instead of resetting it to `"Overall"`. (#333)
+
 # crane 0.4.0
 
 * Added `gg_pkc_boxplot()` to plot Pharmacokinetic concentrations as box plots, with a selectable whisker method (`"percentile"`, `"tukey"`, or `"minmax"`), outlier detection, and an optional mean marker. (#322)
