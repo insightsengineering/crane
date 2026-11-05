@@ -28,8 +28,8 @@
 ---
 
     Code
-      simplify_ard(list(), .unlist = "yes")
+      simplify_ard(list(), .deduplicate = "yes")
     Condition
       Error in `simplify_ard()`:
-      ! The `.unlist` argument must be a scalar with class <logical>, not a string.
+      ! The `.deduplicate` argument must be a scalar with class <logical>, not a string.
 

@@ -4,7 +4,7 @@
 \alias{simplify_ard}
 \title{Simplify the ARD of a table}
 \usage{
-simplify_ard(x, .deduplicate = TRUE, .unlist = FALSE)
+simplify_ard(x, .deduplicate = TRUE)
 }
 \arguments{
 \item{x}{(\code{gtsummary}, \code{tbl_split} or \code{list})\cr
@@ -16,16 +16,10 @@ whether to remove duplicated statistics. Repeated copies of a whole ARD
 (e.g. from split tables) are removed with a message. Rows shared by several
 ARDs (e.g. variable attributes repeated by \code{add_overall()}) are removed
 silently. Default is \code{TRUE}.}
-
-\item{.unlist}{(scalar \code{logical})\cr
-whether to return the ARD with atomic columns, see
-\code{\link[cards:unlist_ard_columns]{cards::unlist_ard_columns()}}. Useful with comparison tools that do not
-handle list columns. Default is \code{FALSE}.}
 }
 \value{
-A \code{card_simplified} object (a \code{card}), or a \code{card_simplified}
-\code{card_unlisted} data frame when \code{.unlist = TRUE}. Calling \code{simplify_ard()}
-on its own output returns it unchanged. The same statistic (same groups,
+A \code{card_simplified} object (a \code{card}). Calling \code{simplify_ard()} on
+its own output returns it unchanged. The same statistic (same groups,
 variables, \code{context} and \code{stat_name}) with different values in two places
 of the table is an error.
 }
@@ -35,10 +29,16 @@ Flattens the Analysis Results Data (ARD) of a table into a single ARD.
 Stacked and stratified tables (e.g. from \code{\link[gtsummary:tbl_strata]{gtsummary::tbl_strata()}} or
 \code{\link[gtsummary:tbl_strata_nested_stack]{gtsummary::tbl_strata_nested_stack()}}) return one ARD per stratum from
 \code{\link[gtsummary:gather_ard]{gtsummary::gather_ard()}}, with the stratum recorded only in the list names.
-\code{simplify_ard()} adds each stratum as a group column, following the
-convention of \code{\link[cards:ard_strata]{cards::ard_strata()}}: the groups of the table keep their
-numbers and the strata take the numbers after the highest one, innermost
-stratum first, so a stratum lands in the same column everywhere in the table.
+\code{simplify_ard()} adds each stratum as a group column, numbered as
+\code{\link[cards:ard_strata]{cards::ard_strata()}} does: the groups of the table keep their numbers and
+the strata take the numbers after the highest one, in the order of \code{strata}.
+The strata of a nested call come before those of the call around it, as
+with nested \code{cards::ard_strata()} calls. A stratum lands in the same column
+everywhere in the table.
+
+The strata levels of \code{\link[gtsummary:tbl_strata]{gtsummary::tbl_strata()}} tables keep their type (e.g.
+factor or numeric). \code{\link[gtsummary:tbl_strata_nested_stack]{gtsummary::tbl_strata_nested_stack()}} tables and lists
+of ARDs keep the levels only as text, so there they are character.
 
 Stacked tables without strata whose pieces report the same statistics (e.g.
 \code{\link[gtsummary:tbl_stack]{gtsummary::tbl_stack()}} of the same variables on two subsets) are told
@@ -58,11 +58,20 @@ Statistics are identified by their groups, variables, \code{context} and
 the same name for the same rows, e.g. subject and event counts in
 \code{\link[=tbl_hierarchical_rate_and_count]{tbl_hierarchical_rate_and_count()}}. Pass the same keys to
 \code{\link[cards:compare_ard]{cards::compare_ard()}}, as column names (cards 0.9.0 does not accept a
-selection of columns there):
+selection of columns there). With \code{ard_tbl} and \code{ard_qc} from the last
+example:
 
-\if{html}{\out{<div class="sourceCode r">}}\preformatted{keys <- names(dplyr::select(y, cards::all_ard_groups(), cards::all_ard_variables(), "context", "stat_name"))
-cards::compare_ard(x, y, keys = keys, columns = c("stat_label", "stat"))
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{keys <- names(dplyr::select(
+  ard_qc,
+  cards::all_ard_groups(), cards::all_ard_variables(), "context", "stat_name"
+))
+cards::compare_ard(ard_tbl, ard_qc, keys = keys, columns = c("stat_label", "stat"))
 }\if{html}{\out{</div>}}
+
+Tools that need atomic columns (e.g. \code{diffdf::diffdf()}) compare the
+statistics: filter them first, then use \code{\link[cards:unlist_ard_columns]{cards::unlist_ard_columns()}}. The
+\code{"attributes"} rows hold text and sometimes several values (e.g. the levels
+of a factor), so with them \code{stat} stays a list or turns into character.
 }
 \examples{
 adlb <- cards::ADLB |>
@@ -90,8 +99,10 @@ tbl <- gtsummary::tbl_strata(
 # PARAM becomes group2, next to the treatment in group1
 simplify_ard(tbl)
 
-# atomic columns, e.g. for diffdf
-simplify_ard(tbl, .unlist = TRUE)
+# atomic columns, e.g. for diffdf: keep the statistics, then unlist
+simplify_ard(tbl) |>
+  dplyr::filter(context == "summary") |>
+  cards::unlist_ard_columns()
 
 # the same statistics built with cards only, e.g. by an independent QC program
 adlb_wk2 <- dplyr::filter(adlb, AVISIT == "Week 2")

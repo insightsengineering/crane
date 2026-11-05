@@ -6,10 +6,16 @@
 #' Stacked and stratified tables (e.g. from [gtsummary::tbl_strata()] or
 #' [gtsummary::tbl_strata_nested_stack()]) return one ARD per stratum from
 #' [gtsummary::gather_ard()], with the stratum recorded only in the list names.
-#' `simplify_ard()` adds each stratum as a group column, following the
-#' convention of [cards::ard_strata()]: the groups of the table keep their
-#' numbers and the strata take the numbers after the highest one, innermost
-#' stratum first, so a stratum lands in the same column everywhere in the table.
+#' `simplify_ard()` adds each stratum as a group column, numbered as
+#' [cards::ard_strata()] does: the groups of the table keep their numbers and
+#' the strata take the numbers after the highest one, in the order of `strata`.
+#' The strata of a nested call come before those of the call around it, as
+#' with nested `cards::ard_strata()` calls. A stratum lands in the same column
+#' everywhere in the table.
+#'
+#' The strata levels of [gtsummary::tbl_strata()] tables keep their type (e.g.
+#' factor or numeric). [gtsummary::tbl_strata_nested_stack()] tables and lists
+#' of ARDs keep the levels only as text, so there they are character.
 #'
 #' Stacked tables without strata whose pieces report the same statistics (e.g.
 #' [gtsummary::tbl_stack()] of the same variables on two subsets) are told
@@ -31,14 +37,9 @@
 #'   (e.g. from split tables) are removed with a message. Rows shared by several
 #'   ARDs (e.g. variable attributes repeated by `add_overall()`) are removed
 #'   silently. Default is `TRUE`.
-#' @param .unlist (scalar `logical`)\cr
-#'   whether to return the ARD with atomic columns, see
-#'   [cards::unlist_ard_columns()]. Useful with comparison tools that do not
-#'   handle list columns. Default is `FALSE`.
 #'
-#' @returns A `card_simplified` object (a `card`), or a `card_simplified`
-#'   `card_unlisted` data frame when `.unlist = TRUE`. Calling `simplify_ard()`
-#'   on its own output returns it unchanged. The same statistic (same groups,
+#' @returns A `card_simplified` object (a `card`). Calling `simplify_ard()` on
+#'   its own output returns it unchanged. The same statistic (same groups,
 #'   variables, `context` and `stat_name`) with different values in two places
 #'   of the table is an error.
 #'
@@ -48,12 +49,21 @@
 #' the same name for the same rows, e.g. subject and event counts in
 #' [tbl_hierarchical_rate_and_count()]. Pass the same keys to
 #' [cards::compare_ard()], as column names (cards 0.9.0 does not accept a
-#' selection of columns there):
+#' selection of columns there). With `ard_tbl` and `ard_qc` from the last
+#' example:
 #'
 #' ```r
-#' keys <- names(dplyr::select(y, cards::all_ard_groups(), cards::all_ard_variables(), "context", "stat_name"))
-#' cards::compare_ard(x, y, keys = keys, columns = c("stat_label", "stat"))
+#' keys <- names(dplyr::select(
+#'   ard_qc,
+#'   cards::all_ard_groups(), cards::all_ard_variables(), "context", "stat_name"
+#' ))
+#' cards::compare_ard(ard_tbl, ard_qc, keys = keys, columns = c("stat_label", "stat"))
 #' ```
+#'
+#' Tools that need atomic columns (e.g. `diffdf::diffdf()`) compare the
+#' statistics: filter them first, then use [cards::unlist_ard_columns()]. The
+#' `"attributes"` rows hold text and sometimes several values (e.g. the levels
+#' of a factor), so with them `stat` stays a list or turns into character.
 #'
 #' @examples
 #' adlb <- cards::ADLB |>
@@ -81,8 +91,10 @@
 #' # PARAM becomes group2, next to the treatment in group1
 #' simplify_ard(tbl)
 #'
-#' # atomic columns, e.g. for diffdf
-#' simplify_ard(tbl, .unlist = TRUE)
+#' # atomic columns, e.g. for diffdf: keep the statistics, then unlist
+#' simplify_ard(tbl) |>
+#'   dplyr::filter(context == "summary") |>
+#'   cards::unlist_ard_columns()
 #'
 #' # the same statistics built with cards only, e.g. by an independent QC program
 #' adlb_wk2 <- dplyr::filter(adlb, AVISIT == "Week 2")
@@ -116,15 +128,11 @@
 #' cards::compare_ard(ard_tbl, ard_qc, keys = keys, columns = c("stat_label", "stat")) |>
 #'   cards::is_ard_equal()
 #' @export
-simplify_ard <- function(x, .deduplicate = TRUE, .unlist = FALSE) {
+simplify_ard <- function(x, .deduplicate = TRUE) {
   set_cli_abort_call()
   check_not_missing(x)
   check_scalar_logical(.deduplicate)
-  check_scalar_logical(.unlist)
   if (inherits(x, "card_simplified")) {
-    if (isTRUE(.unlist) && !inherits(x, "card_unlisted")) {
-      return(.as_card_simplified(cards::unlist_ard_columns(x)))
-    }
     return(x)
   }
   if (!is.list(x)) {
@@ -139,19 +147,15 @@ simplify_ard <- function(x, .deduplicate = TRUE, .unlist = FALSE) {
   if (isTRUE(.deduplicate)) {
     leaves <- .drop_ard_copies(leaves)
   }
-  ard <- .add_strata_columns(leaves) |>
+  .add_strata_columns(leaves) |>
     .bind_ards() |>
-    .check_ard_duplicates(deduplicate = .deduplicate)
-
-  if (isTRUE(.unlist)) {
-    ard <- cards::unlist_ard_columns(ard)
-  }
-  .as_card_simplified(ard)
+    .check_ard_duplicates(deduplicate = .deduplicate) |>
+    .as_card_simplified()
 }
 
 #' Add the `card_simplified` class
 #'
-#' @param x (`card` or `card_unlisted`)\cr
+#' @param x (`card`)\cr
 #'   output of `simplify_ard()`.
 #'
 #' @returns `x` with class `card_simplified` first.
@@ -171,8 +175,8 @@ simplify_ard <- function(x, .deduplicate = TRUE, .unlist = FALSE) {
 #' @param x (`gtsummary`, `list`, `data.frame` or `NULL`)\cr
 #'   object to walk.
 #'
-#' @returns A list of leaves, each `list(ard, variables, levels)` with the
-#'   strata innermost first.
+#' @returns A list of leaves, each `list(ard, variables, levels)`, with the
+#'   strata of inner calls first and those of each call in their order.
 #' @keywords internal
 #' @noRd
 .collect_ards <- function(x) {
@@ -212,8 +216,8 @@ simplify_ard <- function(x, .deduplicate = TRUE, .unlist = FALSE) {
 #' @param elements (`list`)\cr
 #'   tables or ARDs of a stacked table, or any list to flatten.
 #' @param strata (`data.frame` or `NULL`)\cr
-#'   one row per element, one column per stratum (outermost first), as
-#'   returned by `.parse_strata_ids()`.
+#'   one row per element, one column per stratum in the order of `strata`, as
+#'   returned by `.table_strata()` or `.parse_strata_ids()`.
 #'
 #' @returns A list of leaves (see `.collect_ards()`). Elements without strata
 #'   that report the same statistic with different values are told apart by a
@@ -235,13 +239,13 @@ simplify_ard <- function(x, .deduplicate = TRUE, .unlist = FALSE) {
   }
 
   if (!is.null(strata)) {
-    strata_vars <- rev(names(strata)) # innermost stratum first
+    # the strata of this call come after those of the calls inside it
     leaves_by_element <- Map(
       \(leaves, i) {
-        levels <- rev(as.list(strata[i, , drop = FALSE]))
+        levels <- unname(as.list(strata[i, , drop = FALSE]))
         lapply(leaves, \(leaf) {
-          leaf$variables <- c(leaf$variables, strata_vars)
-          leaf$levels <- c(leaf$levels, unname(levels))
+          leaf$variables <- c(leaf$variables, names(strata))
+          leaf$levels <- c(leaf$levels, levels)
           leaf
         })
       },
@@ -270,8 +274,8 @@ simplify_ard <- function(x, .deduplicate = TRUE, .unlist = FALSE) {
 #' Turn the strata of leaves into group columns
 #'
 #' Each stratum variable gets one column for the whole table, after the highest
-#' group of all ARDs, innermost first. Rows outside a stratum leave its column
-#' empty, so a stratum is in the same column for every row.
+#' group of all ARDs, in the order of `.strata_order()`. Rows outside a stratum
+#' leave its column empty, so a stratum is in the same column for every row.
 #'
 #' @param leaves (`list`)\cr
 #'   leaves (see `.collect_ards()`).
@@ -292,13 +296,13 @@ simplify_ard <- function(x, .deduplicate = TRUE, .unlist = FALSE) {
 
 #' Order of the strata variables across leaves
 #'
-#' Merges the strata of all leaves (each innermost first) into one order that
-#' keeps every inner stratum before its outer ones.
+#' Merges the strata of all leaves into one order that keeps the order of the
+#' strata of every leaf.
 #'
 #' @param variables (`list`)\cr
-#'   strata variables of each leaf, innermost first.
+#'   strata variables of each leaf (see `.collect_ards()`).
 #'
-#' @returns A character vector, innermost first.
+#' @returns A character vector.
 #' @keywords internal
 #' @noRd
 .strata_order <- function(variables) {
@@ -306,12 +310,12 @@ simplify_ard <- function(x, .deduplicate = TRUE, .unlist = FALSE) {
   for (vars in variables) {
     for (k in seq_along(vars)) {
       if (vars[k] %in% order) next
-      inner <- intersect(vars[seq_len(k - 1L)], order)
-      outer <- intersect(vars[-seq_len(k)], order)
-      after <- if (!is_empty(inner)) {
-        max(match(inner, order))
-      } else if (!is_empty(outer)) {
-        min(match(outer, order)) - 1L
+      before <- intersect(vars[seq_len(k - 1L)], order)
+      later <- intersect(vars[-seq_len(k)], order)
+      after <- if (!is_empty(before)) {
+        max(match(before, order))
+      } else if (!is_empty(later)) {
+        min(match(later, order)) - 1L
       } else {
         length(order)
       }
@@ -323,40 +327,103 @@ simplify_ard <- function(x, .deduplicate = TRUE, .unlist = FALSE) {
 
 #' Strata of a stacked table
 #'
-#' Strata are read from the names of `x$tbls` (`VAR="level"` pairs, as set by
+#' Strata are read from the names of `x$tbls` (`VAR=level` pairs, as set by
 #' `tbl_strata()` and `tbl_strata_nested_stack()`). `tbl_strata()` also keeps
-#' the unformatted levels in `x$df_strata`, which are used when available.
+#' the levels, with their type, in `x$df_strata`: when it is there, the levels
+#' come from it and the names only give the variables.
 #'
 #' @param x (`tbl_stack` or `tbl_merge`)\cr
 #'   stacked or merged table.
 #'
-#' @returns A data frame (one row per element of `x$tbls`) or `NULL`.
+#' @returns A data frame (one row per element of `x$tbls`, one column per
+#'   stratum in the order of `strata`) or `NULL`.
 #' @keywords internal
 #' @noRd
 .table_strata <- function(x) {
-  strata <- .parse_strata_ids(names(x[["tbls"]]))
+  ids <- names(x[["tbls"]])
   df_strata <- x[["df_strata"]]
-  if (is.null(strata) || is.null(df_strata) || nrow(df_strata) != nrow(strata)) {
-    return(strata)
+  n_strata <- sum(grepl("^strata_[0-9]+$", names(df_strata)))
+  if (is_empty(ids) || n_strata == 0L || nrow(df_strata) != length(ids)) {
+    return(.parse_strata_ids(ids))
   }
 
-  levels <- df_strata[grepl("^strata_[0-9]+$", names(df_strata))]
-  if (ncol(levels) != ncol(strata)) {
-    return(strata)
+  # `strata_<i>` holds the i-th stratum, but the columns follow the order of
+  # the data, so they are selected by name
+  strata_cols <- paste0("strata_", seq_len(n_strata))
+  if (!all(strata_cols %in% names(df_strata))) {
+    return(.parse_strata_ids(ids))
   }
-  levels <- lapply(levels, as.character)
-  names(levels) <- names(strata)
-  as.data.frame(levels, stringsAsFactors = FALSE, optional = TRUE)
+  levels <- as.data.frame(df_strata[strata_cols])
+  variables <- .strata_variables(ids, levels)
+  if (is.null(variables)) {
+    return(.parse_strata_ids(ids))
+  }
+  stats::setNames(levels, variables)
+}
+
+#' Variables of strata ids
+#'
+#' `tbl_strata()` writes each id as `VAR=level` pairs joined by `,`, with the
+#' level formatted by `cli::cli_format()` (character levels are quoted, factor
+#' levels are not). With the levels known, the ids split without ambiguity,
+#' also when a level contains `,` or `=`.
+#'
+#' @param ids (`character`)\cr
+#'   ids of the stacked tables.
+#' @param levels (`data.frame`)\cr
+#'   levels of the strata, one row per id and one column per stratum.
+#'
+#' @returns A character vector, or `NULL` when the ids do not match the levels.
+#' @keywords internal
+#' @noRd
+.strata_variables <- function(ids, levels) {
+  formatted <- lapply(levels, \(x) as.character(cli::cli_format(x)))
+  variables <- lapply(seq_along(ids), \(i) {
+    .split_strata_id(ids[[i]], map_chr(formatted, \(x) x[[i]]))
+  })
+  if (any(map_lgl(variables, is.null)) || !all(map_lgl(variables, identical, variables[[1]]))) {
+    return(NULL)
+  }
+  variables[[1]]
+}
+
+#' Split a strata id
+#'
+#' @param id (scalar `character`)\cr
+#'   an id like `PARAM="Albumin",SEX="F"`.
+#' @param values (`character`)\cr
+#'   the levels of the id as written in it, e.g. `c("\"Albumin\"", "\"F\"")`.
+#'
+#' @returns The variable names, or `NULL` when `id` does not match `values`.
+#' @keywords internal
+#' @noRd
+.split_strata_id <- function(id, values) {
+  variables <- character(length(values))
+  rest <- id
+  for (k in seq_along(values)) {
+    # variable names have no `=`, so the first one ends the name
+    eq <- regexpr("=", rest, fixed = TRUE)
+    pair_end <- paste0("=", values[[k]], if (k < length(values)) ",")
+    if (eq < 2L || !startsWith(substring(rest, eq), pair_end)) {
+      return(NULL)
+    }
+    variables[k] <- substr(rest, 1L, eq - 1L)
+    rest <- substring(rest, eq + nchar(pair_end))
+  }
+  if (nzchar(rest)) NULL else variables
 }
 
 #' Parse strata ids
 #'
+#' Used when the levels are known only from the ids, e.g. for
+#' `tbl_strata_nested_stack()` tables and lists of ARDs.
+#'
 #' @param ids (`character` or `NULL`)\cr
 #'   ids like `PARAM="Albumin",SEX="F"`.
 #'
-#' @returns A data frame with one column per stratum (outermost first) and one
-#'   row per id, or `NULL` when the ids are not all strata ids with the same
-#'   variables.
+#' @returns A data frame with one column per stratum (in the order of the ids)
+#'   and one row per id, or `NULL` when the ids are not all strata ids with the
+#'   same variables.
 #' @keywords internal
 #' @noRd
 .parse_strata_ids <- function(ids) {
@@ -388,7 +455,7 @@ simplify_ard <- function(x, .deduplicate = TRUE, .unlist = FALSE) {
 #' @param ard (`card`)\cr
 #'   ARD of one stratum.
 #' @param variables,levels (`character`, `list`)\cr
-#'   strata variables and their levels, innermost first.
+#'   strata variables and their levels.
 #' @param groups (`integer`)\cr
 #'   group number of each stratum.
 #'
