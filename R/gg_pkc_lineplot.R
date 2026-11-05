@@ -23,8 +23,26 @@
 #'   Whether to apply log10 scale to the y-axis. Default is `TRUE`.
 #' @param lloq (`numeric` or `NULL`)\cr
 #'   Lower Limit of Quantification. Default is `NA_real_`.
+#' @param x_breaks (`numeric`, `function`, or `NULL`)\cr
+#'   Breaks for a numeric x-axis, passed to [ggplot2::scale_x_continuous()].
+#'   The default `NULL` puts a break on every observed timepoint, which is
+#'   readable over a short window but not over a long one. Supply a vector
+#'   (e.g. `seq(0, 600, by = 100)`) or a break function
+#'   (e.g. `scales::breaks_pretty()`) for wider time ranges. Ignored when
+#'   `time_var` is a factor.
+#' @param errorbar_width (`numeric`)\cr
+#'   Width of the horizontal caps on the variability error bars. Default is
+#'   `0.45`. Set to `0` for no caps. Ignored when `variability = "none"`.
+#' @param dodge_width (`numeric`)\cr
+#'   Horizontal separation between groups at each timepoint. Default is `0.2`.
+#'   Increase if error bar caps are wider than the dodge width and overlap.
 #'
-#' @returns A `ggplot` object.
+#' @returns A `ggplot` object of class `crane_gg_pkc` with an `"ARD"`
+#'   attribute: a `data.frame` of summary statistics (`N`, the primary `stat`,
+#'   and variability-specific bound names: `mean_plus_sd`/`mean_minus_sd` for
+#'   `"sd"`, `mean_plus_se`/`mean_minus_se` for `"se"`, `upper_ci`/`lower_ci`
+#'   for `"ci"`, `q75`/`q25` for `"iqr"`, no bounds for `"none"`) grouped by
+#'   `time_var` and `group`. Retrieve with `attr(p, "ARD")`.
 #' @seealso [annotate_pkc_df()] for related functionalities.
 #'
 #' @examples
@@ -89,7 +107,10 @@ gg_pkc_lineplot <- function(data,
                             variability = c("sd", "se", "ci", "iqr", "none"),
                             conf_level = 0.95,
                             log_y = TRUE,
-                            lloq = NA_real_) {
+                            lloq = NA_real_,
+                            x_breaks = NULL,
+                            errorbar_width = 0.45,
+                            dodge_width = 0.2) {
   # Match standard arguments
   stat <- match.arg(stat)
   variability <- match.arg(variability)
@@ -127,9 +148,8 @@ gg_pkc_lineplot <- function(data,
     group = {{ group }}
   )
 
-  # change from factor to numeric
-  # time_var can be factor or numeric - factor allow for correct n of decimals
-  # in the summary table
+  # time_var can be supplied as factor or numeric; convert factor to numeric
+  # when possible, otherwise keep it as a factor for discrete plotting
   if (!is.numeric(data[[time_var]])) {
     # 1. "Test" the conversion silently to see if it results in NAs
     test_numeric <- suppressWarnings(as.numeric(as.character(data[[time_var]])))
@@ -144,15 +164,6 @@ gg_pkc_lineplot <- function(data,
         c("i" = "Categorical X-axis detected. Leaving as factor for discrete plotting.")
       )
     }
-  } else {
-    cli::cli_inform(
-      c(
-        "i" = paste0(
-          "We encourage to supply `time_var` as a factor, since it supports ",
-          "correct decimals formatting in the summary table."
-        )
-      )
-    )
   }
 
   # Ensure only single columns were selected
@@ -160,7 +171,7 @@ gg_pkc_lineplot <- function(data,
   check_string(analyte_var)
   check_string(group)
 
-  pd <- ggplot2::position_dodge(width = 0.2)
+  pd <- ggplot2::position_dodge(width = dodge_width)
 
   # Base Plot
   p <- ggplot2::ggplot(
@@ -183,7 +194,7 @@ gg_pkc_lineplot <- function(data,
   # Add Variability (Error Bars) using our unified math engine
   if (variability != "none") {
     p <- p |>
-      gg_add_stats(stat, variability, conf_level)
+      gg_add_stats(stat, variability, conf_level, position = pd, width = errorbar_width)
   }
 
   # Log Scale & LLOQ
@@ -216,18 +227,51 @@ gg_pkc_lineplot <- function(data,
 
   if (is.numeric(data[[time_var]])) {
     # Aligning plot to actual timepoints in the data frame to ensure
-    # categorical mapping scales appropriately for cowplot alignments downstream
-    new_x_scale <- ggplot2::scale_x_continuous(
-      breaks = data[[time_var]],
-      expand = ggplot2::expansion(mult = 0.05)
-    )
+    # categorical mapping scales appropriately for cowplot alignments downstream.
+    # A single scale is added: adding two would make ggplot2 drop the first one
+    # and warn on every call.
     p <- p +
-      new_x_scale +
-      ggplot2::coord_cartesian(xlim = range(data[[time_var]])) +
-      ggplot2::scale_x_continuous(breaks = sort(unique(data[[time_var]])))
+      ggplot2::scale_x_continuous(
+        breaks = x_breaks %||% sort(unique(data[[time_var]])),
+        expand = ggplot2::expansion(mult = 0.05)
+      ) +
+      ggplot2::coord_cartesian(xlim = range(data[[time_var]]))
   }
 
   class(p) <- c("crane_gg_pkc", class(p))
 
+  # Build ARD with variability-specific bound names
+  bound_stats <- switch(variability,
+    sd = list(
+      mean_plus_sd  = \(x) .calc_stats(x, stat, variability, conf_level)$ymax,
+      mean_minus_sd = \(x) .calc_stats(x, stat, variability, conf_level)$ymin
+    ),
+    se = list(
+      mean_plus_se  = \(x) .calc_stats(x, stat, variability, conf_level)$ymax,
+      mean_minus_se = \(x) .calc_stats(x, stat, variability, conf_level)$ymin
+    ),
+    ci = list(
+      upper_ci = \(x) .calc_stats(x, stat, variability, conf_level)$ymax,
+      lower_ci = \(x) .calc_stats(x, stat, variability, conf_level)$ymin
+    ),
+    iqr = list(
+      q75 = \(x) .calc_stats(x, stat, variability, conf_level)$ymax,
+      q25 = \(x) .calc_stats(x, stat, variability, conf_level)$ymin
+    ),
+    none = list()
+  )
+
+  ard_stats <- c(
+    list(N = \(x) sum(!is.na(x))),
+    rlang::list2(!!stat := \(x) .calc_stats(x, stat, variability, conf_level)$y),
+    bound_stats
+  )
+
+  attr(p, "ARD") <- data |>
+    cards::ard_summary(
+      by        = dplyr::all_of(c(time_var, group)),
+      variables = dplyr::all_of(analyte_var),
+      statistic = rlang::list2(!!analyte_var := ard_stats)
+    )
   p
 }
