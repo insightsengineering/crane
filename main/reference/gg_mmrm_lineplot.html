@@ -19,7 +19,7 @@ along with either 95% Confidence Intervals (CI) or Standard Errors (SE) over tim
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0.9004</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0.9005</span>
       </span>
     </div>
 
@@ -126,6 +126,12 @@ Can also be standard string positions like <code>"bottom"</code>, <code>"right"<
     <h2>Value</h2>
     <p>A <code>ggplot</code> object.</p>
     </div>
+    <div id="details">
+    <h2>Details</h2>
+    <p>The estimates are plotted with their own sign. To draw the y-axis from high to low
+values (e.g. for an endpoint where a decrease is an improvement), add
+<code><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">ggplot2::scale_y_reverse()</a></code> to the returned plot.</p>
+    </div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="tbl_mmrm.html">get_mmrm_results()</a></code> to get the MMRM results, and <code><a href="tbl_mmrm.html">tbl_mmrm()</a></code> for a summary table of the MMRM results.</p></div>
@@ -137,11 +143,12 @@ Can also be standard string positions like <code>"bottom"</code>, <code>"right"<
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://openpharma.github.io/mmrm/" class="external-link">mmrm</a></span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fv_dt</span> <span class="op">&lt;-</span> <span class="fu">mmrm</span><span class="fu">::</span><span class="va"><a href="https://openpharma.github.io/mmrm/latest-tag/reference/fev_data.html" class="external-link">fev_data</a></span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>    ARMCD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">ARMCD</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    ARMCD <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">ARMCD</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    FEV1_CHG <span class="op">=</span> <span class="va">FEV1</span> <span class="op">-</span> <span class="va">FEV1_BL</span></span></span>
 <span class="r-in"><span>  <span class="op">)</span></span></span>
-<span class="r-in"><span><span class="co"># Fit an MMRM model using the FEV data</span></span></span>
+<span class="r-in"><span><span class="co"># Fit an MMRM model on the change from baseline in FEV1</span></span></span>
 <span class="r-in"><span><span class="va">fit_mmrm</span> <span class="op">&lt;-</span> <span class="fu">mmrm</span><span class="fu">::</span><span class="fu"><a href="https://openpharma.github.io/mmrm/latest-tag/reference/mmrm.html" class="external-link">mmrm</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>  formula <span class="op">=</span> <span class="va">FEV1</span> <span class="op">~</span> <span class="va">RACE</span> <span class="op">+</span> <span class="va">SEX</span> <span class="op">+</span> <span class="va">ARMCD</span> <span class="op">*</span> <span class="va">AVISIT</span> <span class="op">+</span> <span class="fu">us</span><span class="op">(</span><span class="va">AVISIT</span> <span class="op">|</span> <span class="va">USUBJID</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  formula <span class="op">=</span> <span class="va">FEV1_CHG</span> <span class="op">~</span> <span class="va">FEV1_BL</span> <span class="op">+</span> <span class="va">RACE</span> <span class="op">+</span> <span class="va">SEX</span> <span class="op">+</span> <span class="va">ARMCD</span> <span class="op">*</span> <span class="va">AVISIT</span> <span class="op">+</span> <span class="fu">us</span><span class="op">(</span><span class="va">AVISIT</span> <span class="op">|</span> <span class="va">USUBJID</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  data <span class="op">=</span> <span class="va">fv_dt</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">mmrm_results</span> <span class="op">&lt;-</span> <span class="fu"><a href="tbl_mmrm.html">get_mmrm_results</a></span><span class="op">(</span><span class="va">fit_mmrm</span>, arm <span class="op">=</span> <span class="st">"ARMCD"</span>, visit <span class="op">=</span> <span class="st">"AVISIT"</span>, conf_level <span class="op">=</span> <span class="fl">0.95</span><span class="op">)</span></span></span>
@@ -157,6 +164,9 @@ Can also be standard string positions like <code>"bottom"</code>, <code>"right"<
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">my_plot</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Reverse the y-axis, e.g. for an endpoint where a decrease is an improvement</span></span></span>
+<span class="r-in"><span><span class="va">my_plot</span> <span class="op">+</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">scale_y_reverse</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
