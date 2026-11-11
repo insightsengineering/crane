@@ -21,8 +21,7 @@
 #' @return a 'gtsummary' table
 #'
 #' @details
-#' For details on the `statistic`, `digits`, `type`, and `value` arguments,
-#' see [gtsummary::tbl_summary()].
+#' For details on arguments, see [gtsummary::tbl_summary()].
 #'
 #' @export
 #'
