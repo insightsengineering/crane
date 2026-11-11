@@ -95,8 +95,7 @@ and placed on the row under the variable label/header.
 }
 }
 \details{
-For details on the \code{statistic}, \code{digits}, \code{type}, and \code{value} arguments,
-see \code{\link[gtsummary:tbl_summary]{gtsummary::tbl_summary()}}.
+For details on arguments, see \code{\link[gtsummary:tbl_summary]{gtsummary::tbl_summary()}}.
 }
 \examples{
 # Example 1 ----------------------------------
