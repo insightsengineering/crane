@@ -19,6 +19,10 @@
 #'     Possible values are `N_nonmiss`, `N_miss`, `N_obs`, `p_nonmiss` `p_miss`.
 #'
 #' @return a 'gtsummary' table
+#'
+#' @details
+#' For details on arguments, see [gtsummary::tbl_summary()].
+#'
 #' @export
 #'
 #' @examples

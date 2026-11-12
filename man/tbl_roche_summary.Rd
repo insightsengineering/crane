@@ -94,6 +94,9 @@ and placed on the row under the variable label/header.
 \item Cells with \code{"0 (0.0\%)"} are converted to \code{"0"} with \code{gtsummary::modify_post_fmt_fun()}.
 }
 }
+\details{
+For details on arguments, see \code{\link[gtsummary:tbl_summary]{gtsummary::tbl_summary()}}.
+}
 \examples{
 # Example 1 ----------------------------------
 trial |>
