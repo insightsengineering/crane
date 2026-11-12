@@ -50,6 +50,10 @@
 #'   `{magick}` package; without it the forest plot column is left blank and
 #'   `add_forest()` warns once per session.
 #'
+#' @note
+#' Output from `{tlg.templates}` errors when exported to PDF; export it to
+#' docx, PNG, or SVG instead.
+#'
 #' @examples
 #' # Simple example ------------------------------------------------------------
 #' trial |>
@@ -258,7 +262,7 @@ add_forest <- function(x,
   n_rows <- length(row_heights)
   if (.forest_fits_one_page(row_heights, page)) {
     # one picture for the whole column (all rows + axis), in a merged cell: the
-    # reference lines are drawn once, so they stay solid in Word, PDF and HTML
+    # reference lines are drawn once, so they stay solid in DOCX, SVG, PNG
     column_plot <- .forest_column_plot(
       x, estimate, conf_low, conf_high, pvalue, global_limits, mean_estimate,
       sizes, global_margins, row_heights, p_axis

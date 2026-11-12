@@ -79,6 +79,10 @@ picture in a merged cell, so the reference lines are continuous. If the rows
 do not fit on the page given by \code{table_width}, each row gets its own picture
 instead, because a merged cell cannot break across pages.
 }
+\note{
+FSTG output from \code{{tlg.templates}} errors when exported to PDF; export it to
+docx, PNG, or SVG instead.
+}
 \examples{
 # Simple example ------------------------------------------------------------
 trial |>
