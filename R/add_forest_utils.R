@@ -196,6 +196,34 @@
     flextable::line_spacing(i = i, j = "ggplot", space = NA, part = part)
 }
 
+# `table_width` is NULL, a citril page size code ("L6"-"L10", "P6"-"P10", any
+# case), or a single finite, positive width in inches
+.check_table_width <- function(table_width, call = get_cli_abort_call()) {
+  if (is.null(table_width)) {
+    return(invisible(table_width))
+  }
+  is_page <- is_string(table_width) && grepl("^[LP]([6-9]|10)$", toupper(table_width))
+  is_width <- is.numeric(table_width) && length(table_width) == 1L &&
+    is.finite(table_width) && table_width > 0
+  if (!is_page && !is_width) {
+    cli::cli_abort(
+      c(
+        paste(
+          "{.arg table_width} must be a page size {.val L6}-{.val L10} or",
+          "{.val P6}-{.val P10}, or a single positive width in inches."
+        ),
+        "x" = if ((is.character(table_width) || is.numeric(table_width)) && length(table_width) == 1L) {
+          "You supplied {.val {table_width}}."
+        } else {
+          "You supplied {.obj_type_friendly {table_width}}."
+        }
+      ),
+      call = call
+    )
+  }
+  invisible(table_width)
+}
+
 # Text width and height (in) and font size (pt) of a citril page size: A4
 # landscape ("L6" to "L10": 11.69 x 8.27in minus margins 3.30 + 3.35cm wide and
 # 3.66 + 2.11cm high) or portrait ("P6" to "P10": 8.27 x 11.69in minus 3.66 + 2.11cm
@@ -208,13 +236,7 @@
   if (is.numeric(table_width)) {
     return(list(width = table_width, height = NULL, font_size = NULL))
   }
-  code <- toupper(table_width)
-  if (!grepl("^[LP]([6-9]|10)$", code)) {
-    cli::cli_abort(
-      "{.arg table_width} must be a page size {.val L6}-{.val L10} or {.val P6}-{.val P10}, or a width in inches.",
-      call = get_cli_abort_call()
-    )
-  }
+  code <- toupper(table_width) # validated by .check_table_width()
   landscape <- startsWith(code, "L")
   list(
     width = if (landscape) 11.69 - (3.30 + 3.35) / 2.54 else 8.27 - (3.66 + 2.11) / 2.54,

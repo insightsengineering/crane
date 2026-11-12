@@ -153,5 +153,21 @@ test_that(".forest_page() maps page sizes to text width and font size (#270)", {
   expect_equal(.forest_page("L6")$font_size, 6)
   expect_equal(.forest_page(7)$width, 7)
   expect_null(.forest_page(NULL)$width)
-  expect_error(.forest_page("A4"), "page size")
+})
+
+test_that("add_forest(table_width) accepts a page size or a single positive width (#270)", {
+  # page size codes (any case), a width in inches, or NULL
+  for (ok in list(NULL, "L6", "L10", "P6", "P10", "l8", 9.07, 9L)) {
+    expect_no_error(.check_table_width(ok))
+  }
+
+  # anything else errors with what was supplied
+  for (bad in list("L5", "L11", "A4", "", c("L8", "P8"), -3, 0, Inf, NA, NA_real_, c(5, 6), TRUE, list(9))) {
+    expect_error(.check_table_width(bad), "must be a page size")
+  }
+  expect_error(.check_table_width("A4"), "You supplied \"A4\"")
+  expect_error(.check_table_width(-3), "You supplied -3")
+
+  # add_forest() checks it before building the plots
+  expect_error(add_forest(tbl, table_width = c(5, 6)), "table_width")
 })

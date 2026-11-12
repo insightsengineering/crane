@@ -56,9 +56,10 @@ Rows whose text wraps get one extra line height per extra line.}
 \item{table_width}{(\code{character} or \code{numeric}, optional)\cr
 The page the table is decorated for, as a page size code \code{"L6"} to \code{"L10"}
 (A4 landscape) or \code{"P6"} to \code{"P10"} (A4 portrait), the number being the font
-size; or the table width in inches. The table then fills the page's text
-width (9.07in landscape, 6.00in portrait) and text wrapping is predicted at
-that font size. \code{NULL} keeps the current widths (autofit).}
+size; or the table width in inches, as a single positive number. The table
+then fills the page's text width (9.07in landscape, 6.00in portrait) and text
+wrapping is predicted at that font size. \code{NULL} keeps the current widths
+(autofit).}
 }
 \value{
 a \code{tbl_forest}/\code{flextable} object with an added forest plot column. The plots are

@@ -33,9 +33,10 @@
 #' @param table_width (`character` or `numeric`, optional)\cr
 #'  The page the table is decorated for, as a page size code `"L6"` to `"L10"`
 #'  (A4 landscape) or `"P6"` to `"P10"` (A4 portrait), the number being the font
-#'  size; or the table width in inches. The table then fills the page's text
-#'  width (9.07in landscape, 6.00in portrait) and text wrapping is predicted at
-#'  that font size. `NULL` keeps the current widths (autofit).
+#'  size; or the table width in inches, as a single positive number. The table
+#'  then fills the page's text width (9.07in landscape, 6.00in portrait) and text
+#'  wrapping is predicted at that font size. `NULL` keeps the current widths
+#'  (autofit).
 #'
 #' @details
 #' Each body row gets an exact height (`row_height`, plus one line height per
@@ -125,6 +126,7 @@ add_forest <- function(x,
   check_scalar(pvalue, allow_empty = TRUE)
   check_scalar(after)
   check_scalar_range(row_height, range = c(0, Inf))
+  .check_table_width(table_width)
 
   # 1. SETUP DEFAULTS ----------------------------------------------------------
   if (identical(table_engine, "gt")) {
