@@ -2,6 +2,16 @@
 
 * `gg_mmrm_lineplot()` now plots the estimates with their own sign. When the mean of the post-baseline estimates was positive, it negated every estimate and error bar while keeping the axis labels, so positive changes from baseline were drawn as negative ones. Add `ggplot2::scale_y_reverse()` to the returned plot to draw the y-axis from high to low values. (#334)
 
+* `add_forest()` improvements (#270):
+  * New `row_height` and `table_width` arguments. Rows get exact heights so each CI lines up with its row text, and `table_width` (a citril page size such as `"L6"` or a width in inches) fits the table to the page.
+  * The forest plot is drawn as one picture, so the reference lines are continuous in Word, PDF and HTML. The mean-estimate line is now dotted.
+  * The column header is drawn on the plot's scale, with the treatment labels on either side of the line at 1. `header_spaces` is deprecated and has no effect.
+  * The plots no longer disappear in LibreOffice and other viewers, and they now fit their column exactly.
+  * Warns once per session if `{magick}` is missing, as it is needed for PDF, PNG and SVG export.
+  * Returns an object of class `c("tbl_forest", "flextable")`.
+
+* `add_forest()` no longer supports `table_engine = "gt"` and errors with a deprecation message. (#271)
+
 # crane 0.4.0
 
 * Added `gg_pkc_boxplot()` to plot Pharmacokinetic concentrations as box plots, with a selectable whisker method (`"percentile"`, `"tukey"`, or `"minmax"`), outlier detection, and an optional mean marker. (#322)
