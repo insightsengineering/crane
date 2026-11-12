@@ -61,7 +61,7 @@ width (9.07in landscape, 6.00in portrait) and text wrapping is predicted at
 that font size. \code{NULL} keeps the current widths (autofit).}
 }
 \value{
-a flextable object with an added forest plot column. The plots are
+a \code{tbl_forest}/\code{flextable} object with an added forest plot column. The plots are
 embedded as images, so drawing the table for PDF, PNG, or SVG export (e.g.
 with \code{flextable::gen_grob()} or \code{flextable::save_as_image()}) requires the
 \code{{magick}} package; without it the forest plot column is left blank and

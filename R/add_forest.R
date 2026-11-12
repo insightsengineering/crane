@@ -44,7 +44,7 @@
 #' do not fit on the page given by `table_width`, each row gets its own picture
 #' instead, because a merged cell cannot break across pages.
 #'
-#' @return a flextable object with an added forest plot column. The plots are
+#' @return a `tbl_forest`/`flextable` object with an added forest plot column. The plots are
 #'   embedded as images, so drawing the table for PDF, PNG, or SVG export (e.g.
 #'   with `flextable::gen_grob()` or `flextable::save_as_image()`) requires the
 #'   `{magick}` package; without it the forest plot column is left blank and
@@ -336,7 +336,8 @@ add_forest <- function(x,
   # all column labels (and the forest header) end on the same line, above the header rule
   out <- flextable::valign(out, i = flextable::nrow_part(out, "header"), valign = "bottom", part = "header")
 
-  out
+  out |>
+    structure(class = c("tbl_forest", class(out)))
 }
 
 .is_na_or_chr <- function(x, i, estimate, conf_low, conf_high) {

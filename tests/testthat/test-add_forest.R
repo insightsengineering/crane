@@ -99,6 +99,8 @@ test_that("add_forest handles extreme limits and character NA p-values safely", 
   )
 
   expect_s3_class(out_flex, "flextable")
+  expect_s3_class(out_flex, "tbl_forest")
+  expect_identical(class(out_flex), c("tbl_forest", "flextable"))
 })
 
 test_that("add_forest() warns when {magick} is missing (#270)", {

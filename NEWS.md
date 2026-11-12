@@ -1,5 +1,7 @@
 # crane 0.4.0.9006
 
+* `add_forest()` now returns an object of class `c("tbl_forest", "flextable")`, consistent with other crane table functions that prepend their own class. It still works with all `{flextable}` functions. (#270)
+
 * `gg_mmrm_lineplot()` now plots the estimates with their own sign. When the mean of the post-baseline estimates was positive, it negated every estimate and error bar while keeping the axis labels, so positive changes from baseline were drawn as negative ones. Add `ggplot2::scale_y_reverse()` to the returned plot to draw the y-axis from high to low values. (#334)
 
 * `add_forest()` gains `row_height` and `table_width` arguments. Every body row now has an exact height and the forest plot is drawn at those heights as one picture, so each CI lines up with its vertically centered row text and the reference lines are continuous in Word, PDF and HTML. `table_width` takes a citril page size (`"L6"` to `"L10"`, `"P6"` to `"P10"`) or a width in inches and fits the columns to it, so the table no longer runs past the page margin. The mean-estimate line is now dotted. (#270)
