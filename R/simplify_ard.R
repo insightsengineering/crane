@@ -446,12 +446,12 @@ simplify_ard <- function(x, .deduplicate = TRUE) {
       raw <- substr(value[quoted], 2L, nchar(value[quoted]) - 1L)
       # Unescape backslash sequences; \\ must go first (via placeholder) so
       # sequences like \\n are not converted to a newline character.
-      raw <- gsub("\\\\", "\x01", raw, fixed = TRUE)  # \\ → SOH placeholder
-      raw <- gsub("\\n",  "\n",   raw, fixed = TRUE)  # \n → newline
-      raw <- gsub("\\t",  "\t",   raw, fixed = TRUE)  # \t → tab
-      raw <- gsub("\\r",  "\r",   raw, fixed = TRUE)  # \r → CR
-      raw <- gsub("\\\"", "\"",   raw, fixed = TRUE)  # \" → "
-      raw <- gsub("\x01", "\\",   raw, fixed = TRUE)  # placeholder → \
+      raw <- gsub("\\\\", "\x01", raw, fixed = TRUE) # \\ → SOH placeholder
+      raw <- gsub("\\n", "\n", raw, fixed = TRUE) # \n → newline
+      raw <- gsub("\\t", "\t", raw, fixed = TRUE) # \t → tab
+      raw <- gsub("\\r", "\r", raw, fixed = TRUE) # \r → CR
+      raw <- gsub("\\\"", "\"", raw, fixed = TRUE) # \" → "
+      raw <- gsub("\x01", "\\", raw, fixed = TRUE) # placeholder → \
       value[quoted] <- raw
     }
     value
