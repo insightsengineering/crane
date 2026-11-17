@@ -150,6 +150,17 @@ test_that("simplify_ard() reads factor levels with `,` and `=`", {
   expect_false("group3" %in% names(ard))
 })
 
+test_that("simplify_ard() reads character levels with control characters via .parse_strata_ids()", {
+  # .parse_strata_ids() is used when df_strata is unavailable (e.g. tbl_strata_nested_stack).
+  # Simulate that path by corrupting df_strata so .table_strata() falls back.
+  adsl_tab <- dplyr::mutate(cards::ADSL, AGECAT = ifelse(AGE < 70, "Young\t<70", "Old\t>=70"))
+  tbl <- tbl_strata_mean_age(adsl_tab, AGECAT)
+  tbl$df_strata$strata_1 <- c("x", "y")  # force fallback to .parse_strata_ids()
+  ard <- simplify_ard(tbl)
+  expect_equal(unique(ard$group2), "AGECAT")
+  expect_setequal(as.character(unlist(ard$group2_level)), c("Young\t<70", "Old\t>=70"))
+})
+
 test_that("simplify_ard() reads the strata from the names of the pieces when `df_strata` does not fit", {
   tbl <- tbl_strata_mean_age(adsl_age, SEX)
   tbl_other_levels <- tbl
