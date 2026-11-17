@@ -46,16 +46,22 @@ Generates a standardized line plot for Mixed-Effect Repeated Measures Model (MMR
 analysis. It displays adjusted means (change from baseline)
 along with either 95\% Confidence Intervals (CI) or Standard Errors (SE) over time.
 }
+\details{
+The estimates are plotted with their own sign. To draw the y-axis from high to low
+values (e.g. for an endpoint where a decrease is an improvement), add
+\code{ggplot2::scale_y_reverse()} to the returned plot.
+}
 \examples{
 \dontshow{if (identical(Sys.getenv("NOT_CRAN"), "true") && requireNamespace("mmrm", quietly = TRUE)) withAutoprint(\{ # examplesIf}
 library(mmrm)
 fv_dt <- mmrm::fev_data |>
   dplyr::mutate(
-    ARMCD = factor(ARMCD)
+    ARMCD = factor(ARMCD),
+    FEV1_CHG = FEV1 - FEV1_BL
   )
-# Fit an MMRM model using the FEV data
+# Fit an MMRM model on the change from baseline in FEV1
 fit_mmrm <- mmrm::mmrm(
-  formula = FEV1 ~ RACE + SEX + ARMCD * AVISIT + us(AVISIT | USUBJID),
+  formula = FEV1_CHG ~ FEV1_BL + RACE + SEX + ARMCD * AVISIT + us(AVISIT | USUBJID),
   data = fv_dt
 )
 mmrm_results <- get_mmrm_results(fit_mmrm, arm = "ARMCD", visit = "AVISIT", conf_level = 0.95)
@@ -71,6 +77,9 @@ my_plot <- gg_mmrm_lineplot(
 )
 
 print(my_plot)
+
+# Reverse the y-axis, e.g. for an endpoint where a decrease is an improvement
+my_plot + ggplot2::scale_y_reverse()
 \dontshow{\}) # examplesIf}
 }
 \seealso{
