@@ -2,6 +2,8 @@
 
 * `gg_mmrm_lineplot()` now plots the estimates with their own sign. When the mean of the post-baseline estimates was positive, it negated every estimate and error bar while keeping the axis labels, so positive changes from baseline were drawn as negative ones. Add `ggplot2::scale_y_reverse()` to the returned plot to draw the y-axis from high to low values. (#334)
 
+* Added `simplify_ard()` to flatten the ARD of a table, including stratified, stacked and split tables, into one ARD with the strata as group columns, ready for `cards::compare_ard()`. (#325)
+
 # crane 0.4.0
 
 * Added `gg_pkc_boxplot()` to plot Pharmacokinetic concentrations as box plots, with a selectable whisker method (`"percentile"`, `"tukey"`, or `"minmax"`), outlier detection, and an optional mean marker. (#322)
