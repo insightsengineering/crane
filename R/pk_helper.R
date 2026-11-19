@@ -159,21 +159,20 @@ pk_imputation_rules <- function(stat_val, label, blq_ratio, postdose, rule = "1/
   check_string(label)
   check_scalar_logical(postdose)
 
-  # a statistic with no value is not estimable (e.g. SD/CV with n = 1); this is
-  # independent of the BLQ rules. counts are always available, so keep them.
   count_labels <- c("No. obs.", "Number of LTR/BLQ")
-  if ((is.na(stat_val) || identical(stat_val, "NA")) && !label %in% count_labels) {
-    return("NE")
-  }
 
   if (is.null(rule) || is.na(blq_ratio)) {
+    # No BLQ rule in effect — an uncomputable stat is NE.
+    if ((is.na(stat_val) || identical(stat_val, "NA")) && !label %in% count_labels) {
+      return("NE")
+    }
     return(stat_val)
   }
   check_scalar_range(blq_ratio, range = c(0, 1), include_bounds = c(TRUE, TRUE))
   check_string(rule)
 
-  # statistics that remain reportable once the BLQ threshold is exceeded.
-  # the 1/3 rule keeps separate sets for pre-dose and post-dose timepoints
+  # Statistics that remain reportable once the BLQ threshold is exceeded.
+  # The 1/3 rule keeps separate sets for pre-dose and post-dose timepoints
   # (currently identical, split so PK SMEs can tune each independently).
   keep_half <- c("Max", "No. obs.", "Number of LTR/BLQ")
   keep_third_predose <- c("Median", "Max", "Geom_mean", "No. obs.", "Number of LTR/BLQ")
@@ -181,7 +180,7 @@ pk_imputation_rules <- function(stat_val, label, blq_ratio, postdose, rule = "1/
 
   keep_third <- if (postdose) keep_third_postdose else keep_third_predose
 
-  dplyr::case_when(
+  result <- dplyr::case_when(
     # 1/2 rule: more than half of observations are BLQ
     rule == "1/2" & blq_ratio > 0.5 ~
       dplyr::if_else(label %in% keep_half, stat_val, "ND"),
@@ -191,6 +190,14 @@ pk_imputation_rules <- function(stat_val, label, blq_ratio, postdose, rule = "1/
       dplyr::if_else(label %in% keep_third, stat_val, "ND"),
     TRUE ~ stat_val
   )
+
+  # After BLQ rules: a stat still NA (kept by rule but uncomputable, e.g.
+  # Geom_mean when BLQ values are zeroed) is NE, not ND.
+  if ((is.na(result) || identical(result, "NA")) && !label %in% count_labels) {
+    return("NE")
+  }
+
+  result
 }
 
 #' @rdname pk_helpers

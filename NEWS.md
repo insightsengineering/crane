@@ -1,10 +1,12 @@
-# crane 0.4.0.9006
+# crane 0.4.0.9008
 
 * `gg_mmrm_lineplot()` now plots the estimates with their own sign. When the mean of the post-baseline estimates was positive, it negated every estimate and error bar while keeping the axis labels, so positive changes from baseline were drawn as negative ones. Add `ggplot2::scale_y_reverse()` to the returned plot to draw the y-axis from high to low values. (#334)
 
 * `add_overall()` on a `tbl_hierarchical_rate_by_grade()` table now labels the overall column `"All Participants  \n(N = {N})"` by default, as the other crane `add_overall()` methods do, instead of the gtsummary `"**Overall**"` default. (#333)
 
 * `add_grade_column()` now keeps the overall column label set by `add_overall()`, instead of resetting it to `"Overall"`. (#333)
+
+* Added `simplify_ard()` to flatten the ARD of a table, including stratified, stacked and split tables, into one ARD with the strata as group columns, ready for `cards::compare_ard()`. (#325)
 
 # crane 0.4.0
 
