@@ -210,3 +210,44 @@ test_that("add_grade_column() sets correct header labels", {
   expect_true(grepl("MedDRA System Organ Class", lbl_header))
   expect_true(grepl("MedDRA Preferred Term", lbl_header))
 })
+
+# --- 10. Overall column keeps the add_overall() label ------------------------
+test_that("add_grade_column() keeps the add_overall() column label (#333)", {
+  tbl <- tbl_hierarchical_rate_by_grade(
+    ADAE_subset,
+    variables = c(AEBODSYS, AEDECOD, AETOXGR),
+    denominator = ADSL,
+    by = TRTA,
+    label = label,
+    grade_groups = grade_groups
+  )
+  stat_header <- function(x, col) {
+    x$table_styling$header |>
+      dplyr::filter(column == .env$col) |>
+      dplyr::pull(label)
+  }
+
+  # default add_overall() label
+  result <- tbl |>
+    add_overall() |>
+    add_grade_column()
+  expect_equal(stat_header(result, "stat_0"), "All Participants  \n(N = 254)")
+
+  # custom add_overall() label, while the arm columns are still restyled
+  result <- tbl |>
+    add_overall(col_label = "Total  \n(N = {N})") |>
+    add_grade_column()
+  expect_equal(stat_header(result, "stat_0"), "Total  \n(N = 254)")
+  expect_equal(stat_header(result, "stat_1"), "Placebo  \n(N = 86)")
+
+  # without add_overall(), the only column of an unstratified table is still restyled
+  result <- tbl_hierarchical_rate_by_grade(
+    ADAE_subset,
+    variables = c(AEBODSYS, AEDECOD, AETOXGR),
+    denominator = ADSL,
+    label = label,
+    grade_groups = grade_groups
+  ) |>
+    add_grade_column()
+  expect_equal(stat_header(result, "stat_0"), "Overall  \n(N = 254)")
+})
