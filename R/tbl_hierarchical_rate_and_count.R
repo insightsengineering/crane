@@ -53,6 +53,9 @@
 #'   _Optional_ arguments passed to `gtsummary::sort_hierarchical(sort)`.
 #' @param x (`tbl_hierarchical_rate_and_count`)\cr
 #'   a stratified 'tbl_hierarchical_rate_and_count' table
+#' @param col_label (`string`)\cr
+#'   String indicating the column label for overall column.
+#'   Default is `"All Participants  \n(N = {style_roche_number(N)})"`.
 #'
 #' @returns a gtsummary table
 #' @name tbl_hierarchical_rate_and_count
