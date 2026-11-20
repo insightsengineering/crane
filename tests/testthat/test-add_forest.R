@@ -103,16 +103,16 @@ test_that("add_forest handles extreme limits and character NA p-values safely", 
   expect_identical(class(out_flex), c("tbl_forest", "flextable"))
 })
 
-test_that("add_forest() warns when {magick} is missing (#270)", {
+test_that("add_forest() warns when {magick} is missing", {
   # rlang otherwise emits the once-per-session warning only on the first call
   withr::local_options(rlib_warning_verbosity = "verbose")
 
   # flextable needs magick to draw gg_chunk() images in PDF/PNG/SVG exports
-  expect_warning(.warn_if_no_magick(installed = FALSE), "Install .*magick")
+  expect_snapshot(.warn_if_no_magick(installed = FALSE))
   expect_no_warning(.warn_if_no_magick(installed = TRUE))
 })
 
-test_that("add_forest(row_height, table_width) draws compact rows that fit the page (#270)", {
+test_that("add_forest(row_height, table_width) draws compact rows that fit the page", {
   tbl_sub <- trial |>
     tbl_roche_subgroups(
       subgroups = c("grade", "stage"),
