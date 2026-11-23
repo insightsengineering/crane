@@ -40,21 +40,3 @@
       x `x` has 10 body rows, the plot was drawn for 11.
       i Add, remove or reorder rows in the gtsummary table, before `add_forest()`.
 
-# the header labels warn when they do not fit their column, when drawn (#270)
-
-    Code
-      y <- adjust_forest_widths(flextable::width(decorated, j = "ggplot", width = 0.6))
-    Condition
-      Warning:
-      The forest plot header labels do not fit the 0.6in forest column: they are cut off at its edge and cross the line at 1.
-      i At 8pt they need a column of at least <width>in (`attr(x, "forest")$width["min"]` is 1.5in): make the column wider, or the font size of the column labels smaller.
-
-# text put in the forest column: a header label is kept, body text is dropped (#270)
-
-    Code
-      y <- adjust_forest_widths(marked)
-    Condition
-      Warning:
-      The text in the forest plot column of body row 3 is dropped: the plots fill these cells.
-      i Put footnote marks and other text of a row in another column, e.g. that of its estimate.
-
