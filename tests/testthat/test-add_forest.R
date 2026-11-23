@@ -101,7 +101,7 @@ test_that("add_forest(table_engine = 'flextable') works", {
     "Less than 2 spanning headers detected."
   )
 
-  # the "gt" engine was removed in 0.4.0.9000, crane renders with flextable only (#271)
+  # the "gt" engine was removed in 0.4.1, crane renders with flextable only (#271)
   expect_error(
     add_forest(tbl, table_engine = "gt"),
     class = "lifecycle_error_deprecated"
@@ -224,6 +224,8 @@ test_that("add_forest() and adjust_forest_widths() check their arguments (#270)"
   expect_error(add_forest(tbl, pagesize = "l8"), "Did you mean \"L8\"")
   expect_error(add_forest(tbl_sub, total_width = NA), "total_width")
   expect_error(add_forest(tbl_sub, row_height = 0), "row_height")
+  # too narrow for the forest column's minimum plus the other columns' padding (widths would be negative)
+  expect_error(add_forest(tbl_sub, total_width = 1), "total_width. must be at least")
   expect_error(adjust_forest_widths(flextable::flextable(head(mtcars))), "add_forest")
   expect_snapshot(error = TRUE, {
     adjust_forest_widths(forest_l8, widths = c(1, 2))
@@ -452,17 +454,18 @@ test_that("adjust_forest_widths() stops when the body rows are not the ones draw
 
 test_that("the header labels warn when they do not fit their column, when drawn (#270)", {
   decorated <- decorate(forest_l8)
-  # 1.3in still fits "Drug A Better" and "Drug B Better": no warning, even where warnings are errors
-  withr::with_options(
-    list(warn = 2),
-    x <- adjust_forest_widths(flextable::width(decorated, j = "ggplot", width = 1.3))
+  # 1.3in still fits "Drug A Better" and "Drug B Better": no warning about them (only crane's own warnings are
+  # checked: ggplot2's annotation_logticks() warns on drawing under R-devel)
+  expect_no_warning(
+    x <- adjust_forest_widths(flextable::width(decorated, j = "ggplot", width = 1.3)),
+    message = "do not fit"
   )
   expect_true(attr(x, "forest")$drawn$header$fits)
 
-  # too narrow: a warning giving the width they need (it depends on the fonts of the system)
-  expect_snapshot(
+  # too narrow: a warning giving the width they need
+  expect_warning(
     y <- adjust_forest_widths(flextable::width(decorated, j = "ggplot", width = 0.6)),
-    transform = function(lines) gsub("at least [0-9.]+in", "at least <width>in", lines)
+    "do not fit the 0.6in forest column"
   )
   # not again when nothing is drawn
   expect_no_warning(adjust_forest_widths(y))
@@ -484,6 +487,6 @@ test_that("text put in the forest column: a header label is kept, body text is d
     forest_l8,
     i = 3, j = "ggplot", part = "body", ref_symbols = "b", value = flextable::as_paragraph("CI not estimable.")
   )
-  expect_snapshot(y <- adjust_forest_widths(marked))
+  expect_warning(y <- adjust_forest_widths(marked), "body row 3 is dropped")
   expect_identical(.forest_body_text(y, gg), integer(0))
 })
