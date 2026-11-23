@@ -49,7 +49,7 @@ kept.
 width, \code{c(min = 1.5, natural = 2.5)} inches. When the header labels do not
 fit the column, a warning gives the width they need.
 
-In HTML, each forest table gets its own CSS class, added to citril's, so the
+In HTML, each forest table gets its own CSS class, added to citril, so the
 pictures keep their drawn size and several forest tables can share a page.
 }
 \examples{
