@@ -47,7 +47,7 @@ labels are positioned geometrically and this argument has no effect.}
 
 \item{table_engine}{(\code{character})\cr
 Table rendering engine to use. Only \code{"flextable"} is supported. The \code{"gt"}
-engine was removed in crane 0.4.0.9000.}
+engine was removed in crane 0.4.1.}
 
 \item{row_height}{(\code{numeric})\cr
 Height of a one-line body row, in inches. Rows whose text wraps get one
@@ -59,8 +59,10 @@ landscape) or \code{"P6"} to \code{"P10"} (A4 portrait), the number being the fo
 size. The table gets that font size and fills the page's text width.}
 
 \item{total_width}{(\code{numeric}, optional)\cr
-Table width in inches, instead of the page's text width. With neither
-\code{pagesize} nor \code{total_width}, the columns keep their widths (autofit).}
+Table width in inches, instead of the page's text width. It must hold the
+forest column's minimum width (1.5in) plus the cell padding of the other
+columns. With neither \code{pagesize} nor \code{total_width}, the columns keep their
+widths (autofit).}
 }
 \value{
 a \code{tbl_forest}/\code{flextable} object with an added forest plot column. The plots are
