@@ -148,7 +148,7 @@
     ggplot2::geom_errorbar(ggplot2::aes(y = .data$y, xmin = .data$conf_low, xmax = .data$conf_high),
       width = 0, linewidth = sizes$errorbar_size, orientation = "y"
     ) +
-    ggplot2::geom_vline(xintercept = forest$mean_estimate, linetype = "dotted", linewidth = sizes$line_ref) +
+    ggplot2::geom_vline(xintercept = forest$mean_estimate, linetype = "dashed", linewidth = sizes$line_ref) +
     ggplot2::geom_vline(xintercept = 1, linewidth = sizes$line_ref) +
     ggplot2::geom_vline(xintercept = 0.2, linewidth = sizes$line_ref) +
     ggplot2::geom_point(ggplot2::aes(y = .data$y, x = .data$estimate, size = .data$dot),
@@ -212,7 +212,7 @@
     ) +
 
     # Add reference lines
-    ggplot2::geom_vline(xintercept = mean_estimate, linetype = "dotted", color = "black", linewidth = sizes$line_ref) +
+    ggplot2::geom_vline(xintercept = mean_estimate, linetype = "dashed", color = "black", linewidth = sizes$line_ref) +
     ggplot2::geom_vline(xintercept = 1, color = "black", linewidth = sizes$line_ref) +
     ggplot2::geom_vline(xintercept = 0.2, linewidth = sizes$line_ref) +
     ggplot2::theme_void() +
@@ -937,6 +937,30 @@
     ),
     call = call
   )
+}
+
+# `total_width` must hold the forest column's minimum width plus the cell padding (left and right, widest cell) of
+# the other columns, else their widths would come out negative
+.forest_check_room <- function(ft, total_width, forest, call = get_cli_abort_call()) {
+  keys <- setdiff(ft$col_keys, forest$col_key)
+  padding_pt <- function(part) {
+    pars <- ft[[part]]$styles$pars
+    apply(pars$padding.left$data[, keys, drop = FALSE] + pars$padding.right$data[, keys, drop = FALSE], 2, max)
+  }
+  need <- ceiling((forest$width[["min"]] + sum(pmax(padding_pt("body"), padding_pt("header"))) / 72) * 100) / 100
+  if (total_width < need) {
+    cli::cli_abort(
+      c(
+        paste(
+          "{.arg total_width} must be at least {need}in: the forest column's minimum width",
+          "({forest$width[['min']]}in) plus the cell padding of the other columns."
+        ),
+        "x" = "You supplied {.val {total_width}}."
+      ),
+      call = call
+    )
+  }
+  invisible(total_width)
 }
 
 # A flextable made by add_forest(), with its forest column, whose body cells are not merged across that column
