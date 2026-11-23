@@ -25,7 +25,7 @@
 #'   labels are positioned geometrically and this argument has no effect.
 #' @param table_engine (`character`)\cr
 #'  Table rendering engine to use. Only `"flextable"` is supported. The `"gt"`
-#'  engine was removed in crane 0.4.0.9000.
+#'  engine was removed in crane 0.4.1.
 #' @param row_height (`numeric`)\cr
 #'  Height of a one-line body row, in inches. Rows whose text wraps get one
 #'  extra line height per extra line.
@@ -34,8 +34,10 @@
 #'  landscape) or `"P6"` to `"P10"` (A4 portrait), the number being the font
 #'  size. The table gets that font size and fills the page's text width.
 #' @param total_width (`numeric`, optional)\cr
-#'  Table width in inches, instead of the page's text width. With neither
-#'  `pagesize` nor `total_width`, the columns keep their widths (autofit).
+#'  Table width in inches, instead of the page's text width. It must hold the
+#'  forest column's minimum width (1.5in) plus the cell padding of the other
+#'  columns. With neither `pagesize` nor `total_width`, the columns keep their
+#'  widths (autofit).
 #'
 #' @details
 #' Each body row gets an exact height, and the forest plot is drawn at those
@@ -124,7 +126,7 @@ add_forest <- function(x,
   on.exit(.forest_reactivate(device), add = TRUE)
   if (lifecycle::is_present(header_spaces)) {
     lifecycle::deprecate_warn(
-      "0.4.0.9000",
+      "0.4.1",
       "crane::add_forest(header_spaces)",
       details = paste(
         "The forest plot header is now drawn on the same scale as the plots,",
@@ -152,7 +154,7 @@ add_forest <- function(x,
   # 1. SETUP DEFAULTS ----------------------------------------------------------
   if (identical(table_engine, "gt")) {
     lifecycle::deprecate_stop(
-      "0.4.0.9000",
+      "0.4.1",
       "crane::add_forest(table_engine = 'no longer accepts \"gt\"')",
       details = "crane renders tables with flextable only. Drop the argument to use the default."
     )
@@ -203,6 +205,7 @@ add_forest <- function(x,
         flextable::fontsize(size = page$font_size, part = "body") |>
         flextable::fontsize(size = page$font_size, part = "header")
     }
+    if (!is.null(total_width)) .forest_check_room(out, total_width, forest)
     table_width <- total_width %||% page$width
     if (!is.null(table_width)) out <- .forest_fit_widths(out, table_width, forest, label_row)
 
