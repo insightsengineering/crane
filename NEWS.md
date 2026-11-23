@@ -5,7 +5,7 @@
 * `add_forest()` improvements (#270):
   * New `pagesize`, `total_width` and `row_height` arguments fit the table to a citril page with exact row heights, so each CI lines up with its row.
   * New `adjust_forest_widths()` redraws the forest plot after the table changes, e.g. after `citril::decorate_tlg()` or `citril::set_column_widths()`.
-  * The forest plot is drawn as one picture (one per row if the table is taller than the page), with a dotted mean-estimate line.
+  * The forest plot is drawn as one picture (one per row if the table is taller than the page).
   * The header is drawn on the plot's scale; `header_spaces` is deprecated.
   * The plots fit their column in Word, LibreOffice and HTML. Export with `citril::export_tlg()`: `flextable::save_as_docx()` lacks the Word style they use.
   * Warns once per session if `{magick}` is missing (needed for PDF, PNG and SVG export).
