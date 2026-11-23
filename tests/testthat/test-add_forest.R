@@ -361,13 +361,14 @@ test_that(".forest_part_height() estimates rows as Word lays them out (#270)", {
   expect_equal(part_height(x, "header", picture = c(1, 1, 1)), 1)
   expect_identical(part_height(x, "footer"), 0)
 
-  # bold text is measured bold: a column as wide as the plain text wraps it when bold
+  # bold text is measured bold: a column that fits the plain text (with its 0.03in slack) but not the bold one
+  # wraps it when bold; set from the measured widths, as how much wider bold is depends on the system's fonts
   y <- flextable::flextable(data.frame(a = "estimate")) |>
     flextable::fontsize(size = 10, part = "all") |>
     flextable::padding(padding = 0, part = "all")
   family <- y$body$styles$text$font.family$data[[1, 1]]
   width <- function(bold) .forest_measuring(.forest_text_width("estimate", 10, bold, family))
-  y <- flextable::width(y, width = width(FALSE) + 0.04)
+  y <- flextable::width(y, width = (width(FALSE) + .forest_line_safety + width(TRUE)) / 2)
   expect_equal(part_height(y, "body"), line_in)
   expect_equal(part_height(flextable::bold(y, part = "body"), "body"), 2 * line_in)
   # and add_forest() gives a column the width of its bold header words
@@ -445,8 +446,9 @@ test_that("adjust_forest_widths() draws the pictures again for new column widths
   expect_equal(sum(x$body$colwidths), 8)
   expect_equal(x$body$colwidths[[1]], 2 * x$body$colwidths[[2]])
   expect_equal(unique(forest_pictures(x)$width), x$body$colwidths[["ggplot"]])
-  # one share for equal widths; a total alone keeps the shares
-  expect_warning(equal <- adjust_forest_widths(decorated, widths = 1), "do not fit")
+  # one share for equal widths; a total alone keeps the shares. Whether the header labels fit the equal-width
+  # forest column depends on the system's fonts (the narrow-column warning is tested at 1in and 0.4in above)
+  equal <- suppressWarnings(adjust_forest_widths(decorated, widths = 1))
   expect_equal(unname(equal$body$colwidths), rep(sum(decorated$body$colwidths) / n_col, n_col))
   half <- adjust_forest_widths(decorated, total_width = sum(decorated$body$colwidths) / 2)
   expect_equal(half$body$colwidths, decorated$body$colwidths / 2)
