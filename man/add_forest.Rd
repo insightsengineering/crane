@@ -14,7 +14,8 @@ add_forest(
   header_spaces = lifecycle::deprecated(),
   table_engine = "flextable",
   row_height = 0.24,
-  table_width = NULL
+  pagesize = NULL,
+  total_width = NULL
 )
 }
 \arguments{
@@ -49,17 +50,17 @@ Table rendering engine to use. Only \code{"flextable"} is supported. The \code{"
 engine was removed in crane 0.4.0.9000.}
 
 \item{row_height}{(\code{numeric})\cr
-Height of a one-line body row, in inches. Each forest plot is drawn at its
-row's exact height, so the CI lines up with the vertically centered text.
-Rows whose text wraps get one extra line height per extra line.}
+Height of a one-line body row, in inches. Rows whose text wraps get one
+extra line height per extra line.}
 
-\item{table_width}{(\code{character} or \code{numeric}, optional)\cr
-The page the table is decorated for, as a page size code \code{"L6"} to \code{"L10"}
-(A4 landscape) or \code{"P6"} to \code{"P10"} (A4 portrait), the number being the font
-size; or the table width in inches, as a single positive number. The table
-then fills the page's text width (9.07in landscape, 6.00in portrait) and text
-wrapping is predicted at that font size. \code{NULL} keeps the current widths
-(autofit).}
+\item{pagesize}{(\code{string}, optional)\cr
+The citril page size the table is made for: \code{"L6"} to \code{"L10"} (A4
+landscape) or \code{"P6"} to \code{"P10"} (A4 portrait), the number being the font
+size. The table gets that font size and fills the page's text width.}
+
+\item{total_width}{(\code{numeric}, optional)\cr
+Table width in inches, instead of the page's text width. With neither
+\code{pagesize} nor \code{total_width}, the columns keep their widths (autofit).}
 }
 \value{
 a \code{tbl_forest}/\code{flextable} object with an added forest plot column. The plots are
@@ -74,11 +75,27 @@ by \code{\link[=tbl_roche_subgroups]{tbl_roche_subgroups()}}. The forest plot vi
 for each subgroup in the table. The table is rendered with \code{flextable}.
 }
 \details{
-Each body row gets an exact height (\code{row_height}, plus one line height per
-wrapped text line) and the forest plot is drawn at those heights as one
-picture in a merged cell, so the reference lines are continuous. If the rows
-do not fit on the page given by \code{table_width}, each row gets its own picture
-instead, because a merged cell cannot break across pages.
+Each body row gets an exact height, and the forest plot is drawn at those
+heights as one picture in a merged cell, so each CI lines up with its row
+and the reference lines are continuous. If the whole table (titles, column
+labels, rows and footnotes) does not fit the page (A4 landscape without
+\code{pagesize}), each row gets its own picture, as a merged cell cannot break
+across pages. On a page too narrow for the table, the text columns wrap;
+words break, with a warning, only when not even the longest ones fit.
+
+The header picture shows the two treatment labels either side of the line
+at 1. When the forest column is too narrow for them, a warning gives the
+width they need.
+
+The pictures are drawn for the table's widths and fonts: after changing
+them, e.g. with \code{citril::decorate_tlg()} or \code{citril::set_column_widths()},
+call \code{\link[=adjust_forest_widths]{adjust_forest_widths()}}. Add, remove or reorder body rows in the
+gtsummary table, before \code{add_forest()}.
+
+The picture paragraphs use the "header" paragraph style of the Word
+template, which the default document of \code{flextable::save_as_docx()} lacks:
+export with \code{citril::export_tlg()}, or add the style with
+\code{officer::docx_set_paragraph_style()}.
 }
 \note{
 Output from \code{{tlg.templates}} errors when exported to PDF; export it to
@@ -116,8 +133,10 @@ if (requireNamespace("broom.helpers", quietly = TRUE)) {
           exponentiate = TRUE # , tidy_fun = broom.helpers::tidy_parameters
         )
     ) |>
-    add_forest(pvalue = starts_with("p.value"), table_engine = "flextable") |>
-    flextable::set_header_labels(ggplot = "---------")
+    add_forest(pvalue = starts_with("p.value"), pagesize = "L8")
 }
 }
+}
+\seealso{
+\code{\link[=adjust_forest_widths]{adjust_forest_widths()}} to fit the forest plot to new column widths.
 }
