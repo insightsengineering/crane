@@ -155,7 +155,8 @@ annotate_lineplot_df <- function(gg_plt,
           label = list(dplyr::all_of(y) ~ " "),
           digits = gts_digits
         ) |>
-        gtsummary::add_stat_label(label = dplyr::all_of(y) ~ gts_stat_labels) |>
+        # unnamed: gtsummary >= 2.7.0 reads names as statistic strings
+        gtsummary::add_stat_label(label = dplyr::all_of(y) ~ unname(gts_stat_labels)) |>
         gtsummary::modify_header(gtsummary::all_stat_cols() ~ "{level}")
     ) |>
     gtsummary::modify_header(label = "remove")

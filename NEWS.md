@@ -1,5 +1,9 @@
 # crane 0.4.0.9009
 
+* `annotate_lineplot_df()` and `annotate_pkc_df()` no longer error with `{gtsummary}` 2.7.0. (#342)
+
+* `tbl_roche_subgroups()` with `time_to_event` shows one `n` per arm now, instead of `list("5", "5")` with `{gtsummary}` 2.6.0 and later. (#292)
+
 * `gg_mmrm_lineplot()` now plots the estimates with their own sign. When the mean of the post-baseline estimates was positive, it negated every estimate and error bar while keeping the axis labels, so positive changes from baseline were drawn as negative ones. Add `ggplot2::scale_y_reverse()` to the returned plot to draw the y-axis from high to low values. (#334)
 
 * `add_overall()` on a `tbl_hierarchical_rate_by_grade()` table now labels the overall column `"All Participants  \n(N = {N})"` by default, as the other crane `add_overall()` methods do, instead of the gtsummary `"**Overall**"` default. (#333)

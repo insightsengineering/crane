@@ -53,6 +53,12 @@ test_that("tbl_roche_subgroups(time_to_event) works", {
     NA
   )
 
+  # each arm shows its own n, not both N statistics of the combined ARD (#292)
+  expect_equal(
+    unlist(tbl$table_body[1, c("stat_1_1_2", "stat_1_2_2")], use.names = FALSE),
+    as.character(as.vector(table(df_adtte$arm)))
+  )
+
   expect_snapshot(
     tbl$table_body |>
       dplyr::select(
