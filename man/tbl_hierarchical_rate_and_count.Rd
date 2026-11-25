@@ -111,14 +111,16 @@ When creating a filtered summary, use \code{gtsummary::tbl_hierarchical()} or
 When the first variable in \code{variables} is a factor, the function respects
 its levels and emits zero-rows for any levels not observed in the data.
 Each unobserved level gets a header row (with \code{NA} stats), a rate summary
-row (\code{"0"}), and a count summary row (\code{"0"}).
+row (\code{"0"}), and a count summary row (\code{"0"}), sorted with the observed
+levels. The zero-rows are added to the ARDs with
+\code{cards::complete_ard_hierarchical()}, so the ARDs in \verb{$cards} include them.
 
 This is useful when the set of expected categories is predefined but some
 may not be present in the data. To exclude categories with no observations,
 drop unused levels before calling the function (e.g., \code{droplevels()}).
 
-Ensures consistent output structure for empty datasets, removing the
-need for manual workarounds in reporting templates.
+Data with no rows gives an error: use \code{tbl_null_report()} for a table
+that reports no data.
 }
 }
 \examples{
