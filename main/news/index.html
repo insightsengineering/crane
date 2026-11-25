@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">crane</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0.9008</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.4.0.9010</span>
       </span>
     </div>
 
@@ -61,8 +61,10 @@
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="0.4.0.9008" id="crane-0409008">crane 0.4.0.9008<a class="anchor" aria-label="anchor" href="#crane-0409008"></a></h2>
+<h2 class="page-header" data-toc-text="0.4.0.9010" id="crane-0409010">crane 0.4.0.9010<a class="anchor" aria-label="anchor" href="#crane-0409010"></a></h2>
 <ul><li><p><code><a href="../reference/gg_mmrm_lineplot.html">gg_mmrm_lineplot()</a></code> now plots the estimates with their own sign. When the mean of the post-baseline estimates was positive, it negated every estimate and error bar while keeping the axis labels, so positive changes from baseline were drawn as negative ones. Add <code><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html" class="external-link">ggplot2::scale_y_reverse()</a></code> to the returned plot to draw the y-axis from high to low values. (<a href="https://github.com/insightsengineering/crane/issues/334" class="external-link">#334</a>)</p></li>
+<li><p><code><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_overall.html" class="external-link">add_overall()</a></code> on a <code><a href="../reference/tbl_hierarchical_rate_by_grade.html">tbl_hierarchical_rate_by_grade()</a></code> table now labels the overall column <code>"All Participants  \n(N = {N})"</code> by default, as the other crane <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_overall.html" class="external-link">add_overall()</a></code> methods do, instead of the gtsummary <code>"**Overall**"</code> default. (<a href="https://github.com/insightsengineering/crane/issues/333" class="external-link">#333</a>)</p></li>
+<li><p><code><a href="../reference/tbl_hierarchical_rate_by_grade.html">add_grade_column()</a></code> now keeps the overall column label set by <code><a href="https://www.danieldsjoberg.com/gtsummary/reference/add_overall.html" class="external-link">add_overall()</a></code>, instead of resetting it to <code>"Overall"</code>. (<a href="https://github.com/insightsengineering/crane/issues/333" class="external-link">#333</a>)</p></li>
 <li><p>Added <code><a href="../reference/simplify_ard.html">simplify_ard()</a></code> to flatten the ARD of a table, including stratified, stacked and split tables, into one ARD with the strata as group columns, ready for <code><a href="https://pharmaverse.github.io/cards/latest-tag/reference/compare_ard.html" class="external-link">cards::compare_ard()</a></code>. (<a href="https://github.com/insightsengineering/crane/issues/325" class="external-link">#325</a>)</p></li>
 </ul></div>
     <div class="section level2">
