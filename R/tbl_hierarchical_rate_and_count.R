@@ -26,8 +26,8 @@
 #' may not be present in the data. To exclude categories with no observations,
 #' drop unused levels before calling the function (e.g., `droplevels()`).
 #'
-#' Ensures consistent output structure for empty datasets, removing the
-#' need for manual workarounds in reporting templates.
+#' Data with no rows gives an error: use `tbl_null_report()` for a table
+#' that reports no data.
 #'
 #' @inheritParams gtsummary::tbl_hierarchical
 #' @inheritParams gtsummary::add_overall.tbl_hierarchical
@@ -132,22 +132,13 @@ tbl_hierarchical_rate_and_count <- function(data,
   # saving function inputs
   tbl_hierarchical_rate_and_count_inputs <- as.list(environment())
 
-  # handle 0-row data with factor levels ---------------------------------------
-  # gtsummary::tbl_hierarchical() cannot process empty data. When the first
-  # variable is a factor we build a scaffold table with zero-rows for all levels.
-  if (nrow(data) == 0L && is.factor(data[[variables[1]]])) {
-    return(
-      .build_empty_scaffold(
-        data = data,
-        variables = variables,
-        by = by,
-        denominator = denominator,
-        label_overall_rate = label_overall_rate,
-        label_overall_count = label_overall_count,
-        label_rate = label_rate,
-        label_count = label_count,
-        label = label,
-        inputs = tbl_hierarchical_rate_and_count_inputs
+  # data with no rows -----------------------------------------------------------
+  # gtsummary::tbl_hierarchical() cannot process empty data
+  if (nrow(data) == 0L) {
+    cli::cli_abort(
+      c(
+        "The {.arg data} argument has no rows.",
+        i = "Use {.fun tbl_null_report} for a table that reports no data."
       )
     )
   }
@@ -366,145 +357,6 @@ add_overall.tbl_hierarchical_rate_and_count <- function(x,
     )$table_body
   tbl$cards[[1]] <- ard
   tbl
-}
-
-# Build a scaffold table when data has 0 rows but variables[1] is a factor.
-# Produces a gtsummary object with correct column headers and zero-rows for
-# every factor level.
-#' @keywords internal
-.build_empty_scaffold <- function(data,
-                                  variables,
-                                  by,
-                                  denominator,
-                                  label_overall_rate,
-                                  label_overall_count,
-                                  label_rate,
-                                  label_count,
-                                  label,
-                                  inputs) {
-  top_var <- variables[1L]
-  all_levels <- levels(data[[top_var]])
-
-  # determine stat columns from denominator
-  if (length(by) > 0L) {
-    stat_cols <- paste0("stat_", seq_along(unique(denominator[[by]])))
-  } else {
-    stat_cols <- "stat_0"
-  }
-
-  zero_val <- stats::setNames(rep("0", length(stat_cols)), stat_cols)
-  na_val <- stats::setNames(rep(NA_character_, length(stat_cols)), stat_cols)
-
-  # overall rate row
-  rows <- list(
-    tibble::tibble(
-      row_type = "level",
-      group1 = "..ard_hierarchical_overall..",
-      group1_level = NA_character_,
-      var_label = NA_character_,
-      variable = "..ard_hierarchical_overall..",
-      label = label_overall_rate,
-      !!!zero_val
-    )
-  )
-
-  # overall count row (unless "remove")
-  if (!identical(label_overall_count, "remove")) {
-    rows <- c(rows, list(
-      tibble::tibble(
-        row_type = "level",
-        group1 = "..ard_hierarchical_overall..",
-        group1_level = NA_character_,
-        var_label = NA_character_,
-        variable = "..ard_hierarchical_overall..",
-        label = label_overall_count,
-        !!!zero_val
-      )
-    ))
-  }
-
-  # per-level rows: header + rate + count
-  for (lvl in all_levels) {
-    rows <- c(rows, list(
-      tibble::tibble(
-        row_type = "level",
-        group1 = top_var,
-        group1_level = lvl,
-        var_label = NA_character_,
-        variable = top_var,
-        label = lvl,
-        !!!na_val
-      ),
-      tibble::tibble(
-        row_type = "level",
-        group1 = top_var,
-        group1_level = lvl,
-        var_label = NA_character_,
-        variable = top_var,
-        label = label_rate,
-        !!!zero_val
-      ),
-      tibble::tibble(
-        row_type = "level",
-        group1 = top_var,
-        group1_level = lvl,
-        var_label = NA_character_,
-        variable = top_var,
-        label = label_count,
-        !!!zero_val
-      )
-    ))
-  }
-
-  body <- dplyr::bind_rows(rows)
-  body$ord <- seq_len(nrow(body))
-
-
-  # build scaffold from tbl_summary to get correct column headers with N counts.
-  # The body is replaced entirely, so the summarized variable is irrelevant.
-  # Use the first column of the denominator as a throwaway include variable.
-  include_var <- names(denominator)[1L]
-  tbl_scaffold <- rlang::inject(
-    gtsummary::tbl_summary(
-      data = denominator,
-      include = dplyr::all_of(include_var),
-      by = !!if (length(by) > 0L) by else NULL
-    )
-  ) |>
-    gtsummary::modify_table_body(\(x) body)
-
-  # process user-supplied labels for the header
-  df_labels <- data[variables]
-  cards::process_formula_selectors(df_labels, label = label)
-  cards::fill_formula_selectors(
-    df_labels,
-    label = lapply(
-      names(df_labels),
-      \(x) attr(df_labels[[x]], "label") %||% x
-    ) |>
-      stats::setNames(names(df_labels))
-  )
-
-  header_label <- paste0(
-    label[[variables[1L]]],
-    "  \n",
-    paste0(rep("\U00A0", 4L), collapse = ""),
-    label[[variables[length(variables)]]]
-  )
-
-  tbl_scaffold <- tbl_scaffold |>
-    gtsummary::modify_header(label ~ header_label) |>
-    .apply_hierarchical_indent(variables, label_rate, label_count,
-      include_variable_indent = TRUE
-    )
-
-  tbl_scaffold$call_list <- list(tbl_hierarchical_rate_and_count = match.call())
-  tbl_scaffold$cards <- list(tbl_hierarchical_rate_and_count = list())
-  tbl_scaffold$inputs <- inputs
-
-  tbl_scaffold |>
-    structure(class = c("tbl_hierarchical_rate_and_count", "gtsummary")) |>
-    modify_header_rm_md()
 }
 
 # Apply hierarchical indentation to rate/count summary rows.

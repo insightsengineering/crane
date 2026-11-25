@@ -70,19 +70,15 @@
       14 Total number of participants with at least one adverse event                   0                                0                               0
       15                                       Total number of events                   0                                0                               0
 
-# tbl_hierarchical_rate_and_count() handles 0-row data with factor levels
+# tbl_hierarchical_rate_and_count() errors on data with no rows
 
     Code
-      as.data.frame(tbl)
-    Output
-                             AEBODSYS  \n    Dictionary-Derived Term Placebo  \nN = 86 Xanomeline High Dose  \nN = 84 Xanomeline Low Dose  \nN = 84
-      1 Total number of participants with at least one adverse event                 0                              0                             0
-      2                                                        SOC_A              <NA>                           <NA>                          <NA>
-      3 Total number of participants with at least one adverse event                 0                              0                             0
-      4                                       Total number of events                 0                              0                             0
-      5                                                        SOC_B              <NA>                           <NA>                          <NA>
-      6 Total number of participants with at least one adverse event                 0                              0                             0
-      7                                       Total number of events                 0                              0                             0
+      tbl_hierarchical_rate_and_count(empty_adae, denominator = cards::ADSL, by = TRTA,
+      variables = c(AEBODSYS, AEDECOD))
+    Condition
+      Error in `tbl_hierarchical_rate_and_count()`:
+      ! The `data` argument has no rows.
+      i Use `tbl_null_report()` for a table that reports no data.
 
 # tbl_hierarchical_rate_and_count() works only with 2 or 3 variables
 

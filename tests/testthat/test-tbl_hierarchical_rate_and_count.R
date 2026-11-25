@@ -196,35 +196,23 @@ test_that("tbl_hierarchical_rate_and_count() ignores non-factor variables", {
   expect_equal(nrow(tbl_char$table_body), nrow(tbl_no_factor$table_body))
 })
 
-test_that("tbl_hierarchical_rate_and_count() handles 0-row data with factor levels", {
-  withr::local_options(list(width = 220))
-
+test_that("tbl_hierarchical_rate_and_count() errors on data with no rows", {
+  # also when the first variable is a factor with levels
   empty_adae <- ADAE_subset |>
     dplyr::filter(FALSE) |>
     dplyr::mutate(
       AEBODSYS = factor(character(0), levels = c("SOC_A", "SOC_B"))
     )
 
-  tbl <- empty_adae |>
+  expect_snapshot(
     tbl_hierarchical_rate_and_count(
+      empty_adae,
       denominator = cards::ADSL,
       by = TRTA,
-      variables = c(AEBODSYS, AEDECOD),
-      label_overall_count = "remove"
-    )
-
-  # overall rate + 2 baskets * (header + rate + count) = 7 rows
-  expect_equal(nrow(tbl$table_body), 7L)
-
-  # all stat values are either "0" or NA (headers)
-  stat_vals <- unlist(tbl$table_body[grep("^stat_", names(tbl$table_body))])
-  expect_true(all(stat_vals %in% c("0", NA_character_)))
-
-  # class is preserved
-
-  expect_s3_class(tbl, "tbl_hierarchical_rate_and_count")
-
-  expect_snapshot(as.data.frame(tbl))
+      variables = c(AEBODSYS, AEDECOD)
+    ),
+    error = TRUE
+  )
 })
 
 test_that("tbl_hierarchical_rate_and_count() zero-rows work with by = NULL", {
