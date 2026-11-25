@@ -39,6 +39,9 @@
 #'   prior to any filters specified via the `filter` argument which may still remove these rows. Defaults to `FALSE`.
 #' @param x (`tbl_hierarchical_rate_by_grade`)\cr
 #'   A gtsummary table of class `'tbl_hierarchical_rate_by_grade'`.
+#' @param col_label (`string`)\cr
+#'   String indicating the column label for overall column.
+#'   Default is `"All Participants  \n(N = {style_roche_number(N)})"`.
 #'
 #' @details
 #' This function returns a structurally pristine table where the `label` column retains unique grade text
@@ -472,7 +475,19 @@ tbl_hierarchical_rate_by_grade <- function(data,
 
 #' @rdname tbl_hierarchical_rate_by_grade
 #' @export
-add_overall.tbl_hierarchical_rate_by_grade <- asNamespace("gtsummary")[["add_overall.tbl_hierarchical"]]
+add_overall.tbl_hierarchical_rate_by_grade <- function(
+  x,
+  last = FALSE,
+  col_label = "All Participants  \n(N = {style_roche_number(N)})",
+  statistic = NULL,
+  digits = NULL,
+  ...
+) {
+  do.call(
+    what = asNamespace("gtsummary")[["add_overall.tbl_hierarchical"]],
+    args = list(x = x, last = last, col_label = col_label, statistic = statistic, digits = digits, ...)
+  )
+}
 
 #' @param x (`gtsummary`)\cr
 #'   A gtsummary table produced by [tbl_hierarchical_rate_by_grade()], or a merged table
@@ -535,6 +550,8 @@ add_grade_column <- function(x) {
   grade_groups <- info$grade_groups
   lvls <- info$lvls
   label_list <- info$label_list
+  # the overall column added by add_overall() keeps its own label
+  restyle_stat_0 <- !"add_overall" %in% names(x$call_list)
 
 
   # apply visual formatting to the table body
@@ -590,7 +607,7 @@ add_grade_column <- function(x) {
         paste0(rep("\U00A0", 4L), collapse = ""), label_list[[ae]]
       ),
       label_grade ~ label_list[[grade]],
-      gtsummary::all_stat_cols() ~ "{level}  \n(N = {n})"
+      gtsummary::all_stat_cols(stat_0 = restyle_stat_0) ~ "{level}  \n(N = {n})"
     )
 
   # indent grade level labels within grade groups
