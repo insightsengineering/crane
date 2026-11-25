@@ -161,8 +161,9 @@ annotate_pkc_df <- function(gg_plt,
           label = list(dplyr::all_of(analyte_var) ~ " "),
           digits = gts_digits
         ) |>
+        # unnamed: gtsummary >= 2.7.0 reads names as statistic strings
         gtsummary::add_stat_label(
-          label = dplyr::all_of(analyte_var) ~ gts_stat_labels
+          label = dplyr::all_of(analyte_var) ~ unname(gts_stat_labels)
         ) |>
         gtsummary::modify_header(gtsummary::all_stat_cols() ~ "{level}")
     ) |>
