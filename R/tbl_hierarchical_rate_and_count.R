@@ -18,7 +18,9 @@
 #' When the first variable in `variables` is a factor, the function respects
 #' its levels and emits zero-rows for any levels not observed in the data.
 #' Each unobserved level gets a header row (with `NA` stats), a rate summary
-#' row (`"0"`), and a count summary row (`"0"`).
+#' row (`"0"`), and a count summary row (`"0"`), sorted with the observed
+#' levels. The zero-rows are added to the ARDs with
+#' `cards::complete_ard_hierarchical()`, so the ARDs in `$cards` include them.
 #'
 #' This is useful when the set of expected categories is predefined but some
 #' may not be present in the data. To exclude categories with no observations,
@@ -164,6 +166,9 @@ tbl_hierarchical_rate_and_count <- function(data,
     label = lapply(names(df_variables), \(x) attr(df_variables[[x]], "label") %||% x) |> stats::setNames(names(df_variables))
   )
 
+  # levels of the first variable to complete, when it's a factor with unobserved levels
+  combinations <- .factor_level_combinations(data, variables)
+
   # build AE rates table -------------------------------------------------------
   tbl_rates <-
     gtsummary::tbl_hierarchical(
@@ -177,6 +182,7 @@ tbl_hierarchical_rate_and_count <- function(data,
       label = label,
       digits = digits
     ) |>
+    .complete_hierarchical(combinations, variables = variables, by = by, label = label) |>
     gtsummary::remove_footnote_header()
 
   # apply sort if specified by user
@@ -198,7 +204,8 @@ tbl_hierarchical_rate_and_count <- function(data,
       overall_row = TRUE,
       label = label,
       digits = tbl_rates$inputs$digits
-    )
+    ) |>
+    .complete_hierarchical(combinations, variables = variables, by = by, label = label)
 
   # if a sort occurred, merge in the tbl_rates$table_body, to put rows in same order
   if (!is.null(sort)) {
@@ -280,18 +287,6 @@ tbl_hierarchical_rate_and_count <- function(data,
     # convert "0 (0.0%)" to "0"
     modify_zero_recode()
 
-  # append zero-rows for unobserved factor levels ------------------------------
-  # When variables[1] is a factor, emit zero-rows for levels with no events.
-  # gtsummary::tbl_hierarchical() drops unobserved strata levels, so we
-  # re-inject them here to keep the output complete.
-  tbl_final <- .inject_unobserved_levels(
-    tbl_final,
-    data = data,
-    variables = variables,
-    label_rate = label_rate,
-    label_count = label_count
-  )
-
   # return final table ---------------------------------------------------------
   tbl_final$call_list <- list(tbl_hierarchical_rate_and_count = match.call())
   tbl_final$cards <-
@@ -320,88 +315,57 @@ add_overall.tbl_hierarchical_rate_and_count <- function(x,
   )
 }
 
-# Inject zero-rows for unobserved factor levels in the first hierarchical
-# variable. Returns the table unchanged if variables[1] is not a factor or
-# all levels are already present.
+# The levels of the first hierarchical variable as `combinations` for
+# `cards::complete_ard_hierarchical()`, when it is a factor with unobserved
+# levels. Returns `NULL` otherwise.
 #' @keywords internal
-.inject_unobserved_levels <- function(tbl,
-                                      data,
-                                      variables,
-                                      label_rate,
-                                      label_count) {
+.factor_level_combinations <- function(data, variables) {
   top_var <- variables[1L]
   col_vals <- data[[top_var]]
 
   # only act when the column is a factor with defined levels
-
   if (!is.factor(col_vals)) {
-    return(tbl)
+    return(NULL)
   }
 
-  observed <- unique(as.character(col_vals))
-  all_levels <- levels(col_vals)
-  missing_levels <- setdiff(all_levels, observed)
-
-  if (length(missing_levels) == 0L) {
-    return(tbl)
+  missing_levels <- setdiff(levels(col_vals), unique(as.character(col_vals)))
+  if (is_empty(missing_levels)) {
+    return(NULL)
   }
 
   cli::cli_inform(
     c("i" = "Adding zero-rows for {length(missing_levels)} unobserved level{?s} in {.val {top_var}}.")
   )
 
-  stat_cols <- grep("^stat_", names(tbl$table_body), value = TRUE)
+  data.frame(levels(col_vals)) |>
+    stats::setNames(top_var)
+}
 
-  # build zero-rows: header + rate + count per missing level
-  zero_rows <- map(missing_levels, \(lvl) {
-    header <- stats::setNames(
-      rep(NA_character_, length(stat_cols)), stat_cols
-    )
-    summary_row <- stats::setNames(
-      rep("0", length(stat_cols)), stat_cols
-    )
+# Add the `combinations` missing from a hierarchical table to its ARD with
+# `cards::complete_ard_hierarchical()`, then take the table body from the
+# completed ARD. gtsummary drops unobserved levels; the completed ARD keeps the
+# formatting of the table, so the zero-rows have the same digits and sit in
+# sorted order. The header, theme and inputs of `tbl` stay as they are.
+# Returns `tbl` unchanged when `combinations` is `NULL`.
+#' @keywords internal
+.complete_hierarchical <- function(tbl, combinations, variables, by, label) {
+  if (is.null(combinations)) {
+    return(tbl)
+  }
 
-    dplyr::bind_rows(
-      # SOC/basket header row
-      tibble::tibble(
-        row_type = "level",
-        group1 = top_var,
-        group1_level = lvl,
-        var_label = NA_character_,
-        variable = top_var,
-        label = lvl,
-        !!!header
-      ),
-      # rate summary row
-      tibble::tibble(
-        row_type = "level",
-        group1 = top_var,
-        group1_level = lvl,
-        var_label = NA_character_,
-        variable = top_var,
-        label = label_rate,
-        !!!summary_row
-      ),
-      # count summary row
-      tibble::tibble(
-        row_type = "level",
-        group1 = top_var,
-        group1_level = lvl,
-        var_label = NA_character_,
-        variable = top_var,
-        label = label_count,
-        !!!summary_row
-      )
-    )
-  }) |>
-    dplyr::bind_rows()
-
-  # assign ord values that place zero-rows after existing rows
-  max_ord <- max(tbl$table_body$ord, na.rm = TRUE)
-  zero_rows$ord <- seq(max_ord + 1L, length.out = nrow(zero_rows))
-
-  tbl |>
-    gtsummary::modify_table_body(~ dplyr::bind_rows(.x, zero_rows))
+  ard <- cards::complete_ard_hierarchical(tbl$cards[[1]], combinations = combinations)
+  tbl$table_body <-
+    gtsummary::tbl_ard_hierarchical(
+      ard,
+      variables = all_of(variables),
+      by = all_of(by),
+      include = all_of(variables),
+      statistic = tbl$inputs$statistic,
+      overall_row = TRUE,
+      label = label
+    )$table_body
+  tbl$cards[[1]] <- ard
+  tbl
 }
 
 # Build a scaffold table when data has 0 rows but variables[1] is a factor.

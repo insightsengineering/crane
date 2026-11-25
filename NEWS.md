@@ -1,5 +1,7 @@
 # crane 0.4.0.9010
 
+* `tbl_hierarchical_rate_and_count()` now adds the zero-rows for unobserved factor levels with `cards::complete_ard_hierarchical()`: they are sorted with the observed levels instead of appended at the end of the table, and the ARDs in `$cards` include them. (#345)
+
 * `gg_mmrm_lineplot()` now plots the estimates with their own sign. When the mean of the post-baseline estimates was positive, it negated every estimate and error bar while keeping the axis labels, so positive changes from baseline were drawn as negative ones. Add `ggplot2::scale_y_reverse()` to the returned plot to draw the y-axis from high to low values. (#334)
 
 * `add_overall()` on a `tbl_hierarchical_rate_by_grade()` table now labels the overall column `"All Participants  \n(N = {N})"` by default, as the other crane `add_overall()` methods do, instead of the gtsummary `"**Overall**"` default. (#333)
