@@ -1,4 +1,4 @@
-# crane 0.4.0.9009
+# crane 0.4.0.9010
 
 * `annotate_lineplot_df()` and `annotate_pkc_df()` no longer error with `{gtsummary}` 2.7.0. (#342)
 
