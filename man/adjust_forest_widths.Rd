@@ -10,18 +10,16 @@ adjust_forest_widths(x, widths = NULL, total_width = NULL, page_height = NULL)
 \item{x}{(\code{tbl_forest})\cr
 A table made by \code{\link[=add_forest]{add_forest()}}.}
 
-\item{widths}{(\code{numeric}, optional)\cr
-Column widths as shares of \code{total_width}: one per column, or one for
-equal widths. \code{NULL} keeps the current shares.}
+\item{widths}{(\code{numeric})\cr
+Column widths as shares of \code{total_width}, one per column. Default is \code{NULL},
+the current widths.}
 
-\item{total_width}{(\code{numeric}, optional)\cr
-Table width in inches. \code{NULL} keeps the current table width.}
+\item{total_width}{(\code{numeric})\cr
+Width of the whole table, in inches. Default is \code{NULL}, the current width.}
 
-\item{page_height}{(\code{numeric}, optional)\cr
-Text height of the page in inches. \code{NULL} takes it from
-\code{attr(x, "pagesize")} (set by citril), else from \code{add_forest(pagesize)},
-else A4 landscape (6.00in). The forest plot is one merged picture only if
-the whole table fits the page.}
+\item{page_height}{(\code{numeric})\cr
+Text height of the page, in inches. Default is \code{NULL}, the height of the page
+size the table is made or decorated for.}
 }
 \value{
 \code{x}, with the widths set and the forest plot drawn for them.

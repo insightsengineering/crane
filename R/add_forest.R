@@ -8,17 +8,18 @@
 #'   A gtsummary table with estimates and confidence intervals in the table body. Usually produced
 #'   by [tbl_roche_subgroups()].
 #' @param estimate ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
-#'   Estimate column name.
+#'   Estimate column name. Default is `starts_with("estimate")`.
 #' @param conf_low ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
-#'   Confidence interval lower bound column name.
+#'   Confidence interval lower bound column name. Default is `starts_with("conf.low")`.
 #' @param conf_high ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
-#'  Confidence interval upper bound column name.
+#'   Confidence interval upper bound column name. Default is `starts_with("conf.high")`.
 #' @param pvalue ([`tidy-select`][dplyr::dplyr_tidy_select], optional)\cr
-#'  P-value column name. Point sizes in the forest plot will be scaled
-#'  according to p-value (smaller p-values = smaller points). `NULL` to turn this off.
+#'   P-value column name. Point sizes in the forest plot will be scaled according to
+#'   p-value (smaller p-values = smaller points). `NULL` to turn this off. Default is
+#'   `starts_with("p.value")`.
 #' @param after ([`tidy-select`][dplyr::dplyr_tidy_select])\cr
-#'  Column name after which the forest plot column will be added. Default is after
-#'  the p-value column.
+#'   Column name after which the forest plot column will be added. Default is
+#'   `starts_with("p.value")`, after the p-value column.
 #' @param header_spaces `r lifecycle::badge("deprecated")`\cr Previously the number
 #'   of spacer characters used to separate the two treatment labels in the forest
 #'   plot header. The header is now drawn on the same scale as the plots, so the
@@ -27,19 +28,21 @@
 #'   with flextable only, so this argument has no effect. The `"gt"` engine was
 #'   removed in crane 0.4.1 and gives an error.
 #' @param row_height (`numeric`)\cr
-#'  Height of a one-line body row, in inches. Rows whose text wraps get one
-#'  extra line height per extra line.
-#' @param pagesize (`string`, optional)\cr
-#'  The citril page size the table is made for: `"L6"` to `"L10"` (A4
-#'  landscape) or `"P6"` to `"P10"` (A4 portrait), the number being the font
-#'  size. The table gets that font size and fills the page's text width.
-#' @param total_width (`numeric`, optional)\cr
-#'  Table width in inches, instead of the page's text width. It must hold the
-#'  forest column's minimum width (1.5in) plus the cell padding of the other
-#'  columns. With neither `pagesize` nor `total_width`, the columns keep their
-#'  widths (autofit).
+#'   Height of a one-line body row, in inches. Default is `0.24`.
+#' @param total_width (`numeric`)\cr
+#'   Width of the whole table, in inches, for a table narrower (or wider) than the page.
+#'   Default is `NULL`.
+#' @param pagesize (`string`)\cr
+#'   Page size the table is made for, as in `citril::decorate_tlg()`: `"L6"` to `"L10"`
+#'   (landscape) or `"P6"` to `"P10"` (portrait). The table gets its font size and width.
+#'   Default is `NULL`.
 #'
 #' @details
+#' To fit the table to its page, give the `pagesize` it is decorated for, e.g.
+#' `"L8"` for `citril::decorate_tlg(pagesize = "L8")`. `total_width` is only
+#' needed for another table width, and `row_height` only to change the row
+#' spacing.
+#'
 #' Each body row gets an exact height, and the forest plot is drawn at those
 #' heights as one picture in a merged cell, so each CI lines up with its row
 #' and the reference lines are continuous. If the whole table (titles, column
@@ -118,8 +121,8 @@ add_forest <- function(x,
                        header_spaces = lifecycle::deprecated(),
                        table_engine = lifecycle::deprecated(),
                        row_height = 0.24,
-                       pagesize = NULL,
-                       total_width = NULL) {
+                       total_width = NULL,
+                       pagesize = NULL) {
   set_cli_abort_call()
   # drawing and measuring open and close devices, which makes another one active
   device <- grDevices::dev.cur()

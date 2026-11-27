@@ -11,16 +11,14 @@
 #'
 #' @param x (`tbl_forest`)\cr
 #'   A table made by [add_forest()].
-#' @param widths (`numeric`, optional)\cr
-#'   Column widths as shares of `total_width`: one per column, or one for
-#'   equal widths. `NULL` keeps the current shares.
-#' @param total_width (`numeric`, optional)\cr
-#'   Table width in inches. `NULL` keeps the current table width.
-#' @param page_height (`numeric`, optional)\cr
-#'   Text height of the page in inches. `NULL` takes it from
-#'   `attr(x, "pagesize")` (set by citril), else from `add_forest(pagesize)`,
-#'   else A4 landscape (6.00in). The forest plot is one merged picture only if
-#'   the whole table fits the page.
+#' @param widths (`numeric`)\cr
+#'   Column widths as shares of `total_width`, one per column. Default is `NULL`,
+#'   the current widths.
+#' @param total_width (`numeric`)\cr
+#'   Width of the whole table, in inches. Default is `NULL`, the current width.
+#' @param page_height (`numeric`)\cr
+#'   Text height of the page, in inches. Default is `NULL`, the height of the page
+#'   size the table is made or decorated for.
 #'
 #' @details
 #' With `widths` or `total_width`, the table gets a fixed layout, as with
