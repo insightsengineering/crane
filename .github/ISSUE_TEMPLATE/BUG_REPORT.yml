@@ -1,0 +1,62 @@
+---
+name: 🐛 Bug Report
+description: Report a bug or unexpected behaviour
+title: "[Bug]: <title>"
+labels: ["bug"]
+body:
+  - type: textarea
+    id: background
+    attributes:
+      label: Background
+      description: |
+        Describe the actual behaviour you observed and what you expected to happen instead.
+      placeholder: |
+        **Actual behaviour:** ...
+        **Expected behaviour:** ...
+    validations:
+      required: true
+  - type: textarea
+    id: reproducible-example
+    attributes:
+      label: Reproducible Example
+      description: |
+        Please provide a minimal, self-contained example that reproduces the bug.
+      placeholder: |
+        ```r
+        # your reprex here
+        ```
+    validations:
+      required: true
+  - type: textarea
+    id: proposed-solution
+    attributes:
+      label: Proposed Solution
+      description: |
+        If you have an idea of what might fix the bug, describe it here. This section is optional.
+      placeholder: A possible fix could be...
+    validations:
+      required: false
+  - type: checkboxes
+    id: code-of-conduct
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct.](https://insightsengineering.github.io/crane/CODE_OF_CONDUCT.html)
+      options:
+        - label: I agree to follow this project's Code of Conduct.
+          required: true
+  - type: checkboxes
+    id: contributor-guidelines
+    attributes:
+      label: Contribution Guidelines
+      description: By submitting this issue, you agree to follow our [Contribution Guidelines.](https://insightsengineering.github.io/crane/CONTRIBUTING.html)
+      options:
+        - label: I agree to follow this project's Contribution Guidelines.
+          required: true
+  - type: checkboxes
+    id: security-policy
+    attributes:
+      label: Security Policy
+      description: By submitting this issue, you agree to follow our [Security Policy.](https://github.com/insightsengineering/crane/security/policy)
+      options:
+        - label: I agree to follow this project's Security Policy.
+          required: true
