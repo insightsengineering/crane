@@ -11,8 +11,11 @@ add_forest(
   conf_high = starts_with("conf.high"),
   pvalue = starts_with("p.value"),
   after = starts_with("p.value"),
-  header_spaces = 20,
-  table_engine = c("flextable", "gt")
+  header_spaces = lifecycle::deprecated(),
+  table_engine = lifecycle::deprecated(),
+  row_height = 0.24,
+  total_width = NULL,
+  pagesize = NULL
 )
 }
 \arguments{
@@ -21,42 +24,71 @@ A gtsummary table with estimates and confidence intervals in the table body. Usu
 by \code{\link[=tbl_roche_subgroups]{tbl_roche_subgroups()}}.}
 
 \item{estimate}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-Estimate column name.}
+Estimate column name. Default is \code{starts_with("estimate")}.}
 
 \item{conf_low}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-Confidence interval lower bound column name.}
+Confidence interval lower bound column name. Default is \code{starts_with("conf.low")}.}
 
 \item{conf_high}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-Confidence interval upper bound column name.}
+Confidence interval upper bound column name. Default is \code{starts_with("conf.high")}.}
 
 \item{pvalue}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}}, optional)\cr
-P-value column name. Point sizes in the forest plot will be scaled
-according to p-value (smaller p-values = smaller points). \code{NULL} to turn this off.}
+P-value column name. Point sizes in the forest plot will be scaled according to
+p-value (smaller p-values = smaller points). \code{NULL} to turn this off. Default is
+\code{starts_with("p.value")}.}
 
 \item{after}{(\code{\link[dplyr:dplyr_tidy_select]{tidy-select}})\cr
-Column name after which the forest plot column will be added. Default is after
-the p-value column.}
+Column name after which the forest plot column will be added. Default is
+\code{starts_with("p.value")}, after the p-value column.}
 
-\item{header_spaces}{(\code{integer})\cr Spaces to add to the forest plot header to
-visually separate the two treatment areas (\verb{trt A\\n Better} and \verb{trt B\\nBetter}).
-It is suggested to modify manually this variable if the treatment names are long,
-with \code{add_forest(..., header_spaces = 5)} or \code{flextable::set_header_labels(ggplot = "*")}.}
+\item{header_spaces}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}\cr Previously the number
+of spacer characters used to separate the two treatment labels in the forest
+plot header. The header is now drawn on the same scale as the plots, so the
+labels are positioned geometrically and this argument has no effect.}
 
-\item{table_engine}{(\code{character})\cr
-Table rendering engine to use. Default is "flextable".}
+\item{table_engine}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}\cr crane renders tables
+with flextable only, so this argument has no effect. The \code{"gt"} engine was
+removed in crane 0.4.1 and gives an error.}
+
+\item{row_height}{(\code{numeric})\cr
+Height of a one-line body row, in inches. Default is \code{0.24}.}
+
+\item{total_width}{(\code{numeric})\cr
+Width of the whole table, in inches, for a table narrower (or wider) than the page.
+Default is \code{NULL}.}
+
+\item{pagesize}{(\code{string})\cr
+Page size the table is made for, as in \code{citril::decorate_tlg()}: \code{"L6"} to \code{"L10"}
+(landscape) or \code{"P6"} to \code{"P10"} (portrait). The table gets its font size and width.
+Default is \code{NULL}.}
 }
 \value{
-a gt table or flextable object with an added forest plot column.
+A \code{tbl_forest}/\code{flextable} object with a forest plot column.
+Exporting it to PDF, PNG or SVG requires the \code{{magick}} package; without it
+the forest plot is left blank, with a warning.
 }
 \description{
 This function adds a forest plot column to a gtsummary table, typically produced
 by \code{\link[=tbl_roche_subgroups]{tbl_roche_subgroups()}}. The forest plot visualizes estimates and confidence intervals
-for each subgroup in the table. The function supports rendering with either the \code{gt}
-or \code{flextable} engines, making it suitable for different outputs.
+for each subgroup in the table. The table is rendered with \code{flextable}.
 }
 \details{
-Both gt and flextable outputs could produce issues in line continuity between rows if
-there are wrapping in the statistical cells.
+Set \code{pagesize} to the page size used with \code{citril::decorate_tlg()}, e.g.
+\code{"L8"}, to fit the table to the page.
+
+The forest plot is drawn as one picture, with each confidence interval in
+line with its row. A table too long for one page gets one picture per row.
+
+If you change the column widths or fonts afterwards, e.g. with
+\code{citril::decorate_tlg()} or \code{citril::set_column_widths()}, call
+\code{\link[=adjust_forest_widths]{adjust_forest_widths()}} to redraw the plot. Add or remove rows in the
+gtsummary table before calling \code{add_forest()}.
+
+Export to Word with \code{citril::export_tlg()}.
+}
+\note{
+Output from \code{{tlg.templates}} errors when exported to PDF; export it to
+docx, PNG, or SVG instead.
 }
 \examples{
 # Simple example ------------------------------------------------------------
@@ -74,7 +106,7 @@ trial |>
     rows = !is.na(estimate)
   ) |>
   modify_header(estimate = "**Odds Ratio**") |>
-  add_forest(table_engine = "gt")
+  add_forest()
 
 # Realistic example ---------------------------------------------------------
 \donttest{
@@ -90,8 +122,10 @@ if (requireNamespace("broom.helpers", quietly = TRUE)) {
           exponentiate = TRUE # , tidy_fun = broom.helpers::tidy_parameters
         )
     ) |>
-    add_forest(pvalue = starts_with("p.value"), table_engine = "flextable") |>
-    flextable::set_header_labels(ggplot = "---------")
+    add_forest(pvalue = starts_with("p.value"), pagesize = "L8")
 }
 }
+}
+\seealso{
+\code{\link[=adjust_forest_widths]{adjust_forest_widths()}} to fit the forest plot to new column widths.
 }

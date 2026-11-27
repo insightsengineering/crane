@@ -2,6 +2,16 @@
 
 * `gg_mmrm_lineplot()` now plots the estimates with their own sign. When the mean of the post-baseline estimates was positive, it negated every estimate and error bar while keeping the axis labels, so positive changes from baseline were drawn as negative ones. Add `ggplot2::scale_y_reverse()` to the returned plot to draw the y-axis from high to low values. (#334)
 
+* `add_forest()` improvements (#270):
+  * New `pagesize`, `total_width` and `row_height` arguments fit the table to a citril page with exact row heights, so each CI lines up with its row.
+  * New `adjust_forest_widths()` redraws the forest plot after the table changes, e.g. after `citril::decorate_tlg()` or `citril::set_column_widths()`.
+  * The forest plot is drawn as one picture (one per row if the table is taller than the page).
+  * The header is drawn on the plot's scale; `header_spaces` is deprecated.
+  * The plots fit their column in Word, LibreOffice and HTML. Export with `citril::export_tlg()`: `flextable::save_as_docx()` lacks the Word style they use.
+  * Warns once per session if `{magick}` is missing (needed for PDF, PNG and SVG export).
+  * Returns a `c("tbl_forest", "flextable")` object.
+
+* The `table_engine` argument of `add_forest()` is deprecated, as crane renders tables with flextable only; `table_engine = "gt"` errors. (#271)
 * `add_overall()` on a `tbl_hierarchical_rate_by_grade()` table now labels the overall column `"All Participants  \n(N = {N})"` by default, as the other crane `add_overall()` methods do, instead of the gtsummary `"**Overall**"` default. (#333)
 
 * `add_grade_column()` now keeps the overall column label set by `add_overall()`, instead of resetting it to `"Overall"`. (#333)
