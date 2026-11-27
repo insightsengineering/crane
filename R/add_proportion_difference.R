@@ -271,7 +271,7 @@ add_proportion_difference <- function(x,
     ok <- stats::complete.cases(sub$.success, sub[[by]], sub[[strata]])
     sub <- sub[ok, , drop = FALSE]
     arr <- table(factor(sub$.success, levels = c(TRUE, FALSE)), sub[[by]], sub[[strata]])
-    mh <- stats::mantelhaen.test(arr, correct = correct, conf.level = conf.level)
+    mh <- stats::mantelhaen.test(arr, correct = FALSE, conf.level = conf.level)
     p_lvl <- mean(sub$.success[sub[[by]] == level], na.rm = TRUE)
     p_ref <- mean(sub$.success[sub[[by]] == reference], na.rm = TRUE)
     list(estimate = (p_lvl - p_ref) * 100, conf.low = NA_real_, conf.high = NA_real_, p.value = mh$p.value)

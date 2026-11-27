@@ -138,3 +138,21 @@ test_that("informative errors are raised", {
     error = TRUE
   )
 })
+
+test_that("stratified p-value is the uncorrected CMH test, as in tern RSPT01", {
+  d <- prop_data()
+  tbl <- tbl_proportion(d, "rsp", "arm", value = TRUE) |>
+    add_proportion_difference(
+      reference = "Placebo", strata = "strata",
+      pvalue_fun = function(x) sprintf("%.6f", x)
+    )
+  pval <- tbl$table_body$stat_2[tbl$table_body$label == "p-value (Cochran-Mantel-Haenszel Test)"]
+
+  sub <- d[d$arm %in% c("Placebo", "Low"), ]
+  arr <- table(
+    factor(sub$rsp, levels = c(TRUE, FALSE)),
+    factor(sub$arm, levels = c("Low", "Placebo")),
+    sub$strata
+  )
+  expect_equal(pval, sprintf("%.6f", stats::mantelhaen.test(arr, correct = FALSE)$p.value))
+})
