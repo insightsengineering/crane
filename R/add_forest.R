@@ -23,9 +23,9 @@
 #'   of spacer characters used to separate the two treatment labels in the forest
 #'   plot header. The header is now drawn on the same scale as the plots, so the
 #'   labels are positioned geometrically and this argument has no effect.
-#' @param table_engine (`character`)\cr
-#'  Table rendering engine to use. Only `"flextable"` is supported. The `"gt"`
-#'  engine was removed in crane 0.4.1.
+#' @param table_engine `r lifecycle::badge("deprecated")`\cr crane renders tables
+#'   with flextable only, so this argument has no effect. The `"gt"` engine was
+#'   removed in crane 0.4.1 and gives an error.
 #' @param row_height (`numeric`)\cr
 #'  Height of a one-line body row, in inches. Rows whose text wraps get one
 #'  extra line height per extra line.
@@ -116,7 +116,7 @@ add_forest <- function(x,
                        pvalue = starts_with("p.value"),
                        after = starts_with("p.value"),
                        header_spaces = lifecycle::deprecated(),
-                       table_engine = "flextable",
+                       table_engine = lifecycle::deprecated(),
                        row_height = 0.24,
                        pagesize = NULL,
                        total_width = NULL) {
@@ -152,14 +152,22 @@ add_forest <- function(x,
   .forest_check_inches(total_width, allow_null = TRUE)
 
   # 1. SETUP DEFAULTS ----------------------------------------------------------
-  if (identical(table_engine, "gt")) {
-    lifecycle::deprecate_stop(
+  # crane renders with flextable only: "gt" errors, other values than "flextable" too (a typo is not ignored)
+  if (lifecycle::is_present(table_engine)) {
+    if (identical(table_engine, "gt")) {
+      lifecycle::deprecate_stop(
+        "0.4.1",
+        "crane::add_forest(table_engine = 'no longer accepts \"gt\"')",
+        details = "crane renders tables with flextable only. Drop the argument to use the default."
+      )
+    }
+    rlang::arg_match(table_engine, values = "flextable", error_call = get_cli_abort_call())
+    lifecycle::deprecate_warn(
       "0.4.1",
-      "crane::add_forest(table_engine = 'no longer accepts \"gt\"')",
-      details = "crane renders tables with flextable only. Drop the argument to use the default."
+      "crane::add_forest(table_engine)",
+      details = "crane renders tables with flextable only, so the argument has no effect."
     )
   }
-  table_engine <- rlang::arg_match(table_engine, values = "flextable", error_call = get_cli_abort_call())
 
   .warn_if_no_magick()
   page <- .forest_page(pagesize)

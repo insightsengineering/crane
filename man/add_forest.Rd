@@ -12,7 +12,7 @@ add_forest(
   pvalue = starts_with("p.value"),
   after = starts_with("p.value"),
   header_spaces = lifecycle::deprecated(),
-  table_engine = "flextable",
+  table_engine = lifecycle::deprecated(),
   row_height = 0.24,
   pagesize = NULL,
   total_width = NULL
@@ -45,9 +45,9 @@ of spacer characters used to separate the two treatment labels in the forest
 plot header. The header is now drawn on the same scale as the plots, so the
 labels are positioned geometrically and this argument has no effect.}
 
-\item{table_engine}{(\code{character})\cr
-Table rendering engine to use. Only \code{"flextable"} is supported. The \code{"gt"}
-engine was removed in crane 0.4.1.}
+\item{table_engine}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}\cr crane renders tables
+with flextable only, so this argument has no effect. The \code{"gt"} engine was
+removed in crane 0.4.1 and gives an error.}
 
 \item{row_height}{(\code{numeric})\cr
 Height of a one-line body row, in inches. Rows whose text wraps get one

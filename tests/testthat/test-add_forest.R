@@ -97,11 +97,16 @@ docx_overflow <- function(x) {
 
 test_that("add_forest(table_engine = 'flextable') works", {
   expect_warning(
-    add_forest(tbl, table_engine = "flextable"),
+    add_forest(tbl),
     "Less than 2 spanning headers detected."
   )
 
-  # the "gt" engine was removed in 0.4.1, crane renders with flextable only (#271)
+  # table_engine is deprecated: crane renders with flextable only (#271)
+  expect_warning(
+    lifecycle::expect_deprecated(add_forest(tbl, table_engine = "flextable")),
+    "Less than 2 spanning headers detected."
+  )
+  # the "gt" engine was removed in 0.4.1, and other values are no engine either
   expect_error(
     add_forest(tbl, table_engine = "gt"),
     class = "lifecycle_error_deprecated"
@@ -123,10 +128,7 @@ test_that("add_forest(table_engine = 'flextable') works", {
             exponentiate = TRUE
           )
       ) |>
-      add_forest(
-        pvalue = starts_with("p.value"),
-        table_engine = "flextable"
-      ),
+      add_forest(pvalue = starts_with("p.value")),
     NA
   )
 
@@ -172,7 +174,7 @@ test_that("add_forest handles extreme limits and character NA p-values safely", 
   # Ensure it works for flextable; gt was removed
   expect_no_error(
     expect_warning(
-      out_flex <- tbl_edge_cases |> add_forest(table_engine = "flextable"),
+      out_flex <- tbl_edge_cases |> add_forest(),
       "Less than 2 spanning headers detected."
     )
   )

@@ -11,7 +11,7 @@
   * Warns once per session if `{magick}` is missing (needed for PDF, PNG and SVG export).
   * Returns a `c("tbl_forest", "flextable")` object.
 
-* `add_forest()` no longer supports `table_engine = "gt"` and errors with a deprecation message. (#271)
+* The `table_engine` argument of `add_forest()` is deprecated, as crane renders tables with flextable only; `table_engine = "gt"` errors. (#271)
 * `add_overall()` on a `tbl_hierarchical_rate_by_grade()` table now labels the overall column `"All Participants  \n(N = {N})"` by default, as the other crane `add_overall()` methods do, instead of the gtsummary `"**Overall**"` default. (#333)
 
 * `add_grade_column()` now keeps the overall column label set by `add_overall()`, instead of resetting it to `"Overall"`. (#333)
