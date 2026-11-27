@@ -38,38 +38,22 @@
 #'   Default is `NULL`.
 #'
 #' @details
-#' To fit the table to its page, give the `pagesize` it is decorated for, e.g.
-#' `"L8"` for `citril::decorate_tlg(pagesize = "L8")`. `total_width` is only
-#' needed for another table width, and `row_height` only to change the row
-#' spacing.
+#' Set `pagesize` to the page size used with `citril::decorate_tlg()`, e.g.
+#' `"L8"`, to fit the table to the page.
 #'
-#' Each body row gets an exact height, and the forest plot is drawn at those
-#' heights as one picture in a merged cell, so each CI lines up with its row
-#' and the reference lines are continuous. If the whole table (titles, column
-#' labels, rows and footnotes) does not fit the page (A4 landscape without
-#' `pagesize`), each row gets its own picture, as a merged cell cannot break
-#' across pages. On a page too narrow for the table, the text columns wrap;
-#' words break, with a warning, only when not even the longest ones fit.
+#' The forest plot is drawn as one picture, with each confidence interval in
+#' line with its row. A table too long for one page gets one picture per row.
 #'
-#' The header picture shows the two treatment labels either side of the line
-#' at 1. When the forest column is too narrow for them, a warning gives the
-#' width they need.
+#' If you change the column widths or fonts afterwards, e.g. with
+#' `citril::decorate_tlg()` or `citril::set_column_widths()`, call
+#' [adjust_forest_widths()] to redraw the plot. Add or remove rows in the
+#' gtsummary table before calling `add_forest()`.
 #'
-#' The pictures are drawn for the table's widths and fonts: after changing
-#' them, e.g. with `citril::decorate_tlg()` or `citril::set_column_widths()`,
-#' call [adjust_forest_widths()]. Add, remove or reorder body rows in the
-#' gtsummary table, before `add_forest()`.
+#' Export to Word with `citril::export_tlg()`.
 #'
-#' The picture paragraphs use the "header" paragraph style of the Word
-#' template, which the default document of `flextable::save_as_docx()` lacks:
-#' export with `citril::export_tlg()`, or add the style with
-#' `officer::docx_set_paragraph_style()`.
-#'
-#' @return a `tbl_forest`/`flextable` object with an added forest plot column. The plots are
-#'   embedded as images, so drawing the table for PDF, PNG, or SVG export (e.g.
-#'   with `flextable::gen_grob()` or `flextable::save_as_image()`) requires the
-#'   `{magick}` package; without it the forest plot column is left blank and
-#'   `add_forest()` warns once per session.
+#' @return A `tbl_forest`/`flextable` object with a forest plot column.
+#'   Exporting it to PDF, PNG or SVG requires the `{magick}` package; without it
+#'   the forest plot is left blank, with a warning.
 #'
 #' @note
 #' Output from `{tlg.templates}` errors when exported to PDF; export it to
